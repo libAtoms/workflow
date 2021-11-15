@@ -1,0 +1,22 @@
+module load vasp
+export VASP_COMMAND=vasp.serial
+export VASP_COMMAND_GAMMA=vasp.gamma_serial
+
+export GRIF_BUILDCELL_CMD=~/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
+
+# export WFL_AUTOPARA_NPOOL=4
+
+system_json=Li_minimal.json
+# system=GeTeN
+
+# prep
+rm -r buildcell*input multistage_GAP_settings.json *.yaml atoms_and_dimers.xyz
+
+./gap_rss_iter_fit.py -c ${system_json} prep
+
+# initial step
+rm -r run_iter_0 nohup.out
+
+nohup ./gap_rss_iter_fit.py -c ${system_json} initial_step &
+
+wait

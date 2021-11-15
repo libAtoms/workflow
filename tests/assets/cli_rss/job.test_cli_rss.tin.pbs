@@ -1,0 +1,54 @@
+#!/bin/bash
+#### #CCMS nprocs=16:network=fast_loose:regular
+#SBATCH --partition=n2019,n2021,n2016,n2013
+#SBATCH --nodes=1
+#SBATCH --exclusive
+####
+#PBS -l walltime=24:00:00
+#PBS -N test_cli_rss
+#PBS -o test_cli_rss.stdout
+#PBS -e test_cli_rss.stderr
+#PBS -S /bin/bash
+
+cd $PBS_O_WORKDIR
+
+export WFL_AUTOPARA_NPOOL=$(( $SLURM_TASKS_PER_NODE / 2 ))
+
+module purge
+module load compilers/gnu mpi lapack python ase quip_variant/openmp quip
+module load vasp
+
+module list
+which gap_fit
+
+
+export OMP_NUM_THREADS=1
+if [ $WFL_AUTOPARA_NPOOL -gt 16 ]; then
+    export GAP_FIT_OMP_NUM_THREADS=$(( $WFL_AUTOPARA_NPOOL / 2 ))
+else
+    export GAP_FIT_OMP_NUM_THREADS=$WFL_AUTOPARA_NPOOL
+fi
+
+####################################################################################################
+# do setup run
+# dir
+export GAP_RSS_TEST_SETUP=pytest_gap_rss
+# VASP
+export VASP_COMMAND=vasp.serial
+export VASP_COMMAND_GAMMA=vasp.gamma_serial
+export VASP_PP_PATH=/share/apps/vasp/pot/rev_54/PBE
+# buildcell
+export GRIF_BUILDCELL_CMD=$HOME/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
+# make dir and clean any up possible existing one
+mkdir -p $GAP_RSS_TEST_SETUP
+rm -f pytest_gap_rss/ACTIVE_ITER
+####################################################################################################
+# do actual test
+# unset GAP_RSS_TEST_SETUP
+# unset VASP_COMMAND
+# unset VASP_COMMAND_GAMMA
+# unset VASP_PP_PATH
+# unset GRIF_BUILDCELL_CMD
+####################################################################################################
+
+pytest -s tests/test_cli_rss.py 

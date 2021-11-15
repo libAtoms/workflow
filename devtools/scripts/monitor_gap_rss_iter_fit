@@ -1,0 +1,82 @@
+#!/bin/bash
+
+if [[ $# -ge 1 && $1 == '-min' ]]; then
+    min=1
+    nrecent=1
+    nvasp=1
+    shift
+else
+    nrecent=3
+    nvasp=3
+fi
+
+if [ $# == 0 ]; then
+    set -- '.'
+fi
+
+for d in $*; do
+    echo "#### DIR $d"
+    pushd $d 2>&1 > /dev/null
+
+    last_iter=`ls -tdr run_iter_* | tail -1`
+
+    if [ -z $min ]; then
+        echo "XYZ FILES IN $last_iter"
+        fgrep -c Lattice `ls -tr $last_iter/*xyz`
+    else
+        echo "RECENT FILES IN $last_iter"
+        ls -ltr $last_iter | tail -$nrecent
+    fi
+    echo ""
+
+    last_file=`ls -tr $last_iter | grep -v 'tmp.DFT_eval' | tail -1`
+    last_xyz_file=`ls -tr $last_iter/*xyz | tail -1`
+
+    echo LAST_FILE $last_file
+    if echo $last_file | egrep -q 'minim_traj'; then
+        echo -n "relaxation trajectories, num "
+        egrep -c 'minim_config_type=[^ ]*last' $last_iter/$last_file
+    elif echo $last_file | egrep -q 'xyz$'; then
+        echo -n "misc xyz file, config num "
+        fgrep -c Lat $last_iter/$last_file
+    elif echo $last_file | egrep -q '^run_VASP_'; then
+        # echo "vasp runs going" `ls -d $last_iter/run_VASP_* | wc -l`
+        for OUTCAR in $last_iter/run_VASP_*/OUTCAR; do
+            dE=`fgrep energy-ch $OUTCAR | tail -1 | sed 's/:/ /' | awk '{print $5}'`
+            niter=`fgrep -c LOOP $OUTCAR`
+            steptime=`fgrep LOOP $OUTCAR | tail -1 | awk '{print $7}'`
+            echo `dirname $OUTCAR` "niter $niter dE $dE steptime $steptime"
+        done | sort -k2n | nl | tail -$nvasp
+        # ls $last_iter/run_VASP_*/*/OUTCAR | wc -l
+        # echo -n "vasps runs done "
+        # cat $last_iter/run_VASP_*/*/OUTCAR | fgrep -c 'free  '
+    fi
+
+    if [ $last_xyz_file != $last_file ]; then
+        echo ""
+        echo -n "LAST_XYZ_FILE $last_xyz_file # of Lat "
+        fgrep -c Lat $last_xyz_file
+    fi
+
+    if [ ! -z $min ]; then
+        popd 2>&1 > /dev/null
+        echo ""
+        continue
+    fi
+
+    outfile=`ls *.[0-9]*.*out | grep -v stdout | tail -1`
+    echo "OUTFILE $outfile"
+    if [ ! -z $outfile ]; then
+        tail -10 $outfile
+    fi
+    echo ""
+
+    stderr=`ls -tr *.stderr | tail -1`
+    echo "STDERR $stderr"
+    if [ ! -z $stderr ]; then
+        tail -3 $stderr
+    fi
+    echo ""
+
+    popd 2>&1 > /dev/null
+done

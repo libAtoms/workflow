@@ -1,0 +1,102 @@
+{
+  "global": {
+    "compositions": [
+      [ "Cu", 1.0 ], ["LiCu7", 1.0 ], ["LiCu3", 1.0], [ "Li3Cu5", 1.0 ], [ "LiCu", 1.0 ], [ "Li5Cu3", 1.0 ], [ "Li3Cu", 1.0 ], ["Li7Cu", 1.0 ], [ "Li", 1.0 ]
+    ],
+    "config_selection_descriptor": {
+        "soap": true,
+        "n_max": 10,
+        "l_max": 3,
+        "atom_sigma": "_EVAL_ {BOND_LEN_Z_MAX}/10",
+        "cutoff": "_EVAL_ {BOND_LEN_Z_MAX}*2.0",
+        "cutoff_transition_width": "_EVAL_ {BOND_LEN_Z_MAX}/4.0",
+        "average": true,
+        "central_weight": 1.0,
+        "Z": "_EVAL_ {Zcenter}",
+        "n_species": "_EVAL_ {nZ}",
+        "species_Z": "_EVAL_ {Zs}",
+        "add_species": "manual_Zcenter"
+    },
+    "config_selection_descriptor_add_species": "manual_Zcenter"
+  },
+  "prep": {
+    "length_scales_file": "length_scales.yaml",
+    "dimer_n_steps": 40
+  },
+  "initial_step": {
+    "buildcell_total_N": 10000,
+    "fitting_by_desc_select_N": 200,
+    "testing_by_desc_select_N": 50
+  },
+  "rss_step": {
+    "buildcell_total_N": 10000,
+    "minima_flat_histo_N": 2500,
+    "minima_by_desc_select_N": 1000,
+    "final_flat_histo_N": 2500,
+    "fitting_by_desc_select_N": 200,
+    "testing_by_desc_select_N": 50,
+    "select_convex_hull": false,
+    "minim_kwargs": {
+      "pressure": [ "exponential", 0.2 ]
+    },
+    "iter_specific": {
+      "flat_histo_kT": {
+        "1": 0.3,
+        "2": 0.2,
+        "3:": 0.1
+      }
+    }
+  },
+  "MD_bulk_defect_step": {
+    "buildcell_total_N": 10000,
+    "minima_flat_histo_N": 2500,
+    "minima_by_desc_select_N": 1000,
+    "final_flat_histo_N": 2500,
+    "fitting_by_desc_select_N": 200,
+    "testing_by_desc_select_N": 50,
+    "flat_histo_kT": 0.1,
+    "minim_kwargs": {
+      "pressure": [ "exponential", 0.2 ]
+    },
+    "N_bulk": 16,
+    "N_vacancy": 16,
+    "N_interstitial": 16,
+    "N_surface": 16,
+    "max_n_atoms": 64,
+    "MD_dt": 1.0,
+    "bulk_MD_n_steps": 5000,
+    "bulk_MD_T_range": [
+      100.0,
+      2500.0
+    ],
+    "defect_MD_n_steps": 2000,
+    "defect_MD_T_range": [
+      50.0,
+      1250.0
+    ]
+  },
+  "DFT_evaluate": {
+    "calculator": "VASP",
+    "kwargs": {
+      "encut": 500.0,
+      "kspacing": 0.15,
+      "ediff": 1.0e-7,
+      "prec": "acc",
+      "lreal": false,
+      "ismear": 0,
+      "sigma": 0.05,
+      "algo": "normal",
+      "amix": 0.1,
+      "nelm": 150,
+      "isym": 0,
+      "lplane": false,
+      "lscalapack": false
+    },
+    "VASP_potcar_path": "/share/apps/vasp/pot/rev_54/PBE"
+  },
+  "fit": {
+    "GAP_template_file": "multistage_GAP_fit_settings.short_range_2b_SE_universal_SOAPs_12_3.template.yaml",
+    "universal_SOAP_sharpness": 0.5,
+    "database_modify_mod": "wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull"
+  }
+}

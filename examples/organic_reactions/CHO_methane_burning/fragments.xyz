@@ -1,0 +1,28 @@
+5
+Properties=species:S:1:pos:R:3 pbc="F F F" config_type=fragment
+C        0.00000000       0.00000000       0.00000000
+H        0.63365859       0.63365753       0.63366070
+H       -0.63365421      -0.63365475       0.63366519
+H        0.63366576      -0.63365396      -0.63365405
+H       -0.63365484       0.63366669      -0.63365227
+4
+Properties=species:S:1:pos:R:3 pbc="F F F" config_type=fragment
+C        0.00000000       0.00000000       0.00000000
+H        0.00000003       1.08779863      -0.00000065
+H        0.94217990      -0.54331121      -0.00000026
+H       -0.94217967      -0.54331158       0.00000050
+2
+Properties=species:S:1:pos:R:3 pbc="F F F" config_type=fragment
+O        0.00000000       0.00000000       0.00000000
+H        0.98631848       0.00000000       0.00000000
+2
+Properties=species:S:1:pos:R:3 pbc="F F F" config_type=fragment
+C        0.00000000       0.00000000       0.00000000
+O        1.14006251       0.00000000       0.00000000
+2
+Properties=species:S:1:pos:R:3 pbc="F F F" config_type=fragment
+O        0.00000000       0.00000000       0.00000000
+O        1.22449087      -0.00000000      -0.00000000
+1
+Properties=species:S:1:pos:R:3 pbc="F F F" config_type=fragment
+O        0.00000000       0.00000000       0.00000000

@@ -1,0 +1,18 @@
+{ "stages" : [
+   { "error_scale_factor" : 10.0, "add_species" : "manual_Z_pair",
+       "descriptors" : [ { "desc_str" : "distance_2b cutoff=6.0 cutoff_transition_width=1.0 Z={{${Z1} ${Z2}}}",
+                           "fit_str" : "n_sparse=30 covariance_type=ard_se theta_uniform=1.0 sparse_method=uniform f0=0.0 add_species=F",
+                           "count_cutoff" : "_F_ 3.0" } ] } ,
+
+   { "error_scale_factor" : 2.0, "add_species" : "manual_Zcenter",
+       "descriptors" : [ { "desc_str" : "soap n_max=10 l_max=6 atom_sigma=0.4 cutoff=3.0 cutoff_transition_width=0.6 central_weight=1.0 Z=${Zcenter} n_species=${nZ} species_Z={{${Zs}}}",
+                           "fit_str" :  "n_sparse=1000 f0=0.0 covariance_type=dot_product zeta=3 sparse_method=cur_points print_sparse_index add_species=F" } ] } ,
+
+   { "error_scale_factor" : 1.0, "add_species" : "manual_Zcenter",
+       "descriptors" : [ { "desc_str" : "soap n_max=10 l_max=6 atom_sigma=0.6 cutoff=6.0 cutoff_transition_width=1.2 central_weight=1.0 Z=${Zcenter} n_species=${nZ} species_Z={{${Zs}}}",
+                           "fit_str" :  "n_sparse=1000 f0=0.0 covariance_type=dot_product zeta=4 sparse_method=cur_points print_sparse_index add_species=F" } ] }
+  ],
+  "gap_params" : "default_sigma='{0.010 0.150 0. 0.}' sparse_jitter=1.0e-8 do_copy_at_file=F sparse_separate_file=T",
+  "core_ip_file" : "glue.xml",
+  "core_ip_args" : "IP Glue"
+}

@@ -1,0 +1,32 @@
+3:
+  bond_len:
+    - 3.0
+  min_bond_len:
+    - 2.4
+  vol_per_atom:
+    - 20.0
+  source: NB gap-rss
+5:
+  bond_len:
+    - 1.7
+  min_bond_len:
+    - 1.7
+  vol_per_atom:
+    - 8.2
+  source: NB VASP auto_length_scale
+32:
+  bond_len:
+    - 2.5
+  min_bond_len:
+    - 2.3
+  vol_per_atom:
+    - 23
+  source: NB gap-rss
+52:
+  bond_len:
+    - 3.1
+  min_bond_len:
+    - 2.6
+  vol_per_atom:
+    - 31
+  source: NB gap-rss

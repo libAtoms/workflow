@@ -1,0 +1,29 @@
+{ "systems": {
+    "womble0_local": { "host": null,
+        "scheduler": "sge",
+        "commands": [  "echo $(date)", "hostname", "conda activate wfl_dev"],
+        "header": ["#$ -pe smp {ncores_per_node}"],
+        "partitions": { "any@node15,any@node19,any@node21,any@node24,any@node25": { 
+										"ncores" : 16, "max_time" : "168h", "max_mem" : "47GB" },
+						"any@node18": { "ncores" : 16, "max_time" : "168h", "max_mem" : "62GB" },
+						"any@node22": { "ncores" : 16, "max_time" : "168h", "max_mem" : "54GB" },
+						"any@node23": { "ncores" : 16, "max_time" : "168h", "max_mem" : "23GB" },
+						"any@node27,any@node28,any@node29,any@node30,any@node31,any@node32,any@node33": {
+										"ncores" : 32, "max_time" : "168h", "max_mem" : "125GB" },
+						"any@node34": { "ncores" : 32, "max_time" : "4h", "max_mem" : "125GB" },
+						"any@node35": { "ncores" : 32, "max_time" : null, "max_mem" : "125GB" },
+						"any@node5,any@node6,any@node7,any@node8": { 
+										"ncores" : 28, "max_time" : "168h", "max_mem" : "62GB" },
+						"any@node9": { "ncores" : 28, "max_time" : null, "max_mem" : "62GB" },
+						"mem1000G@node36": { "ncores" : 32, "max_time" : "168h", "max_mem" : "1000GB" },
+						"mem1000G@node37": { "ncores" : 32, "max_time" : "48h", "max_mem" : "1000GB" },
+						"mem1500G@node16": { "ncores" : 32, "max_time" : "168h", "max_mem" : "1500GB" },
+						"mem200G@node17": { "ncores" : 16, "max_time" : "168h", "max_mem" : "220GB" },
+						"mem200G@node26": { "ncores" : 16, "max_time" : "168h", "max_mem" : "204GB" }
+
+						
+        			  }
+    		 }
+}}
+
+

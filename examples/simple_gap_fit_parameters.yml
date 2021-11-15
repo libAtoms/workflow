@@ -1,0 +1,39 @@
+# mandatory parameters
+default_sigma: [ 0.001, 0.03, 0.0, 0.0 ]
+
+_gap:
+  - soap: True
+    l_max: 6
+    n_max: 12
+    cutoff: 3
+    delta: 1
+    covariance_type: dot_product
+    zeta: 4
+    n_sparse: 200
+    sparse_method: cur_points
+    atom_gaussian_width: 0.3
+    cutoff_transition_width: 0.5
+    add_species: True
+
+  - soap: True
+    l_max: 6
+    n_max: 12
+    cutoff: 6
+    delta: 1
+    covariance_type: dot_product
+    zeta: 4
+    n_sparse: 200
+    sparse_method: cur_points
+    atom_gaussian_width: 0.6
+    cutoff_transition_width: 1
+    add_species: True
+
+# optional parameters
+config_type_sigma:
+  isolated_atom: [ 0.0001, 0.0, 0.0, 0.0 ]
+sparse_separate_file: False
+energy_parameter_name: dft_energy
+force_parameter_name: dft_forces
+
+
+

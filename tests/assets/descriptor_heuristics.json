@@ -1,0 +1,119 @@
+{
+"desc_Zs": [
+    [
+        6,
+        6
+    ],
+    [
+        6,
+        14
+    ],
+    [
+        14,
+        14
+    ],
+    6,
+    14,
+    6,
+    6,
+    14
+],
+"descs": [
+    {
+        "neighbors_Nb": true,
+        "order": 2,
+        "cutoff": 30,
+        "Z": [
+            6,
+            6
+        ],
+        "add_species": false
+    },
+    {
+        "neighbors_Nb": true,
+        "order": 2,
+        "cutoff": 45,
+        "Z": [
+            6,
+            14
+        ],
+        "add_species": false
+    },
+    {
+        "neighbors_Nb": true,
+        "order": 2,
+        "cutoff": 60,
+        "Z": [
+            14,
+            14
+        ],
+        "add_species": false
+    },
+    {
+        "soap": true,
+        "n_max": 3,
+        "cutoff": 30,
+        "atom_sigma": 3.3,
+        "Z": 6,
+        "n_species": 2,
+        "species_Z": [
+            6,
+            14
+        ],
+        "add_species": false
+    },
+    {
+        "soap": true,
+        "n_max": 3,
+        "cutoff": 40,
+        "atom_sigma": 6.7,
+        "Z": 14,
+        "n_species": 2,
+        "species_Z": [
+            6,
+            14
+        ],
+        "add_species": false
+    },
+    {
+        "soap": true,
+        "n_max": 3,
+        "cutoff": 3,
+        "atom_sigma": 0.5,
+        "Z": 6,
+        "n_species": 2,
+        "species_Z": [
+            6,
+            14
+        ],
+        "add_species": false
+    },
+    {
+        "soap": true,
+        "n_max": 3,
+        "cutoff": 4,
+        "atom_sigma": 1,
+        "Z": 6,
+        "n_species": 2,
+        "species_Z": [
+            6,
+            14
+        ],
+        "add_species": false
+    },
+    {
+        "soap": true,
+        "n_max": 3,
+        "cutoff": 5,
+        "atom_sigma": 1.5,
+        "Z": 14,
+        "n_species": 2,
+        "species_Z": [
+            6,
+            14
+        ],
+        "add_species": false
+    }
+]
+}
+

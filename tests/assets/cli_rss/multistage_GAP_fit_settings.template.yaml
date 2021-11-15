@@ -1,0 +1,45 @@
+stages:
+   - error_scale_factor: 10.0
+     descriptors: 
+        - descriptor: 
+            distance_Nb: True
+            order: 2
+            cutoff: "_EVAL_ {BOND_LEN_Z1_Z2}*1.5"
+            cutoff_transition_width: "_EVAL_ {BOND_LEN_Z1_Z2}*1.5/5.0"
+            compact_clusters: True
+            Z: [ "_EVAL_ {Z1}", "_EVAL_ {Z2}" ]
+          add_species: "manual_Z_pair"
+          fit: 
+            n_sparse: 15
+            covariance_type: "ard_se"
+            theta_uniform: "_EVAL_ {BOND_LEN_Z1_Z2}*1.5/5.0"
+            sparse_method: "uniform"
+            f0: 0.0
+          count_cutoff: "_EVAL_ {BOND_LEN_Z1_Z2}*1.4" 
+   - error_scale_factor: 1.0
+     descriptors: 
+        - descriptor: 
+            soap: true
+            n_max: 12
+            l_max: 3
+            atom_sigma: "_EVAL_ {BOND_LEN_Z}/4"
+            cutoff: "_EVAL_ {BOND_LEN_Z_MAX}*2"
+            cutoff_transition_width: "_EVAL_ {BOND_LEN_Z_MAX}/6"
+            central_weight: 1.0
+            Z: "_EVAL_ {Zcenter}"
+            n_species: "_EVAL_ {nZ}"
+            species_Z: "_EVAL_ {Zs}"
+          add_species: "manual_Zcenter"
+          fit:
+            n_sparse: 1000
+            f0: 0.0
+            covariance_type: "dot_product"
+            zeta: 4
+            sparse_method: "cur_points"
+            print_sparse_index: true
+
+gap_params: 
+  default_sigma: [0.0025, 0.0625, 0.125, 0.125]
+  sparse_jitter: 1.0e-8
+  do_copy_at_file: false
+  sparse_separate_file: true

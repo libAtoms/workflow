@@ -1,0 +1,12 @@
+[run]
+branch = True
+
+[report]
+precision = 2
+omit =
+    ../Attic
+    ../simple_tests
+    ../examples
+
+[html]
+directory = coverage-html

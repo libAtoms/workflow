@@ -1,0 +1,109 @@
+{
+  "global": {
+    "fragments_file": "fragments.xyz",
+    "config_selection_descriptor": [
+      "soap n_max=10 l_max=6 atom_sigma=0.3 cutoff=3.0 cutoff_transition_width=0.6 central_weight=1.0 Z=${Zcenter} n_species=${nZ} species_Z={${Zs}}",
+      "soap n_max=10 l_max=6 atom_sigma=0.6 cutoff=6.0 cutoff_transition_width=1.2 central_weight=1.0 Z=${Zcenter} n_species=${nZ} species_Z={${Zs}}"
+    ],
+    "config_select_descriptor_add_species": "manual_Zcenter"
+  },
+  "prep": {
+    "length_scales_file": "length_scales.json"
+  },
+  "initial_step": {
+    "e0_mode": "dimer",
+    "dimer": {
+      "cutoff": 6.0,
+      "n_steps": 40,
+      "r_min": 0.2,
+      "inclusion_energy_upper_limit": -1.0
+    },
+    "vibrations": {
+      "n_free": 2,
+      "num_per_mode": 4
+    }
+  },
+  "collision_step": {
+    "kwargs": {
+      "nsteps": 1000,
+      "T": 1000.0,
+      "d0": 6.0,
+      "trajectory_interval": 8,
+      "velocity_params": [
+        [0.10, 0.10],
+        [0.10, 0.15],
+        [0.10, 0.20],
+        [0.15, 0.10],
+        [0.15, 0.15],
+        [0.15, 0.20]
+      ],
+      "min_atoms": 4
+    },
+    "selection": {
+      "cut_threshold": 0.85,
+      "lower_energy_limit": 0.01,
+      "num_select": [
+        [1, 50],
+        [6, 50],
+        [8, 50]
+      ]
+    }
+  },
+  "neb_step": {
+    "minim_interval": 50,
+    "minim_kwargs": {
+      "fmax": 0.05
+    },
+    "neb_kwargs": {
+      "nimages": 17,
+      "interpolation_method": false,
+      "fmax": 0.1,
+      "steps": 50,
+      "k": 0.01
+    },
+    "ts_kwargs": {
+      "fmax": 0.05,
+      "steps": 50
+    },
+    "irc_kwargs": {
+      "fmax": 0.05,
+      "steps": 100
+    },
+    "selection": {
+      "lower_energy_limit": 0.10,
+      "num_select": [
+        [1, 25],
+        [6, 25],
+        [8, 10]
+      ]
+    }
+  },
+  "DFT_evaluate": {
+    "calculator": "ORCA",
+    "kwargs": {
+      "n_run": 3,
+      "n_hop": 15,
+      "n_orb": 10,
+      "max_angle": 60.0,
+      "smearing": 5000,
+      "maxiter": 500,
+      "scratch_path": "/tmp/",
+      "orca_simple_input": "UHF revPBE def2-TZVP def2/J D3BJ slowconv",
+      "orca_command": "/opt/womble/orca/orca_4_2_1_linux_x86-64_openmpi314/orca"
+    }
+  },
+  "fit": {
+    "GAP_template_file": "multistage_GAP_fit_settings.fixed_3_6_SOAPs_10_6.json.template",
+    "universal_SOAP_sharpness": 0.5,
+    "num_committee": 3,
+    "database_modify_mod": "wfl.fit.modify_database.simple_factor_nonperiodic",
+    "field_error_scale_factors": {
+      "default_sigma": [0.01, 0.150, false, false],
+      "extra_space": 6.0,
+      "config_type_sigma": {
+        "dimer": [0.1, 0.5, false, false],
+        "fragment": [0.001, 0.01, false, false]
+      }
+    }
+  }
+}

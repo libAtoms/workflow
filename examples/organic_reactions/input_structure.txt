@@ -1,0 +1,80 @@
+Input structure definition for configuration json file
+  - global
+    - fragments_file:       str, [fragments for collisions]
+
+  - prep:                 dict, []
+    - length_scales_file:   str [not much of it is used at the moment, the cutoffs are fixed]
+
+  - initial_step:         dict, [parameters for initial step]
+    - e0_mode:              str choices=("dimer"), [mode of e0 calculation, only dimer large separation is implemented]
+    - dimer:                dict, [settings of dimer calculation]
+      - cutoff:               float, [outer cutoff of dimer curves]
+      - n_steps:              int, [number of equispaced steps to take]
+      - r_min:                float, [minimal separation to calculate, should be quite low distance]
+    - vibrations:           dict, [settings of normal mode sampling]
+      - n_free:               int choices=(2, 4), [number of samples to take per cartesian coord]
+      - num_per_mode:         int, [number of samples to take per mode]
+
+  - collision_step:       dict, [how to do collisions]
+    - kwargs:               dict, []
+      - n_steps:              int, [number of MD steps to take]
+      - temperature:          float, [MD temperature in Langevin]
+      - distance:             float, [initial separation of fragments]
+      - velocity_params:      list, [parameters for velocity initialisation]
+        - <entry>:              list len=2
+          - <entry 0>:            float, [factor for random uniform sample]
+          - <entry 1>:            float, [constant added]
+      - min_atoms:              int, [minimum number of atoms in MD, ie. don't run dimers]
+      - num_repeat:             int, [minimum number of atoms in MD]
+    - selection:              dict, [selection parameters]
+      - cut_threshold:          float, [trajectory cutting by SOAP dissimilarity from initial structures]
+      - lower_energy_limit:     float, [lower limit of energy standard deviation to for selection]
+      - num_select:             list, [number of local envs to be selected]
+        - <entry>:                list len=2
+          - <entry 0>:              int, [atomic number]
+          - <entry 1>:              int, [number of samples]
+
+  - neb_step:             dict, [how to do NEBs after collision]
+    - minim_interval:       int, [interval in collision (steps) for minimisation]
+    - minim_kwargs:         dict, [minimisation kwargs]
+      - fmax:                 float, [force component tolerance]
+      - steps:                int, [max number of steps to take]
+    - neb_kwargs:           dict, [NEB kwargs]
+      - fmax:                 float, [force component tolerance]
+      - steps:                int, [max number of steps to take]
+      - k:                    float, [spring constant]
+      - n_images:             int, [number of images]
+      - interpolate:          bool, [interpolation to carry out in NEB]
+    - ts_kwargs:            dict, [TS kwargs]
+      - fmax:                 float, [force component tolerance]
+      - steps:                int, [max number of steps to take]
+    - irc_kwargs:           dict, [IRC kwargs]
+      - fmax:                 float, [force component tolerance]
+      - steps:                int, [max number of steps to take]
+    - selection:            dict, [selection parameters] # should add some bias for TS and IRC results as well
+      - cut_threshold:        float, [trajectory cutting by SOAP dissimilarity from initial structures]
+      - lower_energy_limit:   float, [lower limit of energy standard deviation to for selection]
+      - num_select:           list, [number of local envs to be selected]
+        - <entry>:            list len=2
+          - <entry 0>:          int, [atomic number]
+          - <entry 1>:          int, [number of samples]
+
+  - DFT_evaluate:         dict, [DFT settings]
+    - calculator:           str choices=(ORCA)
+    - kwargs:               dict, [calculator settings]
+      <calculator specific>
+
+  - fit: dict, [gap_fit settings]
+    - GAP_template_file: str, [path to json template]
+    - universal_SOAP_sharpness: float, [sharpness of SOAP]
+
+
+
+ORCA input keys:
+- n_runs: int, [number of independent runs of global opt]
+- n_hop: int, [number of basin hops to take]
+- n_rot: int, [number of orbital pairs to rotate maximum]
+- max_angle: float, [maximal angle of rotation]
+- smearing: float, [smearing temperature, K]
+- maxiter: int, [maximum SCF iterations]
+- orca_simple_input: str, [ORCA simple input line]

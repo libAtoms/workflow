@@ -1,0 +1,17 @@
+# create initial
+rm -f test_buildcell.xyz
+env PATH=/home/cluster2/bernstei/src/work/AIRSS/airss-0.9.1/src/buildcell/src:$PATH wfl generate-configs repeat-buildcell --output_file test_buildcell.xyz --buildcell-input simple_tests/buildcell.inp --buildcell-exec buildcell -N 100
+
+# add descriptor
+rm -f test_buildcell_desc_glob.xyz test_buildcell_desc_loc.xyz 
+wfl descriptor calc --descriptor 'soap n_max=6 l_max=3 atom_sigma=0.5 cutoff=4.0' --key selection_desc --output_file test_buildcell_desc_glob.xyz test_buildcell.xyz
+wfl descriptor calc --descriptor 'soap n_max=6 l_max=3 atom_sigma=0.5 cutoff=4.0' --key selection_desc --local --output_file test_buildcell_desc_loc.xyz test_buildcell.xyz
+
+# select with CUR
+rm -f CUR_selected.xyz
+wfl select-configs CUR_global -N 10 --descriptor-key selection_desc --output_file CUR_selected.xyz test_buildcell_desc_glob.xyz
+
+# evaluate with DFT
+wfl ref_method vasp_eval --output-file vasp.t.xyz --incar INCAR --vasp-command vasp.gamma_serial --potcar-abs-dir /share/apps/vasp/pot/rev_54/PBE t.xyz 
+
+# fit

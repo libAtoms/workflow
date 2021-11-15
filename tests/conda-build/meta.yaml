@@ -1,0 +1,38 @@
+package:
+  name: wfl
+  version: "0.0.1"
+
+source:
+  path: ../..
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  noarch: python
+
+  channels:
+    - defaults
+    - conda-forge
+
+  build:
+    - python
+    - setuptools
+
+  run:
+    - python
+    - numpy=1.19
+    - ase
+    - scipy
+    - click
+
+test:
+  requires:
+    - pytest
+    - pytest-cov
+  imports:
+    - wfl
+
+about:
+  home: https://github.com/gabor1/workflow

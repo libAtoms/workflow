@@ -1,0 +1,21 @@
+configset.py
+    ConfigSet_in -> _out, in various combinations
+        non-files in -> 1
+        files 1-1, N-1, N-dict
+    is_done() and interactions with all_or_none
+
+pipeline.py
+    pipeline (of simple or dummy op) with and without autopara, to/from various ConfigSet_in, _out formats 
+    interaction with is_done()
+
+ABCD (need ABCD server in CI)
+    configset.py: simple ABCD database I/O functionality
+    pipeline.py + configset.py: pipelines to/from ABCD
+
+generate_configs:
+    buildcell (need AIRSS buildcell in CI)
+    md
+
+select_configs:
+    CUR select
+    convex hull 

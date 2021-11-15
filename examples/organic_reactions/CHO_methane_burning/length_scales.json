@@ -1,0 +1,20 @@
+{
+  "1": {
+    "bond_len": [1.2, "NB VASP auto_length_scale"],
+    "min_bond_len": [0.75, "NB VASP auto_length_scale"],
+    "other links": {"wikipedia": "https://en.wikipedia.org/wiki/Bond_length"},
+    "vol_per_atom": [3.4, "NB VASP auto_length_scale"]
+  },
+  "6": {
+    "bond_len": [1.5, "NB VASP auto_length_scale"],
+    "min_bond_len": [1.37, "wikipedia organic bond lengths"],
+    "other links": {"wikipedia": "https://en.wikipedia.org/wiki/Bond_length"},
+    "vol_per_atom": [5.7, "NB VASP auto_length_scale"]
+  },
+  "8": {
+    "bond_len": [1.7, "NB VASP auto_length_scale"],
+    "min_bond_len": [1.2, "NB VASP auto_length_scale"],
+    "other links": {"wikipedia": "https://en.wikipedia.org/wiki/Bond_length"},
+    "vol_per_atom": [11, "NB VASP auto_length_scale"]
+  }
+}

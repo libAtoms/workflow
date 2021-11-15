@@ -1,0 +1,128 @@
+principles: 
+    a. tools get input configs input as iterable, could be reference into
+    storage or list(Atoms), returns something that can easily be converted
+    into iterable over all configs, either list of files or configset or
+    list(Atoms)
+
+    b. tools write output in same order as input, for 1-1, many-1, and 1-many
+
+    c. workflow passes atomic config data flows between tasks by being
+    written to and read from storage, things actually directly passed 
+    are pointers into that storage
+
+    d. tools written so that easy(trivial?) to turn into command line tools
+    that take files as inputs
+
+    e. output to file based on mapping function that takes as input input
+    filename (which, in general can be independent of input structure)
+
+    f. tools write output preserving arbitrary info/arrays (maybe just info?)
+
+ideas
+    i/o layer returns iterator for read. method to store that follows
+    along, writing incrementally into each file(/dir)
+
+1. The user will have to specify some set of input configurations
+   (in some potentially hierarchical structue), and some structure 
+   to organize the output.
+
+   # Should we simplify down to just a list of files, and let the
+   # mapping functionality decide if the thing to be modified is the
+   # filename or the last directory name or something else?
+
+2. output structure from input:
+   general python function, with special cases coded up for convenience, special cased passed to eval?
+   for infile in infiles:
+      outfile = re.replace("pat","val", infile), return iterator with output files
+      outfile = prepend_at_double_slash("prefix", infile), return iterator with output files
+      outfile = "fixed_file.xyz", return iterator with output files
+      outfile = infile (output iterator checks for this, writes to tmp and moves), return iterator with output files
+      outfile = None - do not write to storage, instead return list(Atoms)
+
+    ABCD
+      tag = mapping_func(at)
+
+generate initials
+generate traj for each initial
+find minima of traj
+subselect from minima
+* gather all trajectories correpsonding to selected minima
+subselect from traj
+
+def many_buildcell(N):
+    set = ConfigSet(input=None)
+    set.set_output(filename='inits.{}.xyz', max_per_file=10)
+
+    for i in range(N):
+        at = do_buildcell()
+        set.incremental_write(at)
+
+    set.finish_writing()
+
+    return set.output_files()
+
+def do_op(file_or_atom_list, output_spec):
+    set = ConfigSet(file_to_atom_list, output_spec)
+
+    for at in set:
+        do_op(at)
+        set.incremental_write(at)
+    set.end_output()
+
+    return(set.output_files())
+
+init_configs_files = many_buildcell(N)
+do_op(inputs=ConfigSet(init_config_files), output_prefix="bob.")
+do_op(inputs=some_old_atoms_list, output_prefix="bob.")
+
+####
+## init_configs = do_many_buildcell(1000, outfile="iter_{}/initials.xyz".format(iter_i))
+## traj =         do_many_rss(init_configs, outfile_mapping='re.replace("initials","minimized.initials")')
+## restrat manually
+
+traj = glob.glob("a/b/c/d/*")
+
+class ConfigSet():
+    def init(self, **kwargs):
+        if len(kwargs) > 1:
+            raise too many args
+
+        if 'manifest" in kwargs:
+            self.files = open(manifest).readlines()
+        elif 'file_list' in kwargs:
+            self.files = glob.glob(file_list)
+        else:
+
+        self.files = file_list
+
+    def __iter__(self):
+        for at in all configs in all files:
+            yield at
+
+##
+minima =       subselect_minima(traj, outfile="minima.xyz")
+fit(minima)
+###
+
+3. tasks return iterable, either thin io layer object or list(Atoms)
+
+Note: if transformation is arbitrary function, it will be cumbersome
+      to specify on command line in standalone script mode
+
+Note: these details (also things like whether info on source file
+   lives in atoms.attribute, attribute of child class derived from
+   Atoms, or info field) will interact with how easy it'll be to do
+   the chunking and parallelization.  I think we want to be able to
+   do at least two levels (learning from how the gap-rss does its GAP
+   minin/MD trajectories)
+      1. break up tasks into smaller (single or more) node jobs
+      2. break up single node job into multiple serial jobs
+   Level 2 will need to be able to write to the same structure as input,
+   since that's probably how the descriptor calculation will be parallelized.
+   Level 1 will also need to be able to do that, since that's how DFT
+   evaluation will probably be parallelized.
+
+   We need to think about whether the way we preserve the input structure
+   needs to survive multiple levels of chunking, or just one.
+
+   My current example implements 2 in a way that preserves structure.

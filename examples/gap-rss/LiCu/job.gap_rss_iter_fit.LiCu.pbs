@@ -1,0 +1,65 @@
+#!/bin/bash
+#### #CCMS nprocs=72:network=fast_loose:bigmem
+#SBATCH --partition=bigmem
+#SBATCH --nodes=1
+#SBATCH --exclusive
+####
+#PBS -l walltime=2400:00:00
+#PBS -N gap_rss_LiCu
+#PBS -o gap_rss_LiCu.stdout
+#PBS -e gap_rss_LiCu.stderr
+#PBS -S /bin/bash
+
+cd $PBS_O_WORKDIR
+
+# when specifying SBATCH --nodes, end up with one SLURM_TASK per hyperthread,
+# so divide by two for real cores
+export WFL_AUTOPARA_NPOOL=$((SLURM_TASKS_PER_NODE / 2))
+
+module unload compilers mpi lapack python ase quip vasp
+module load compilers/gnu mpi lapack python ase quip_variant/openmp quip
+module load vasp
+
+module list
+which gap_fit
+
+export VASP_COMMAND=vasp.serial
+export VASP_COMMAND_GAMMA=vasp.gamma_serial
+
+export GRIF_BUILDCELL_CMD=$HOME/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
+
+export OMP_NUM_THREADS=1
+if [[ $WFL_AUTOPARA_NPOOL -gt 16 ]]; then
+    export GAP_FIT_OMP_NUM_THREADS=$WFL_AUTOPARA_NPOOL
+else
+    export GAP_FIT_OMP_NUM_THREADS=$((WFL_AUTOPARA_NPOOL / 2))
+fi
+
+system_json=LiCu.json
+
+for f in run_iter_* ACTIVE_ITER atoms_and_dimers.xyz gap_rss_LiCu.*.out; do
+  echo "WARNING: Trace of old run found file '$f'" 1>&2
+  break
+done
+
+rm -f ACTIVE_ITER
+
+# abort if any fail
+set -e
+
+# prep
+gap_rss_iter_fit -c ${system_json} prep >>gap_rss_LiCu.prep.out
+
+# dft_convergence_test -c LiCu.json \
+#     -r '{ "encut" : [ 250, 601, 50 ], "kspacing" : [ 0.35, 0.049, -0.05 ] }' \
+#     buildcell.narrow_vol_range.Z_3_1__29_1.input > gap_rss_LiCu.dft_convergence_test.out
+
+# RSS iters
+gap_rss_iter_fit -c ${system_json} initial_step >>gap_rss_LiCu.0.initial_step.out
+for iter_i in $(seq 1 24); do
+  gap_rss_iter_fit -c ${system_json} rss_step >>gap_rss_LiCu.${iter_i}.rss_step.out
+done
+
+iter_i=25
+# bulk/defect supercell MD iter
+gap_rss_iter_fit -c ${system_json} MD_bulk_defect_step >>gap_rss_Li_new.${iter_i}.MD_step.out
