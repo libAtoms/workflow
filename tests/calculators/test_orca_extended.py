@@ -59,7 +59,7 @@ ref_freq = {'normal_mode_eigenvalues': np.array([0., 0., 0., 0., 0., 0., -0.6007
 
 def test_extended_orca_calculator():
     orca = ExtendedORCA()
-    orca.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'assets', "orca"))
+    orca.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'assets', 'orca'))
 
     # parameter reading
     for key, val in orca.parameters.items():
@@ -74,7 +74,7 @@ def test_extended_orca_calculator():
 
 def test_read_frequencies():
     mol = molecule("CH4")
-    orca = ExtendedORCA(label=os.path.join(os.path.abspath(os.path.dirname(__file__)), 'assets', "orca_freq_dummy"))
+    orca = ExtendedORCA(label=os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'assets', 'orca_freq_dummy'))
     orca.atoms = mol
 
     # read the file given
@@ -88,7 +88,7 @@ def test_read_frequencies():
 def test_orca_is_converged():
     """function to check convergence from orca's output."""
 
-    ref_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'assets')
+    ref_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'assets')
     orca = ExtendedORCA()
 
     orca.label = os.path.join(ref_path, 'orca_scf_converged')

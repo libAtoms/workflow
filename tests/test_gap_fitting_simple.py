@@ -107,11 +107,11 @@ def test_fitting_gap_cli(quippy, tmp_path):
 
 @pytest.mark.skipif(not shutil.which("gap_fit"), reason="gap_fit not in PATH")  # skips it if gap_fit not in path
 @pytest.mark.remote
-def test_fitting_gap_cli_remote(quippy, tmp_path, expyre, monkeypatch):
+def test_fitting_gap_cli_remote(quippy, tmp_path, expyre_systems, monkeypatch):
     mypath = Path(__file__).parent.parent
     ri = {'resources' : {'max_time': '10m', 'n': [1, 'nodes']}}
 
-    for sys_name in expyre.config.systems:
+    for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
@@ -120,6 +120,9 @@ def test_fitting_gap_cli_remote(quippy, tmp_path, expyre, monkeypatch):
 
         if 'WFL_PYTEST_REMOTEINFO' in os.environ:
             ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
+            if 'resources' in ri_extra:
+                ri['resources'].update(ri_extra['resources'])
+                del ri_extra['resources']
             ri.update(ri_extra)
 
         monkeypatch.setenv('WFL_GAP_SIMPLE_FIT_REMOTEINFO', json.dumps(ri))

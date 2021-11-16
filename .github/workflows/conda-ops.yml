@@ -1,0 +1,50 @@
+name: Conda Build
+
+# only manually trigger this action
+on: workflow_dispatch
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ 3.6, 3.7, 3.8, 3.9 ]
+      max-parallel: 5
+    env:
+      numpy-version: 1.19
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Add conda to system path
+        run: |
+          # $CONDA is an environment variable pointing to the root of the miniconda directory
+          echo $CONDA/bin >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: |
+          conda install conda-build
+
+      - name: Build wfl with conda
+        run: |
+          # build
+          conda build -c defaults -c conda-forge --python ${{ matrix.python-version }} --numpy ${{ env.numpy-version }} tests/conda-build
+
+      - name: Extract name of output
+        run: |
+          # get path to built package
+          path_to_build=$(conda build -c defaults -c conda-forge --python ${{ matrix.python-version }} --numpy ${{ env.numpy-version }} --skip-existing --output tests/conda-build)
+          fn=$(basename ${path_to_build})
+          echo "conda_package_path=${path_to_build}" >> $GITHUB_ENV
+          echo "conda_package_fn=${fn}" >> $GITHUB_ENV
+
+
+      - name: Upload Built Package
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.conda_package_fn }}
+          path: ${{ env.conda_package_path }}
+          retention-days: 7

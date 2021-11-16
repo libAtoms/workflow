@@ -1,4 +1,5 @@
 import os
+import json
 
 import pytest
 
@@ -12,10 +13,8 @@ def test_buildcell(tmp_path):
 
 
 @pytest.mark.remote
-def test_buildcell_remote(tmp_path, expyre, monkeypatch):
-    from wfl.expyre import config
-
-    for sys_name in config.systems:
+def test_buildcell_remote(tmp_path, expyre_systems, monkeypatch):
+    for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
@@ -29,6 +28,9 @@ def do_buildcell_remote(tmp_path, sys_name, monkeypatch):
 
     if 'WFL_PYTEST_REMOTEINFO' in os.environ:
         ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
+        if 'resources' in ri_extra:
+            ri['resources'].update(ri_extra['resources'])
+            del ri_extra['resources']
         ri.update(ri_extra)
 
     do_buildcell(tmp_path, f'dummy_{sys_name}.xyz')

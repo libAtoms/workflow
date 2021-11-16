@@ -21,10 +21,8 @@ from wfl.generate_configs import minim
 from wfl.calculators.dft import evaluate_dft
 
 
-def test_generic_calc(tmp_path, expyre, monkeypatch):
-    from wfl.expyre import config
-
-    for sys_name in config.systems:
+def test_generic_calc(tmp_path, expyre_systems, monkeypatch):
+    for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
@@ -32,20 +30,16 @@ def test_generic_calc(tmp_path, expyre, monkeypatch):
 
 
 # do we need this tested remotely as well?
-def test_minim_local(tmp_path, expyre, monkeypatch):
-    from wfl.expyre import config
-
-    for sys_name in config.systems:
+def test_minim_local(tmp_path, expyre_systems, monkeypatch):
+    for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
         do_minim(tmp_path, sys_name, monkeypatch)
 
 
-def test_vasp_fail(tmp_path, expyre, monkeypatch):
-    from wfl.expyre import config
-
-    for sys_name in config.systems:
+def test_vasp_fail(tmp_path, expyre_systems, monkeypatch):
+    for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
@@ -84,7 +78,7 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch):
     monkeypatch.chdir(tmp_path)
 
     # create POTCAR
-    (Path.cwd() / 'POTCARs' / 'Al').mkdir(parents=True)
+    (Path.cwd() / 'POTCARs' / 'Al').mkdir(parents=True, exist_ok=True)
     with open(Path.cwd() / 'POTCARs' / 'Al' / 'POTCAR', 'w') as fout:
         fout.write("\n")
 
@@ -106,6 +100,9 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch):
 
     if 'WFL_PYTEST_REMOTEINFO' in os.environ:
         ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
+        if 'resources' in ri_extra:
+            ri['resources'].update(ri_extra['resources'])
+            del ri_extra['resources']
         ri.update(ri_extra)
 
     ri = {'test_remote_run.py::do_generic_calc,calculators/generic.py::run': ri}

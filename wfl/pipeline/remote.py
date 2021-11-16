@@ -5,15 +5,7 @@ from wfl.configset import ConfigSet_in, ConfigSet_out
 from .utils import grouper, RemoteInfo
 from .pool import do_in_pool
 
-try:
-    # can't do "from expyre.config import db" because then if expyre.config.init()
-    # tries to change the value of db, that change doesn't affect value in this module
-    import wfl.expyre.config
-    assert wfl.expyre.config
-    from wfl.expyre.func import ExPyRe
-    got_expyre = True
-except (ModuleNotFoundError, FileNotFoundError):
-    got_expyre = False
+from expyre import ExPyRe
 
 
 def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configset_out=None, op=None, iterable_arg=0,
@@ -27,7 +19,7 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
         do not output (to stderr) progress info
     See pipeline.iterable_loop() for other args
     """
-    if not got_expyre:
+    if ExPyRe is None:
         raise RuntimeError('Cannot run as remote jobs since expyre module could not be imported')
 
     if not isinstance(remote_info, RemoteInfo):

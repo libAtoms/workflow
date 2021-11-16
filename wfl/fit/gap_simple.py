@@ -10,10 +10,7 @@ from wfl.utils.quip_cli_strings import dict_to_quip_str
 from .utils import to_RemoteInfo
 from .gap_relocate import gap_relocate
 
-try:
-    from wfl.expyre.func import ExPyRe
-except ModuleNotFoundError:
-    pass
+from expyre import ExPyRe
 
 def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fit",
                 verbose=True, do_fit=True, remote_info=None, **kwargs):

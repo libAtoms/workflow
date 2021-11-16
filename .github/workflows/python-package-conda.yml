@@ -1,0 +1,102 @@
+# This is testing the python versions *other than* the
+#   one in the QUIP Docker, which is 3.7.10 at the time
+#   of writing this. Coverage is disabled.
+
+name: Python Package and tests
+
+# on all push actions AND can be triggered manually as well
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  install-and-run-pytest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ 3.8 ]
+      max-parallel: 5
+    env:
+      coverage-on-version: 3.8
+      use-mpi: True
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Add conda to system path
+        run: |
+          # $CONDA is an environment variable pointing to the root of the miniconda directory
+          echo $CONDA/bin >> $GITHUB_PATH
+
+      # - name: Install Dependencies from Conda
+        # run: conda env update --file=devtools/conda-envs/environment.yml --name=base
+
+      - name: Install pip from Conda
+        run: conda install pip
+
+      - name: Install dependencies from pip
+        run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib rdkit-pypi flake8 pytest pytest-cov
+
+      - name: Install Quippy from PyPI
+        run: pip install quippy-ase
+
+      - name: Install ExPyRe from github
+        run: pip install git+https://github.com/libAtoms/ExPyRe
+
+      - name: Install wfl
+        run: pip install .
+
+      - name: Install Quantum Espresso
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends quantum-espresso
+
+      - name: Install MPI dependencies
+        if: env.use-mpi
+        run: |
+          # this can eaily be turned off if needed
+          conda install -c conda-forge mpi4py openmpi pytest-mpi
+          pip install mpipool
+
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 wfl/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings.
+          flake8 wfl/ --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+
+      - name: Test with pytest - plain
+        if: env.coverage-on-version != matrix.python-version
+        run: |
+          pytest
+
+      - name: Test with pytest - coverage
+        if: env.coverage-on-version == matrix.python-version
+        run: |
+          pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered
+
+      - name: MPI tests -- plain
+        if: ${{ env.use-mpi && env.coverage-on-version != matrix.python-version}}
+        run: |
+          # envvar and test run - No coverage
+          export WFL_MPIPOOL=2
+          mpirun -n 2 pytest --with-mpi -k mpi
+
+      - name: MPI tests -- coverage
+        if: ${{ env.use-mpi && env.coverage-on-version == matrix.python-version}}
+        run: |
+          # envvar and coverage Appended to the previous
+          export WFL_MPIPOOL=2
+          mpirun -n 2 pytest --cov=wfl --cov-report term --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --with-mpi -k mpi --cov-append
+
+      - name: 'Upload Coverage Data'
+        uses: actions/upload-artifact@v2
+        if: env.coverage-on-version == matrix.python-version
+        with:
+          name: coverage-html-${{ matrix.python-version }}
+          path: coverage-html/
+          retention-days: 7

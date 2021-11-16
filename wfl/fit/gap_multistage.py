@@ -19,10 +19,7 @@ from wfl.utils.quip_cli_strings import dict_to_quip_str
 from .ref_error import calc as ref_error_calc, clean_up_for_json
 from .utils import to_RemoteInfo
 
-try:
-    from wfl.expyre.func import ExPyRe
-except ModuleNotFoundError:
-    pass
+from expyre import ExPyRe
 
 # add stress to this when gap#7
 GAP_FIT_PROPERTIES = ['energy', 'forces', 'virial', 'hessian', 'stress']
