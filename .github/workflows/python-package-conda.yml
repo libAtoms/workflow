@@ -44,13 +44,7 @@ jobs:
       - name: Install Quippy from PyPI
         run: pip install quippy-ase
 
-      - name: Install ExPyRe from github
-        run: pip install git+https://github.com/libAtoms/ExPyRe
-
-      - name: Install universalSOAP from github
-        run: pip install git+https://github.com/libAtoms/universalSOAP
-
-      - name: Install wfl
+      - name: Install wfl (expyre and universalSOAP are dependencies)
         run: pip install .
 
       - name: Install Quantum Espresso
