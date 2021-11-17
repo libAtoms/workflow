@@ -27,6 +27,7 @@ jobs:
           # pip install git+https://github.com/mpipool/mpipool
 
           pip install git+https://github.com/libAtoms/ExPyRe
+          pip install git+https://github.com/libAtoms/universalSOAP
 
           # install dev version of ASE
           pip install .

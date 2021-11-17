@@ -47,6 +47,9 @@ jobs:
       - name: Install ExPyRe from github
         run: pip install git+https://github.com/libAtoms/ExPyRe
 
+      - name: Install universalSOAP from github
+        run: pip install git+https://github.com/libAtoms/universalSOAP
+
       - name: Install wfl
         run: pip install .
 
