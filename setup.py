@@ -4,7 +4,9 @@ setuptools.setup(
     name="wfl",
     version="0.1.0b",
     packages=setuptools.find_packages(),
-    install_requires=["click>=7.0", "numpy", "ase", "pyyaml", "spglib"],
+    install_requires=["click>=7.0", "numpy", "ase", "pyyaml", "spglib",
+                      "expyre-wfl @ https://github.com/libAtoms/ExPyRe/tarball/main",
+                      "universalSOAP @ https://github.com/libAtoms/universalSOAP/tarball/main"],
     entry_points="""
     [console_scripts]
     wfl=wfl.cli.cli:cli

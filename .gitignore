@@ -1,2 +1,5 @@
 __pycache__
 *xyz.idx
+*.egg-info
+build
+dist
