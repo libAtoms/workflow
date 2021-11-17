@@ -1,5 +1,5 @@
 import shutil
-import json
+import json, yaml
 import os
 import re
 
@@ -8,10 +8,12 @@ from xml.etree import cElementTree
 
 import pytest
 
-from wfl.configset import ConfigSet_in
-from wfl.fit.gap_multistage import fit
+import ase.io
 
-params = {
+from wfl.configset import ConfigSet_in
+from wfl.fit.gap_multistage import prep_params, fit
+
+params_template = {
     "stages": [
         {
             "error_scale_factor": 10.0,
@@ -36,29 +38,16 @@ params = {
             "descriptors": [
                 {
                     "descriptor": {
-                        "soap": True, "n_max": 12, "l_max": 3, "atom_sigma": 0.64, "cutoff": 2.6,
-                        "cutoff_transition_width": 0.64,
-                        "central_weight": 1.0, "Z": 5, "n_species": 1, "species_Z": [5]
+                        "soap": True, "n_max": 12, "l_max": 3, "atom_sigma": "_EVAL_ {ATOM_SIGMA}", "cutoff": "_EVAL_ {R_CUT}",
+                        "cutoff_transition_width": "_EVAL_ {R_TRANS}",
+                        "central_weight": 1.0, "Z": "_EVAL_ {Zcenter}", "n_species": "_EVAL_ {nZ}", "species_Z": "_EVAL_ {Zs}"
                     },
                     "fit": {
                         "n_sparse": 100, "f0": 0.0, "covariance_type": "dot_product", "zeta": 4,
                         "sparse_method": "cur_points",
                         "print_sparse_index": True
                     },
-                    "add_species": False
-                },
-                {
-                    "descriptor": {
-                        "soap": True, "n_max": 12, "l_max": 3, "atom_sigma": 0.96, "cutoff": 3.8,
-                        "cutoff_transition_width": 0.96,
-                        "central_weight": 1.0, "Z": 5, "n_species": 1, "species_Z": [5]
-                    },
-                    "fit": {
-                        "n_sparse": 100, "f0": 0.0, "covariance_type": "dot_product", "zeta": 4,
-                        "sparse_method": "cur_points",
-                        "print_sparse_index": True
-                    },
-                    "add_species": False
+                    "add_species": "manual_universal_SOAP"
                 }
             ]
         }
@@ -67,6 +56,13 @@ params = {
                    "sparse_separate_file": True}
 }
 
+def get_params(fit_config_file, length_scales_file):
+    Zs = set()
+    for at in ase.io.iread(fit_config_file, ':'):
+        Zs |= set(at.numbers)
+    with open(length_scales_file) as fin:
+        length_scales = yaml.safe_load(fin)
+    return prep_params(Zs, length_scales, params_template)
 
 @pytest.mark.skipif(not shutil.which("gap_fit"), reason="gap_fit not in PATH")  # skips it if gap_fit not in path
 def test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir='run_dir'):
@@ -77,7 +73,10 @@ def test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir='run
     monkeypatch.chdir(tmp_path)
     (tmp_path / run_dir).mkdir()
 
-    GAP = fit(ConfigSet_in(input_files=os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')),
+    fit_config_file = os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')
+    params = get_params(fit_config_file, os.path.join(os.path.dirname(request.fspath), 'assets', 'length_scales.yaml'))
+
+    GAP = fit(ConfigSet_in(input_files=fit_config_file),
               run_dir=run_dir,
               GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
               database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
@@ -125,13 +124,17 @@ def test_gap_multistage_fit_remote(request, tmp_path, quippy, expyre_systems, mo
         test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir=f'run_dir_{sys_name}')
 
 
+@pytest.mark.skip(reason="code that interrupts multistage GAP fits is no longer there")
 @pytest.mark.skipif(not shutil.which("gap_fit"), reason="gap_fit not in PATH")  # skips it if gap_fit not in path
 def test_gap_multistage_fit_interrupt(request, tmp_path, quippy):
     ####################################################################################################
+    fit_config_file = os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')
+    params = get_params(fit_config_file, os.path.join(os.path.dirname(request.fspath), 'assets', 'length_scales.yaml'))
+
     normal_fit_path = os.path.join(tmp_path, 'normal_fit')
     os.mkdir(normal_fit_path)
     print('getting fitting data from ', request.fspath)
-    GAP = fit(ConfigSet_in(input_files=os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')),
+    GAP = fit(ConfigSet_in(input_files=fit_config_file),
               run_dir=normal_fit_path,
               GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
               database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
@@ -152,7 +155,7 @@ def test_gap_multistage_fit_interrupt(request, tmp_path, quippy):
     print('getting fitting data from ', request.fspath)
 
     try:
-        GAP = fit(ConfigSet_in(input_files=os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')),
+        GAP = fit(ConfigSet_in(input_files=fit_config_file),
                   run_dir=interrupted_stage_path,
                   GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
                   database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
@@ -166,7 +169,7 @@ def test_gap_multistage_fit_interrupt(request, tmp_path, quippy):
     os.system(f'ls -l {interrupted_stage_path}')
 
     try:
-        GAP = fit(ConfigSet_in(input_files=os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')),
+        GAP = fit(ConfigSet_in(input_files=fit_config_file),
                   run_dir=interrupted_stage_path,
                   GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
                   database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
@@ -180,7 +183,7 @@ def test_gap_multistage_fit_interrupt(request, tmp_path, quippy):
     os.system(f'ls -l {interrupted_stage_path}')
 
     # final run
-    GAP = fit(ConfigSet_in(input_files=os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')),
+    GAP = fit(ConfigSet_in(input_files=fit_config_file),
               run_dir=interrupted_stage_path,
               GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
               database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',

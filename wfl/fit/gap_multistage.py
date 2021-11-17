@@ -19,7 +19,12 @@ from wfl.utils.quip_cli_strings import dict_to_quip_str
 from .ref_error import calc as ref_error_calc, clean_up_for_json
 from .utils import to_RemoteInfo
 
-from expyre import ExPyRe
+try:
+    from expyre import ExPyRe
+except ModuleNotFoundError:
+    warnings.warn('No expyre, so no remote runs')
+    pass
+
 
 # add stress to this when gap#7
 GAP_FIT_PROPERTIES = ['energy', 'forces', 'virial', 'hessian', 'stress']
@@ -28,17 +33,17 @@ try:
     from quippy.descriptors import Descriptor
     from quippy.potential import Potential
 except ModuleNotFoundError:
+    warnings.warn('No quippy, so no multistage GAP fitting')
     pass
 
 try:
-    # noinspection PyUnresolvedReferences
-    from .universal_SOAPs.universal_SOAPs import SOAP_hypers
+    from universalSOAP import SOAP_hypers
 except ModuleNotFoundError:
-    warnings.warn('No universal_SOAPs, some functionality will not be available')
+    warnings.warn('No universalSOAP, so no hyperparameters from universal SOAP heuristics (add_species="manual_universal_SOAP")')
     pass
 
 
-def prep_params(Zs, length_scales, GAP_template_file, spacing=1.5,
+def prep_params(Zs, length_scales, GAP_template, spacing=1.5,
                 no_extra_inner=False, no_extra_outer=False, sharpness=1.0):
     """prepare parameters for multistage fitting based on YAML template file
     Parameters
@@ -47,11 +52,14 @@ def prep_params(Zs, length_scales, GAP_template_file, spacing=1.5,
         atomic numbers
     length_scales: dict(Z: dict('bond_len': bond_len))
         dict with bond lengths for each atomic number Z
-    GAP_template_file: str
-        input template YAML file
+    GAP_template: dict or str
+        dict with settings template (to get descriptors auto-filled from universal SOAP length scales) or filename with input template YAML
     """
-    with open(GAP_template_file) as fin:
-        multistep_gap_settings = yaml.safe_load(fin)
+    if isinstance(GAP_template, dict):
+        multistep_gap_settings = GAP_template
+    else:
+        with open(GAP_template) as fin:
+            multistep_gap_settings = yaml.safe_load(fin)
 
     try:
         hypers = SOAP_hypers(Zs, length_scales, spacing, no_extra_inner, no_extra_outer, sharpness=sharpness)

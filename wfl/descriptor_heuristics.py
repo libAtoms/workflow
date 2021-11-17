@@ -98,6 +98,11 @@ def descriptors_from_length_scales(descriptors, Zs, length_scales, SOAP_hypers=N
                     result_descs.append(replace_eval_in_strs(descriptor, repl_dict, n_float_sig_figs=2))
                     result_descs[-1]['add_species'] = False
                     desc_Zs.append(Zcenter)
+        elif not add_species:
+            # let species behave as default
+            result_descs.append(replace_eval_in_strs(descriptor, repl_dict, n_float_sig_figs=2))
+            result_descs[-1]['add_species'] = False
+            desc_Zs.append(result_descs[-1].get('Zs', None))
         else:
             raise ValueError('Unknown \'add_species\' value \'{}\''.format(add_species))
 
