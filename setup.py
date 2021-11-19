@@ -3,7 +3,7 @@ import setuptools
 setuptools.setup(
     name="wfl",
     version="0.1.0b",
-    packages=["wfl"],
+    packages=setuptools.find_packages(exclude=["test"]),
     install_requires=["click>=7.0", "numpy", "ase", "pyyaml", "spglib",
                       "expyre-wfl @ https://github.com/libAtoms/ExPyRe/tarball/main",
                       "universalSOAP @ https://github.com/libAtoms/universalSOAP/tarball/main"],
