@@ -45,6 +45,7 @@ def sample_op(atoms, calculator, steps, dt, temperature=None, temperature_tau=No
               traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for
     sampling configs
+
     Parameters
     ----------
     atoms: list(Atoms)

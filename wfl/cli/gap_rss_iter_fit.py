@@ -714,36 +714,40 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
                        select_by_desc_method, config_selection_descriptor_strs, config_selection_descriptor_local,
                        prev_GAP, select_convex_hull, get_entire_trajectories, minim_kwargs={}, verbose=False):
     """do RSS, select diverse minima using flat histogram + descriptor-based, optionally convex hull
-    Parameters:
-    run_dir: pathlike
-        run directory
-    groups: dict
-        groups to separate runs into
-    step_params: Params
-        run parameters
-    Zs: list(int)
-        all atomic numbers in system
-    select_by_desc_method: str
-        method for select by descriptor
-    config_selected_descriptor_strs: list(str) / dict(Z : str)
-        descriptors strings for by-descriptor selection
-    config_selected_descriptor_local: bool
-        selection descriptor is local
-    prev_GAP: str
-        full path for GAP file for RSS
-    select_convex_hull: bool
-        always select minima on (x, V, E) convex hull
-    get_entire_trajectories: bool
-        return entire RSS trajectories leading up to minima
-    minim_kwargs: dict, default {}
-        optional kwargs for minim call
-    verbose: bool
-        verbose output
 
-    Returns:
-    None, but groups[grp_label]['cur_confs'] is set to minima or RSS traj configs (and optionally convex hull),
-          and groups[grp_label]['convex_hull'] is set to just convex hull (or None)
+    Parameters
+    ----------
+        run_dir: pathlike
+            run directory
+        groups: dict
+            groups to separate runs into
+        step_params: Params
+            run parameters
+        Zs: list(int)
+            all atomic numbers in system
+        select_by_desc_method: str
+            method for select by descriptor
+        config_selected_descriptor_strs: list(str) / dict(Z : str)
+            descriptors strings for by-descriptor selection
+        config_selected_descriptor_local: bool
+            selection descriptor is local
+        prev_GAP: str
+            full path for GAP file for RSS
+        select_convex_hull: bool
+            always select minima on (x, V, E) convex hull
+        get_entire_trajectories: bool
+            return entire RSS trajectories leading up to minima
+        minim_kwargs: dict, default {}
+            optional kwargs for minim call
+        verbose: bool
+            verbose output
+
+    Returns
+    -------
+        None, but groups[grp_label]['cur_confs'] is set to minima or RSS traj configs (and optionally convex hull),
+        and groups[grp_label]['convex_hull'] is set to just convex hull (or None)
     """
+
     for grp_label in groups:
         print_log(f'minimizing with {prev_GAP}')
         # do minims
@@ -812,6 +816,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
                             config_selection_descriptor_strs, config_selection_descriptor_local, by_desc_select_N,
                             testing_N, by_desc_exclude_list, prev_selected_descs=None, verbose=False):
     """select by doing flat histo (optionally) and then by descriptor
+
     Parameters
     ----------
     run_dir: str
@@ -956,6 +961,7 @@ def load_old_descriptors_arrays(run_dirs, basename, grp_label):
 def select_fitting_and_testing_for_groups(run_dir, cur_iter, groups, step_params, Zs, E_info_field, select_by_desc_method,
                                           descriptor_strs, descriptor_local, flat_histo=True, verbose=False):
     """select fitting and testing configurations from a pool of configs for each group
+
     Parameters
     ----------
     run_dir: pathlike

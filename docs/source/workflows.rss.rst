@@ -216,7 +216,7 @@ Anything that is done already can be skipped, the ``Configset_out`` implementati
 
 An efficient and handy way to run multiple iterations is as follows:
 
-.. code-block:: python 
+.. code-block:: bash
 
   # remove leftover files
   for f in run_iter_* ACTIVE_ITER atoms_and_dimers.xyz gap_rss.*.out; do

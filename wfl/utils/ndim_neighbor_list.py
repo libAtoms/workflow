@@ -7,13 +7,12 @@ def calc_list(positions, ranges, cartesian_distance=True):
     Parameters
     ----------
     positions: ndarray(n_positions, n_dims)
-        array of positions to compute neighbors of
+        Array of positions to compute neighbors of
     ranges: ndarray(n_dims)
-        ranges to use as neighbor cutoff in each dimension
+        Ranges to use as neighbor cutoff in each dimension
     cartesian_distance: bool, default True
-        calculate neighbor list using Cartesian distance (i.e. nearby hyperoval)
-        if False, use a rectilinear prism, i.e. distance in every dimension must be
-            less than range
+        Calculate neighbor list using Cartesian distance (i.e. nearby hyperoval).
+        If False, use a rectilinear prism, i.e. distance in every dimension must be less than range.
 
     Returns
     -------
@@ -46,9 +45,9 @@ def calc_list_cells(positions, ranges, Cartesian_distance=True):
     ranges: ndarray(n_dims)
         ranges to use as neighbor cutoff in each dimension
     Cartesian_distance: bool, default True
-        calculate neighbor list using Cartesian distance (i.e. nearby hyperoval)
-        if False, use a rectilinear prism, i.e. distance in every dimension must be
-            less than range
+        Calculate neighbor list using Cartesian distance (i.e. nearby hyperoval).
+        If False, use a rectilinear prism, i.e. distance in every dimension must be
+        less than range.
 
     Returns
     -------
