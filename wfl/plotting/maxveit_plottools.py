@@ -3,24 +3,20 @@
 This file was taken from https://github.com/max-veit/pyutils/blob/master/plottools.py
 written my Max Veit for plotting
 
-
 Plot tools: Reusable utilities for working with matplotlib plots.
 
 Contents:
-params_(reports|poster|...)
-                    Standard parameter sets for final-quality plots
-colors              Easily distinguishable color sets
+    - params_(reports|poster|...) Standard parameter sets for final-quality plots
+    - colors              Easily distinguishable color sets
 
 Functions:
-plot_smoothed       Plot a time series smoothed with a cosine kernel
-plot_acorr          Plot the autocorrelation of a timeseries
-thin_points         Thin data points that are too close to each other
-thin_transformed    Thin data points in a transformed space
-scatter_thin_points Plot a set of thinned data points with weight info
-scatter_mark_outliers
-                    Mark outliers at the edges of a scatterplot
-scatter_outliers_size
-                    Make a scatterplot with sizes and outliers
+    - plot_smoothed       Plot a time series smoothed with a cosine kernel
+    - plot_acorr          Plot the autocorrelation of a timeseries
+    - thin_points         Thin data points that are too close to each other
+    - thin_transformed    Thin data points in a transformed space
+    - scatter_thin_points Plot a set of thinned data points with weight info
+    - scatter_mark_outliers Mark outliers at the edges of a scatterplot
+    - scatter_outliers_size Make a scatterplot with sizes and outliers
 
 """
 
@@ -78,28 +74,28 @@ def plot_acorr(time, data, step_start, sample_dt, corr_guess, axes=None,
     correlated timeseries, see Sokal's lecture on Monte Carlo methods for
     more information.
 
-    Parameters:
-        time        Time values of the timeseries
+    Parameters
+    ----------
+        time:        Time values of the timeseries
                     Must be sequential and equally spaced
-        data        Data of the timeseries
-        step_start  Step (array index) at which to start computing
+        data:        Data of the timeseries
+        step_start:  Step (array index) at which to start computing
                     averages and correlation
-        sample_dt   Time between two successive samples
-        corr_guess  Guess for the correlation time of the series
-
-    Optional parameters:
-        axes        Matplotlib axes to plot into.  Leaving it as None will
+        sample_dt:   Time between two successive samples
+        corr_guess:  Guess for the correlation time of the series
+        axes:        Matplotlib axes to plot into.  Leaving it as None will
                     plot into the current axes (or create a new one if none
                     exists yet)
-    Remaining keyword arguments are passed to the plot() command used to
-    create the autocorrelation trace.
+        **plot_args: keyword arguments are passed to the plot() command used to
+                     create the autocorrelation trace.
 
-    Returns:
-        mean        Mean of data in range (after `step_start`)
-        serr        Standard error on mean
+    Returns
+    -------
+        mean:        Mean of data in range (after `step_start`)
+        serr:        Standard error on mean
                     (accounting for autocorrelation)
-        n_eff       Number of effective independent samples
-        corr_time   Integrated correlation time
+        n_eff:       Number of effective independent samples
+        corr_time:   Integrated correlation time
     """
     logger.info("Starting from time {:.2f}".format(time[step_start]))
     data_mean = np.mean(data[step_start:])
@@ -139,20 +135,19 @@ def thin_points(data, r=None, nmax=1, density=None, len_scale=0.01):
     both axes on a log scale, the function thin_transformed() will usually
     produce better results (NB only for data in 2-D space).
 
-    Parameters:
-    data        Data matrix, size (N,d) - N is num points, d is problem
-                dimensionality
-    Specify either:
-    density     Target density, maximum density in thinned set
-        with optional:
-    len_scale   Length scale of density averaging, as a fraction of the
-                range in the data (maximum range along any dimension).
-                Default 0.01.
-    or:
-    r           Absolute length scale of distance averaging (radius of
-                sphere within which neighbours are counted)
-        with optional:
-    nmax        Maximum number of neighbours for a point (default 1)
+    Parameters
+    ----------
+    data:        Data matrix, size (N,d) - N is num points, d is problem
+                 dimensionality
+    density:     Target density, maximum density in thinned set, mutually
+                 exclusive with r
+    len_scale:   Length scale of density averaging, as a fraction of the
+                 range in the data (maximum range along any dimension).
+                 Default 0.01, optional for density.
+    r:           Absolute length scale of distance averaging (radius of
+                 sphere within which neighbours are counted)
+    nmax:        Maximum number of neighbours for a point (default 1), optional
+                 for r
 
     Note that the default of nmax=1 ensures that no two points are
     closer than r, thinning points to a maximum (approximately uniform)
@@ -204,18 +199,19 @@ def thin_transformed(data_full, equalize_aspect=True, aspect=None,
     Data points are always returned in the original (untransformed)
     space
 
-    Parameters:
-        equalize_aspect   Equalize the aspect ratio (decided by the
+    Parameters
+    ----------
+        equalize_aspect:   Equalize the aspect ratio (decided by the
                           range of the data, or aspect if given)
                           before thinning
-        aspect            Manually specify aspect ratio (width / height)
+        aspect:            Manually specify aspect ratio (width / height)
                           of the data (or log-data if thinning in log space)
-        do_y_log          Take the log of the data (y-coordinates)
+        do_y_log:          Take the log of the data (y-coordinates)
                           before thinning
-        do_x_log          Take the log of the data (x-coordinates)
+        do_x_log:          Take the log of the data (x-coordinates)
                           before thinning
-    Other keyword arguments are passed on to thin_points().  Note in
-    particular that the 'r' parameter is in X axis units.
+        **thin_params: keyword arguments passed on to thin_points().  Note in
+                       particular that the 'r' parameter is in X axis units.
     """
     if data_full.shape[1] != 2:
         raise ValueError("This function is designed to work in 2-D space; "
@@ -246,15 +242,16 @@ def scatter_thin_points(data_thin, weights, method='size', ax=None,
                         **plot_args):
     """Make a scatterplot with a thinned set of points
 
-    Paramters:
-    data_thin   Thinned data, e.g. from thin_points()
-    weights     Weights of the thinned data, e.g. from thin_points()
+    Parameters
+    ---------
+    data_thin:   Thinned data, e.g. from thin_points()
+    weights:     Weights of the thinned data, e.g. from thin_points()
                 (represents how many real points each thin point
                 represents
-    method      How to represent the weights; options are 'size',
+    method:      How to represent the weights; options are 'size',
                 'color', and 'alpha'
-    ax          Existing axis to plot into, if any
-    Any remaining keyword arguments are passed to pyplot.scatter().
+    ax:          Existing axis to plot into, if any
+    **plot_args: keyword arguments passed to pyplot.scatter().
     """
     if ax is None:
         ax = pyplot.gca()
@@ -286,21 +283,22 @@ def scatter_thin_points(data_thin, weights, method='size', ax=None,
 def scatter_mark_outliers(xs, ys, xlim, ylim, ax=None, **plot_args):
     """Mark outliers at the edges of a scatterplot
 
-    Paramters:
-    xs      List of x-coordinates of points, passed to pyplot.scatter()
-    ys      List of y-coordinates of points, passed to pyplot.scatter()
-    xlim    Limits of x-axis, as a tuple (xmin, xmax)
-    ylim    Limits of y-axis, as a tuple (ymin, ymax)
-    ax      Existing axis to plot into, if any
-
-    Any other keyword arguments are passed to pyplot.scatter().
-
     The outliers are marked at the edge of the graph as large red dots,
     by default size 40, color 'r'.  If a label was present, the outliers
     will be labelled as the same with " (outliers)" appended.
 
-    Returns the collection of scatterplots - (top, bottom, left, right).
+    Parameters
+    ---------
+    xs:      List of x-coordinates of points, passed to pyplot.scatter()
+    ys:      List of y-coordinates of points, passed to pyplot.scatter()
+    xlim:    Limits of x-axis, as a tuple (xmin, xmax)
+    ylim:    Limits of y-axis, as a tuple (ymin, ymax)
+    ax:      Existing axis to plot into, if any
+    **plot_args: keyword arguments passed to pyplot.scatter().
 
+    Returns
+    -------
+    plts: collection of scatterplots - (top, bottom, left, right).
     """
 
     if ax is None:
@@ -345,21 +343,24 @@ def scatter_outliers_size(data_thin, weights, xlim, ylim, ax=None, c_out='r',
     possible by modifying the original escatter_outliers() function, but
     does it even make sense to encode the weights of outliers?
 
-    Parameters:
-    data_thin   Thinned data, e.g. from thin_points()
-    weights     Weights of the thinned data, e.g. from thin_points()
-                (represents how many real points each thin point
-                represents
-    xlim        Limits of x-axis, as a tuple (xmin, xmax)
-    ylim        Limits of y-axis, as a tuple (ymin, ymax)
-    ax          Existing axis to plot into, if any
-    c_out       Colour to use to mark outliers, default 'r'
-    s_out       Size for outlier markers, default 40 (px)
-    Any remaining keyword arguments will only modify the properties of
-    the central (non-outlier) scatterplot.
+    Parameters
+    ----------
+    data_thin:   Thinned data, e.g. from thin_points()
+    weights:     Weights of the thinned data, e.g. from thin_points()
+                 (represents how many real points each thin point
+                 represents
+    xlim:        Limits of x-axis, as a tuple (xmin, xmax)
+    ylim:        Limits of y-axis, as a tuple (ymin, ymax)
+    ax:          Existing axis to plot into, if any
+    c_out:       Colour to use to mark outliers, default 'r'
+    s_out:       Size for outlier markers, default 40 (px)
+    **plot_args: keyword arguments that will only modify the properties of
+                 the central (non-outlier) scatterplot.
 
-    Returns the original plot as well as the four outlier scatterplots -
-    (orig, top, bottom, left, right)
+    Returns
+    -------
+    plts: the original plot as well as the four outlier scatterplots -
+          (orig, top, bottom, left, right)
 
     """
     pl = scatter_thin_points(data_thin, weights, ax=ax, **plot_args)

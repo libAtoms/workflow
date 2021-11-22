@@ -35,12 +35,12 @@ def evaluate(inputs, outputs,
         output atomic configs
     base_rundir: path-like, default os.getcwd()
         directory to put calculation directories into
-    dir_prefix: str, default 'ORCA_'
+    dir_prefix: str, default 'ORCA\_'
         directory name prefix for calculations
     keep_files: "default" / bool
         what kind of files to keep from the run
             - "default : .out, .inp, .ase, .engrad is kept -- ase can read
-            the results again
+              the results again
             - True : all files kept
             - False : none kept
     orca_kwargs: dict
@@ -78,12 +78,12 @@ def evaluate_basin_hopping(inputs, outputs,
         output atomic configs
     base_rundir: path-like, default os.getcwd()
         directory to put calculation directories into
-    dir_prefix: str, default 'ORCA_'
+    dir_prefix: str, default 'ORCA\_'
         directory name prefix for calculations
     keep_files: "default" / bool
         what kind of files to keep from the run
             - "default : .out, .inp, .ase, .engrad is kept -- ase can read
-            the results again
+              the results again
             - True : all files kept
             - False: none kept
     orca_kwargs: dict
@@ -114,17 +114,17 @@ def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
         input atomic configs
     base_rundir: path-like, default os.getcwd()
         directory to put calculation directories into
-    dir_prefix: str, default 'ORCA_'
+    dir_prefix: str, default 'ORCA\_'
         directory name prefix for calculations
     keep_files: "default" / bool
         what kind of files to keep from the run
             - "default : .out, .inp, .ase, .engrad is kept -- ase can read
-            the results again
+              the results again
             - True : all files kept
             - False: none kept
     orca_kwargs: dict
         kwargs for BasinHoppingORCA calculator
-    output_prefix : str, default "ORCA_"
+    output_prefix : str, default "ORCA\_"
         prefix for keys in the
     basin_hopping : bool, default=False
         to use basin hopping in wavefunction space, advised together with
@@ -222,9 +222,9 @@ class BasinHoppingORCA(Calculator):
         """ORCA calculator with basin hopping in wavefunction space for
         smooth PES of radicals
 
-        Method:
-        -------
-        - call n_runs (3<= recommended) instances of calculation on each
+        Method
+        ------
+        call n_runs (3<= recommended) instances of calculation on each
         frame, if all agree in energy within a given
         margin, then it is a successful
 
@@ -256,7 +256,7 @@ class BasinHoppingORCA(Calculator):
             energy tolerance in eV/atom
 
         force_tol: float
-            force tolerance in eV/Å per component
+            force tolerance in eV/Angstrom per component
 
         seed: str
             file name seed
@@ -667,7 +667,7 @@ class BasinHoppingORCA(Calculator):
 class ExtendedORCA(ORCA):
     """Extension of ASE's ORCA calculator with the following features:
         - specify command for executable (ase devs don't let this to be
-        merged in)
+          merged in)
         - setting multiplicity:
             default in the properties in None, which triggers the
             calculator to set to singlet or doublet
