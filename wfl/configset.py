@@ -294,38 +294,39 @@ class ConfigSet_in:
 
 
 class ConfigSet_out:
+    """Thin output layer for configurations into files, ABCD, or atomic configs
+
+    Notes
+    -----
+        output_files and output_abcd may not both be set (but both many be unset to save to list(atoms))
+
+    Parameters
+    ----------
+    abcd_conn: str / AbstractABCD, default None
+        ABCD connection URL or ABCD object
+    set_tags: dict
+        dict of tags and value to set in every config
+    file_root: str, default ``
+        path to prepend to every file name
+    output_files: str / dict / list(len=1) / tuple(len=1), default=None
+        output file, or dict mapping from input to output files
+    output_abcd: bool, default False
+        write output to ABCD
+    force: bool, default False
+        write even if doing so will overwrite (file) or some config with set_tags already exist (ABCD)
+    all_or_none: bool, default True
+        write to temporary filename/tags and rename at the end, to ensure that files/tags only exist
+        when output is complete
+    parallel_io: bool, default False
+        parallel ASE atomic config output
+    verbose: bool, default False
+        verbose output
+    """
+
+
     def __init__(self, abcd_conn=None, set_tags=None,
                  file_root='', output_files=None, output_abcd=False,
                  force=None, all_or_none=True, parallel_io=False, verbose=False):
-        """Thin output layer for configurations into files, ABCD, or atomic configs
-
-        Notes
-        -----
-            output_files and output_abcd may not both be set (but both many be unset to save to list(atoms))
-
-        Parameters
-        ----------
-        abcd_conn: str / AbstractABCD, default None
-            ABCD connection URL or ABCD object
-        set_tags: dict
-            dict of tags and value to set in every config
-        file_root: str, default ``
-            path to prepend to every file name
-        output_files: str / dict / list(len=1) / tuple(len=1), default=None
-            output file, or dict mapping from input to output files
-        output_abcd: bool, default False
-            write output to ABCD
-        force: bool, default False
-            write even if doing so will overwrite (file) or some config with set_tags already exist (ABCD)
-        all_or_none: bool, default True
-            write to temporary filename/tags and rename at the end, to ensure that files/tags only exist
-            when output is complete
-        parallel_io: bool, default False
-            parallel ASE atomic config output
-        verbose: bool, default False
-            verbose output
-        """
-
         if all_or_none:
             # make sure force is set correctly
             if force is None:
@@ -402,6 +403,13 @@ class ConfigSet_out:
 
 
     def is_done(self, even_if_not_all_or_none=False):
+        """Check if output is done and saved in the correct format (file, list(Atoms), uploaded to ABCD).
+        
+        Parameters
+        ----------
+
+        even_if_not_all_or_none: bool, default True
+        """
         if not even_if_not_all_or_none and not self.all_or_none:
             # if not all_or_none, do not claim that output is done, because it may be incomplete
             return False
@@ -409,6 +417,7 @@ class ConfigSet_out:
         if self.output_abcd:
             # if any configs have requested tags, it must be done
             return self.abcd.count(self.set_tags) > 0
+
         if self.output_files is not None:
             # if all files exist, it must be done, since all_or_none must be set
             return all([os.path.exists(fout) for fout in self.output_files])
@@ -418,7 +427,7 @@ class ConfigSet_out:
 
 
     def fail_if_output_exists(self):
-        # check for non-unique tags for abcd output and existing files for file output
+        """ check for non-unique tags for abcd output and existing files for file output. """
         if self.output_abcd:
             if self.abcd.count(self.set_tags) > 0:
                 raise RuntimeError('Got non-unique set_tags, pass force to override')

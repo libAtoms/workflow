@@ -13,18 +13,24 @@ from wfl.utils.quip_cli_strings import dict_to_quip_str
 
 
 def from_any_to_Descriptor(descriptor_src, verbose=False):
-    """Create quippy.descriptors.Descriptor objects from strings
+    """Create quippy.descriptors.Descriptor objects
 
     Parameters
     ----------
     descriptor_src: desc / list(desc) / dict(Zcenter : desc) / dict(Zcenter : list(desc))
-        String to pass quippy Descriptor.  Any "desc" value can be a string, a dict (converted to 
-        key=value string), or quippy.descriptors.Descriptor object)
+        String to pass to quippy Descriptor. "Zcenter" denotes atomic number of the central atom".
+        Any "desc" value can be a string, a dict (converted to 
+        key=value string), or quippy.descriptors.Descriptor object. 
 
-        dict with None or ints as keys: one or more descriptor for each species, key=None for all
-        str/dict/Descriptor: single descriptor
-        list: list of descriptors to concatenate
+        Each ``descriptor_src`` type correponds to 
+        
+            * a dictionary with None as keys: one or more descriptor for for all species.
+            * a dictionary with integers as keys: one or more descriptor for for each species.
+            * string, dictionary or ``Descriptor``: single descriptor
+            * list: list of descriptors to concatenate
+
     verbose: bool, default False
+        verbose output
 
     Returns
     -------
@@ -66,7 +72,7 @@ def from_any_to_Descriptor(descriptor_src, verbose=False):
 
 
 def calc(inputs, outputs, descs, key, local=False, normalize=True, composition_weight=True, force=False, verbose=False):
-    """calculates descriptors on a set of configs, I/O with ConfigSet_{in,out}
+    """Calculates descriptors on a set of configs, I/O with ConfigSet_{in,out}
 
     Parameters
     ----------
@@ -94,7 +100,8 @@ def calc(inputs, outputs, descs, key, local=False, normalize=True, composition_w
 
     Returns
     -------
-        ConfigSet_in pointing to outputs
+    ConfigSet_in 
+        ConfigSet_out.to_ConfigSet_in() Pointing to outputs
     """
     return iterable_loop(iterable=inputs, configset_out=outputs, op=calc_op, descs=descs, key=key, local=local,
                          force=force, verbose=verbose, normalize=normalize, composition_weight=composition_weight)
@@ -102,6 +109,7 @@ def calc(inputs, outputs, descs, key, local=False, normalize=True, composition_w
 
 def calc_op(atoms, descs, key, local=False, normalize=True, composition_weight=True, force=False, verbose=False):
     """Calculate descriptor for each config or atom
+
     Parameters
     ----------
     atoms: ase.atoms.Atoms / list(Atoms)
@@ -109,7 +117,7 @@ def calc_op(atoms, descs, key, local=False, normalize=True, composition_weight=T
     descs: str / list(str) / dict(Z : str / Descriptor )
         descriptor or list of descriptors (applied to all species) or dict of descriptor string for each
         species (key None for all species)
-        If global, combined descriptor will be concatenated.  If local and Z is not None, multiple arrays
+        If ``global``, combined descriptor will be concatenated.  If ``local`` and ``Z`` is not None, multiple arrays
         entries will be created, one per Zcenter, named <key>_Z_<Zcenter>.
     key: str
         key in Atoms.info (global) or Atoms.arrays (local) to store information
@@ -126,7 +134,8 @@ def calc_op(atoms, descs, key, local=False, normalize=True, composition_weight=T
 
     Returns
     -------
-        input Atoms or list(Atoms) with descriptors in info/arrays
+    atoms: Atoms or list(Atoms)
+        Input configuration(s) with descriptors in info/arrays
     """
 
     descs = from_any_to_Descriptor(descs, verbose=verbose)
