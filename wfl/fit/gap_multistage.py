@@ -46,6 +46,7 @@ except ModuleNotFoundError:
 def prep_params(Zs, length_scales, GAP_template, spacing=1.5,
                 no_extra_inner=False, no_extra_outer=False, sharpness=1.0):
     """prepare parameters for multistage fitting based on YAML template file
+
     Parameters
     ----------
     Zs: list(int)
@@ -109,7 +110,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         name of GAP label, also used as part of xml file
     params: dict
         parameters controlling each stage of fit, typically read in from YAML file
-    ref_property_prefix: str, default 'REF_'
+    ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress, hessian)
     database_modify_mod: str
         name of python module defining a modify() function which does things like setting energy/force sigma, etc
@@ -138,7 +139,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
     committee_name_postfix: str / None
         str to add to name of committee models in the format: "{GAP_name}{committee_name_postfix}{num}.xml"
     save_err_configs_basename: str / None
-        name of file to use for results calculated as part of error evaluation, prepended with "fitting_" and "testing_"
+        name of file to use for results calculated as part of error evaluation, prepended with "fitting\_" and "testing\_"
     remote_info: dict or wfl.pipeline.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not 'IGNORE_NONE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,

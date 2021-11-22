@@ -24,6 +24,7 @@ def _hashable_struct_data(at):
 
 def CUR(mat, num, stochastic=True, stochastic_seed=None, exclude_list=None):
     """Compute selection by CUR of descriptors with dot-product, with optional exponentiation
+    
     Parameters
     ----------
     mat: np.array(vec_len, n_vecs) or (n_vecs, n_vecs)
@@ -157,6 +158,7 @@ def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
                     stochastic_seed=None, keep_descriptor_info=True, exclude_list=None, center=True,
                     leverage_score_key=None):
     """Select atoms from a list or iterable using CUR on global (per-config) descriptors
+
     Parameters
     ----------
     inputs: ConfigSet_in
@@ -187,7 +189,7 @@ def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
 
     Returns
     -------
-        ConfigSet_in corresponding to selected configs output
+    ConfigSet_in corresponding to selected configs output
     """
     if outputs.is_done():
         warnings.warn('output is done, returning')

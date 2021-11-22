@@ -17,6 +17,7 @@ from .remote import do_remotely
 def iterable_loop(npool=None, chunksize=1, iterable=None, configset_out=None, op=None, iterable_arg=0, skip_failed=True,
                   initializer=None, initargs=None, remote_info=None, label=None, hash_ignore=[], *args, **kwargs):
     """parallelize some operation over an iterable
+
     Parameters
     ----------
     npool: int, default os.environ['WFL_AUTOPARA_NPOOL']

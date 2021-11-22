@@ -11,12 +11,14 @@ from expyre import ExPyRe
 def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configset_out=None, op=None, iterable_arg=0,
                 skip_failed=True, initializer=None, initargs=None, args=[], kwargs={}, quiet=False):
     """run tasks as series of remote jobs
-    Paramaters
+
+    Parameters
     ----------
     remote_info: RemoteInfo or dict
         object with all information on remote job, including system, resources, job chunksize, etc, or dict of kwargs for its constructor
     quiet: bool, default False
         do not output (to stderr) progress info
+
     See pipeline.iterable_loop() for other args
     """
     if ExPyRe is None:

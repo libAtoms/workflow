@@ -37,23 +37,25 @@ def evaluate_op(
         input atomic configs
     base_rundir: path-like, default os.getcwd()
         directory to put calculation directories into
-    dir_prefix: str, default 'CASTEP_run_'
+    dir_prefix: str, default 'CASTEP\_run\_'
         directory name prefix for calculations
     calculator_command
     calculator_kwargs : dict
-    output_prefix : str / None, default 'CASTEP_'
+    output_prefix : str / None, default 'CASTEP\_'
         prefix for info/arrays keys, None for SinglePointCalculator
     properties : list(str), default None
         ase-compatible property names, None for default list (energy, forces, stress)
     keep_files: bool / None / "default" / list(str), default "default"
         what kind of files to keep from the run
-            True : everything kept
-            None, False : nothing kept, unless calculation fails
-            "default"   : only ones needed for NOMAD uploads ('*.castep', '*.param', '*.cell')
-            list(str)   : list of file globs to save
+
+            - True : everything kept
+            - None, False : nothing kept, unless calculation fails
+            - "default"   : only ones needed for NOMAD uploads ('\*.castep', '\*.param', '\*.cell')
+            - list(str)   : list of file globs to save
 
     Returns
     -------
+    atoms: Atoms or list(Atoms)
         Atoms or list(Atoms) with calculated properties
     """
     # use list of atoms in any case

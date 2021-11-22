@@ -20,8 +20,8 @@ def init(verbose=1):
     Parameters
     ----------
     verbose: int, default 1
-        >= 1 : minimal start/end messages
-        > 1  : print stack trace at startup, to tell where it was called from
+        * >= 1 : minimal start/end messages
+        * > 1  : print stack trace at startup, to tell where it was called from
     """
     global wfl_mpipool
 

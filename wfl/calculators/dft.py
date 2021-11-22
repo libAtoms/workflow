@@ -23,20 +23,20 @@ def evaluate_dft(
     keep_files="default",
     **kwargs,
 ):
-    """
+    """evaluate configurations with a DFT calculator
 
     Parameters
     ----------
     inputs: list(Atoms) / Configset_in
-            input atomic configs, needs to be iterable
+        input atomic configs, needs to be iterable
     outputs: list(Atoms) / Configset_out
         output atomic configs
     calculator_name: str {"CASTEP", "VASP", "QE"}
         name of Plane Wave DFT calculator, options are: "CASTEP", "VASP", "QE"
     base_rundir: path-like, default os.getcwd()
         directory to put calculation directories into
-    dir_prefix: str, default 'DFT_'
-            directory name prefix for calculations
+    dir_prefix: str, default 'DFT\_'
+        directory name prefix for calculations
     calculator_command: str
         command for calculator, only MPI and the executable
         eg. "mpirun -n 4 /path-to/castep.mpi"
@@ -46,15 +46,14 @@ def evaluate_dft(
         prefix for info/arrays keys, None for SinglePointCalculator
         default is the calculator name
     properties : list(str), default None
-            ase-compatible property names,
-            None for default list (energy, forces, stress)
+        ase-compatible property names,
+        None for default list (energy, forces, stress)
     keep_files: bool / None / "default" / list(str), default "default"
         what kind of files to keep from the run
-            True : everything kept
-            None, False : nothing kept, unless calculation fails
-            "default"   : only ones needed for NOMAD uploads
-                          depending on calculator
-            list(str)   : list of file globs to save
+            - True : everything kept
+            - None, False : nothing kept, unless calculation fails
+            - "default"   : only ones needed for NOMAD uploads depending on calculator
+            - list(str)   : list of file globs to save
     kwargs
         any other keyword arguments that need to be passed to the
         evaluation operation function.
@@ -62,7 +61,7 @@ def evaluate_dft(
 
     Returns
     -------
-
+    ConfigSet_in of configurations with calculated properties
     """
     # defaults
     if dir_prefix is None:

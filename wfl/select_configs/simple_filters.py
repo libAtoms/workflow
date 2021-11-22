@@ -92,6 +92,7 @@ def apply(inputs, outputs, at_filter):
 # None or [] when a config isn't selected
 def by_index(inputs, outputs, indices):
     """select atoms from configs by index
+
     Parameters
     ----------
     inputs: ConfigSet_in

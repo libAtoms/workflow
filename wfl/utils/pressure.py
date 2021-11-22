@@ -11,13 +11,14 @@ def sample_pressure(pressure, at=None):
     Parameters
     ----------
     pressure: float / list / tuple
-        Pressure, type and length defines mode as well:
-        - float: used as pressure
-        - ("info", dict_key): looks for dict_key in at.info, parsed same as pressure argument here
-        - ("exponential", float): exponential distribution, rate=1. and scaled by float given
-        - ("normal_positive", mean, sigma): normal distribution with (mean, sigma) thrown away if negative value drawn,
-          max 1000 tries
-        - ("uniform", lower, upper): uniform distribution between bounds (lower, upper)
+        Pressure, type and length defines mode as well
+            - float: used as pressure
+            - ("info", dict_key): looks for dict_key in at.info, parsed same as pressure argument here
+            - ("exponential", float): exponential distribution, rate=1. and scaled by float given
+            - ("normal_positive", mean, sigma): normal distribution with (mean, sigma) thrown away if negative value drawn, 
+              max 1000 tries
+            - ("uniform", lower, upper): uniform distribution between bounds (lower, upper)
+
     at: ase.Atoms, default None
         atoms object, only needed or used if mode is `info`
 

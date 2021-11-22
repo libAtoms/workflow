@@ -28,43 +28,44 @@ from wfl.utils.parallel import construct_calculator_picklesafe
 
 # noinspection PyPep8Naming
 class Supercollider:
+    """Collider class for collision of molecules
+
+    Initial implementation by Hannes Margraf, further work by Tamas K. Stenczel
+
+    Parameters
+    ----------
+    mol1, mol2 : ase.Atoms
+        molecules to collide
+    seed : str
+        seed of the trajectory names
+    cell : array_like
+        cell to use in the calculation
+    calc : ase.calculators.calculator.Calculator
+        calculator to use for MD
+    pot_filename : path_like
+        file for quippy potential filename
+    pot_arg_str : str
+        arg_str for quippy potential
+    dt : float, default=0.25
+        time step of MD in fs
+    T : float, default=1000.
+        temperature in K
+    velocity_params : tuple(float, float), default=
+        parameters of velocity of collision as tuple of:
+        (factor, const) which results in velocity of `factor * rand(0. to 1.) + const`
+        uses ASE units
+    pbc : bool|array_like, default=False
+        periodic boundary conditions for calculation
+    d0 : float, default=6.0
+        distance of the molecules' CoM at the start
+    trajectory_interval : int, default=1
+        interval of printing trajectory files
+    """
+
     def __init__(self, mol1, mol2, seed,
                  calc=None, pot_filename='GAP.xml', pot_arg_str='',
                  dt=0.25, T=1000., velocity_params=None, cell=(40., 20., 20.), pbc=False, d0=6.,
                  trajectory_interval=1):
-        """Collider class for collision of molecules
-
-        Initial implementation by Hannes Margraf, further work by Tamas K. Stenczel
-
-        Parameters
-        ----------
-        mol1, mol2 : ase.Atoms
-            molecules to collide
-        seed : str
-            seed of the trajectory names
-        cell : array_like
-            cell to use in the calculation
-        calc : ase.calculators.calculator.Calculator
-            calculator to use for MD
-        pot_filename : path_like
-            file for quippy potential filename
-        pot_arg_str : str
-            arg_str for quippy potential
-        dt : float, default=0.25
-            time step of MD in fs
-        T : float, default=1000.
-            temperature in K
-        velocity_params : tuple(float, float), default=
-            parameters of velocity of collision as tuple of:
-            (factor, const) which results in velocity of `factor * rand(0. to 1.) + const`
-            uses ASE units
-        pbc : bool|array_like, default=False
-            periodic boundary conditions for calculation
-        d0 : float, default=6.0
-            distance of the molecules' CoM at the start
-        trajectory_interval : int, default=1
-            interval of printing trajectory files
-        """
 
         # calculator given or initialised from file
         if calc is not None:

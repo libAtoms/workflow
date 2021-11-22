@@ -103,6 +103,7 @@ def _largest_isotropic_supercell(at, max_n_atoms, vary_cell_vectors=None):
 # try ase.build.supercells.find_optimal_cell_shape ?
 def largest_bulk_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3):
     """make largest bulk-like supercells
+
     Parameters
     ----------
     atoms: list(Atoms)
@@ -149,6 +150,7 @@ def largest_bulk_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3
 
 def vacancy_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3):
     """make vacancies in largest bulk-like supercells
+
     Parameters
     ----------
     atoms: list(Atoms)
@@ -185,6 +187,7 @@ def vacancy_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3):
 def interstitial_op(atoms, max_n_atoms, pert=0.0, interstitial_probability_radius_exponent=3.0, primitive=True,
                     symprec=1.0e-3):
     """make interstitials in largest bulk-like supercells
+
     Parameters
     ----------
     atoms: list(Atoms)
@@ -233,6 +236,7 @@ def surface_op(atoms, max_n_atoms, min_thickness, vacuum, simple_cut=False, max_
                duplicate_in_plane=True, pert=0.0,
                primitive=True, symprec=1.0e-3):
     """make surface supercells
+
     Parameters
     ----------
     atoms: list(Atoms)

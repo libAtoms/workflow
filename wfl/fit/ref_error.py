@@ -20,7 +20,7 @@ def calc(input_configs, output_configs, calculator, ref_property_prefix, calc_pr
         calculator to evaluate, as required by wfl.calculators.generic.run()
     ref_property_prefix: str
         prefix to info/array keys for reference properties
-    calc_property_prefix: str, default 'calc_'
+    calc_property_prefix: str, default 'calc\_'
         prefix to info/array keys for calculated properties
     properties: list(str)
         list of 'energy', 'energy_per_atom', 'forces', 'stress', 'virial', 'virial_per_atom' to compute error for
@@ -72,6 +72,7 @@ def calc_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_
                              properties=None, category_keys=None,
                              forces_by_component=False, forces_by_element=False):
     """calculate error for calculation results relative to stored reference values
+
     Parameters
     ----------
     calculated_ats: iterable(Atoms)
@@ -207,9 +208,8 @@ def calc_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_
 
 
 def clean_up_for_json(error_dict):
-    """Cleans error dictionary to be JSON serializable
-
-    Builds on format of calc above, converts the tuple keys to strings
+    """Cleans error dictionary to be JSON serializable,
+    building on format of calc above, and converting the tuple keys to strings
 
     Parameters
     ----------

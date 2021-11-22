@@ -21,7 +21,7 @@ def calc_ts(atoms, calculator, fmax=1.0e-3, steps=200, traj_step_interval=1, tra
     -----
     - Pressure and cell movement is not supported yet
     - Constraints are not implemented, Sella needs special treatment of them,
-    see: https://github.com/zadorlab/sella/wiki/Constraints
+      see: https://github.com/zadorlab/sella/wiki/Constraints
     - Keeping the symmetry is not supported by the Sella optimiser
 
     Parameters

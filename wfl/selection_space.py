@@ -56,7 +56,8 @@ def val_relative_to_nearby_composition_volume_min(inputs, outputs, vol_range, co
 
     Returns
     -------
-    ConfigSet_in pointing to configurations with the saved relative value field
+    ConfigSet_in
+        ConfigSet_in pointing to configurations with the saved relative value field
     """
     if outputs.is_done():
         sys.stderr.write(f'Returning from {__name__} since output is done\n')

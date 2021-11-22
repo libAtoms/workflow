@@ -9,7 +9,11 @@ from glob import glob
 import click
 import numpy as np
 import yaml
-from quippy.potential import Potential
+try:
+    from quippy.potential import Potential
+except ModuleNotFoundError:
+    pass
+
 
 from wfl.calculators import committee, orca
 from wfl.configset import ConfigSet_in, ConfigSet_out
@@ -23,7 +27,7 @@ from ..fit import gap_multistage, glue_2b
 from ..generate_configs import atoms_and_dimers, collision
 from ..reactions_processing import trajectory_processing
 from ..select_configs import weighted_cur
-from wfl.utils.version import wfl_get_version
+from wfl.utils.version import get_wfl_version
 
 
 @click.group()
@@ -36,7 +40,7 @@ def cli(ctx, verbose, configuration, active_iter):
     ctx.obj['verbose'] = verbose
     ctx.obj['active_iter'] = active_iter
 
-    print_log('\nGAP_REACTIONS_ITER_FIT STARTING, code version ' + wfl_get_version())
+    print_log('\nGAP_REACTIONS_ITER_FIT STARTING, code version ' + get_wfl_version())
 
     with open(configuration, "r") as file:
         config = json.load(file)

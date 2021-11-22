@@ -28,7 +28,7 @@ def calculate_committee(atoms, calculator_list, properties=None, output_prefix="
         list of calculators to use as a committee of models on the configs
     properties: list[str], default ['energy', 'forces', 'stress']
         properties to calculate
-    output_prefix : str, default="committee_"
+    output_prefix : str, default="committee\_"
         prefix for results coming from the committee of models.
         If includes "{}" then will use it as a format string, otherwise puts a number at the end of prefix for the
         index of the model in the committee of models

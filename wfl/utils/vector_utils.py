@@ -1,7 +1,7 @@
 """
 General utilities to supplement the other submodules.
-- Vector operations:
-    - random 3D vector
+    - Vector operations:
+        - random 3D vector
 """
 
 import numpy as np
