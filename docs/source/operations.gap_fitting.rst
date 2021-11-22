@@ -33,7 +33,7 @@ Procedure
 
 **************************************************
 Configuration file
-*************************************************
+**************************************************
 
 
 The iterative fitting procedure is controlled by a JSON file that describes the descriptors and fitting params for each stage, and some global fitting params.
@@ -63,7 +63,8 @@ Creating configuration file
 ``wfl.fit.gap_multistage`` has a function ``prep_input`` which takes a _template_ configuration file and creates descriptors for each species using universal SOAP hyperparameters.  The template file format is similar to the configuration file described above.  The main exceptions are
 
 * in addition to the ``error_scale_factor`` and ``descriptors`` keys there is another, ``add_species``
-* All strings (mainly intended for ``desc_str``) have length scales specified in terms of ``${REPL_EXPR}``, which will be replaced by the mathematical expression, substituting particular strings (e.g. ``R_CUT``, ``BOND_LEN_Z``) as described in the docstring for ``wfl.descriptor_heuristics.dup_descs_for_species()``.  Replacements will remain strings, except strings that begin with ``\_F\_ ``, which will be replaced with the evaluate floating point value.
+* All strings (mainly intended for ``desc_str``) have length scales specified in terms of ``${REPL_EXPR}``, which will be replaced by the mathematical expression, substituting particular strings (e.g. ``R_CUT``, ``BOND_LEN_Z``) as described in the docstring for ``wfl.descriptor_heuristics.dup_descs_for_species()``.  Replacements will remain strings, except strings that begin 
+  with ``_F_``, which will be replaced with the evaluate floating point value.
 
 
 ``add_species`` can be any value understood by ``wfl.descriptor_heuristics.dup_descs_for_species()``, in particular

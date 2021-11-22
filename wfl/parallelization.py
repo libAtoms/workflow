@@ -294,6 +294,7 @@ def over_N(confset, multiprocessing_type, N, N_arg_name, N_offset_name=None,
            serial_func=None, serial_func_kwargs=None, serial_command=None,
            serial_output_all_or_none=True, skip_serial_if_complete=True):
     """Run multiple instances of a serial task by splitting up some integer input count parameter
+
     Parameters
     ----------
     confset: ConfigSet
@@ -373,6 +374,7 @@ def over_inputs(confset, multiprocessing_type,
                 serial_func=None, serial_func_kwargs=None, serial_command=None,
                 serial_output_all_or_none=True, skip_serial_if_complete=True):
     """Run multiple instances of a serial task by splitting up input configs
+
     Parameters
     ----------
     confset: ConfigSet

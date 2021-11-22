@@ -20,7 +20,7 @@ def calc(input_configs, output_configs, calculator, ref_property_prefix, calc_pr
         calculator to evaluate, as required by wfl.calculators.generic.run()
     ref_property_prefix: str
         prefix to info/array keys for reference properties
-    calc_property_prefix: str, default 'calc_'
+    calc_property_prefix: str, default 'calc\_'
         prefix to info/array keys for calculated properties
     properties: list(str)
         list of 'energy', 'energy_per_atom', 'forces', 'stress', 'virial', 'virial_per_atom' to compute error for

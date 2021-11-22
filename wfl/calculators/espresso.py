@@ -38,22 +38,22 @@ def evaluate_op(
         input atomic configs
     base_rundir: path-like, default os.getcwd()
         directory to put calculation directories into
-    dir_prefix: str, default 'QE-run_'
+    dir_prefix: str, default 'QE-run\_'
         directory name prefix for calculations
     calculator_command: str
         command for QE, without any prefix or redirection set.
         for example: "mpirun -n 4 /path/to/pw.x"
     calculator_kwargs : dict
-    output_prefix : str / None, default 'QE_'
+    output_prefix : str / None, default 'QE\_'
         prefix for info/arrays keys, None for SinglePointCalculator
     properties : list(str), default None
         ase-compatible property names, None for default list (energy, forces, stress)
     keep_files: bool / None / "default" / list(str), default "default"
         what kind of files to keep from the run
-            True : everything kept
-            None, False : nothing kept, unless calculation fails
-            "default"   : only ones needed for NOMAD uploads ('*.pwo')
-            list(str)   : list of file globs to save
+            - True : everything kept
+            - None, False : nothing kept, unless calculation fails
+            - "default"   : only ones needed for NOMAD uploads ('\*.pwo')
+            - list(str)   : list of file globs to save
 
     Returns
     -------

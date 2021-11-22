@@ -35,13 +35,14 @@ def evaluate_op(
     keep_files="default",
 ):
     """Evaluate a configuration with VASP
+
     Parameters
     ----------
     atoms: Atoms / list(Atoms)
         input atomic configs
     base_rundir: path-like, default os.getcwd()
         directory to put calculation directories into
-    dir_prefix: str, default 'VASP_run_'
+    dir_prefix: str, default 'VASP_run\_'
         directory name prefix for calculations
     calculator_command: str
         command to run for vasp (overrides VASP_COMMAND and VASP_COMMAND_GAMMA)
@@ -53,7 +54,7 @@ def evaluate_op(
     potcar_rel_dir: str, default '.'
         path below VASP_PP_PATH or potcar_top_dir containing <chem_symb>/POTCAR files (overrides Vasp guess based on
         XC and vasp_kwargs['pp']
-    output_prefix: str / None, default 'VASP_'
+    output_prefix: str / None, default 'VASP\_'
         prefix for info/arrays keys where results will be saved, None for SinglePointCalculator
     properties: list(str), default ['energy', 'forces', 'stress']
         properties to calculate.  Note that 'energy' is used to calculate force-consistent

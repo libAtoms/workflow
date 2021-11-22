@@ -102,13 +102,14 @@ def calc(inputs, outputs, descs, key, local=False, normalize=True, composition_w
 
 def calc_op(atoms, descs, key, local=False, normalize=True, composition_weight=True, force=False, verbose=False):
     """Calculate descriptor for each config or atom
+
     Parameters
     ----------
     atoms: ase.atoms.Atoms / list(Atoms)
         input configuration(s)
     descs: str / list(str) / dict(Z : str / Descriptor )
-        descriptor or list of descriptors (applied to all species) or dict of descriptor string for each
-        species (key None for all species)
+        Descriptor or list of descriptors (applied to all species) or dict of descriptor string for each
+        species (key None for all species).
         If global, combined descriptor will be concatenated.  If local and Z is not None, multiple arrays
         entries will be created, one per Zcenter, named <key>_Z_<Zcenter>.
     key: str

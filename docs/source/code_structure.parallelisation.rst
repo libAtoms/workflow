@@ -40,7 +40,7 @@ An auto-parallelized wrapper function can then be defined as
     return iterable_loop(iterable=inputs, configset_out=outputs, op=op, chunksize=<N>,
             arg1=arg1, arg2=arg2, arg3=arg3, ...)
 
-``chunksize`` controls how many items from the input iterable are passed to each call of ``op()`` (to reduce startup overhead).  All arguments _must be_ pickleable.  If something that cannot be pickled must be passed (e.g. a QUIP ``Potential``), it must be passed in some way, e.g. a constructor function and its arguments, that _can_ be pickled.  For things that need to happen once per thread, e.g. random number initialization, there is an ``initializer`` argument to ``iterable_loop()``.
+``chunksize`` controls how many items from the input iterable are passed to each call of ``op()`` (to reduce startup overhead).  All arguments *must be* pickleable.  If something that cannot be pickled must be passed (e.g. a QUIP ``Potential``), it must be passed in some way, e.g. a constructor function and its arguments, that _can_ be pickled.  For things that need to happen once per thread, e.g. random number initialization, there is an ``initializer`` argument to ``iterable_loop()``.
 
 There are many examples of this, including the descriptor calculator, and (with initializers) md and minim. 
 

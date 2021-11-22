@@ -19,6 +19,7 @@ def run(inputs, outputs, calculator, properties=None, output_prefix='_auto_', ch
 
 def run_op(atoms, calculator, properties=None, output_prefix='_auto_', verbose=False):
     """evaluates configs using an arbitrary calculator and store results in SinglePointCalculator
+
     Parameters
     ----------
     atoms: list(Atoms)

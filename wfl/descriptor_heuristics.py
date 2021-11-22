@@ -25,6 +25,7 @@ def len_scale_pair(length_scales, t, Z1, Z2):
 
 def descriptors_from_length_scales(descriptors, Zs, length_scales, SOAP_hypers=None):
     """create all descriptors needed for all species in system
+
     Parameters
     ----------
     descriptors: dict or list(dict)
