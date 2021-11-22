@@ -46,6 +46,7 @@ except ModuleNotFoundError:
 def prep_params(Zs, length_scales, GAP_template, spacing=1.5,
                 no_extra_inner=False, no_extra_outer=False, sharpness=1.0):
     """prepare parameters for multistage fitting based on YAML template file
+
     Parameters
     ----------
     Zs: list(int)

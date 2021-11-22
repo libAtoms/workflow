@@ -36,39 +36,41 @@ def _parse_abcd(abcd_conn):
 
 
 class ConfigSet_in:
+    """Thin input layer for Set of atomic configurations, files or ABCD queries or list of Atoms.
+
+    Notes
+    -----
+    The input sources are mutually exclusive.
+
+    Parameters
+    ----------
+    abcd_conn: str / AbstractABCD, default None
+        ABCD connection URL or ABCD object
+    file_root: str, default ``
+        path to prepend to every file name
+    input_files: str / iterable(str) / 2-tuple(str) / iterable(2-tuple(str))
+        Input file name globs, optionally as 2-tuples of (filename_glob, index).
+        The latter only works with more than one tuple
+        index here overrides separate default_index arg
+    default_index: str, default `:`
+        default indexing, applied to all files unless overridden by indexing specified in input_files argument
+    input_queries: dict/str / iterable(dict/str)
+        ABCD queries, iterated over to form list of input configs
+    input_configs: ase.Atoms / iterable(Atoms) / iterable(iterable(Atoms))
+        Atoms structures given directly
+    input_configsets: iterable(ConfigSet_in)
+        ConfigSet_in objects to be merged
+    parallel_io: bool, default False
+        parallel ASE atomic config input
+    verbose: bool, default False
+        verbose output
+    """
+
     def __init__(self, abcd_conn=None,
                  file_root='', input_files=None, default_index=':',
                  input_queries=None, input_configs=None, input_configsets=None,
                  parallel_io=False, verbose=False):
-        """Thin input layer for Set of atomic configurations, files or ABCD queries or list of Atoms.
 
-        Notes
-        -----
-        - The input sources are mutually exclusive
-
-        Parameters
-        ----------
-        abcd_conn: str / AbstractABCD, default None
-            ABCD connection URL or ABCD object
-        file_root: str, default ``
-            path to prepend to every file name
-        input_files: str / iterable(str) / 2-tuple(str) / iterable(2-tuple(str))
-            Input file name globs, optionally as 2-tuples of (filename_glob, index).
-            The latter only works with more than one tuple
-            index here overrides separate default_index arg
-        default_index: str, default `:`
-            default indexing, applied to all files unless overridden by indexing specified in input_files argument
-        input_queries: dict/str / iterable(dict/str)
-            ABCD queries, iterated over to form list of input configs
-        input_configs: ase.Atoms / iterable(Atoms) / iterable(iterable(Atoms))
-            Atoms structures given directly
-        input_configsets: iterable(ConfigSet_in)
-            ConfigSet_in objects to be merged
-        parallel_io: bool, default False
-            parallel ASE atomic config input
-        verbose: bool, default False
-            verbose output
-        """
         # is there a nicer way of testing this?
         assert sum([i is not None for i in [input_files, input_queries, input_configs, input_configsets]]) <= 1
 
@@ -152,10 +154,20 @@ class ConfigSet_in:
 
 
     def get_input_type(self):
+        """ Returns (bool, bool, bool), each corresponding to an input from an ABCD database, file or suplied as Atoms.
+        """
         return self.input_queries is not None, self.input_files is not None, self.input_configs is not None
 
 
     def merge(self, configset):
+        """ Merge ``configset`` to the configurations already held in the class. 
+        
+        Parameters
+        ----------
+        configset: ConfigSet_in
+            Where to add configurations from. 
+
+        """ 
         assert isinstance(configset, ConfigSet_in)
 
         if not any(configset.get_input_type()):
@@ -207,6 +219,13 @@ class ConfigSet_in:
 
 
     def group_iter(self):
+        """Iterate over configs in class in groups. Groups returned depend on how the configs were suplied on initialization. 
+
+       * If the class was initialized with queries for an ABCD database: single group correponds to single input query. 
+       * If multiple input files were given: ``list(Atoms)`` from a single input file are yielded. 
+       * Otherwise yield elements from ``self.input_configs``. 
+        
+        """
         self.current_input_file = None
 
         if self.input_queries is not None:
@@ -231,11 +250,11 @@ class ConfigSet_in:
 
 
     def in_memory(self):
-        """Create a ConfigSet_in containing the same configs, but in memory
+        """Create a ConfigSet_in containing the same configs, but in memory (i.e. as ``self.input_configs``)
 
         Returns
         -------
-        ci: ConfigSet_in
+        ConfigSet_in
         """
 
         if self.input_configs is not None:
@@ -245,11 +264,12 @@ class ConfigSet_in:
 
 
     def is_one_file(self):
-        """Test if self is only one file with trivial index
+        """Test if ``self`` is only one file with a trivial index
 
         Returns
         -------
-        filename: str filename, or False
+        str or False
+            Filename as string, False otherwhise
         """
 
         if self.input_files is not None and len(self.input_files) == 1 and self.input_files[0][1] == ':':
@@ -269,7 +289,8 @@ class ConfigSet_in:
 
         Returns
         -------
-        filename: str created filename
+        filename: str
+            Name of created file
         """
 
         filename = Path(filename)
@@ -405,10 +426,6 @@ class ConfigSet_out:
     def is_done(self, even_if_not_all_or_none=False):
         """Check if output is done and saved in the correct format (file, list(Atoms), uploaded to ABCD).
         
-        Parameters
-        ----------
-
-        even_if_not_all_or_none: bool, default True
         """
         if not even_if_not_all_or_none and not self.all_or_none:
             # if not all_or_none, do not claim that output is done, because it may be incomplete
@@ -427,7 +444,8 @@ class ConfigSet_out:
 
 
     def fail_if_output_exists(self):
-        """ check for non-unique tags for abcd output and existing files for file output. """
+        """ Check for non-unique tags for abcd output and existing files for file output. """
+
         if self.output_abcd:
             if self.abcd.count(self.set_tags) > 0:
                 raise RuntimeError('Got non-unique set_tags, pass force to override')
@@ -439,6 +457,7 @@ class ConfigSet_out:
 
 
     def pre_write(self):
+        """ Cleans outputs held in the class, if any."""
         self.output_configs = None
         self.current_output_file = None
         self.tmp_output_files = None
@@ -449,9 +468,9 @@ class ConfigSet_out:
             # output to config list
             self.output_configs = []
 
-
-    # iteratively write to place corresponding to config input iterator last returned
     def write(self, ats, from_input_file=None, flush_interval=10):
+        """ Iteratively write to place corresponding to config input iterator last returned. """
+
         # promote to iterable(Atoms)
         if isinstance(ats, Atoms):
             ats = [ats]
@@ -512,6 +531,7 @@ class ConfigSet_out:
 
 
     def end_write(self):
+        """Finalize writing to outputs: close files, rename temporary files. """
         # end writing
         try:
             self.current_output_file.close()
@@ -533,6 +553,13 @@ class ConfigSet_out:
 
     # get list(Atoms) or ConfigSet reference to output
     def to_ConfigSet_in(self):
+        """ Re-package configs held in this class to a ConfigSet_in to be used later in the workflow.
+        
+        Returns 
+        -------
+        ConfigSet_in
+        
+        """
         if self.output_configs is not None and len(self.output_configs) > 0:
             return ConfigSet_in(input_configs=self.output_configs)
         elif self.output_abcd:

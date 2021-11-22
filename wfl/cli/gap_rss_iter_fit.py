@@ -21,7 +21,11 @@ import ase.atoms
 import click
 import numpy as np
 import yaml
-from quippy.potential import Potential
+try:
+    from quippy.potential import Potential
+except ModuleNotFoundError:
+    pass
+
 
 import wfl
 import wfl.calc_descriptor

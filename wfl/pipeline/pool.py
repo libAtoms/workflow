@@ -13,6 +13,7 @@ from .utils import grouper
 
 def _wrapped_op(op, iterable_arg, args, kwargs, item_inputs):
     """Wrap an operation to be run in parallel by pipeline
+
     Parameters:
     -----------
         op: callable
@@ -59,6 +60,7 @@ def _wrapped_op(op, iterable_arg, args, kwargs, item_inputs):
 def do_in_pool(npool=None, chunksize=1, iterable=None, configset_out=None, op=None, iterable_arg=0,
                skip_failed=True, initializer=None, initargs=None, args=[], kwargs={}):
     """parallelize some operation over an iterable
+    
     Parameters
     ----------
     npool: int, default os.environ['WFL_AUTOPARA_NPOOL']

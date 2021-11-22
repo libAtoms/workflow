@@ -2,37 +2,39 @@ import itertools
 
 
 class RemoteInfo:
+    """Create a RemoteInfo object
+
+    Parameters
+    ----------
+    sys_name: str
+        name of system to run on
+    job_name: str
+        name for job (unique within this project)
+    resources: dict or Resources
+        expyre.resources.Resources or kwargs for its constructor
+    job_chunksize: int
+        chunksize for each job, default -100. If negative will be
+        multiplied by iterable_op chunksize
+    pre_cmds: list(str)
+        commands to run before starting job
+    post_cmds: list(str)
+        commands to run after finishing job
+    env_vars: list(str)
+        environment variables to set before starting job
+    input_files: list(str)
+        input_files to stage in starting job
+    output_files: list(str)
+        output_files to stage out when job is done
+    exact_fit: bool, default True
+        require exact fit to node size
+    partial_node: bool, default True
+        allow jobs that take less than a whole node, overrides exact_fit
+    check_interval: int
+        check_interval arg to pass to get_results
+    """
     def __init__(self, sys_name, job_name, resources, job_chunksize=-100, pre_cmds=[], post_cmds=[],
                  env_vars=[], input_files=[], output_files=[], exact_fit=True, partial_node=False, check_interval=30):
-        """Create a RemoteInfo object
-        Parameters
-        ----------
-        sys_name: str
-            name of system to run on
-        job_name: str
-            name for job (unique within this project)
-        resources: dict or Resources
-            expyre.resources.Resources or kwargs for its constructor
-        job_chunksize: int
-            chunksize for each job, default -100. If negative will be
-            multiplied by iterable_op chunksize
-        pre_cmds: list(str)
-            commands to run before starting job
-        post_cmds: list(str)
-            commands to run after finishing job
-        env_vars: list(str)
-            environment variables to set before starting job
-        input_files: list(str)
-            input_files to stage in starting job
-        output_files: list(str)
-            output_files to stage out when job is done
-        exact_fit: bool, default True
-            require exact fit to node size
-        partial_node: bool, default True
-            allow jobs that take less than a whole node, overrides exact_fit
-        check_interval: int
-            check_interval arg to pass to get_results
-        """
+
         self.sys_name = sys_name
         self.job_name = job_name
         self.resources = resources.copy()

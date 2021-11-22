@@ -48,9 +48,12 @@ def handle_nonperiodic(atoms, properties, allow_mixed=False):
 
 def clean_failed_results(atoms, properties, results_prefix=None, calculation_succeeded=True):
     """cleans stored calculations if calculation did not succeed or any results are None, after call to save_results()
+
     Parameters
     ----------
-    atoms, properties, results_prefix: see save_results()
+    atoms, properties, results_prefix
+        see save_results()
+
     calculation_succeeded: bool
         whether calculation appears (so far) to have succeeded based on actual calculator run and success of save_reults() call
 

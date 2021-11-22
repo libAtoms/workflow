@@ -36,7 +36,8 @@ def run_op(atoms, calculator, properties=None, output_prefix='_auto_', verbose=F
 
     Returns
     -------
-        list(Atoms) evaluated configurations
+    list(Atoms) 
+        Evaluated configurations
     """
 
     if properties is None:

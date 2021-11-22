@@ -210,7 +210,86 @@ def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
 
 
 class BasinHoppingORCA(Calculator):
+    """ORCA calculator with basin hopping in wavefunction space for
+    smooth PES of radicals
+
+    Method
+    ------
+    call n_runs (3<= recommended) instances of calculation on each
+    frame, if all agree in energy within a given
+    margin, then it is a successful
+
+    calculation:
+    1. no rotation, only smearing calculation
+    2. n_hop - 1 number of calculations with random rotations
+
+    Parameters
+    ----------
+    atoms: ase.Atoms
+        molecule for calculation
+
+    n_hop: int
+        number of hopping steps
+
+    n_run: int
+        number of independent runs to perform, resultant energy/force
+        is checked to be the same
+
+    scratch_path: path_like
+        put temporary directories here for the calculations, one per task
+        very efficient if you have an SSD scratch disk on nodes that
+        perform the tasks
+
+    n_missing_tolerance: int
+        number of files allowed to be missing
+
+    energy_tol: float
+        energy tolerance in eV/atom
+
+    force_tol: float
+        force tolerance in eV/Angstrom per component
+
+    seed: str
+        file name seed
+
+    n_orb: int
+        number of orbital pairs to rotate
+
+    max_angle: float
+        maximal angle to rotate orbitals to
+
+    smearing: float, default 5000.
+        smearing temperature in K, recommended is 5000 K
+
+    maxiter: int, default 500
+        maximum number of SCF iterations to do
+
+    chained_hops: bool, default True
+        chain hops, ie. to take the previous wavefunction result or the
+        very initial one
+
+    orcasimpleinput: str
+        What you'd put after the "!" in an orca input file.
+
+    orcablocks: str
+        What you'd put in the "% ... end"-blocks.
+
+    orca_command: str
+        command of ORCA calculator as in path
+
+    keep_files: bool
+        to keep the resultant files from each calculation
+
+    uhf: bool, default True
+        to use Unrestricted HF/KS method. This is advised to be used at
+        all times, implemented for development
+        purposes.
+
+    kwargs
+    """
     implemented_properties = ['energy', 'forces']
+
+
 
     def __init__(self, atoms=None, n_hop=10, n_run=3, scratch_path=None,
                  n_missing_tolerance=1, energy_tol=0.001,
@@ -219,83 +298,7 @@ class BasinHoppingORCA(Calculator):
                  orcasimpleinput='UHF PBE def2-SVP tightscf', orcablocks=None,
                  orca_command='orca',
                  keep_files=False, uhf=True, **kwargs):
-        """ORCA calculator with basin hopping in wavefunction space for
-        smooth PES of radicals
-
-        Method
-        ------
-        call n_runs (3<= recommended) instances of calculation on each
-        frame, if all agree in energy within a given
-        margin, then it is a successful
-
-        calculation:
-        1. no rotation, only smearing calculation
-        2. n_hop - 1 number of calculations with random rotations
-
-        Parameters
-        ----------
-        atoms: ase.Atoms
-            molecule for calculation
-
-        n_hop: int
-            number of hopping steps
-
-        n_run: int
-            number of independent runs to perform, resultant energy/force
-            is checked to be the same
-
-        scratch_path: path_like
-            put temporary directories here for the calculations, one per task
-            very efficient if you have an SSD scratch disk on nodes that
-            perform the tasks
-
-        n_missing_tolerance: int
-            number of files allowed to be missing
-
-        energy_tol: float
-            energy tolerance in eV/atom
-
-        force_tol: float
-            force tolerance in eV/Angstrom per component
-
-        seed: str
-            file name seed
-
-        n_orb: int
-            number of orbital pairs to rotate
-
-        max_angle: float
-            maximal angle to rotate orbitals to
-
-        smearing: float, default 5000.
-            smearing temperature in K, recommended is 5000 K
-
-        maxiter: int, default 500
-            maximum number of SCF iterations to do
-
-        chained_hops: bool, default True
-            chain hops, ie. to take the previous wavefunction result or the
-            very initial one
-
-        orcasimpleinput: str
-            What you'd put after the "!" in an orca input file.
-
-        orcablocks: str
-            What you'd put in the "% ... end"-blocks.
-
-        orca_command: str
-            command of ORCA calculator as in path
-
-        keep_files: bool
-            to keep the resultant files from each calculation
-
-        uhf: bool, default True
-            to use Unrestricted HF/KS method. This is advised to be used at
-            all times, implemented for development
-            purposes.
-
-        kwargs
-        """
+ 
         super(BasinHoppingORCA, self).__init__(atoms=atoms, **kwargs)
 
         # calculator settings
@@ -666,15 +669,16 @@ class BasinHoppingORCA(Calculator):
 
 class ExtendedORCA(ORCA):
     """Extension of ASE's ORCA calculator with the following features:
+
         - specify command for executable (ase devs don't let this to be
           merged in)
-        - setting multiplicity:
-            default in the properties in None, which triggers the
-            calculator to set to singlet or doublet
+        - setting multiplicity: default in the properties in None, \
+            which triggers the calculator to set to singlet or doublet
         - geometry optimisation
         - frequencies
 
     Handling of "task":
+
     1. directly written to file
     2. default is "engrad", which is appended if not in task str
     3. None -> "engrad"
@@ -710,6 +714,7 @@ class ExtendedORCA(ORCA):
         Adapted from ase.io.orca.write_orca()
 
         Extensions:
+
             - choice of task
             - task parameter is directly inserted into the file
         """
@@ -760,9 +765,11 @@ class ExtendedORCA(ORCA):
         """checks for warnings about SCF/wavefunction not converging.
 
         Returns
-            None if "FINAL SINGLE POINT ENERGY" is not in the output
-            False if "Wavefunction not fully converged" is in the file
-            True otherwise
+            ``None`` if "FINAL SINGLE POINT ENERGY" is not in the output
+
+            ``False`` if "Wavefunction not fully converged" is in the file
+
+            ``True`` otherwise
 
         Based on ase.calculators.orca.read_energy().
 
@@ -905,9 +912,11 @@ class ExtendedORCA(ORCA):
 
     def read_dipole(self):
         """
+        Note
+        ----
+
         Dipole is calculated by default, though only written up to 0.00001
-        so the rest of
-        the digits are not meaningful in the output.
+        so the rest of  the digits are not meaningful in the output.
         """
         with open(self.label + '.out', mode='r', encoding='utf-8') as fd:
             text = fd.read()

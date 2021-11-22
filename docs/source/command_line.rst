@@ -6,6 +6,8 @@ Command line interface
 
 Description of all the CLI tools 
 
+Automatically generated docummentation of all command line functions: :ref:`auto_command_line`
+
 
 *******************************
 Calculators
@@ -164,4 +166,7 @@ Full help (keyword help messages coming soon)
     --help                 Show this message and exit.
 
 
+.. toctree::
+   :maxdepth: 2
 
+   command_line.automatic_docs.rst

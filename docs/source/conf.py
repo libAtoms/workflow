@@ -28,7 +28,9 @@ author = 'N. Bernstein, T. K. Stenczel, E. Gelzinyte'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc',
-			  'sphinx.ext.napoleon']
+			  'sphinx.ext.napoleon', 
+			  'sphinx_click.ext'
+				]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

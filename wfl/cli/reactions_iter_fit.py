@@ -9,7 +9,11 @@ from glob import glob
 import click
 import numpy as np
 import yaml
-from quippy.potential import Potential
+try:
+    from quippy.potential import Potential
+except ModuleNotFoundError:
+    pass
+
 
 from wfl.calculators import committee, orca
 from wfl.configset import ConfigSet_in, ConfigSet_out

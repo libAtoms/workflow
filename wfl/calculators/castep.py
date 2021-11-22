@@ -47,6 +47,7 @@ def evaluate_op(
         ase-compatible property names, None for default list (energy, forces, stress)
     keep_files: bool / None / "default" / list(str), default "default"
         what kind of files to keep from the run
+
             - True : everything kept
             - None, False : nothing kept, unless calculation fails
             - "default"   : only ones needed for NOMAD uploads ('\*.castep', '\*.param', '\*.cell')
@@ -54,6 +55,7 @@ def evaluate_op(
 
     Returns
     -------
+    atoms: Atoms or list(Atoms)
         Atoms or list(Atoms) with calculated properties
     """
     # use list of atoms in any case

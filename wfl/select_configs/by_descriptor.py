@@ -24,6 +24,7 @@ def _hashable_struct_data(at):
 
 def CUR(mat, num, stochastic=True, stochastic_seed=None, exclude_list=None):
     """Compute selection by CUR of descriptors with dot-product, with optional exponentiation
+    
     Parameters
     ----------
     mat: np.array(vec_len, n_vecs) or (n_vecs, n_vecs)

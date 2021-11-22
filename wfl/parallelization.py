@@ -17,27 +17,26 @@ class ParallelDecorator(object):
     """Decorator to make a function work with a parallel Pool
 
     Use as assignment, not as a @decorator, because pickling of the functions breaks with the latter.
+
+    Parameters
+    ----------
+    func: callable
+        function wrapped
+
+    pool_kwargs: dict
+        keyword arguments for the multiprocessing.Pool object
+
+    iterable_argname: str, None
+        argument name of iterable to use in func
+        None -> first arg
+
+    iterator_method: str, None
+        method name to us as iterator
+        None -> default, __iter__
     """
 
     def __init__(self, func, pool_kwargs=None, iterable_argname=None, iterator_method=None):
-        """
 
-        Parameters
-        ----------
-        func: callable
-            function wrapped
-
-        pool_kwargs: dict
-            keyword arguments for the multiprocessing.Pool object
-
-        iterable_argname: str, None
-            argument name of iterable to use in func
-            None -> first arg
-
-        iterator_method: str, None
-            method name to us as iterator
-            None -> default, __iter__
-        """
         if pool_kwargs is None:
             pool_kwargs = {}
 
@@ -342,8 +341,8 @@ def over_N(confset, multiprocessing_type, N, N_arg_name, N_offset_name=None,
 
     Returns
     -------
-    output_confset:
-        ConfigSet for outputs
+    ConfigSet_out():
+        ConfigSet_out for outputs
     """
 
     if serial_func_kwargs is None:
@@ -419,8 +418,8 @@ def over_inputs(confset, multiprocessing_type,
 
     Returns
     -------
-    output_confset:
-        ConfigSet for outputs
+    ConfigSet_out():
+        ConfigSet_out for outputs
     """
 
     if serial_func_kwargs is None:

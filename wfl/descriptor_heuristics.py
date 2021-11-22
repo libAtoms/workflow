@@ -5,7 +5,7 @@ from wfl.utils.replace_eval_in_strs import replace_eval_in_strs
 
 
 def len_scale_pair(length_scales, t, Z1, Z2):
-    """returns length scale for a pair of elements
+    """Returns length scale for a pair of elements
 
     Parameters
     ----------
@@ -18,13 +18,14 @@ def len_scale_pair(length_scales, t, Z1, Z2):
 
     Returns
     -------
+    int
         Z1-Z2 length scale
     """
     return 0.5 * (length_scales[Z1][t][0] + length_scales[Z2][t][0])
 
 
 def descriptors_from_length_scales(descriptors, Zs, length_scales, SOAP_hypers=None):
-    """create all descriptors needed for all species in system
+    """Create all descriptors needed for all species in system
 
     Parameters
     ----------
@@ -114,14 +115,14 @@ def descriptors_from_length_scales(descriptors, Zs, length_scales, SOAP_hypers=N
 
 
 def descriptor_2brn_uniform_file(descriptor, ident='', desc_i=0):
-    """write uniform-in-deformed-space sparse points file for 2-body polynomial descriptors
-    UNTESTED!!!!
+    """Write uniform-in-deformed-space sparse points file for 2-body polynomial descriptors
+
+    **UNTESTED!!!!**
 
     Parameters
     ----------
-    descriptor: dict
-        nested structure with some contained dicts that have 'sparse_method' = '_2BRN_UNIFORM_FILE_',
-            and also 'n_sparse', 'exponents', 'cutoff'
+    descriptor: dict 
+        nested structure with some contained dicts that have 'sparse_method' = '\_2BRN_UNIFORM_FILE\_', and also ``n_sparse``, ``exponents``, ``cutoff``
     ident: str, default ''
         identifier string to add to sparsepoints filename
     desc_i: int, default 0
