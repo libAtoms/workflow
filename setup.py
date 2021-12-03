@@ -14,6 +14,5 @@ setuptools.setup(
     gap_rss_iter_fit=wfl.cli.gap_rss_iter_fit:cli
     dft_convergence_test=wfl.cli.dft_convergence_test:cli
     reactions_iter_fit=wfl.cli.reactions_iter_fit:cli
-    xpr=wfl.expyre.cli.cli:cli
     """
 )
