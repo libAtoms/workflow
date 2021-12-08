@@ -5,6 +5,7 @@ Collisions of molecules for reactivity search
 import os
 import traceback
 from tempfile import mkdtemp
+import functools
 
 import ase.io
 import ase.io.extxyz
@@ -285,7 +286,7 @@ def post_process_collision_op(seed, calc,
         raise ValueError("TS+IRC cannot be performed without having done NEB as well")
 
 
-post_process_collision = iloop(post_process_collision_op)
+post_process_collision = functools.partial(iloop, post_process_collision_op)
 post_process_collision.__doc__ = post_process_collision_op.__doc__.format(iloop_docstring_post=iloop_docstring_post)
 
 
@@ -339,7 +340,7 @@ def run_collision_dir_management(indices, fragments, param_filename, rundir=None
         os.chdir(workdir)
 
 
-parallel_collision = iloop(run_collision_dir_management)
+parallel_collision = functools.partial(iloop, run_collision_dir_management)
 
 
 def multi_run_all_with_all(fragments, param_filename, workdir=None, min_atoms=0, num_repeat=1, excluded_formulas=None,
