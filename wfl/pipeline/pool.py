@@ -109,7 +109,7 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, configset_out=None, op=No
 
     if npool > 0:
         # use multiprocessing
-        sys.stderr.write('Running {} with npool={}\n'.format(op, npool))
+        sys.stderr.write(f'Running {op} with npool={npool}, chunksize={chunksize}\n')
         if wfl_mpipool:
             # MPI pool is global and unique, created at script start, so do not create one here
             warnings.warn(f'mpipool ignores > 0 value of npool={npool}, '
