@@ -5,6 +5,7 @@ Collisions of molecules for reactivity search
 import os
 import traceback
 from tempfile import mkdtemp
+import functools
 
 import ase.io
 import ase.io.extxyz
@@ -20,7 +21,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.optimize import BFGS
 
 from wfl.configset import ConfigSet_in, ConfigSet_out
-from wfl.parallelization import ParallelDecorator
+from wfl.pipeline import iloop, iloop_docstring_post
 from wfl.reactions_processing import trajectory_processing
 from wfl.utils import vector_utils
 from wfl.utils.parallel import construct_calculator_picklesafe
@@ -199,7 +200,7 @@ class Supercollider:
             ase.io.write(fn, at, append=True)
 
 
-def post_process_collision(seed, calc,
+def post_process_collision_op(seed, calc,
                            *,
                            do_neb=False, do_ts_irc=False, force=True,
                            minim_interval=50, minim_kwargs=None, neb_kwargs=None, ts_kwargs=None, irc_kwargs=None):
@@ -211,8 +212,10 @@ def post_process_collision(seed, calc,
 
     Parameters
     ----------
-    seed : str
-        job name seed
+    seed : iterable(str)
+        job name seeds
+    outputs: IGNORED
+        ignored, output is written to seed.relax_*.xyz and seed.neb_*.xyz
     calc: Calculator / (initializer, args, kwargs)
         ASE calculator or routine to call to create calculator
     do_neb : bool
@@ -226,6 +229,7 @@ def post_process_collision(seed, calc,
         kwargs for neb calculators, not None triggers calculation
     ts_kwargs: dict
     irc_kwargs: dict
+    {iloop_docstring_post}
 
     Returns
     -------
@@ -282,7 +286,8 @@ def post_process_collision(seed, calc,
         raise ValueError("TS+IRC cannot be performed without having done NEB as well")
 
 
-parallel_post_processing = ParallelDecorator(post_process_collision, iterable_argname="seed")
+post_process_collision = functools.partial(iloop, post_process_collision_op)
+post_process_collision.__doc__ = post_process_collision_op.__doc__.format(iloop_docstring_post=iloop_docstring_post)
 
 
 def run_pair(molecule1, molecule2, calc, seed="collision", nsteps=1000, **collision_kwargs):
@@ -335,7 +340,7 @@ def run_collision_dir_management(indices, fragments, param_filename, rundir=None
         os.chdir(workdir)
 
 
-parallel_collision = ParallelDecorator(run_collision_dir_management, iterable_argname=None)
+parallel_collision = functools.partial(iloop, run_collision_dir_management)
 
 
 def multi_run_all_with_all(fragments, param_filename, workdir=None, min_atoms=0, num_repeat=1, excluded_formulas=None,
@@ -385,4 +390,4 @@ def multi_run_all_with_all(fragments, param_filename, workdir=None, min_atoms=0,
 
             [collision_indices.append((i, j)) for _ in range(num_repeat)]
 
-    parallel_collision(collision_indices, fragments, param_filename, workdir, n_pool=n_pool, **collide_kwargs)
+    parallel_collision(collision_indices, None, fragments, param_filename, workdir, n_pool=n_pool, **collide_kwargs)

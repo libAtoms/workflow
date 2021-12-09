@@ -237,7 +237,7 @@ def do_md_step(ctx, active_iter, verbose, skip_collision, do_neb, do_ts_irc):
         seeds = [trajectory_processing.xyz_to_seed(fn) for fn in
                  sorted(glob(os.path.join(os.path.abspath(run_dir), "collision_*/collision.raw_md.xyz")))]
 
-        collision.parallel_post_processing(
+        collision.post_process_collision(
             seed=seeds,
             calc=(Potential, None, {'param_filename': prev_gap_main}),
             do_neb=do_neb, do_ts_irc=do_ts_irc,

@@ -229,7 +229,7 @@ def trajectory_neb_ts_irc(ctx, seeds, gap_filename, do_neb, do_ts_irc, minim_int
     if irc_kwargs is not None:
         irc_kwargs = key_val_str_to_dict(irc_kwargs)
 
-    wfl.generate_configs.collision.parallel_post_processing(
+    wfl.generate_configs.collision.post_process_collision(
         seed=seeds, calc=calc, do_neb=do_neb, do_ts_irc=do_ts_irc, minim_kwargs=minim_kwargs,
         minim_interval=minim_interval, neb_kwargs=neb_kwargs,
         ts_kwargs=ts_kwargs, irc_kwargs=irc_kwargs, n_pool=n_pool,
