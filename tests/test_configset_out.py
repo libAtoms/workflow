@@ -62,21 +62,19 @@ def test_all_or_none(tmpdir):
 
 
 def test_configset_with_pathlib_Path():
-    in_file_1 = 'fake/path/to/nowhere/in.1.xyz'
-    in_file_2 = 'fake/path/to/nowhere/in.2.xyz'
-
-    out_file_1 = 'fake/path/to/nowhere/out.1.xyz'
-    out_file_2 = 'fake/path/to/nowhere/out.2.xyz'
+    in_file = 'fake/path/to/nowhere/in.xyz'
+    out_file = 'fake/path/to/nowhere/out.xyz'
+    in_path = Path(in_file)
+    out_path = Path(out_file)
 
     # single pathlib.Path is ok
-    out_path = Path(out_file_1)
     cout = ConfigSet_out(output_files=out_path)
-    assert cout.output_files == [out_file_1]
+    assert cout.output_files == [out_file]
 
     # dictionary mapping from Path to Path is ok
     cout = ConfigSet_out(output_files={
-        Path(in_file_1): Path(out_file_1), 
-        Path(in_file_2): Path(out_file_2)
+        in_path: out_path,
     })
 
-
+    assert cout.output_files[0] == out_file
+    assert cout.output_files_map(in_path) == out_file
