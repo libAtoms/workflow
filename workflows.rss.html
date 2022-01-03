@@ -1,0 +1,618 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to do GAP-RSS &#8212; workflow  documentation</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Collisions" href="workflows.collisions.html" />
+    <link rel="prev" title="Workflows" href="workflows.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">workflow  documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Contents:
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="install.html">
+   Instalation
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="code_structure.html">
+   Code structure
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="code_structure.configset.html">
+     Input and output of atomic structures
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="code_structure.parallelisation.html">
+     Automatic parallelization of tasks
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="operations.html">
+   Operations
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.calculators.html">
+     Calculators in workflow
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.generating_configs.html">
+     Generating Configs
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.selecting_configs.html">
+     Selecting Configs
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.gap_fitting.html">
+     Multistage GAP fitting
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.plots.html">
+     Plots
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.misc.html">
+     Miscellaneous
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="workflows.html">
+   Workflows
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     How to do GAP-RSS
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="workflows.collisions.html">
+     Collisions
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="command_line.html">
+   Command line interface
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="simple">
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="examples.html">
+   Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributing.html">
+   How to contribute
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="modules.html">
+   API
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="wfl.html">
+     wfl package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.calculators.html">
+       wfl.calculators package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.cli.html">
+       wfl.cli package
+      </a>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="wfl.fit.html">
+       wfl.fit package
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+      <label for="toctree-checkbox-7">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.fit.modify_database.html">
+         wfl.fit.modify_database package
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.generate_configs.html">
+       wfl.generate_configs package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.pipeline.html">
+       wfl.pipeline package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.plotting.html">
+       wfl.plotting package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.reactions_processing.html">
+       wfl.reactions_processing package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.select_configs.html">
+       wfl.select_configs package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.utils.html">
+       wfl.utils package
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/workflows.rss.rst.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#before-you-start">
+   Before you start
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#main-config">
+     Main config
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#steps-of-gap-rss">
+   Steps of GAP-RSS
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#preparation-step">
+   Preparation step
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dft-settings">
+   DFT settings
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#config-selection">
+   Config selection
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#initial-step">
+   Initial step
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#rss-step">
+   RSS step
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#md-step">
+   MD step
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#job-script-and-runtime-settings">
+   Job script and runtime settings
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="how-to-do-gap-rss">
+<span id="rss"></span><h1>How to do GAP-RSS<a class="headerlink" href="#how-to-do-gap-rss" title="Permalink to this headline">¶</a></h1>
+<p>You would like to explore the structural space of an element/alloy and gain a GAP potential at the same time? Here is a small introduction of how to do this in an automated manner with this repository.</p>
+<p>All you need to do is choose your favourite elements, follow the instructions below and run the workflow, then test, use and expand your model as you like.</p>
+<div class="section" id="before-you-start">
+<h2>Before you start<a class="headerlink" href="#before-you-start" title="Permalink to this headline">¶</a></h2>
+<p>Make a new directory and create the following files:
+- <code class="docutils literal notranslate"><span class="pre">length_scales.json</span></code> defining the bond lengths and typical volumes for the elements
+- <code class="docutils literal notranslate"><span class="pre">config.json</span></code> this is the main configuration file
+- fitting settings, in json format (see below)
+- some job script for your cluster/workstation</p>
+<p>The length scales are as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bond_len&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;NB gap-rss&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;min_bond_len&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.4</span><span class="p">,</span> <span class="s2">&quot;NB gap-rss&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;other links&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s2">&quot;vol_per_atom&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">20.0</span><span class="p">,</span> <span class="s2">&quot;NB gap-rss&quot;</span><span class="p">]},</span>
+ <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Where the primary keys are the atomic numbers (as strings, as it is a json file), and typical bond length, minimal bond length and vol per atom are defined as floats and some comment. Additionally any keys can be added for other information, which is not parsed.</p>
+<p>The fitting settings are as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s2">&quot;stages&quot;</span> <span class="p">:</span> <span class="p">[</span>
+   <span class="p">{</span> <span class="s2">&quot;error_scale_factor&quot;</span> <span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span> <span class="s2">&quot;add_species&quot;</span> <span class="p">:</span> <span class="s2">&quot;manual_Z_pair&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;descriptors&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="p">{</span> <span class="s2">&quot;desc_str&quot;</span> <span class="p">:</span> <span class="s2">&quot;distance_Nb order=2 cutoff=${BOND_LEN_Z1_Z2*2.5} cutoff_transition_width=${BOND_LEN_Z1_Z2*2.5/5.0} compact_clusters Z={{${Z1} ${Z2}}}&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;fit_str&quot;</span> <span class="p">:</span> <span class="s2">&quot;n_sparse=15 covariance_type=ard_se theta_uniform=${BOND_LEN_Z1_Z2*2.5/5.0} sparse_method=uniform f0=0.0 add_species=F&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;count_cutoff&quot;</span> <span class="p">:</span> <span class="s2">&quot;_F_ ${BOND_LEN_Z1_Z2*1.4}&quot;</span> <span class="p">}</span> <span class="p">]</span> <span class="p">}</span> <span class="p">,</span>
+   <span class="p">{</span> <span class="s2">&quot;error_scale_factor&quot;</span> <span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;add_species&quot;</span> <span class="p">:</span> <span class="s2">&quot;manual_universal_SOAP&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;descriptors&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="p">{</span> <span class="s2">&quot;desc_str&quot;</span> <span class="p">:</span> <span class="s2">&quot;soap n_max=12 l_max=6 atom_sigma=${ATOM_SIGMA} cutoff=${R_CUT} cutoff_transition_width=${R_TRANS} central_weight=1.0 Z=${Zcenter} n_species=${nZ} species_Z={{${Zs}}}&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;fit_str&quot;</span> <span class="p">:</span>  <span class="s2">&quot;n_sparse=1000 f0=0.0 covariance_type=dot_product zeta=4 sparse_method=cur_points print_sparse_index add_species=F&quot;</span> <span class="p">}</span> <span class="p">]</span> <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="s2">&quot;gap_params&quot;</span> <span class="p">:</span> <span class="s2">&quot;default_sigma=&#39;{0.0025 0.0625 0.125 0.125}&#39; sparse_jitter=1.0e-8 do_copy_at_file=F sparse_separate_file=T&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This is a file containing <code class="docutils literal notranslate"><span class="pre">stages</span></code> of GAP_FIT, which are descriptors laid out for fitting hierarchically. From first to last, a model will be created for each and the energy scale (<code class="docutils literal notranslate"><span class="pre">delta</span></code>, typical variance of GP) for the next one defined from the energy variance per descriptor.
+Additionally, general settings can be given in <code class="docutils literal notranslate"><span class="pre">gap_params</span></code> for the fit.</p>
+<p>The filename of this file goes into the main config’s <code class="docutils literal notranslate"><span class="pre">fit/GAP_template_file</span></code> field.</p>
+<div class="section" id="main-config">
+<h3>Main config<a class="headerlink" href="#main-config" title="Permalink to this headline">¶</a></h3>
+<p>This is also a json file, with settings of how to execute certain steps of the GAP-RSS workflow. For the structure and keywords in the file please take a look at the examples. Here, we are giving a small overview of what the workflow is doing and what you can tweak in it.</p>
+<p>The structure and field names may change during development, input file structure may be updated later on.</p>
+</div>
+</div>
+<div class="section" id="steps-of-gap-rss">
+<h2>Steps of GAP-RSS<a class="headerlink" href="#steps-of-gap-rss" title="Permalink to this headline">¶</a></h2>
+<p>The GAP-RSS workflow consists of a few steps, which can be accessed with given command line options. Here is a summary of them and then more detailed overview of what they are doing.</p>
+<p>The central command line interface for iterative GAP-RSS is <code class="docutils literal notranslate"><span class="pre">gap_rss_iter_fit</span></code>, which has all the subcommands defined. If you are interested in the implementation, dig into it at <code class="docutils literal notranslate"><span class="pre">wfl/cli/gap_rss_iter_fit.py</span></code> where these are defined.</p>
+<p>The steps:
+1. Preparation: check and process input files
+2. initial step: gather initial data, fit a model on it
+3. rss steps: RSS with latest model, selection and fitting
+4. MD step: MD sampling of bulk defects, selection and fitting</p>
+</div>
+<div class="section" id="preparation-step">
+<h2>Preparation step<a class="headerlink" href="#preparation-step" title="Permalink to this headline">¶</a></h2>
+<p>Use with <code class="docutils literal notranslate"><span class="pre">gap_rss_iter_fit</span> <span class="pre">--configuration</span> <span class="pre">&lt;main</span> <span class="pre">config</span> <span class="pre">json&gt;</span> <span class="pre">prep</span></code></p>
+<p>This step is reading the input files, summarises the compositions defined, created <code class="docutils literal notranslate"><span class="pre">buildcell</span></code> input files for them, and simple dimer and isolated atom configurations.</p>
+<p>The compositions are defined as tuples of formula unit and relative weight of them. These are normalised and the random structures are created with respective distribution.</p>
+<p>Buildcell inputs are created for both narrow and wide volume ranges, based on the given volume per atom targets from the input. These are separated by the formulas and for some between even and off number of formula units in the unit cell, which is because of the general observation in crystallography that even number of formula units are much more common than odd ones. The even and odd ones are sampled in a 4:1 ratio later on.</p>
+<p>Additionally the selection settings and the buildcell info are written to respective yaml files and a json file is created by processing the fitting settings, stages and descriptors with the  elements and their length scales specified. Finally the bare dimer and single atom configurations are written, DFT energy and forces will be evaluated on them in the initial step.</p>
+</div>
+<div class="section" id="dft-settings">
+<h2>DFT settings<a class="headerlink" href="#dft-settings" title="Permalink to this headline">¶</a></h2>
+<p>The main config has a section of <code class="docutils literal notranslate"><span class="pre">DFT_evaluate</span></code> specifying the settings for reference calculations. Currently VASP and CASTEP are implemented as calculators, specify which one you are using in the <code class="docutils literal notranslate"><span class="pre">DFT_evaluate/calculator</span></code> field with upper case name.</p>
+<p>Note: the <code class="docutils literal notranslate"><span class="pre">/</span></code> refers to the hierarchy of the json file’s dictionaries, so <code class="docutils literal notranslate"><span class="pre">foo/bar</span></code> refers to the <code class="docutils literal notranslate"><span class="pre">bar</span></code> field in the <code class="docutils literal notranslate"><span class="pre">foo</span></code> dict.</p>
+<p>The keywords passed to the calculator are in <code class="docutils literal notranslate"><span class="pre">DFT_evaluate/kwargs</span></code>, please refer to the calculator for details of these and physical/modeling knowledge of the values you want to set.</p>
+<p>Additionally any keys can be given in <code class="docutils literal notranslate"><span class="pre">DFT_evaluate</span></code>, of which only some are read, specific to calculators. Eg. if using CASTEP, the <code class="docutils literal notranslate"><span class="pre">DFT_evaluate/CASTEP_pp_path</span></code> is used as the pseudopotential directory.</p>
+</div>
+<div class="section" id="config-selection">
+<h2>Config selection<a class="headerlink" href="#config-selection" title="Permalink to this headline">¶</a></h2>
+<p>Currently two algorithms are implemented: CUR and greedy FPS. Both are using global descriptors and have no information of the previously selected set, only try to give the “best” from what they are given from the current step.</p>
+<p>The descriptor needs to be specified in <code class="docutils literal notranslate"><span class="pre">global/config_selection_descriptor</span></code>, where it is needed to use the <code class="docutils literal notranslate"><span class="pre">average</span></code> so that quippy is creating the global descriptor. Atomic types and length are adjusted automatically, use <code class="docutils literal notranslate"><span class="pre">global/config_selection_descriptor_add_species=manual_Zcenter</span></code> for this.</p>
+</div>
+<div class="section" id="initial-step">
+<h2>Initial step<a class="headerlink" href="#initial-step" title="Permalink to this headline">¶</a></h2>
+<p>Use with <code class="docutils literal notranslate"><span class="pre">gap_rss_iter_fit</span> <span class="pre">--configuration</span> <span class="pre">&lt;main</span> <span class="pre">config</span> <span class="pre">json&gt;</span> <span class="pre">initial_step</span></code></p>
+<p>This is the first step for model building, where a preliminary GAP model needs to be created. The way this is done here is by creating random structures (<code class="docutils literal notranslate"><span class="pre">initial_step/buildcell_total_N</span></code>) with buildcell and sampling some (<code class="docutils literal notranslate"><span class="pre">initial_step/by_desc_select_N</span></code>) from them for DFT evaluation.</p>
+<p>Additionally, the isolated atoms and dimer structures are evaluated and added to the fit for e0 definition and core repulsion.</p>
+</div>
+<div class="section" id="rss-step">
+<h2>RSS step<a class="headerlink" href="#rss-step" title="Permalink to this headline">¶</a></h2>
+<p>Use with <code class="docutils literal notranslate"><span class="pre">gap_rss_iter_fit</span> <span class="pre">--configuration</span> <span class="pre">&lt;main</span> <span class="pre">config</span> <span class="pre">json&gt;</span> <span class="pre">rss_step</span></code></p>
+<p>These are the main steps for learning the energy landscape of crystals and minima. Just as in AIRSS, random structures are created and relaxed, however here this is done with the latest GAP model. Pre-selection is carried out with flat histogram on the minima and on the trajectories, so descriptors are only calculated for a subset of the structures. Then descriptor based selection is performed.</p>
+<p>Minimisation can be done with pressure applied, which is defined in the <code class="docutils literal notranslate"><span class="pre">rss_step/minim_pressure</span></code> field, as one of the following:
+- float: fixed pressure in GPa
+- [“exponential”, float] exponential distribution, rate=1. and scaled by float given
+- [“normal_positive”, mean, sigma]: normal distribution with (mean, sigma) thrown away if negative value drawn, max 1000 tries
+- [“uniform”, lower, upper]: uniform distribution between bounds (lower, upper)</p>
+<p>In practice, this is first on the minima with parameters <code class="docutils literal notranslate"><span class="pre">rss_step/minima_flat_histo_N</span></code> and <code class="docutils literal notranslate"><span class="pre">rss_step/minima_by_desc_select_N</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">rss_step/select_convex_hull</span></code> is true, then the structures lying on the convex hull are preselected as well, but not their  trajectories.
+Then the trajectories of the minima are used for a new flat histogram and descriptor based sampling, where <code class="docutils literal notranslate"><span class="pre">rss_step/selected_traj_flat_histo_N</span></code> and <code class="docutils literal notranslate"><span class="pre">rss_step/selected_traj_by_desc_select_N</span></code> are the parameters. The latter is the number of structures actually selected from the generated set and this many DFT calculations will be carried out.</p>
+<p>Additionally, the temperature of the flat histogram sampling can be specified, as an iteration specific value under <code class="docutils literal notranslate"><span class="pre">rss_step/iter_specific/flat_histo_kT</span></code> with keys of iteration number and values. These may be useful for the first few steps, setting somewhat larger value to sample the higher energy configs as well.</p>
+</div>
+<div class="section" id="md-step">
+<h2>MD step<a class="headerlink" href="#md-step" title="Permalink to this headline">¶</a></h2>
+<p>Use with <code class="docutils literal notranslate"><span class="pre">gap_rss_iter_fit</span> <span class="pre">--configuration</span> <span class="pre">&lt;main</span> <span class="pre">config</span> <span class="pre">json&gt;</span> <span class="pre">MD_bulk_defect_step</span></code></p>
+<p>This is performing MD with bulk defects, aimed to sampling rather than physically correct experiments.</p>
+<p>The initial structure to create defects in can be specified with the <code class="docutils literal notranslate"><span class="pre">--minima_file</span></code> parameter, or is omitted then the same procedure is repeated as in an RSS step, but the final structures are not evaluated with DFT, but used as initial structures here. See parameters of the RSS step above.</p>
+<p>From the initial structures, supercells are built for up to four different types of MD: bulk, vacancy, interstitial and surface. The number of runs to do with each are controlled by <code class="docutils literal notranslate"><span class="pre">MD_bulk_defect_step/N_&lt;name&gt;</span></code> fields respectively. The supercells will have up to <code class="docutils literal notranslate"><span class="pre">MD_bulk_defect_step/max_n_atoms</span></code> number of atoms in them.</p>
+<p>For the building of the surfaces, the thickness of matter and vacuum can be given as: <code class="docutils literal notranslate"><span class="pre">MD_bulk_defect_step/surface_min_thickness</span></code> and <code class="docutils literal notranslate"><span class="pre">MD_bulk_defect_step/surface_vacuum</span></code> both defaulting to 8.0 Å if none is given.</p>
+<p>For the dynamics, the time step (<code class="docutils literal notranslate"><span class="pre">MD_bulk_defect_step/MD_dt</span></code>) can be specified applying to all, and the temperature, as well as the number of steps can be set for the bulk and the defect MDs separately. The temperature can be a given value, or a range of two floats with an optional integer for the number of stages to use in the ramp.</p>
+<p>Finally selection is carried out with pre-selection on flat histogram (<code class="docutils literal notranslate"><span class="pre">MD_bulk_defect_step/final_flat_histo_N</span></code>) and then by descriptor (<code class="docutils literal notranslate"><span class="pre">MD_bulk_defect_step/final_by_desc_select_N</span></code>) to yield the structures for DFT evaluation.</p>
+</div>
+<div class="section" id="job-script-and-runtime-settings">
+<h2>Job script and runtime settings<a class="headerlink" href="#job-script-and-runtime-settings" title="Permalink to this headline">¶</a></h2>
+<p>Having all of the configs, we only need to submit a job to a cluster and carry out the calculations. Here are a few ideas and hints of how to do this, as well as settings for runtime that will be needed.</p>
+<p>Take a node / workstation that has enough memory for the <code class="docutils literal notranslate"><span class="pre">gap_fit</span></code> steps with the size of dataset expected to be generated.</p>
+<p>The code is parallelised with python’s <code class="docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code> at many steps, for example minimisation, DFT evaluations and descriptor calculations.</p>
+<p>The number of workers to use in the pool is controlled by the <code class="docutils literal notranslate"><span class="pre">AUTOPARA_NPOOL</span></code> env variable. Set this to the number of physical cores, hyperthreading is not expected to be beneficial.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> usable logical threads are given in NSLOTS
+<span class="go">export AUTOPARA_NPOOL=${NSLOTS}</span>
+</pre></div>
+</div>
+<p>Export the DFT calculator’s executable, as ASE can understand it:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> is using CASTEP
+<span class="gp">#</span> mpi or serial, makes no difference
+<span class="go">export CASTEP_COMMAND=/path/to/castep.mpi</span>
+
+<span class="gp">#</span> <span class="k">if</span> using VASP - both default and gamma-point ones are needed
+<span class="go">export VASP_COMMAND=/path/to/vasp.serial</span>
+<span class="go">export VASP_COMMAND_GAMMA=/path/to/vasp.gamma_serial</span>
+</pre></div>
+</div>
+<p>Export the installation of buildcell, <code class="docutils literal notranslate"><span class="pre">GRIF</span></code> is the prefix for **g**ap_**r**ss_**i**ter_**f**it</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">export GRIF_BUILDCELL_CMD=$HOME/programs_womble0/airss-0.9.1/bin/buildcell</span>
+</pre></div>
+</div>
+<p>Set the number of OMP threads to 1 in general and to the maximum for gap_fit</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">export OMP_NUM_THREADS=1</span>
+<span class="go">export GAP_FIT_OMP_NUM_THREADS=${NSLOTS}</span>
+</pre></div>
+</div>
+<p>The active iteration’s number is written in the file <code class="docutils literal notranslate"><span class="pre">ACTIVE_ITER</span></code>, which if you keep then the iteration number will be increased. Directories will be created with names <code class="docutils literal notranslate"><span class="pre">run_iter_&lt;number&gt;</span></code> and all work of a given iteration self contained in them.</p>
+<p>Anything that is done already can be skipped, the <code class="docutils literal notranslate"><span class="pre">Configset_out</span></code> implementation is taking care of this, which lets you not repeat work in a lot of cases when restarting the calculations.</p>
+<p>An efficient and handy way to run multiple iterations is as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># remove leftover files</span>
+<span class="k">for</span> f in run_iter_* ACTIVE_ITER atoms_and_dimers.xyz gap_rss.*.out<span class="p">;</span> <span class="k">do</span>
+  <span class="nb">echo</span> <span class="s2">&quot;WARNING: Trace of old run found file &#39;</span><span class="nv">$f</span><span class="s2">&#39;&quot;</span> <span class="m">1</span>&gt;<span class="p">&amp;</span><span class="m">2</span>
+  <span class="nb">break</span>
+<span class="k">done</span>
+
+<span class="c1"># start the numbering from zero, will skip ones done</span>
+rm -f ACTIVE_ITER
+
+<span class="c1"># abort if any fail</span>
+<span class="nb">set</span> -e
+
+<span class="c1"># set the config json file, and number of total steps</span>
+<span class="nv">system_json</span><span class="o">=</span>main_config_file.json
+<span class="nv">total_rss_steps</span><span class="o">=</span><span class="m">24</span>
+
+<span class="c1"># prep</span>
+gap_rss_iter_fit -c <span class="si">${</span><span class="nv">system_json</span><span class="si">}</span> prep &gt;&gt; gap_rss.prep.out
+
+<span class="c1"># RSS iters</span>
+gap_rss_iter_fit -c <span class="si">${</span><span class="nv">system_json</span><span class="si">}</span> initial_step &gt;&gt; gap_rss.initial_step.out
+<span class="k">for</span> iter_i in <span class="k">$(</span>seq <span class="m">1</span> <span class="si">${</span><span class="nv">total_rss_steps</span><span class="si">}</span><span class="k">)</span><span class="p">;</span> <span class="k">do</span>
+  gap_rss_iter_fit -c <span class="si">${</span><span class="nv">system_json</span><span class="si">}</span> rss_step &gt;&gt; gap_rss.rss_step.<span class="si">${</span><span class="nv">iter_i</span><span class="si">}</span>.out
+<span class="k">done</span>
+
+<span class="c1"># do one MD steps, or more if you want with a loop</span>
+<span class="c1"># bulk/defect supercell MD iter</span>
+<span class="nv">iter_i</span><span class="o">=</span><span class="si">${</span><span class="nv">total_rss_steps</span><span class="si">}</span>+1
+gap_rss_iter_fit -c <span class="si">${</span><span class="nv">system_json</span><span class="si">}</span> MD_bulk_defect_step &gt;&gt; gap_rss.<span class="si">${</span><span class="nv">iter_i</span><span class="si">}</span>.MD_step.out
+</pre></div>
+</div>
+</div>
+</div>
+
+
+              </div>
+              
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="workflows.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Workflows</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="workflows.collisions.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Collisions</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
+        
+            &copy; Copyright .<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>

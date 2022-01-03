@@ -1,0 +1,679 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>wfl package &#8212; workflow  documentation</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="wfl.calculators package" href="wfl.calculators.html" />
+    <link rel="prev" title="API" href="modules.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">workflow  documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Contents:
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="install.html">
+   Instalation
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="code_structure.html">
+   Code structure
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="code_structure.configset.html">
+     Input and output of atomic structures
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="code_structure.parallelisation.html">
+     Automatic parallelization of tasks
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="operations.html">
+   Operations
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.calculators.html">
+     Calculators in workflow
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.generating_configs.html">
+     Generating Configs
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.selecting_configs.html">
+     Selecting Configs
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.gap_fitting.html">
+     Multistage GAP fitting
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.plots.html">
+     Plots
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.misc.html">
+     Miscellaneous
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="workflows.html">
+   Workflows
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="workflows.rss.html">
+     How to do GAP-RSS
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="workflows.collisions.html">
+     Collisions
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="command_line.html">
+   Command line interface
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="simple">
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="examples.html">
+   Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributing.html">
+   How to contribute
+  </a>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="modules.html">
+   API
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active has-children">
+    <a class="current reference internal" href="#">
+     wfl package
+    </a>
+    <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.calculators.html">
+       wfl.calculators package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.cli.html">
+       wfl.cli package
+      </a>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="wfl.fit.html">
+       wfl.fit package
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+      <label for="toctree-checkbox-7">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.fit.modify_database.html">
+         wfl.fit.modify_database package
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.generate_configs.html">
+       wfl.generate_configs package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.pipeline.html">
+       wfl.pipeline package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.plotting.html">
+       wfl.plotting package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.reactions_processing.html">
+       wfl.reactions_processing package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.select_configs.html">
+       wfl.select_configs package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.utils.html">
+       wfl.utils package
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/wfl.rst.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#subpackages">
+   Subpackages
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#submodules">
+   Submodules
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-calc-descriptor-module">
+   wfl.calc_descriptor module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-configset-module">
+   wfl.configset module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.descriptor_heuristics">
+   wfl.descriptor_heuristics module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.mpipool_support">
+   wfl.mpipool_support module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-parallelization-module">
+   wfl.parallelization module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-selection-space-module">
+   wfl.selection_space module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl">
+   Module contents
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="wfl-package">
+<h1>wfl package<a class="headerlink" href="#wfl-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="wfl.calculators.html">wfl.calculators package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#wfl-calculators-castep-module">wfl.calculators.castep module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#wfl-calculators-committee-module">wfl.calculators.committee module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#wfl-calculators-dft-module">wfl.calculators.dft module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#wfl-calculators-espresso-module">wfl.calculators.espresso module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#wfl-calculators-generic-module">wfl.calculators.generic module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#wfl-calculators-orca-module">wfl.calculators.orca module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#wfl-calculators-utils-module">wfl.calculators.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#wfl-calculators-vasp-module">wfl.calculators.vasp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wfl.cli.html">wfl.cli package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#wfl-cli-cli-module">wfl.cli.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#module-wfl.cli.cli_options">wfl.cli.cli_options module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#wfl-cli-dft-convergence-test-module">wfl.cli.dft_convergence_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#wfl-cli-gap-rss-iter-fit-module">wfl.cli.gap_rss_iter_fit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#wfl-cli-reactions-iter-fit-module">wfl.cli.reactions_iter_fit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#module-wfl.cli">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wfl.fit.html">wfl.fit package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.modify_database.html">wfl.fit.modify_database package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.fit.modify_database.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.fit.modify_database.html#wfl-fit-modify-database-gap-rss-set-config-sigmas-from-convex-hull-module">wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.fit.modify_database.html#wfl-fit-modify-database-simple-factor-nonperiodic-module">wfl.fit.modify_database.simple_factor_nonperiodic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.fit.modify_database.html#module-wfl.fit.modify_database">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#wfl-fit-gap-multistage-module">wfl.fit.gap_multistage module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#module-wfl.fit.gap_relocate">wfl.fit.gap_relocate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#wfl-fit-gap-simple-module">wfl.fit.gap_simple module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#wfl-fit-glue-2b-module">wfl.fit.glue_2b module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#wfl-fit-ref-error-module">wfl.fit.ref_error module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#wfl-fit-utils-module">wfl.fit.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#module-wfl.fit">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wfl.generate_configs.html">wfl.generate_configs package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-atoms-and-dimers-module">wfl.generate_configs.atoms_and_dimers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-buildcell-module">wfl.generate_configs.buildcell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-collision-module">wfl.generate_configs.collision module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-irc-module">wfl.generate_configs.irc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-md-module">wfl.generate_configs.md module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-minim-module">wfl.generate_configs.minim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-neb-module">wfl.generate_configs.neb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-radicals-module">wfl.generate_configs.radicals module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-smiles-module">wfl.generate_configs.smiles module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-supercells-module">wfl.generate_configs.supercells module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-ts-module">wfl.generate_configs.ts module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#module-wfl.generate_configs.utils">wfl.generate_configs.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-vib-module">wfl.generate_configs.vib module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#module-wfl.generate_configs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wfl.pipeline.html">wfl.pipeline package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wfl.pipeline.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.pipeline.html#wfl-pipeline-base-module">wfl.pipeline.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.pipeline.html#wfl-pipeline-pool-module">wfl.pipeline.pool module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.pipeline.html#wfl-pipeline-remote-module">wfl.pipeline.remote module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.pipeline.html#wfl-pipeline-utils-module">wfl.pipeline.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.pipeline.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wfl.plotting.html">wfl.plotting package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wfl.plotting.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.plotting.html#wfl-plotting-maxveit-plottools-module">wfl.plotting.maxveit_plottools module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.plotting.html#wfl-plotting-normal-modes-module">wfl.plotting.normal_modes module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.plotting.html#wfl-plotting-plot-2b-module">wfl.plotting.plot_2b module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.plotting.html#wfl-plotting-plot-ef-correlation-module">wfl.plotting.plot_ef_correlation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.plotting.html#wfl-plotting-reactions-plotting-module">wfl.plotting.reactions_plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.plotting.html#module-wfl.plotting">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wfl.reactions_processing.html">wfl.reactions_processing package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wfl.reactions_processing.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.reactions_processing.html#wfl-reactions-processing-trajectory-processing-module">wfl.reactions_processing.trajectory_processing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.reactions_processing.html#module-wfl.reactions_processing">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wfl.select_configs.html">wfl.select_configs package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wfl.select_configs.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.select_configs.html#wfl-select-configs-by-descriptor-module">wfl.select_configs.by_descriptor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.select_configs.html#wfl-select-configs-convex-hull-module">wfl.select_configs.convex_hull module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.select_configs.html#wfl-select-configs-flat-histogram-module">wfl.select_configs.flat_histogram module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.select_configs.html#wfl-select-configs-simple-filters-module">wfl.select_configs.simple_filters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.select_configs.html#wfl-select-configs-weighted-cur-module">wfl.select_configs.weighted_cur module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.select_configs.html#module-wfl.select_configs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#wfl-utils-at-copy-save-results-module">wfl.utils.at_copy_save_results module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#wfl-utils-convex-hull-module">wfl.utils.convex_hull module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.file_utils">wfl.utils.file_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#wfl-utils-find-voids-module">wfl.utils.find_voids module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#wfl-utils-gap-xml-tools-module">wfl.utils.gap_xml_tools module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.logging">wfl.utils.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#wfl-utils-misc-module">wfl.utils.misc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#wfl-utils-ndim-neighbor-list-module">wfl.utils.ndim_neighbor_list module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#wfl-utils-parallel-module">wfl.utils.parallel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.params">wfl.utils.params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#wfl-utils-pressure-module">wfl.utils.pressure module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#wfl-utils-quip-cli-strings-module">wfl.utils.quip_cli_strings module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.replace_eval_in_strs">wfl.utils.replace_eval_in_strs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.round_sig_figs">wfl.utils.round_sig_figs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#wfl-utils-vector-utils-module">wfl.utils.vector_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.version">wfl.utils.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#wfl-utils-vol-composition-space-module">wfl.utils.vol_composition_space module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wfl-calc-descriptor-module">
+<h2>wfl.calc_descriptor module<a class="headerlink" href="#wfl-calc-descriptor-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wfl-configset-module">
+<h2>wfl.configset module<a class="headerlink" href="#wfl-configset-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-wfl.descriptor_heuristics">
+<span id="wfl-descriptor-heuristics-module"></span><h2>wfl.descriptor_heuristics module<a class="headerlink" href="#module-wfl.descriptor_heuristics" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.descriptor_heuristics.descriptor_2brn_uniform_file">
+<span class="sig-prename descclassname"><span class="pre">wfl.descriptor_heuristics.</span></span><span class="sig-name descname"><span class="pre">descriptor_2brn_uniform_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">descriptor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ident</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc_i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.descriptor_heuristics.descriptor_2brn_uniform_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write uniform-in-deformed-space sparse points file for 2-body polynomial descriptors</p>
+<p><strong>UNTESTED!!!!</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>descriptor</strong> (<em>dict</em>) – nested structure with some contained dicts that have ‘sparse_method’ = ‘_2BRN_UNIFORM_FILE_’, and also <code class="docutils literal notranslate"><span class="pre">n_sparse</span></code>, <code class="docutils literal notranslate"><span class="pre">exponents</span></code>, <code class="docutils literal notranslate"><span class="pre">cutoff</span></code></p></li>
+<li><p><strong>ident</strong> (<em>str</em><em>, </em><em>default ''</em>) – identifier string to add to sparsepoints filename</p></li>
+<li><p><strong>desc_i</strong> (<em>int</em><em>, </em><em>default 0</em>) – offset to descriptor number in filename</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>desc_i</strong> – newly incremented desc_i</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.descriptor_heuristics.descriptors_from_length_scales">
+<span class="sig-prename descclassname"><span class="pre">wfl.descriptor_heuristics.</span></span><span class="sig-name descname"><span class="pre">descriptors_from_length_scales</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">descriptors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length_scales</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SOAP_hypers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.descriptor_heuristics.descriptors_from_length_scales" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create all descriptors needed for all species in system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>descriptors</strong> (<em>dict</em><em> or </em><em>list</em><em>(</em><em>dict</em><em>)</em>) – templates of descriptors to have templated contents replaced and optionally (depending
+on value of add_species) duplicated to account for all species.</p></li>
+<li><p><strong>Zs</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – list of atomic numbers present in the system</p></li>
+<li><p><strong>length_scales</strong> (<em>dict</em>) – length scales for each species.  Keys are atomic numbers.  For each atomic number has key ‘bond_len’,
+which points to tuple/list with first element being bond length</p></li>
+<li><p><strong>SOAP_hypers</strong> (<em>dict</em><em>, </em><em>default None</em>) – SOAP hypers from universal SOAP heuristics.  Dict with atomic numbers as keys, values are
+dicts with keys ‘cutoff’, ‘cutoff_transition_width’, and ‘atom_gaussian_width’.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.descriptor_heuristics.len_scale_pair">
+<span class="sig-prename descclassname"><span class="pre">wfl.descriptor_heuristics.</span></span><span class="sig-name descname"><span class="pre">len_scale_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length_scales</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Z1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Z2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.descriptor_heuristics.len_scale_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns length scale for a pair of elements</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>length_scales</strong> (<em>dict</em>) – dict with Z as keys</p></li>
+<li><p><strong>t</strong> (<em>str</em>) – type of length scale, key in length_scales[Z1] and Z2</p></li>
+<li><p><strong>Z1</strong> (<em>int</em>) – atomic numbers of 2 atoms involved, keys for length_scales</p></li>
+<li><p><strong>Z2</strong> (<em>int</em>) – atomic numbers of 2 atoms involved, keys for length_scales</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Z1-Z2 length scale</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-wfl.mpipool_support">
+<span id="wfl-mpipool-support-module"></span><h2>wfl.mpipool_support module<a class="headerlink" href="#module-wfl.mpipool_support" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.mpipool_support.init">
+<span class="sig-prename descclassname"><span class="pre">wfl.mpipool_support.</span></span><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.mpipool_support.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Startup code when mpipool will be used. Only master MPI task exists
+function, others wait to do mpipool stuff.  Initialises
+<cite>mpipool_support.wfl_mpipool</cite> with created <cite>MPIExecutor</cite> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>verbose</strong> (<em>int</em><em>, </em><em>default 1</em>) – <ul class="simple">
+<li><p>&gt;= 1 : minimal start/end messages</p></li>
+<li><p>&gt; 1  : print stack trace at startup, to tell where it was called from</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.mpipool_support.shutdown_and_barrier">
+<span class="sig-prename descclassname"><span class="pre">wfl.mpipool_support.</span></span><span class="sig-name descname"><span class="pre">shutdown_and_barrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.mpipool_support.shutdown_and_barrier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="wfl-parallelization-module">
+<h2>wfl.parallelization module<a class="headerlink" href="#wfl-parallelization-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wfl-selection-space-module">
+<h2>wfl.selection_space module<a class="headerlink" href="#wfl-selection-space-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-wfl">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+              </div>
+              
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="modules.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">API</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="wfl.calculators.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">wfl.calculators package</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
+        
+            &copy; Copyright .<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>

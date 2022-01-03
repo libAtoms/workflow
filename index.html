@@ -1,0 +1,474 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to Workflow’s documentation! &#8212; workflow  documentation</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Instalation" href="install.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="#">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">workflow  documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Contents:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="install.html">
+   Instalation
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="code_structure.html">
+   Code structure
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="code_structure.configset.html">
+     Input and output of atomic structures
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="code_structure.parallelisation.html">
+     Automatic parallelization of tasks
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="operations.html">
+   Operations
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.calculators.html">
+     Calculators in workflow
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.generating_configs.html">
+     Generating Configs
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.selecting_configs.html">
+     Selecting Configs
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.gap_fitting.html">
+     Multistage GAP fitting
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.plots.html">
+     Plots
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.misc.html">
+     Miscellaneous
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="workflows.html">
+   Workflows
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="workflows.rss.html">
+     How to do GAP-RSS
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="workflows.collisions.html">
+     Collisions
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="command_line.html">
+   Command line interface
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="simple">
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="examples.html">
+   Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributing.html">
+   How to contribute
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="modules.html">
+   API
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="wfl.html">
+     wfl package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.calculators.html">
+       wfl.calculators package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.cli.html">
+       wfl.cli package
+      </a>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="wfl.fit.html">
+       wfl.fit package
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+      <label for="toctree-checkbox-7">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.fit.modify_database.html">
+         wfl.fit.modify_database package
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.generate_configs.html">
+       wfl.generate_configs package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.pipeline.html">
+       wfl.pipeline package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.plotting.html">
+       wfl.plotting package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.reactions_processing.html">
+       wfl.reactions_processing package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.select_configs.html">
+       wfl.select_configs package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.utils.html">
+       wfl.utils package
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/index.rst.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="welcome-to-workflow-s-documentation">
+<h1>Welcome to Workflow’s documentation!<a class="headerlink" href="#welcome-to-workflow-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>A Python toolkit for building interatomic potential creation and atomistic simulation workflows.</p>
+<p>Documentation in progress!</p>
+<p>The main functions of Workflow is to efficiently parallelise operations over a set of atomic configurations. Given an operation that is defined to act a single configuration (e.g. evaluate energy of a structure with CASTEP ASE calculator), Workflow may apply the operation to multiple configurations in parallel.</p>
+<p>The Workflow-specific code structures (e.g. how configurations are handled, mechanism to parallelise operations) are covered in <a class="reference internal" href="code_structure.html#code-structure"><span class="std std-ref">Code structure</span></a>. Currently implemented self-contained per-configuration operations are sketched out in <a class="reference internal" href="operations.html#operations"><span class="std std-ref">Operations</span></a>. Descriptions of Workflows, built out of these modular operations are described in <a class="reference internal" href="workflows.html#workflows"><span class="std std-ref">Workflows</span></a>. There are also descriptions <a class="reference internal" href="command_line.html#command-line"><span class="std std-ref">command line interface</span></a>, <a class="reference internal" href="examples.html#examples"><span class="std std-ref">examples</span></a> of common tasks to get started with, some <a class="reference internal" href="contributing.html#contributing"><span class="std std-ref">guidelines on contributing</span></a> and a <a class="reference internal" href="modules.html#api"><span class="std std-ref">Python API</span></a>.</p>
+<p>For now the documentation must be build from source.</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sphinx-apidoc</span> <span class="pre">-o</span> <span class="pre">source</span> <span class="pre">../wfl</span></code>  (only whenever source code changes)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">open</span> <span class="pre">build/html/index.html</span></code></p></li>
+</ol>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Instalation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_structure.html">Code structure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="code_structure.configset.html">Input and output of atomic structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_structure.parallelisation.html">Automatic parallelization of tasks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="code_structure.parallelisation.html#runtime-view">Runtime view</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code_structure.parallelisation.html#programming-time-view">Programming-time view</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="operations.html">Operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="operations.calculators.html">Calculators in workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="operations.calculators.html#general-overview">General overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.calculators.html#regular-calculators">Regular calculators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.calculators.html#special-calculators">Special calculators</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="operations.generating_configs.html">Generating Configs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.selecting_configs.html">Selecting Configs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.gap_fitting.html">Multistage GAP fitting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="operations.gap_fitting.html#procedure">Procedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.gap_fitting.html#configuration-file">Configuration file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.gap_fitting.html#creating-configuration-file">Creating configuration file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="operations.plots.html">Plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.misc.html">Miscellaneous</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Workflows</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="workflows.rss.html">How to do GAP-RSS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#before-you-start">Before you start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#steps-of-gap-rss">Steps of GAP-RSS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#preparation-step">Preparation step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#dft-settings">DFT settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#config-selection">Config selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#initial-step">Initial step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#rss-step">RSS step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#md-step">MD step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#job-script-and-runtime-settings">Job script and runtime settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.collisions.html">Collisions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="command_line.html">Command line interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="command_line.html#calculators">Calculators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="command_line.html#orca-outdated">ORCA (outdated)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command_line.html#castep">CASTEP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command_line.html#vasp">VASP</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wfl.html">wfl package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#wfl-calc-descriptor-module">wfl.calc_descriptor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#wfl-configset-module">wfl.configset module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#module-wfl.descriptor_heuristics">wfl.descriptor_heuristics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#module-wfl.mpipool_support">wfl.mpipool_support module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#wfl-parallelization-module">wfl.parallelization module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#wfl-selection-space-module">wfl.selection_space module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#module-wfl">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+              </div>
+              
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='right-next' id="next-link" href="install.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Instalation</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
+        
+            &copy; Copyright .<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>

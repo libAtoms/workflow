@@ -1,0 +1,485 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multistage GAP fitting &#8212; workflow  documentation</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Plots" href="operations.plots.html" />
+    <link rel="prev" title="Selecting Configs" href="operations.selecting_configs.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">workflow  documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Contents:
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="install.html">
+   Instalation
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="code_structure.html">
+   Code structure
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="code_structure.configset.html">
+     Input and output of atomic structures
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="code_structure.parallelisation.html">
+     Automatic parallelization of tasks
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="operations.html">
+   Operations
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.calculators.html">
+     Calculators in workflow
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.generating_configs.html">
+     Generating Configs
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.selecting_configs.html">
+     Selecting Configs
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Multistage GAP fitting
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.plots.html">
+     Plots
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.misc.html">
+     Miscellaneous
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="workflows.html">
+   Workflows
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="workflows.rss.html">
+     How to do GAP-RSS
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="workflows.collisions.html">
+     Collisions
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="command_line.html">
+   Command line interface
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="simple">
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="examples.html">
+   Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributing.html">
+   How to contribute
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="modules.html">
+   API
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="wfl.html">
+     wfl package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.calculators.html">
+       wfl.calculators package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.cli.html">
+       wfl.cli package
+      </a>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="wfl.fit.html">
+       wfl.fit package
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+      <label for="toctree-checkbox-7">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.fit.modify_database.html">
+         wfl.fit.modify_database package
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.generate_configs.html">
+       wfl.generate_configs package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.pipeline.html">
+       wfl.pipeline package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.plotting.html">
+       wfl.plotting package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.reactions_processing.html">
+       wfl.reactions_processing package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.select_configs.html">
+       wfl.select_configs package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.utils.html">
+       wfl.utils package
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/operations.gap_fitting.rst.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#procedure">
+   Procedure
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#configuration-file">
+   Configuration file
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#creating-configuration-file">
+   Creating configuration file
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="multistage-gap-fitting">
+<span id="gap-fitting"></span><h1>Multistage GAP fitting<a class="headerlink" href="#multistage-gap-fitting" title="Permalink to this headline">¶</a></h1>
+<p>Fit a GAP with multiple descriptor in multiple stages, to calculate the appropriate delta (energy scale) at each stage</p>
+<div class="section" id="procedure">
+<h2>Procedure<a class="headerlink" href="#procedure" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>calculate spread of energy in reference data, use for delta in stage 0</p>
+<ul>
+<li><p>delta =~ energy spread / n_descriptors_per_atom</p></li>
+</ul>
+</li>
+<li><p>modify each config in fitting database, e.g. setting per-config <code class="docutils literal notranslate"><span class="pre">energy_sigma</span></code>, <code class="docutils literal notranslate"><span class="pre">force_sigma</span></code>, using a callback in a python module</p></li>
+<li><p>fit GAP(stage=0), naming it with <code class="docutils literal notranslate"><span class="pre">{label}.stage_{stage}.xml</span></code></p></li>
+<li><p>repeat for stage=1..</p>
+<ul>
+<li><p>calculate fitting error for GAP(stage-1)</p></li>
+<li><p>use fitting error (residual) to estimate delta for this stage’s descriptors</p>
+<ul>
+<li><p>delta =~ fitting error / n_descriptors_per_atom</p></li>
+</ul>
+</li>
+<li><p>modify each config in fitting database as in stage 0</p></li>
+<li><p>fit GAP(stage)</p></li>
+</ul>
+</li>
+<li><p>rename final GAP file to <code class="docutils literal notranslate"><span class="pre">{label}.xml</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="configuration-file">
+<h2>Configuration file<a class="headerlink" href="#configuration-file" title="Permalink to this headline">¶</a></h2>
+<p>The iterative fitting procedure is controlled by a JSON file that describes the descriptors and fitting params for each stage, and some global fitting params.</p>
+<ul class="simple">
+<li><p>The top level dict contains two keys, <code class="docutils literal notranslate"><span class="pre">stages</span></code> and <code class="docutils literal notranslate"><span class="pre">gap_params</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">stages</span></code> : list of dicts, one for each stage.</p>
+<ul>
+<li><p>Each stage contains a dict with keys <code class="docutils literal notranslate"><span class="pre">error_scale_factor</span></code> and <code class="docutils literal notranslate"><span class="pre">descriptors</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">error_scale_factor</span></code>: factor to apply to all fitting sigmas when doing the fit for that stage (e.g. to reduce desired accuracy of stage 0 2-body only fit), defaults to 1.0 if missing.  Passed to database modifying module callback mentioned above.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">descriptors</span></code>: list of dicts describing each descriptor and its fitting params.</p>
+<ul>
+<li><p>Each list item contains a dict with <code class="docutils literal notranslate"><span class="pre">desc_str</span></code>, <code class="docutils literal notranslate"><span class="pre">fit_str</span></code>, and <code class="docutils literal notranslate"><span class="pre">count_cutoff</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">desc_str</span></code>: string used to create QUIP <code class="docutils literal notranslate"><span class="pre">Descriptor</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fit_str</span></code>: string used to create the rest of the <code class="docutils literal notranslate"><span class="pre">gap_fit</span></code> input arguments, e.g. <code class="docutils literal notranslate"><span class="pre">n_sparse</span></code>, <code class="docutils literal notranslate"><span class="pre">covariance_type</span></code>, etc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">count_cutoff</span></code>, optional: cutoff to be used when counting descriptors per atom, used for counting only close neighbors for 2-body descriptors, even if they are actually much longer ranged.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gap_params</span></code> : global <code class="docutils literal notranslate"><span class="pre">gap_fit</span></code> params, e.g. <code class="docutils literal notranslate"><span class="pre">default_sigma</span></code>, <code class="docutils literal notranslate"><span class="pre">sparse_jitter</span></code>, <code class="docutils literal notranslate"><span class="pre">output_separate_file</span></code></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="creating-configuration-file">
+<h2>Creating configuration file<a class="headerlink" href="#creating-configuration-file" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">wfl.fit.gap_multistage</span></code> has a function <code class="docutils literal notranslate"><span class="pre">prep_input</span></code> which takes a _template_ configuration file and creates descriptors for each species using universal SOAP hyperparameters.  The template file format is similar to the configuration file described above.  The main exceptions are</p>
+<ul class="simple">
+<li><p>in addition to the <code class="docutils literal notranslate"><span class="pre">error_scale_factor</span></code> and <code class="docutils literal notranslate"><span class="pre">descriptors</span></code> keys there is another, <code class="docutils literal notranslate"><span class="pre">add_species</span></code></p></li>
+<li><p>All strings (mainly intended for <code class="docutils literal notranslate"><span class="pre">desc_str</span></code>) have length scales specified in terms of <code class="docutils literal notranslate"><span class="pre">${REPL_EXPR}</span></code>, which will be replaced by the mathematical expression, substituting particular strings (e.g. <code class="docutils literal notranslate"><span class="pre">R_CUT</span></code>, <code class="docutils literal notranslate"><span class="pre">BOND_LEN_Z</span></code>) as described in the docstring for <code class="docutils literal notranslate"><span class="pre">wfl.descriptor_heuristics.dup_descs_for_species()</span></code>.  Replacements will remain strings, except strings that begin
+with <code class="docutils literal notranslate"><span class="pre">_F_</span></code>, which will be replaced with the evaluate floating point value.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">add_species</span></code> can be any value understood by <code class="docutils literal notranslate"><span class="pre">wfl.descriptor_heuristics.dup_descs_for_species()</span></code>, in particular</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">manual_Z1_Z2</span></code> for 2-body descriptors with length scale set differently for each Z1-Z2 pair</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">manual_universal_SOAP</span></code> for universal SOAPs that will be created, 2 or more, for each center Z, using heuristics</p></li>
+</ul>
+</div>
+</div>
+
+
+              </div>
+              
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="operations.selecting_configs.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Selecting Configs</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="operations.plots.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Plots</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
+        
+            &copy; Copyright .<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>

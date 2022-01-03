@@ -1,0 +1,667 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>wfl.utils package &#8212; workflow  documentation</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="wfl.select_configs package" href="wfl.select_configs.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">workflow  documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Contents:
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="install.html">
+   Instalation
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="code_structure.html">
+   Code structure
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="code_structure.configset.html">
+     Input and output of atomic structures
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="code_structure.parallelisation.html">
+     Automatic parallelization of tasks
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="operations.html">
+   Operations
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.calculators.html">
+     Calculators in workflow
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.generating_configs.html">
+     Generating Configs
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.selecting_configs.html">
+     Selecting Configs
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.gap_fitting.html">
+     Multistage GAP fitting
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.plots.html">
+     Plots
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.misc.html">
+     Miscellaneous
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="workflows.html">
+   Workflows
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="workflows.rss.html">
+     How to do GAP-RSS
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="workflows.collisions.html">
+     Collisions
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="command_line.html">
+   Command line interface
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="simple">
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="examples.html">
+   Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributing.html">
+   How to contribute
+  </a>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="modules.html">
+   API
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active has-children">
+    <a class="reference internal" href="wfl.html">
+     wfl package
+    </a>
+    <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul class="current">
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.calculators.html">
+       wfl.calculators package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.cli.html">
+       wfl.cli package
+      </a>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="wfl.fit.html">
+       wfl.fit package
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+      <label for="toctree-checkbox-7">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.fit.modify_database.html">
+         wfl.fit.modify_database package
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.generate_configs.html">
+       wfl.generate_configs package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.pipeline.html">
+       wfl.pipeline package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.plotting.html">
+       wfl.plotting package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.reactions_processing.html">
+       wfl.reactions_processing package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.select_configs.html">
+       wfl.select_configs package
+      </a>
+     </li>
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
+       wfl.utils package
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/wfl.utils.rst.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#submodules">
+   Submodules
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-utils-at-copy-save-results-module">
+   wfl.utils.at_copy_save_results module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-utils-convex-hull-module">
+   wfl.utils.convex_hull module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.utils.file_utils">
+   wfl.utils.file_utils module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-utils-find-voids-module">
+   wfl.utils.find_voids module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-utils-gap-xml-tools-module">
+   wfl.utils.gap_xml_tools module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.utils.logging">
+   wfl.utils.logging module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-utils-misc-module">
+   wfl.utils.misc module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-utils-ndim-neighbor-list-module">
+   wfl.utils.ndim_neighbor_list module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-utils-parallel-module">
+   wfl.utils.parallel module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.utils.params">
+   wfl.utils.params module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-utils-pressure-module">
+   wfl.utils.pressure module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-utils-quip-cli-strings-module">
+   wfl.utils.quip_cli_strings module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.utils.replace_eval_in_strs">
+   wfl.utils.replace_eval_in_strs module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.utils.round_sig_figs">
+   wfl.utils.round_sig_figs module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-utils-vector-utils-module">
+   wfl.utils.vector_utils module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.utils.version">
+   wfl.utils.version module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-utils-vol-composition-space-module">
+   wfl.utils.vol_composition_space module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.utils">
+   Module contents
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="wfl-utils-package">
+<h1>wfl.utils package<a class="headerlink" href="#wfl-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wfl-utils-at-copy-save-results-module">
+<h2>wfl.utils.at_copy_save_results module<a class="headerlink" href="#wfl-utils-at-copy-save-results-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wfl-utils-convex-hull-module">
+<h2>wfl.utils.convex_hull module<a class="headerlink" href="#wfl-utils-convex-hull-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-wfl.utils.file_utils">
+<span id="wfl-utils-file-utils-module"></span><h2>wfl.utils.file_utils module<a class="headerlink" href="#module-wfl.utils.file_utils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.utils.file_utils.clean_dir">
+<span class="sig-prename descclassname"><span class="pre">wfl.utils.file_utils.</span></span><span class="sig-name descname"><span class="pre">clean_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.file_utils.clean_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean a run directory and keep only the specified files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>directory</strong> (<em>directory to be cleaned</em>) – </p></li>
+<li><p><strong>keep_files</strong> (<em>bool</em><em> or </em><em>list</em><em>(</em><em>filenames</em><em>) or </em><em>str</em>) – <dl class="simple">
+<dt>What to keep in rundir when done:</dt><dd><ul>
+<li><p>list(filenames) : ONLY these filenames if they exist</p></li>
+<li><p>True or “*” : everything - does nothing</p></li>
+<li><p>False or None : remove everything, or anything evaluating to False in if</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>force</strong> (<em>bool</em><em>, </em><em>default = False</em>) – fail if directory does not exist</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="wfl-utils-find-voids-module">
+<h2>wfl.utils.find_voids module<a class="headerlink" href="#wfl-utils-find-voids-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wfl-utils-gap-xml-tools-module">
+<h2>wfl.utils.gap_xml_tools module<a class="headerlink" href="#wfl-utils-gap-xml-tools-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-wfl.utils.logging">
+<span id="wfl-utils-logging-module"></span><h2>wfl.utils.logging module<a class="headerlink" href="#module-wfl.utils.logging" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.utils.logging.increment_active_iter">
+<span class="sig-prename descclassname"><span class="pre">wfl.utils.logging.</span></span><span class="sig-name descname"><span class="pre">increment_active_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active_iter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.logging.increment_active_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.utils.logging.print_log">
+<span class="sig-prename descclassname"><span class="pre">wfl.utils.logging.</span></span><span class="sig-name descname"><span class="pre">print_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_time=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logfile=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='utf-8'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.logging.print_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.utils.logging.process_active_iter">
+<span class="sig-prename descclassname"><span class="pre">wfl.utils.logging.</span></span><span class="sig-name descname"><span class="pre">process_active_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active_iter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.logging.process_active_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="wfl-utils-misc-module">
+<h2>wfl.utils.misc module<a class="headerlink" href="#wfl-utils-misc-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wfl-utils-ndim-neighbor-list-module">
+<h2>wfl.utils.ndim_neighbor_list module<a class="headerlink" href="#wfl-utils-ndim-neighbor-list-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wfl-utils-parallel-module">
+<h2>wfl.utils.parallel module<a class="headerlink" href="#wfl-utils-parallel-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-wfl.utils.params">
+<span id="wfl-utils-params-module"></span><h2>wfl.utils.params module<a class="headerlink" href="#module-wfl.utils.params" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.utils.params.Params">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.utils.params.</span></span><span class="sig-name descname"><span class="pre">Params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cur_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.params.Params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="wfl.utils.params.Params.cur_iter">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cur_iter</span></span><a class="headerlink" href="#wfl.utils.params.Params.cur_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="wfl.utils.params.Params.dft_code">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dft_code</span></span><a class="headerlink" href="#wfl.utils.params.Params.dft_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="wfl.utils.params.Params.dft_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dft_params</span></span><a class="headerlink" href="#wfl.utils.params.Params.dft_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.utils.params.Params.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.params.Params.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wfl.utils.params.Params.implemented_calculators">
+<span class="sig-name descname"><span class="pre">implemented_calculators</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('CASTEP',</span> <span class="pre">'VASP',</span> <span class="pre">'ORCA')</span></em><a class="headerlink" href="#wfl.utils.params.Params.implemented_calculators" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="wfl-utils-pressure-module">
+<h2>wfl.utils.pressure module<a class="headerlink" href="#wfl-utils-pressure-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wfl-utils-quip-cli-strings-module">
+<h2>wfl.utils.quip_cli_strings module<a class="headerlink" href="#wfl-utils-quip-cli-strings-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-wfl.utils.replace_eval_in_strs">
+<span id="wfl-utils-replace-eval-in-strs-module"></span><h2>wfl.utils.replace_eval_in_strs module<a class="headerlink" href="#module-wfl.utils.replace_eval_in_strs" title="Permalink to this headline">¶</a></h2>
+<p>Evaluation of expressions marked with _EVAL_ in strings, mainly used for interpreting config files.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.utils.replace_eval_in_strs.replace_eval_in_strs">
+<span class="sig-prename descclassname"><span class="pre">wfl.utils.replace_eval_in_strs.</span></span><span class="sig-name descname"><span class="pre">replace_eval_in_strs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replacements</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_float_sig_figs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.replace_eval_in_strs.replace_eval_in_strs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace some string beginning with _EVAL_ in nested data structures
+with the result of eval() on them. Any lists, tuples, and dicts will
+be gone through recursively and replaced with substituted contents.
+Any strings starting with ‘_EVAL_ ‘ will be replaced with the result
+of an eval() call on the remainder of the string, after <cite>replacements</cite>
+has been used as the kwargs of a format() call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>python object</em>) – data structure to go through and replace ‘_EVAL_ …’ with return value of eval()</p></li>
+<li><p><strong>replacements</strong> (<em>dict</em>) – keywords to format() call to be applied to each string before eval()</p></li>
+<li><p><strong>n_float_sig_figs</strong> (<em>int</em>) – if not None, round float output of each eval to this many significant figures</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong> – their eval() result</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>python object with new lists, tuples, and dicts, with _EVAL_ strings replaced by</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-wfl.utils.round_sig_figs">
+<span id="wfl-utils-round-sig-figs-module"></span><h2>wfl.utils.round_sig_figs module<a class="headerlink" href="#module-wfl.utils.round_sig_figs" title="Permalink to this headline">¶</a></h2>
+<p>Rounding floats to significant figures</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.utils.round_sig_figs.round_sig_figs">
+<span class="sig-prename descclassname"><span class="pre">wfl.utils.round_sig_figs.</span></span><span class="sig-name descname"><span class="pre">round_sig_figs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sig_figs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.round_sig_figs.round_sig_figs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Round to a certain number of significant figures</p>
+<p>based on:
+<a class="reference external" href="https://stackoverflow.com/questions/3410976/how-to-round-a-number-to-significant-figures-in-python">https://stackoverflow.com/questions/3410976/how-to-round-a-number-to-significant-figures-in-python</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<em>float</em>) – value to round</p></li>
+<li><p><strong>n_sig_figs</strong> (<em>int</em>) – number of significant figures</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string representation of v, rounded to n_sig_figs significant figures</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="wfl-utils-vector-utils-module">
+<h2>wfl.utils.vector_utils module<a class="headerlink" href="#wfl-utils-vector-utils-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-wfl.utils.version">
+<span id="wfl-utils-version-module"></span><h2>wfl.utils.version module<a class="headerlink" href="#module-wfl.utils.version" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.utils.version.get_wfl_version">
+<span class="sig-prename descclassname"><span class="pre">wfl.utils.version.</span></span><span class="sig-name descname"><span class="pre">get_wfl_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.version.get_wfl_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="wfl-utils-vol-composition-space-module">
+<h2>wfl.utils.vol_composition_space module<a class="headerlink" href="#wfl-utils-vol-composition-space-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-wfl.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.utils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+              </div>
+              
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="wfl.select_configs.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">wfl.select_configs package</p>
+        </div>
+    </a>
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
+        
+            &copy; Copyright .<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
