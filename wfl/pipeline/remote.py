@@ -78,7 +78,7 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
     for xpr in xprs:
         if not quiet:
             sys.stderr.write(f'Gathering results for {xpr.id}\n')
-        ats_out, stdout, stderr = xpr.get_results(check_interval=remote_info.check_interval)
+        ats_out, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
         for at in ats_out.group_iter():
             configset_out.write(at, from_input_file=input_files[at_i])
             at_i += 1
