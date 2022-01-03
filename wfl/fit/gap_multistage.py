@@ -169,10 +169,11 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         fitting_configs = fitting_configs.in_memory()
 
-        # set number of threads in queued job
-        # NOTE: should this be hardwired here, or up to the user?
-        remote_info.env_vars.append('GAP_FIT_OMP_NUM_THREADS=$EXPYRE_NCORES_PER_NODE')
-        remote_info.env_vars.append('WFL_AUTOPARA_NPOOL=$EXPYRE_NCORES_PER_NODE')
+        # set number of threads in queued job, only if user hasn't set them
+        if not any([var.split('=')[0] == 'GAP_FIT_OMP_NUM_THREADS' for var in remote_info.env_vars]):
+            remote_info.env_vars.append('GAP_FIT_OMP_NUM_THREADS=$EXPYRE_NCORES_PER_NODE')
+        if not any([var.split('=')[0] == 'WFL_AUTOPARAL_NPOOL' for var in remote_info.env_vars]):
+            remote_info.env_vars.append('WFL_AUTOPARA_NPOOL=$EXPYRE_NCORES_PER_NODE')
 
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                      env_vars=remote_info.env_vars, input_files=remote_info.input_files, output_files=output_files, function=fit,

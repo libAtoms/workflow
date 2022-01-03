@@ -74,8 +74,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
             output_files.append(use_stdout_file)
 
         # set number of threads in queued job, if user didn't already request a specific number
-        if all([not env_var == 'GAP_FIT_OMP_NUM_THREADS' and
-                not env_var.startswith('GAP_FIT_OMP_NUM_THREADS=') for env_var in remote_info.env_vars]):
+        if not any([var.split('=')[0] == 'GAP_FIT_OMP_NUM_THREADS' for var in remote_info.env_vars]):
             remote_info.env_vars.append('GAP_FIT_OMP_NUM_THREADS=$EXPYRE_NCORES_PER_NODE')
 
         remote_func_kwargs = {'fitting_configs': fitting_configs, 'fitting_dict': fitting_dict,
