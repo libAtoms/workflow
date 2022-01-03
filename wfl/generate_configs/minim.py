@@ -75,8 +75,8 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
     traj_step_interval: int, default 1
         if present, interval between trajectory snapshots
     traj_subselect: "last_converged", default None
-        rule for sub-selecting configs from full trajectory.
-        Currently implemented: "last_converged", which takes last config, if converged.
+        rule for sub-selecting configs from the full trajectory.
+        Currently implemented: "last_converged", which takes the last config, if converged.
     skip_failures: bool, default True
         just skip minimizations that raise an exception
     verbose: bool, default False
@@ -220,7 +220,7 @@ def _resample_traj(traj, subselect):
     subselect: int or string, default None
         int: (not implemented) how many samples to take from the trajectory.
         str:
-            - "last_converged": selects the last config, if converged
+            - "last_converged": selects the the last config, if converged
     """
 
     if subselect == "last_converged":
