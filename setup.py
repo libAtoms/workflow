@@ -5,7 +5,6 @@ setuptools.setup(
     version="0.1.0b",
     packages=setuptools.find_packages(exclude=["tests"]),
     install_requires=["click>=7.0", "numpy", "ase", "pyyaml", "spglib",
-                      "sphinx-book-theme", "docutils==0.16", "sphinx-click",
                       "expyre-wfl @ https://github.com/libAtoms/ExPyRe/tarball/main",
                       "universalSOAP @ https://github.com/libAtoms/universalSOAP/tarball/main"],
     entry_points="""
