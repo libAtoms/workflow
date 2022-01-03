@@ -413,7 +413,7 @@ class ConfigSet_out:
                                              f'str, dict, pathlib.Path')
                     except Exception as e:
                         traceback.print_exc()
-                        raise RuntimeError(f'Got output_files of type {type(output_files)} wich is not one of: '
+                        raise RuntimeError(f'Got output_files of type {type(output_files)} which is not one of: '
                                            f'str, dict, pathlib.Path or iterable with one str or pathlib.Path item.')
                 self.output_files = [os.path.join(file_root, output_files)]
                 self.output_files_map = lambda fin: self.output_files[0]
