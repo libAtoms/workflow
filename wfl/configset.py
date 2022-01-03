@@ -329,7 +329,7 @@ class ConfigSet_out:
         dict of tags and value to set in every config
     file_root: str, default ``
         path to prepend to every file name
-    output_files: str / dict / list(len=1) / tuple(len=1), default=None
+    output_files: str / pathlib.Path / dict / list(len=1) / tuple(len=1), default=None
         output file, or dict mapping from input to output files
     output_abcd: bool, default False
         write output to ABCD
@@ -397,18 +397,24 @@ class ConfigSet_out:
                 self.output_files = [os.path.join(file_root, fout) for fout in output_files.values()]
                 self.output_files_map = lambda fin: os.path.join(file_root, output_files.get(fin))
             else:
+                if isinstance(output_files, Path):
+                    output_files = str(output_files)
+
                 if not isinstance(output_files, str):
                     try:
-                        if len(output_files) == 1 and isinstance(next(iter(output_files)), str):
-                            # extract single string from iterable
-                            output_files = next(iter(output_files))
+                        if len(output_files) == 1: 
+                            entry = next(iter(output_files))
+                            if isinstance(entry, str) or isinstance(entry, Path):
+                                # extract single string from iterable
+                                output_files = str(entry)
                         else:
-                            raise ValueError(f'Got type {type(output_files)} of length {len(output_files)} other '
-                                             f'than 1 or content type other than str, cannot map to it')
+                            raise ValueError(f'Got `output_files` of type {type(output_files)} and length {len(output_files)}, '
+                                             f'which either has more than one entry or its content is not one of: '
+                                             f'str, dict, pathlib.Path')
                     except Exception as e:
                         traceback.print_exc()
-                        raise RuntimeError(f'Got output_files type {type(output_files)} other than iterable with '
-                                           f'1 str item, str, or dict')
+                        raise RuntimeError(f'Got output_files of type {type(output_files)} wich is not one of: '
+                                           f'str, dict, pathlib.Path or iterable with one str or pathlib.Path item.')
                 self.output_files = [os.path.join(file_root, output_files)]
                 self.output_files_map = lambda fin: self.output_files[0]
             if self.verbose:

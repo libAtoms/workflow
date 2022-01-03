@@ -60,3 +60,23 @@ def test_all_or_none(tmpdir):
 
     assert Path(outfile).stat().st_size > 0
 
+
+def test_configset_with_pathlib_Path():
+    in_file_1 = 'fake/path/to/nowhere/in.1.xyz'
+    in_file_2 = 'fake/path/to/nowhere/in.2.xyz'
+
+    out_file_1 = 'fake/path/to/nowhere/out.1.xyz'
+    out_file_2 = 'fake/path/to/nowhere/out.2.xyz'
+
+    # single pathlib.Path is ok
+    out_path = Path(out_file_1)
+    cout = ConfigSet_out(output_files=out_path)
+    assert cout.output_files == [out_file_1]
+
+    # dictionary mapping from Path to Path is ok
+    cout = ConfigSet_out(output_files={
+        Path(in_file_1): Path(out_file_1), 
+        Path(in_file_2): Path(out_file_2)
+    })
+
+
