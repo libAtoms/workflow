@@ -538,7 +538,7 @@ class ConfigSet_out:
 
             # this assumes each output file is hit only once
             # should we think about how to deal with appending?
-            if self.current_output_file is None or self.current_output_file.name != use_output_filename:
+            if self.current_output_file is None or self.current_output_file.name != str(use_output_filename):
                 if self.current_output_file:
                     self.current_output_file.close()
                 self.current_output_file = open(use_output_filename, 'w')
