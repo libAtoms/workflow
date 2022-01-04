@@ -3,12 +3,47 @@ import pytest
 
 import numpy as np
 
+from ase import Atoms
 import ase.io
 from ase.build import bulk
 from ase.calculators.emt import EMT
 
 from wfl.generate_configs import minim
 from wfl.configset import ConfigSet_in, ConfigSet_out
+
+expected_relaxed_positions_constant_pressure = np.array(
+    [[ 7.64860000e-04,  6.66750000e-04,  1.12750000e-04],
+    [-6.24100000e-05,  1.80043870e+00,  1.79974967e+00],
+    [ 1.80032231e+00, -2.97400000e-05,  1.79973549e+00],
+    [ 1.80095487e+00,  1.80017670e+00,  2.61750000e-04],
+    [ 1.15840000e-03,  2.36710000e-04,  3.59941539e+00],
+    [ 1.48600000e-03,  1.79993916e+00,  5.40024293e+00],
+    [ 1.80072223e+00, -4.23990000e-04,  5.39933992e+00],
+    [ 1.80046609e+00,  1.80061120e+00,  3.59922853e+00],
+    [ 4.40530000e-04,  3.59983780e+00,  5.02600000e-05],
+    [-2.23490000e-04,  5.40075346e+00,  1.79980812e+00],
+    [ 1.80038005e+00,  3.59997803e+00,  1.79959318e+00],
+    [ 1.79921287e+00,  5.40012037e+00,  1.56140000e-04],
+    [ 1.99000000e-04,  3.60031722e+00,  3.60034182e+00],
+    [ 2.86780000e-04,  5.40104179e+00,  5.39939418e+00],
+    [ 1.80032597e+00,  3.60108108e+00,  5.39968833e+00],
+    [ 1.80021004e+00,  5.40062669e+00,  3.60019918e+00],
+    [ 3.60087182e+00, -3.65010000e-04,  7.61500000e-04],
+    [ 3.60073516e+00,  1.80048495e+00,  1.80054603e+00],
+    [ 5.40067545e+00, -1.13950000e-04,  1.79960057e+00],
+    [ 5.39941457e+00,  1.79967203e+00, -1.98190000e-04],
+    [ 3.60059144e+00, -4.27610000e-04,  3.59954728e+00],
+    [ 3.59999268e+00,  1.79976207e+00,  5.39918637e+00],
+    [ 5.40022858e+00,  9.34800000e-05,  5.39977362e+00],
+    [ 5.40030500e+00,  1.79994095e+00,  3.59992025e+00],
+    [ 3.60059773e+00,  3.60070484e+00,  3.26930000e-04],
+    [ 3.60013298e+00,  5.39976537e+00,  1.79997636e+00],
+    [ 5.40026903e+00,  3.59927606e+00,  1.80032592e+00],
+    [ 5.40033996e+00,  5.40040411e+00,  8.72140000e-04],
+    [ 3.60095555e+00,  3.60037761e+00,  3.60000981e+00],
+    [ 3.60089465e+00,  5.40081989e+00,  5.40020294e+00],
+    [ 5.39998633e+00,  3.59971275e+00,  5.39954472e+00],
+    [ 5.40027502e+00,  5.40112125e+00,  3.59984043e+00]])
 
 
 @pytest.fixture
@@ -49,50 +84,14 @@ def test_relax(cu_slab):
     inputs = ConfigSet_in(input_configs = cu_slab)
     outputs = ConfigSet_out()
 
-
     atoms_opt = minim.run(inputs, outputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215)
 
     atoms_opt = list(atoms_opt)[-1]
 
-    expected_positions = np.array(
-       [[ 7.64860000e-04,  6.66750000e-04,  1.12750000e-04],
-       [-6.24100000e-05,  1.80043870e+00,  1.79974967e+00],
-       [ 1.80032231e+00, -2.97400000e-05,  1.79973549e+00],
-       [ 1.80095487e+00,  1.80017670e+00,  2.61750000e-04],
-       [ 1.15840000e-03,  2.36710000e-04,  3.59941539e+00],
-       [ 1.48600000e-03,  1.79993916e+00,  5.40024293e+00],
-       [ 1.80072223e+00, -4.23990000e-04,  5.39933992e+00],
-       [ 1.80046609e+00,  1.80061120e+00,  3.59922853e+00],
-       [ 4.40530000e-04,  3.59983780e+00,  5.02600000e-05],
-       [-2.23490000e-04,  5.40075346e+00,  1.79980812e+00],
-       [ 1.80038005e+00,  3.59997803e+00,  1.79959318e+00],
-       [ 1.79921287e+00,  5.40012037e+00,  1.56140000e-04],
-       [ 1.99000000e-04,  3.60031722e+00,  3.60034182e+00],
-       [ 2.86780000e-04,  5.40104179e+00,  5.39939418e+00],
-       [ 1.80032597e+00,  3.60108108e+00,  5.39968833e+00],
-       [ 1.80021004e+00,  5.40062669e+00,  3.60019918e+00],
-       [ 3.60087182e+00, -3.65010000e-04,  7.61500000e-04],
-       [ 3.60073516e+00,  1.80048495e+00,  1.80054603e+00],
-       [ 5.40067545e+00, -1.13950000e-04,  1.79960057e+00],
-       [ 5.39941457e+00,  1.79967203e+00, -1.98190000e-04],
-       [ 3.60059144e+00, -4.27610000e-04,  3.59954728e+00],
-       [ 3.59999268e+00,  1.79976207e+00,  5.39918637e+00],
-       [ 5.40022858e+00,  9.34800000e-05,  5.39977362e+00],
-       [ 5.40030500e+00,  1.79994095e+00,  3.59992025e+00],
-       [ 3.60059773e+00,  3.60070484e+00,  3.26930000e-04],
-       [ 3.60013298e+00,  5.39976537e+00,  1.79997636e+00],
-       [ 5.40026903e+00,  3.59927606e+00,  1.80032592e+00],
-       [ 5.40033996e+00,  5.40040411e+00,  8.72140000e-04],
-       [ 3.60095555e+00,  3.60037761e+00,  3.60000981e+00],
-       [ 3.60089465e+00,  5.40081989e+00,  5.40020294e+00],
-       [ 5.39998633e+00,  3.59971275e+00,  5.39954472e+00],
-       [ 5.40027502e+00,  5.40112125e+00,  3.59984043e+00]])
-
-
     print('optimised positions:', atoms_opt.positions)
 
-    assert atoms_opt.positions == approx(expected_positions, abs=3e-3)
+    assert atoms_opt.positions == approx(expected_relaxed_positions_constant_pressure, abs=3e-3)
 
     assert atoms_opt.info['config_type'] == 'cu_slab_minim_last_converged'
 
@@ -152,3 +151,42 @@ def test_relax_fixed_vol(cu_slab):
     assert atoms_opt.positions == approx(expected_positions, abs=3e-3)
 
     assert atoms_opt.info['config_type'] == 'cu_slab_minim_last_converged'
+
+
+def test_resampling_trajectory(cu_slab):
+
+    calc = EMT()
+
+    cu_slab_optimised = cu_slab.copy()
+    cu_slab_optimised.set_positions(expected_relaxed_positions_constant_pressure)
+
+    inputs = ConfigSet_in(input_configs = [cu_slab, cu_slab_optimised] )
+
+    # returns full optimisation trajectories
+    atoms_opt = minim.run_op(inputs, calc, fmax=1e-2, precon=None,
+                          logfile='-', verbose=True, pressure=-1.1215, 
+                          steps=2, traj_subselect=None)
+
+    assert len(atoms_opt[0]) == 3
+    assert len(atoms_opt[1]) == 1
+    assert isinstance(atoms_opt[0][0], Atoms)
+    assert isinstance(atoms_opt[1][0], Atoms)
+
+    # returns [None] for unconverged and last config for converged otpimisation
+    atoms_opt = minim.run_op(inputs, calc, fmax=1e-2, precon=None,
+                          logfile='-', verbose=True, pressure=-1.1215, 
+                          steps=2, traj_subselect="last_converged")
+
+    assert len(atoms_opt[1]) == 1
+    assert isinstance(atoms_opt[1][0], Atoms) # and not None
+    assert atoms_opt[0] is None
+
+    # check that iterable_loop handles Nones as expected
+    outputs = ConfigSet_out()
+    atoms_opt = minim.run(inputs, outputs, calc, fmax=1e-2, precon=None,
+                          logfile='-', verbose=True, pressure=-1.1215, 
+                          steps=2, traj_subselect="last_converged")
+
+    atoms_opt = [at for at in atoms_opt]
+    assert len(atoms_opt) == 1
+    assert isinstance(atoms_opt[0], Atoms)

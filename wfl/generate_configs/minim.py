@@ -195,14 +195,12 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
             for at0 in traj:
                 config_type_append(at0, at0.info['minim_config_type'])
 
-        if traj_subselect is not None:
-            # Note that if resampling doesn't include original last config, later
-            # steps won't be able to identify those configs as the (perhaps unconverged) minima.
-            # Perhaps status should be set after resampling?
-            traj = _resample_traj(traj, subselect=traj_subselect)
+        # Note that if resampling doesn't include original last config, later
+        # steps won't be able to identify those configs as the (perhaps unconverged) minima.
+        # Perhaps status should be set after resampling?
+        traj = resample_traj(traj, subselect=traj_subselect)
 
-        if len(traj) > 0:
-            all_trajs.append(traj)
+        all_trajs.append(traj)
 
     return all_trajs
 
@@ -212,18 +210,26 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
 #    equispaced in Cartesian path length
 #    equispaced in some other kind of distance (e.g. SOAP)
 # also, should it also have max distance instead of number of samples?
-def _resample_traj(traj, subselect):
+def resample_traj(traj, subselect=None):
     """Sub-selects configurations from trajectory.
 
     Parameters
     ----------
     subselect: int or string, default None
+        None: full trajectory is returned
         int: (not implemented) how many samples to take from the trajectory.
         str:
-            - "last_converged": selects the the last config, if converged
-    """
+            - "last_converged": returns [last_config], if converged or None if not.
 
-    if subselect == "last_converged":
-        return [at for at in traj if at.info["minim_config_type"] == "minim_last_converged"]
+    """
+    if subselect is None:
+        return traj
+
+    elif subselect == "last_converged":
+        converged_configs = [at for at in traj if at.info["minim_config_type"] == "minim_last_converged"]
+        if len(converged_configs) == 0:
+            return None
+        else:
+            return converged_configs
 
     raise RuntimeError('trajectory resampling not implemented yet')
