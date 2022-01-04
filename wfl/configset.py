@@ -393,7 +393,6 @@ class ConfigSet_out:
         self.output_configs = None
         self.file_root = Path(file_root)
 
-
         if self.output_abcd:
             if self.all_or_none:
                 raise RuntimeError('all-or-none for database output not implemented')

@@ -52,7 +52,6 @@ def test_all_or_none(tmpdir):
 
     for i in range(10):
         at = Atoms('H')
-        # import pdb; pdb.set_trace()
         co.write(at, flush_interval=0)
 
     assert not Path(outfile).exists()
