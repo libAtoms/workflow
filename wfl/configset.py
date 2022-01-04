@@ -115,7 +115,7 @@ class ConfigSet_in:
                 input_files = [input_files]
 
             for glob_index in input_files:
-                if isinstance(glob_index, str):
+                if isinstance(glob_index, str) or isinstance(glob_index, Path):
                     glob_index = (glob_index, self.default_index)
                 if isinstance(glob_index[0], Path):
                     glob_index = (str(glob_index[0]), glob_index[1])
@@ -403,9 +403,7 @@ class ConfigSet_out:
                 print('writing to ABCD')
         elif output_files is not None:
             if isinstance(output_files, dict):
-                for key, val in output_files.items():
-                    if isinstance(val, str):
-                        output_files[key] = Path(val)
+                output_files = _from_dict_str_to_dict_Path(output_files)
                 self.output_files = [file_root/ fout for fout in output_files.values()]
                 self.output_files_map = lambda fin: file_root / output_files.get(Path(fin)) \
                                                     if isinstance(fin, str) \
@@ -576,10 +574,7 @@ class ConfigSet_out:
             if self.verbose:
                 print('renaming', self.tmp_output_files)
             for real_name, tmp_name in self.tmp_output_files:
-                # import pdb; pdb.set_trace()
-                # tmp_name.rename(real_name)
                 os.rename(tmp_name, real_name)
-
             self.tmp_output_files = None
 
 
@@ -617,3 +612,20 @@ class ConfigSet_out:
         if self.abcd is not None:
             s += _fmt('ABCD connection', str(self.abcd))
         return s
+
+def _from_dict_str_to_dict_Path(files_dict):
+    """ converts all strings in the dictionary  to Paths"""
+
+    keys = list(files_dict.keys())
+
+    for key in keys:
+        val = files_dict[key]
+
+        if isinstance(val, str):
+            val = Path(val)
+
+        if isinstance(key, str):
+            files_dict[Path(key)] = val
+            del files_dict[key]
+
+    return files_dict

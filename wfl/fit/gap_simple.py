@@ -112,9 +112,9 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
     if not fitting_configs_filename:
         fitting_configs_scratch_filename = fitting_configs.to_scratch_file('_GAP_fitting_configs.xyz')
         fitting_configs_filename = fitting_configs_scratch_filename
-
+    
     # kwargs overwrite the fitting_dict given
-    use_fitting_dict = dict(fitting_dict, atoms_filename=fitting_configs_filename, **kwargs)
+    use_fitting_dict = dict(fitting_dict, atoms_filename=str(fitting_configs_filename), **kwargs)
 
     fitting_line = dict_to_gap_fit_string(use_fitting_dict)
 
