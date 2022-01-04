@@ -31,7 +31,7 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Operations" href="operations.html" />
@@ -313,7 +313,7 @@
                 data-placement="left">.rst</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -331,7 +331,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -366,7 +366,89 @@
         </div>
     </div>
 </div>
-    <div id="main-content" class="row">
+    <!-- Table of contents that is only displayed when printing the page -->
+    <div id="jb-print-docs-body" class="onlyprint">
+        <h1>Automatic parallelization of tasks</h1>
+        <!-- Table of contents -->
+        <div id="print-main-content" class="row">
+            <div class="col-12 col-md-12 pl-md-5 pr-md-5">
+            <div id="jb-print-toc">
+                
+                <div>
+                    <h2> Contents </h2>
+                </div>
+                <nav aria-label="Page">
+                    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#runtime-view">
+   Runtime view
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#programming-time-view">
+   Programming-time view
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#mpi-with-wfl-mpipool">
+     MPI with
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       WFL_MPIPOOL
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                </nav>
+            </div>
+            
+              <div>
+                
+  <div class="section" id="automatic-parallelization-of-tasks">
+<span id="parallelisation"></span><h1>Automatic parallelization of tasks<a class="headerlink" href="#automatic-parallelization-of-tasks" title="Permalink to this headline">¶</a></h1>
+<p>Much of the pipeline, including the input/output facilitated by <code class="docutils literal notranslate"><span class="pre">ConfigSet_in</span></code>/<code class="docutils literal notranslate"><span class="pre">ConfigSet_out</span></code>, was designed that so that simple operations that need to be done to many configurations could easily be parallelized.  The mechanism for that is wrapping the fundamental operations in a call to <code class="docutils literal notranslate"><span class="pre">wfl.pipeline.iterable_loop</span></code>.</p>
+<div class="section" id="runtime-view">
+<h2>Runtime view<a class="headerlink" href="#runtime-view" title="Permalink to this headline">¶</a></h2>
+<p>Once a function that operates on individual configs has been wrapped, the user can get parallelization to happen in one of two different ways.  The first is the use of the env var <code class="docutils literal notranslate"><span class="pre">WFL_AUTOPARA_NPOOL</span></code>.  This variable should be set to a number, and that many python threads will be created (using <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool">multiprocessing.pool.Pool</a>).  The script should be run as usual.</p>
+<p>The other is to set the env var <code class="docutils literal notranslate"><span class="pre">WFL_MPIPOOL</span></code> to any value, and to run the script with <code class="docutils literal notranslate"><span class="pre">mpirun</span></code> (or whatever is appropriate for the installed MPI implementation).  All MPI tasks will be used to parallelize using <a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/">mpi4py</a> and <a class="reference external" href="https://github.com/mpipool/mpipool">mpipool</a>.</p>
+</div>
+<div class="section" id="programming-time-view">
+<h2>Programming-time view<a class="headerlink" href="#programming-time-view" title="Permalink to this headline">¶</a></h2>
+<p>To code an operation that can be parallelized over configuration (or any other iterable), it needs to be implemented as a function that it takes, normally as its first argument, an iterable, e.g. a list of <code class="docutils literal notranslate"><span class="pre">ase.atoms.Atoms</span></code>, and returns a list of <code class="docutils literal notranslate"><span class="pre">ase.atoms.Atoms</span></code> the same length.  Input can be any iterable, but output must be <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> or nothing, no other objects.  If the actual work is being done in a function called <code class="docutils literal notranslate"><span class="pre">op</span></code>, it should be defined as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+        <span class="n">output_ats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+        <span class="o">&lt;</span><span class="n">do</span> <span class="n">some</span> <span class="n">stuff</span> <span class="k">with</span> <span class="n">at</span> <span class="ow">and</span> <span class="n">argN</span><span class="o">&gt;</span>
+    <span class="n">output_ats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">at</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_ats</span>
+</pre></div>
+</div>
+<p>An auto-parallelized wrapper function can then be defined as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">wrapped_op</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">iterable_loop</span><span class="p">(</span><span class="n">iterable</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">configset_out</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=&lt;</span><span class="n">N</span><span class="o">&gt;</span><span class="p">,</span>
+          <span class="n">arg1</span><span class="o">=</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="o">=</span><span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="o">=</span><span class="n">arg3</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">chunksize</span></code> controls how many items from the input iterable are passed to each call of <code class="docutils literal notranslate"><span class="pre">op()</span></code> (to reduce startup overhead).  All arguments <em>must be</em> pickleable.  If something that cannot be pickled must be passed (e.g. a QUIP <code class="docutils literal notranslate"><span class="pre">Potential</span></code>), it must be passed in some way, e.g. a constructor function and its arguments, that _can_ be pickled.  For things that need to happen once per thread, e.g. random number initialization, there is an <code class="docutils literal notranslate"><span class="pre">initializer</span></code> argument to <code class="docutils literal notranslate"><span class="pre">iterable_loop()</span></code>.</p>
+<p>There are many examples of this, including the descriptor calculator, and (with initializers) md and minim.</p>
+<div class="section" id="mpi-with-wfl-mpipool">
+<h3>MPI with <code class="docutils literal notranslate"><span class="pre">WFL_MPIPOOL</span></code><a class="headerlink" href="#mpi-with-wfl-mpipool" title="Permalink to this headline">¶</a></h3>
+<p>The operator-level implementation of <code class="docutils literal notranslate"><span class="pre">mpipool</span></code>-based parallelization is the same.  The only difference is that (assuming that the script as a whole is written for a single task/thread), at startup the script has to call <code class="docutils literal notranslate"><span class="pre">wfl.mpipool_support.init()</span></code>.  This function will hang for every task except for <code class="docutils literal notranslate"><span class="pre">rank</span> <span class="pre">==</span> <span class="pre">0</span></code>, and all those tasks will wait for things to be done through the <code class="docutils literal notranslate"><span class="pre">mpipool</span></code> mechanism.  Task 0 should continue, doing whatever it needs to, and when it calls the wrapped operation it will be parallelized over all MPI tasks.</p>
+</div>
+</div>
+</div>
+
+
+              </div>
+              
+            </div>
+        </div>
+    </div>
+    <div id="main-content" class="row noprint">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
         
               <div>
@@ -430,15 +512,13 @@
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
-        
-            &copy; Copyright .<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
+    
+        &copy; Copyright .<br/>
+  </p>
+</footer>
 </main>
 
 

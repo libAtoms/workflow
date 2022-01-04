@@ -31,7 +31,7 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="wfl.fit.modify_database package" href="wfl.fit.modify_database.html" />
@@ -313,7 +313,7 @@
                 data-placement="left">.rst</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -331,7 +331,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -389,7 +389,140 @@
         </div>
     </div>
 </div>
-    <div id="main-content" class="row">
+    <!-- Table of contents that is only displayed when printing the page -->
+    <div id="jb-print-docs-body" class="onlyprint">
+        <h1>wfl.fit package</h1>
+        <!-- Table of contents -->
+        <div id="print-main-content" class="row">
+            <div class="col-12 col-md-12 pl-md-5 pr-md-5">
+            <div id="jb-print-toc">
+                
+                <div>
+                    <h2> Contents </h2>
+                </div>
+                <nav aria-label="Page">
+                    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#subpackages">
+   Subpackages
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#submodules">
+   Submodules
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-fit-gap-multistage-module">
+   wfl.fit.gap_multistage module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.fit.gap_relocate">
+   wfl.fit.gap_relocate module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-fit-gap-simple-module">
+   wfl.fit.gap_simple module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-fit-glue-2b-module">
+   wfl.fit.glue_2b module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-fit-ref-error-module">
+   wfl.fit.ref_error module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-fit-utils-module">
+   wfl.fit.utils module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.fit">
+   Module contents
+  </a>
+ </li>
+</ul>
+
+                </nav>
+            </div>
+            
+              <div>
+                
+  <div class="section" id="wfl-fit-package">
+<h1>wfl.fit package<a class="headerlink" href="#wfl-fit-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="wfl.fit.modify_database.html">wfl.fit.modify_database package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.modify_database.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.modify_database.html#wfl-fit-modify-database-gap-rss-set-config-sigmas-from-convex-hull-module">wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.modify_database.html#wfl-fit-modify-database-simple-factor-nonperiodic-module">wfl.fit.modify_database.simple_factor_nonperiodic module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.modify_database.html#module-wfl.fit.modify_database">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wfl-fit-gap-multistage-module">
+<h2>wfl.fit.gap_multistage module<a class="headerlink" href="#wfl-fit-gap-multistage-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-wfl.fit.gap_relocate">
+<span id="wfl-fit-gap-relocate-module"></span><h2>wfl.fit.gap_relocate module<a class="headerlink" href="#module-wfl.fit.gap_relocate" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.fit.gap_relocate.gap_relocate">
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.gap_relocate.</span></span><span class="sig-name descname"><span class="pre">gap_relocate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_filename_glob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_old</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.gap_relocate.gap_relocate" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>relocate a GAP from one file to another, changing tags and attributes as needed to</dt><dd><p>be consistent with new name, and renaming additional files (referred to in the xml
+or just with same leading part of name</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_file</strong> (<em>str</em>) – original GAP xml filename</p></li>
+<li><p><strong>new_file</strong> (<em>str</em>) – new GAP xml filename</p></li>
+<li><p><strong>extra_filename_glob</strong> (<em>str</em><em>, </em><em>default '*'</em>) – glob to add to end of old_file to generate list of files that need to be renamed</p></li>
+<li><p><strong>delete_old</strong> (<em>bool</em><em>, </em><em>default False</em>) – delete the old_file and all the other related files</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="wfl-fit-gap-simple-module">
+<h2>wfl.fit.gap_simple module<a class="headerlink" href="#wfl-fit-gap-simple-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wfl-fit-glue-2b-module">
+<h2>wfl.fit.glue_2b module<a class="headerlink" href="#wfl-fit-glue-2b-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wfl-fit-ref-error-module">
+<h2>wfl.fit.ref_error module<a class="headerlink" href="#wfl-fit-ref-error-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wfl-fit-utils-module">
+<h2>wfl.fit.utils module<a class="headerlink" href="#wfl-fit-utils-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-wfl.fit">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.fit" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+              </div>
+              
+            </div>
+        </div>
+    </div>
+    <div id="main-content" class="row noprint">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
         
               <div>
@@ -481,15 +614,13 @@ or just with same leading part of name</p>
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
-        
-            &copy; Copyright .<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
+    
+        &copy; Copyright .<br/>
+  </p>
+</footer>
 </main>
 
 
