@@ -198,7 +198,7 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
         # Note that if resampling doesn't include original last config, later
         # steps won't be able to identify those configs as the (perhaps unconverged) minima.
         # Perhaps status should be set after resampling?
-        traj = resample_traj(traj, subselect=traj_subselect)
+        traj = subselect_from_traj(traj, subselect=traj_subselect)
 
         all_trajs.append(traj)
 
@@ -210,7 +210,7 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
 #    equispaced in Cartesian path length
 #    equispaced in some other kind of distance (e.g. SOAP)
 # also, should it also have max distance instead of number of samples?
-def resample_traj(traj, subselect=None):
+def subselect_from_traj(traj, subselect=None):
     """Sub-selects configurations from trajectory.
 
     Parameters
@@ -232,4 +232,5 @@ def resample_traj(traj, subselect=None):
         else:
             return converged_configs
 
-    raise RuntimeError('trajectory resampling not implemented yet')
+    raise RuntimeError(f'Subselecting confgs from trajectory with rule '
+                       f'"subselect={subselect}" is not yet implemented')

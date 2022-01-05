@@ -153,7 +153,7 @@ def test_relax_fixed_vol(cu_slab):
     assert atoms_opt.info['config_type'] == 'cu_slab_minim_last_converged'
 
 
-def test_resampling_trajectory(cu_slab):
+def test_subselect_from_traj(cu_slab):
 
     calc = EMT()
 
