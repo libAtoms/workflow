@@ -50,8 +50,9 @@ class ConfigSet_in:
         path to prepend to every file name
     input_files: str / iterable(str) / 2-tuple(str) / iterable(2-tuple(str))
         Input file name globs, optionally as 2-tuples of (filename_glob, index).
-        The latter only works with more than one tuple index here overrides 
-        separate default_index arg. pathlib.Path may be used instead of str. 
+        The latter only works with more than one tuple. 
+        Index here overrides separate default_index arg. 
+        pathlib.Path may be used instead of str. 
     default_index: str, default `:`
         default indexing, applied to all files unless overridden by indexing specified in input_files argument
     input_queries: dict/str / iterable(dict/str)
@@ -104,9 +105,6 @@ class ConfigSet_in:
         elif input_files is not None:
             # fix up files
             self.input_files = []
-            if isinstance(input_files, Path):
-                # Path.glob() below takes string as argument
-                input_files = str(input_files)
             if isinstance(input_files, str):
                 # single string, one glob
                 # can't accept one 2-tuple of (file, index) because there's no perfect way of distinguishing it from
@@ -264,6 +262,7 @@ class ConfigSet_in:
         """
 
         if self.input_configs is not None:
+            # keep nesting in case the configs are stored as list of lists of Atoms
             return ConfigSet_in(input_configs=self.input_configs)
         else:
             return ConfigSet_in(input_configs=list(self))
@@ -402,7 +401,7 @@ class ConfigSet_out:
                 print('writing to ABCD')
         elif output_files is not None:
             if isinstance(output_files, dict):
-                output_files = _from_dict_str_to_dict_Path(output_files)
+                output_files = {Path(k): Path(v) for k, v in output_files.items()}
                 self.output_files = [file_root/ fout for fout in output_files.values()]
                 self.output_files_map = lambda fin: file_root / output_files.get(Path(fin)) \
                                                     if isinstance(fin, str) \
@@ -612,19 +611,3 @@ class ConfigSet_out:
             s += _fmt('ABCD connection', str(self.abcd))
         return s
 
-def _from_dict_str_to_dict_Path(files_dict):
-    """ converts all strings in the dictionary  to Paths"""
-
-    keys = list(files_dict.keys())
-
-    for key in keys:
-        val = files_dict[key]
-
-        if isinstance(val, str):
-            val = Path(val)
-
-        if isinstance(key, str):
-            files_dict[Path(key)] = val
-            del files_dict[key]
-
-    return files_dict
