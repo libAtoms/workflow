@@ -438,19 +438,20 @@
         </div>
     </div>
 </div>
-    <!-- Table of contents that is only displayed when printing the page -->
-    <div id="jb-print-docs-body" class="onlyprint">
-        <h1>wfl.utils package</h1>
-        <!-- Table of contents -->
-        <div id="print-main-content" class="row">
-            <div class="col-12 col-md-12 pl-md-5 pr-md-5">
-            <div id="jb-print-toc">
-                
-                <div>
-                    <h2> Contents </h2>
-                </div>
-                <nav aria-label="Page">
-                    <ul class="visible nav section-nav flex-column">
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>wfl.utils package</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#submodules">
    Submodules
@@ -548,7 +549,9 @@
  </li>
 </ul>
 
-                </nav>
+                        </nav>
+                    </div>
+                </div>
             </div>
             
               <div>
@@ -741,204 +744,8 @@ has been used as the kwargs of a format() call.</p>
 
               </div>
               
-            </div>
-        </div>
-    </div>
-    <div id="main-content" class="row noprint">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
-              <div>
-                
-  <div class="section" id="wfl-utils-package">
-<h1>wfl.utils package<a class="headerlink" href="#wfl-utils-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="wfl-utils-at-copy-save-results-module">
-<h2>wfl.utils.at_copy_save_results module<a class="headerlink" href="#wfl-utils-at-copy-save-results-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="wfl-utils-convex-hull-module">
-<h2>wfl.utils.convex_hull module<a class="headerlink" href="#wfl-utils-convex-hull-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-wfl.utils.file_utils">
-<span id="wfl-utils-file-utils-module"></span><h2>wfl.utils.file_utils module<a class="headerlink" href="#module-wfl.utils.file_utils" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.utils.file_utils.clean_dir">
-<span class="sig-prename descclassname"><span class="pre">wfl.utils.file_utils.</span></span><span class="sig-name descname"><span class="pre">clean_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.file_utils.clean_dir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clean a run directory and keep only the specified files</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>directory</strong> (<em>directory to be cleaned</em>) – </p></li>
-<li><p><strong>keep_files</strong> (<em>bool</em><em> or </em><em>list</em><em>(</em><em>filenames</em><em>) or </em><em>str</em>) – <dl class="simple">
-<dt>What to keep in rundir when done:</dt><dd><ul>
-<li><p>list(filenames) : ONLY these filenames if they exist</p></li>
-<li><p>True or “*” : everything - does nothing</p></li>
-<li><p>False or None : remove everything, or anything evaluating to False in if</p></li>
-</ul>
-</dd>
-</dl>
-</p></li>
-<li><p><strong>force</strong> (<em>bool</em><em>, </em><em>default = False</em>) – fail if directory does not exist</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="wfl-utils-find-voids-module">
-<h2>wfl.utils.find_voids module<a class="headerlink" href="#wfl-utils-find-voids-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="wfl-utils-gap-xml-tools-module">
-<h2>wfl.utils.gap_xml_tools module<a class="headerlink" href="#wfl-utils-gap-xml-tools-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-wfl.utils.logging">
-<span id="wfl-utils-logging-module"></span><h2>wfl.utils.logging module<a class="headerlink" href="#module-wfl.utils.logging" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.utils.logging.increment_active_iter">
-<span class="sig-prename descclassname"><span class="pre">wfl.utils.logging.</span></span><span class="sig-name descname"><span class="pre">increment_active_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active_iter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.logging.increment_active_iter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.utils.logging.print_log">
-<span class="sig-prename descclassname"><span class="pre">wfl.utils.logging.</span></span><span class="sig-name descname"><span class="pre">print_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_time=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logfile=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='utf-8'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.logging.print_log" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.utils.logging.process_active_iter">
-<span class="sig-prename descclassname"><span class="pre">wfl.utils.logging.</span></span><span class="sig-name descname"><span class="pre">process_active_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active_iter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.logging.process_active_iter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="wfl-utils-misc-module">
-<h2>wfl.utils.misc module<a class="headerlink" href="#wfl-utils-misc-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="wfl-utils-ndim-neighbor-list-module">
-<h2>wfl.utils.ndim_neighbor_list module<a class="headerlink" href="#wfl-utils-ndim-neighbor-list-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="wfl-utils-parallel-module">
-<h2>wfl.utils.parallel module<a class="headerlink" href="#wfl-utils-parallel-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-wfl.utils.params">
-<span id="wfl-utils-params-module"></span><h2>wfl.utils.params module<a class="headerlink" href="#module-wfl.utils.params" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="wfl.utils.params.Params">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.utils.params.</span></span><span class="sig-name descname"><span class="pre">Params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cur_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.params.Params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py property">
-<dt class="sig sig-object py" id="wfl.utils.params.Params.cur_iter">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cur_iter</span></span><a class="headerlink" href="#wfl.utils.params.Params.cur_iter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="wfl.utils.params.Params.dft_code">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dft_code</span></span><a class="headerlink" href="#wfl.utils.params.Params.dft_code" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="wfl.utils.params.Params.dft_params">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dft_params</span></span><a class="headerlink" href="#wfl.utils.params.Params.dft_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.utils.params.Params.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.params.Params.get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="wfl.utils.params.Params.implemented_calculators">
-<span class="sig-name descname"><span class="pre">implemented_calculators</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('CASTEP',</span> <span class="pre">'VASP',</span> <span class="pre">'ORCA')</span></em><a class="headerlink" href="#wfl.utils.params.Params.implemented_calculators" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="wfl-utils-pressure-module">
-<h2>wfl.utils.pressure module<a class="headerlink" href="#wfl-utils-pressure-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="wfl-utils-quip-cli-strings-module">
-<h2>wfl.utils.quip_cli_strings module<a class="headerlink" href="#wfl-utils-quip-cli-strings-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-wfl.utils.replace_eval_in_strs">
-<span id="wfl-utils-replace-eval-in-strs-module"></span><h2>wfl.utils.replace_eval_in_strs module<a class="headerlink" href="#module-wfl.utils.replace_eval_in_strs" title="Permalink to this headline">¶</a></h2>
-<p>Evaluation of expressions marked with _EVAL_ in strings, mainly used for interpreting config files.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.utils.replace_eval_in_strs.replace_eval_in_strs">
-<span class="sig-prename descclassname"><span class="pre">wfl.utils.replace_eval_in_strs.</span></span><span class="sig-name descname"><span class="pre">replace_eval_in_strs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replacements</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_float_sig_figs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.replace_eval_in_strs.replace_eval_in_strs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Replace some string beginning with _EVAL_ in nested data structures
-with the result of eval() on them. Any lists, tuples, and dicts will
-be gone through recursively and replaced with substituted contents.
-Any strings starting with ‘_EVAL_ ‘ will be replaced with the result
-of an eval() call on the remainder of the string, after <cite>replacements</cite>
-has been used as the kwargs of a format() call.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> (<em>python object</em>) – data structure to go through and replace ‘_EVAL_ …’ with return value of eval()</p></li>
-<li><p><strong>replacements</strong> (<em>dict</em>) – keywords to format() call to be applied to each string before eval()</p></li>
-<li><p><strong>n_float_sig_figs</strong> (<em>int</em>) – if not None, round float output of each eval to this many significant figures</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong> – their eval() result</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>python object with new lists, tuples, and dicts, with _EVAL_ strings replaced by</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="module-wfl.utils.round_sig_figs">
-<span id="wfl-utils-round-sig-figs-module"></span><h2>wfl.utils.round_sig_figs module<a class="headerlink" href="#module-wfl.utils.round_sig_figs" title="Permalink to this headline">¶</a></h2>
-<p>Rounding floats to significant figures</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.utils.round_sig_figs.round_sig_figs">
-<span class="sig-prename descclassname"><span class="pre">wfl.utils.round_sig_figs.</span></span><span class="sig-name descname"><span class="pre">round_sig_figs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sig_figs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.round_sig_figs.round_sig_figs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Round to a certain number of significant figures</p>
-<p>based on:
-<a class="reference external" href="https://stackoverflow.com/questions/3410976/how-to-round-a-number-to-significant-figures-in-python">https://stackoverflow.com/questions/3410976/how-to-round-a-number-to-significant-figures-in-python</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<em>float</em>) – value to round</p></li>
-<li><p><strong>n_sig_figs</strong> (<em>int</em>) – number of significant figures</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>string representation of v, rounded to n_sig_figs significant figures</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="wfl-utils-vector-utils-module">
-<h2>wfl.utils.vector_utils module<a class="headerlink" href="#wfl-utils-vector-utils-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-wfl.utils.version">
-<span id="wfl-utils-version-module"></span><h2>wfl.utils.version module<a class="headerlink" href="#module-wfl.utils.version" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.utils.version.get_wfl_version">
-<span class="sig-prename descclassname"><span class="pre">wfl.utils.version.</span></span><span class="sig-name descname"><span class="pre">get_wfl_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.version.get_wfl_version" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="wfl-utils-vol-composition-space-module">
-<h2>wfl.utils.vol_composition_space module<a class="headerlink" href="#wfl-utils-vol-composition-space-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-wfl.utils">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.utils" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
-
-
-              </div>
-              
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="wfl.select_configs.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -948,7 +755,7 @@ has been used as the kwargs of a format() call.</p>
         </div>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
