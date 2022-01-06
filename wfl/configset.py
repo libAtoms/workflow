@@ -105,7 +105,7 @@ class ConfigSet_in:
         elif input_files is not None:
             # fix up files
             self.input_files = []
-            if isinstance(input_files, str):
+            if isinstance(input_files, str) or isinstance(input_files, Path):
                 # single string, one glob
                 # can't accept one 2-tuple of (file, index) because there's no perfect way of distinguishing it from
                 #    2-tuple of filenames (unless we want to test whether second file is in form of an index and assume
