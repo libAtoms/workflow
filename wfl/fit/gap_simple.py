@@ -1,7 +1,6 @@
 import sys
 import os
 import subprocess
-import json
 from pathlib import Path
 from copy import deepcopy
 
@@ -18,8 +17,8 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
 
     Parameters
     ----------
-    fitting_configs: str, ConfigSet_in
-        filename or set of configurations to fit
+    fitting_configs: ConfigSet_in
+        set of configurations to fit
     fitting_dict: dict
         dict of keys to turn into command line for gap_fit
     stdout_file: str
@@ -30,7 +29,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
     do_fit: bool, default True
         carry out the fit, otherwise only print fitting command
     remote_info: dict or wfl.pipeline.utils.RemoteInfo, or '_IGNORE' or None
-        If present and not None and not 'IGNORE_NONE', RemoteInfo or dict with kwargs for RemoteInfo
+        If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
         will try to use env var WFL_GAP_SIMPLE_FIT_REMOTEINFO used (see below). '_IGNORE' is for
         internal use, to ensure that remotely running job does not itself attempt to spawn another
@@ -47,9 +46,6 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
 
     remote_info = to_RemoteInfo(remote_info, 'WFL_GAP_SIMPLE_FIT_REMOTEINFO')
     assert 'atoms_filename' not in fitting_dict and 'at_file' not in fitting_dict
-
-    if isinstance(fitting_configs, str):
-        fitting_configs = ConfigSet_in(input_files=fitting_configs)
 
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.input_files.copy()
@@ -110,7 +106,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
     fitting_configs_scratch_filename = None
     fitting_configs_filename = fitting_configs.is_one_file()
     if not fitting_configs_filename:
-        fitting_configs_scratch_filename = fitting_configs.to_scratch_file('_GAP_fitting_configs.xyz')
+        fitting_configs_scratch_filename = fitting_configs.to_file('_GAP_fitting_configs.xyz', scratch=True)
         fitting_configs_filename = fitting_configs_scratch_filename
 
     # kwargs overwrite the fitting_dict given

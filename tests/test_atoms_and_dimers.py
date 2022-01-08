@@ -2,10 +2,10 @@ import numpy as np
 from pytest import approx, raises
 
 from wfl.configset import ConfigSet_in, ConfigSet_out
-from wfl.generate_configs.atoms_and_dimers import prepare, single_atom_from_e0
+from wfl.generate_configs.atoms_and_dimers import prepare, isolated_atom_from_e0
 
 
-def test_single_atom_from_e0(tmp_path):
+def test_isolated_atom_from_e0(tmp_path):
     e0_dict = dict(H=1.0, C=5.0, As=123.0)
     e0_dict_num = {1: 1.0, 3: 3.0}
     extra_info_faulty = dict(energy=0.0)
@@ -20,10 +20,10 @@ def test_single_atom_from_e0(tmp_path):
 
     # expected errors
     with raises(ValueError, match=r".*key given in the extra info for isolated atom.*"):
-        single_atom_from_e0(None, e0_dict, 10.0, extra_info=extra_info_faulty)
+        isolated_atom_from_e0(None, e0_dict, 10.0, extra_info=extra_info_faulty)
 
     # normal behaviour
-    single_atom_from_e0(configset_0, e0_dict, 10.0, "energy_key", extra_info_ok)
+    isolated_atom_from_e0(configset_0, e0_dict, 10.0, "energy_key", extra_info_ok)
     test_in0 = ConfigSet_in(file_root=tmp_path, input_files="test.isolated0.xyz")
     for at in test_in0:
         assert at.info["energy_key"] == e0_dict[at.get_chemical_formula()]
@@ -31,7 +31,7 @@ def test_single_atom_from_e0(tmp_path):
             assert at.info[key] == val
         assert np.all(at.cell == [[10.0, 0.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 10.0]])
 
-    single_atom_from_e0(configset_1, e0_dict_num, 10.0)
+    isolated_atom_from_e0(configset_1, e0_dict_num, 10.0)
     test_in1 = ConfigSet_in(file_root=tmp_path, input_files="test.isolated1.xyz")
     for at in test_in1:
         assert at.get_potential_energy() == e0_dict_num[at.get_atomic_numbers()[0]]
@@ -68,7 +68,7 @@ def test_dimers(tmp_path):
     # no single atoms created
     assert all(
         [
-            at.info.get("config_type", "") != "single_atom"
+            at.info.get("config_type", "") != "isolated_atom"
             for at in configset_0.to_ConfigSet_in()
         ]
     )
@@ -98,7 +98,7 @@ def test_dimers(tmp_path):
     volume_isolated_atom = [
         at.get_volume()
         for at in configset_1.to_ConfigSet_in()
-        if at.info.get("config_type", "") == "single_atom"
+        if at.info.get("config_type", "") == "isolated_atom"
     ]
     assert sorted(np.unique(distances_created)) == approx([0.4, 1.0, 1.6])
     # assert sorted(volume_isolated_atom) == approx([10. ** 3, 30. ** 3, 100. ** 3])
@@ -121,7 +121,7 @@ def test_dimers(tmp_path):
     volume_isolated_atom = [
         at.get_volume()
         for at in configset_1p.to_ConfigSet_in()
-        if at.info.get("config_type", "") == "single_atom"
+        if at.info.get("config_type", "") == "isolated_atom"
     ]
     assert sorted(np.unique(distances_created)) == approx([0.4, 1.0, 1.6])
     assert volume_isolated_atom == approx([16.1 ** 3] * 3)

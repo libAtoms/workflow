@@ -522,10 +522,10 @@ Cu       3.19207051       4.04435740       5.16323578       3.36309217       1.6
 Cu       4.44526494       4.75125328       3.40597368       1.84903644       3.07079402       2.58072768
 Cu       1.22069669       4.81727861       5.83418055      -0.89672573       2.12058611      -1.65386255
 1
-Lattice="14.399999999999999 0.0 0.0 0.0 14.399999999999999 0.0 0.0 0.0 14.399999999999999" Properties=species:S:1:pos:R:3:REF_forces:R:3 config_type=single_atom vasp_rundir=run_iter_0/run_VASP_ya09_qus REF_energy=-0.02897771 pbc="F F F"
+Lattice="14.399999999999999 0.0 0.0 0.0 14.399999999999999 0.0 0.0 0.0 14.399999999999999" Properties=species:S:1:pos:R:3:REF_forces:R:3 config_type=isolated_atom vasp_rundir=run_iter_0/run_VASP_ya09_qus REF_energy=-0.02897771 pbc="F F F"
 Li       0.00000000       0.00000000       0.00000000       0.00000030       0.00000008      -0.00000002
 1
-Lattice="13.200000000000001 0.0 0.0 0.0 13.200000000000001 0.0 0.0 0.0 13.200000000000001" Properties=species:S:1:pos:R:3:REF_forces:R:3 config_type=single_atom vasp_rundir=run_iter_0/run_VASP_tbhujnbs REF_energy=1.58219012 pbc="F F F"
+Lattice="13.200000000000001 0.0 0.0 0.0 13.200000000000001 0.0 0.0 0.0 13.200000000000001" Properties=species:S:1:pos:R:3:REF_forces:R:3 config_type=isolated_atom vasp_rundir=run_iter_0/run_VASP_tbhujnbs REF_energy=1.58219012 pbc="F F F"
 Cu       0.00000000       0.00000000       0.00000000      -0.00000132      -0.00000111       0.00000622
 2
 Lattice="14.399999999999999 0.0 0.0 0.0 14.399999999999999 0.0 0.0 0.0 14.399999999999999" Properties=species:S:1:pos:R:3:REF_forces:R:3 config_type=dimer vasp_rundir=run_iter_0/run_VASP_mm3wjs3r REF_energy=0.82100856 pbc="F F F"

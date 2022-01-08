@@ -76,11 +76,13 @@ def test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir='run
     fit_config_file = os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')
     params = get_params(fit_config_file, os.path.join(os.path.dirname(request.fspath), 'assets', 'length_scales.yaml'))
 
+    # need to apply modify here
+    # database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
+
     GAP = fit(ConfigSet_in(input_files=fit_config_file),
               run_dir=run_dir,
               GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
-              database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
-              calc_fitting_error=True, num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25])
+              num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25])
     print('GAP', GAP)
 
     # for debugging purposes
@@ -94,10 +96,6 @@ def test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir='run
         assert os.path.getsize(os.path.join(tmp_path, run_dir, f'GAP.B_test.committee_{i}.xml')) > 0
 
     assert os.path.exists(os.path.join(tmp_path, run_dir, f'GAP.B_test.committee_{i}.xml'))
-    with open(f'{tmp_path}/{run_dir}/GAP.B_test.committee_0.xml.fitting_err.json') as fin:
-        fit_err = json.load(fin)
-    assert set(fit_err.keys()) == set(['_ALL_'])
-    assert set(fit_err['_ALL_'].keys()) == set(['energy_per_atom', 'forces', 'virial_per_atom'])
 
 
 @pytest.mark.skipif(not shutil.which("gap_fit"), reason="gap_fit not in PATH")  # skips it if gap_fit not in path
@@ -131,14 +129,16 @@ def test_gap_multistage_fit_interrupt(request, tmp_path, quippy):
     fit_config_file = os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')
     params = get_params(fit_config_file, os.path.join(os.path.dirname(request.fspath), 'assets', 'length_scales.yaml'))
 
+    # need to apply this manually
+    # database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
+
     normal_fit_path = os.path.join(tmp_path, 'normal_fit')
     os.mkdir(normal_fit_path)
     print('getting fitting data from ', request.fspath)
     GAP = fit(ConfigSet_in(input_files=fit_config_file),
               run_dir=normal_fit_path,
               GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
-              database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
-              calc_fitting_error=True, num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25],
+              num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25],
               skip_if_present=True)
     print('GAP', GAP)
 
@@ -158,8 +158,7 @@ def test_gap_multistage_fit_interrupt(request, tmp_path, quippy):
         GAP = fit(ConfigSet_in(input_files=fit_config_file),
                   run_dir=interrupted_stage_path,
                   GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
-                  database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
-                  calc_fitting_error=True, num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25],
+                  num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25],
                   skip_if_present=True)
     except:
         pass
@@ -172,8 +171,7 @@ def test_gap_multistage_fit_interrupt(request, tmp_path, quippy):
         GAP = fit(ConfigSet_in(input_files=fit_config_file),
                   run_dir=interrupted_stage_path,
                   GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
-                  database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
-                  calc_fitting_error=True, num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25],
+                  num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25],
                   skip_if_present=True)
     except:
         pass
@@ -186,8 +184,7 @@ def test_gap_multistage_fit_interrupt(request, tmp_path, quippy):
     GAP = fit(ConfigSet_in(input_files=fit_config_file),
               run_dir=interrupted_stage_path,
               GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
-              database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
-              calc_fitting_error=True, num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25],
+              num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25],
               skip_if_present=True)
 
     print('GAP', GAP)

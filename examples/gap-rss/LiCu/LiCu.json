@@ -90,9 +90,9 @@
       "nelm": 150,
       "isym": 0,
       "lplane": false,
-      "lscalapack": false
+      "lscalapack": false,
+      "VASP_PP_PATH": "/share/apps/vasp/pot/rev_54/PBE"
     },
-    "VASP_potcar_path": "/share/apps/vasp/pot/rev_54/PBE"
   },
   "fit": {
     "GAP_template_file": "multistage_GAP_fit_settings.short_range_2b_SE_universal_SOAPs_12_3.template.yaml",

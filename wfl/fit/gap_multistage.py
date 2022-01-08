@@ -3,7 +3,6 @@ import json
 import os
 import warnings
 from copy import deepcopy
-from pprint import pprint
 
 from pathlib import Path
 from xml.etree import cElementTree
@@ -16,8 +15,8 @@ from wfl.configset import ConfigSet_in, ConfigSet_out
 from wfl.descriptor_heuristics import descriptor_2brn_uniform_file, descriptors_from_length_scales
 from wfl.fit.gap_simple import run_gap_fit
 from wfl.utils.quip_cli_strings import dict_to_quip_str
-from .ref_error import calc as ref_error_calc, clean_up_for_json
 from .utils import to_RemoteInfo
+from .modify_database.scale_orig import modify as modify_scale_orig
 
 try:
     from expyre import ExPyRe
@@ -94,12 +93,9 @@ def max_cutoff(params):
 
 # noinspection PyPep8,PyPep8Naming
 def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
-        database_modify_mod=None, field_error_scale_factors=None,
-        seeds=None, verbose=False, calc_fitting_error=False, testing_configs=None,
-        skip_if_present=False, err_category_keys=None, run_dir=None,
-        num_committee=0, committee_extra_seeds=None,
-        committee_name_postfix=None, save_err_configs_basename=None,
-        remote_info=None):
+        seeds=None, skip_if_present=False, run_dir=None,
+        num_committee=0, committee_extra_seeds=None, committee_name_postfix=None,
+        verbose=False, remote_info=None):
     """Fit a GAP iteratively, setting delta from error relative to previous stage
 
     Parameters
@@ -112,23 +108,12 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         parameters controlling each stage of fit, typically read in from YAML file
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress, hessian)
-    database_modify_mod: str
-        name of python module defining a modify() function which does things like setting energy/force sigma, etc
-    field_error_scale_factors: { 'energy_sigma' : E_factor, 'force_sigma' : F_factor, 'virial_sigma' : V_factor,
-                                 'hessian_sigma' : H_factor }
-        scale factors for error in E, F, V, H
     seeds: list(int)
         random seeds for each stage of fitting
     verbose: bool, default False
         verbose output
-    calc_fitting_error: bool, default False
-        do not calculate fitting error
-    testing_configs: ConfigSet_in
-        configurations to calculate testing error on
     skip_if_present: bool, default False
         skip if final GAP file exists in expected place
-    err_category_keys: list(str)
-        list of Atoms.info keys to combine into the categories by which the fitting/testing error is tabulated
     run_dir: str, default '.'
         directory to run fitting in
     num_committee: int, default 0
@@ -138,10 +123,8 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         random seeds to use for committee of models after 0th
     committee_name_postfix: str / None
         str to add to name of committee models in the format: "{GAP_name}{committee_name_postfix}{num}.xml"
-    save_err_configs_basename: str / None
-        name of file to use for results calculated as part of error evaluation, prepended with "fitting\_" and "testing\_"
     remote_info: dict or wfl.pipeline.utils.RemoteInfo, or '_IGNORE' or None
-        If present and not None and not 'IGNORE_NONE', RemoteInfo or dict with kwargs for RemoteInfo
+        If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
         will try to use env var WFL_GAP_MULTISTAGE_FIT_REMOTEINFO used (see below). '_IGNORE' is for
         internal use, to ensure that remotely running job does not itself attempt to spawn another
@@ -155,10 +138,8 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
     Returns
     -------
-    tuple(final_GAP_file, fitting_err, testing_err)
-        string name of final GAP xml file
-        dict with fitting error (None if calc_fitting_error is False)
-        dict with testing error (None if testing_configs is None)
+    final_GAP_file, final_GAP_name
+        string name of final GAP xml file, and name of corresponding GAP (xml label)
     """
     if run_dir is None:
         run_dir = '.'
@@ -175,23 +156,21 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
     if remote_info is not None and remote_info != '_IGNORE':
         # check if we can skip
-        need_to_recalc = True
+        need_to_fit = True
         if skip_if_present:
-            need_to_recalc = False
+            need_to_fit = False
             for final_GAPfile in final_GAPfiles:
                 try:
                     cElementTree.parse(final_GAPfile)
                 except:
-                    need_to_recalc = True
+                    need_to_fit = True
                     break
 
-        if need_to_recalc:
+        if need_to_fit:
             input_files = remote_info.input_files.copy()
             output_files = remote_info.output_files.copy()
 
             fitting_configs = fitting_configs.in_memory()
-            if testing_configs is not None:
-                testing_configs = testing_configs.in_memory()
 
             output_files.append(str(run_dir))
 
@@ -203,12 +182,9 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
             xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                          env_vars=remote_info.env_vars, input_files=remote_info.input_files, output_files=output_files, function=fit,
                          kwargs={'fitting_configs': fitting_configs, 'GAP_name': GAP_name, 'params': params, 'ref_property_prefix': ref_property_prefix,
-                                 'database_modify_mod': database_modify_mod, 'field_error_scale_factors': field_error_scale_factors,
-                                  'seeds': seeds, 'verbose': verbose, 'calc_fitting_error': calc_fitting_error, 'testing_configs': testing_configs,
-                                  'skip_if_present': skip_if_present, 'err_category_keys': err_category_keys, 'run_dir': run_dir,
-                                  'num_committee': num_committee, 'committee_extra_seeds': committee_extra_seeds,
-                                  'committee_name_postfix': committee_name_postfix, 'save_err_configs_basename': save_err_configs_basename,
-                                  'remote_info': '_IGNORE'})
+                                 'seeds': seeds, 'skip_if_present': skip_if_present, 'run_dir': run_dir, 
+                                 'num_committee': num_committee, 'committee_extra_seeds': committee_extra_seeds,
+                                 'committee_name_postfix': committee_name_postfix, 'verbose': verbose, 'remote_info': '_IGNORE'})
 
             xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name,
                       exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
@@ -221,19 +197,12 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
             return results
 
-        # perhaps this should be refactored so that actual fit happens in a single function which can be wrapped or not
-        # and only one call to _calc_errors is needed.
-
         # GAPs are all OK, but errors might not be calculated
-        fitting_error, testing_error = _calc_errors(final_GAPfiles[0], final_GAPnames[0],
-                                                    save_err_configs_basename, ref_property_prefix,
-                                                    err_category_keys, run_dir,
-                                                    calc_fitting_error, fitting_configs, testing_configs)
 
         if num_committee > 0:
-            return final_GAPfiles, fitting_error, testing_error
+            return final_GAPfiles, finale_GAPnames
         else:
-            return final_GAPfiles[0], fitting_error, testing_error
+            return final_GAPfiles[0], final_GAPnames[0]
 
     assert isinstance(ref_property_prefix, str) and len(ref_property_prefix) > 0
 
@@ -242,10 +211,8 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
     max_seed = np.iinfo(np.int32).max
 
-    # read configs and set per-config sigmas if requested
-    if field_error_scale_factors is None:
-        field_error_scale_factors = {}
-    fitting_configs = list(fitting_configs)
+    # read configs into a list in memory
+    fitting_configs = fitting_configs.in_memory()
 
     # delete calculators so as to not confuse the issue
     for at in fitting_configs:
@@ -266,10 +233,6 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
     ref_energy_key = ref_property_prefix + 'energy'
 
-    if database_modify_mod is not None:
-        import importlib
-        database_modify_mod = importlib.import_module(database_modify_mod)
-
     # gather set of all species to be fit
     Zs = set([Z for at in fitting_configs for Z in at.numbers])
 
@@ -278,20 +241,20 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
     for at in fitting_configs:
         if 'config_type' not in at.info:
             at.info['config_type'] = '_NONE_'
-        if at.info['config_type'] == 'single_atom':
+        if at.info['config_type'] == 'isolated_atom':
             Z = at.get_atomic_numbers()[0]
             if Z in e0s.keys():
-                raise Exception('got more than one single_atom config for Z={}'.format(Z))
+                raise Exception('got more than one isolated_atom config for Z={}'.format(Z))
             else:
                 if any(at.pbc):
-                    raise RuntimeError('config_type==single_atom Z={} does not have all(pbc==False)'.format(Z))
+                    raise RuntimeError('config_type==isolated_atom Z={} does not have all(pbc==False)'.format(Z))
                 e0s[Z] = at.info[ref_energy_key] / len(at)
     if verbose:
         print('e0s', e0s)
     # check to make sure all Zs have e0 value set
     for Z in Zs:
         if Z not in e0s:
-            raise RuntimeError('Did not find config_type==single_atom (to get e0) for Z {}'.format(Z))
+            raise RuntimeError('Did not find config_type==isolated_atom (to get e0) for Z {}'.format(Z))
 
     # create core Potential
     if 'core_ip_args' in params or 'core_ip_file' in params:
@@ -306,6 +269,8 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         seeds = [int(rg.integers(max_seed, dtype=np.int32)) for _ in range(len(params['stages']))]
     if num_committee > 0 and committee_extra_seeds is None:
         committee_extra_seeds = [int(rg.integers(max_seed, dtype=np.int32)) for _ in range(num_committee - 1)]
+
+    error_scale_factors = [stage.get('error_scale_factor', 1.0) for stage in params['stages']]
 
     # for now assume last descriptor is SOAP so delta is just energy error
     # NOTE: some related info is available from dimension of data structure returned by
@@ -346,13 +311,16 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         _select_info(fitting_configs,
                      info_keys=[ref_property_prefix + k for k in GAP_FIT_PROPERTIES if k != "forces"] +
                                ['energy_sigma', 'force_sigma', 'virial_sigma', 'hessian_sigma'] +
+                               ['_orig_energy_sigma', '_orig_force_sigma', '_orig_virial_sigma', '_orig_hessian_sigma'] +
                                ['config_type'])
         ####################################################################################################
-        # modify database using this stage's error_scale_factor
-        if database_modify_mod is not None:
-            database_modify_mod.modify(fitting_configs, overall_error_scale_factor=stage.get('error_scale_factor', 1.0),
-                                       field_error_scale_factors=field_error_scale_factors,
-                                       property_prefix=ref_property_prefix)
+        if any([f != 1.0 for f in error_scale_factors]):
+            # modify database using this stage's error_scale_factor.
+            # NOTE: somewhat ugly hack to reproduce previous behavior: exclude isolated_atom and dimer because 
+            # they were previously excluded by gap_rss_set_config_sigmas_from_convex_hull.py.modify(), which
+            # is now being called manually from outside fitting function
+            modify_scale_orig(fitting_configs, error_scale_factors[i_stage], config_type_exclude=['isolated_atom', 'dimer'])
+
         database_file = os.path.join(run_dir, 'fitting_database.combined.{}.stage_{}.extxyz'.format(GAP_name, i_stage))
         ase.io.write(database_file, fitting_configs)
         database_ci = ConfigSet_in(input_files=database_file)
@@ -487,67 +455,11 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
     print('final GAPs in \'{}\''.format(final_GAPfiles))
 
-    fitting_error, testing_error = _calc_errors(final_GAPfiles[0], final_GAPnames[0],
-                                                save_err_configs_basename, ref_property_prefix,
-                                                err_category_keys, run_dir,
-                                                calc_fitting_error, fitting_configs, testing_configs)
-
     if num_committee > 0:
-        return final_GAPfiles, fitting_error, testing_error
+        return final_GAPfiles, final_GAPnames
     else:
-        return final_GAPfiles[0], fitting_error, testing_error
+        return final_GAPfiles[0], final_GAPnames[0]
 
-
-def _calc_errors(final_GAPfiles_0, final_GAPnames_0,
-                 save_err_configs_basename, ref_property_prefix,
-                 err_category_keys, run_dir,
-                 calc_fitting_error, fitting_configs, testing_configs):
-    # should we generalize fitting/testing error for committees?
-    fitting_error = None
-    testing_error = None
-    if calc_fitting_error or testing_configs is not None:
-        final_gap = (Potential, [], {'param_filename': final_GAPfiles_0,
-                                     'args_str': 'Potential xml_label=\'{}\''.format(final_GAPnames_0)})
-
-        # remove calc because multiprocessing.pool.map (used by the iterable_loop invoked in
-        # ref_error_calc) will send an Atoms object with pickle, and you can't pickle
-        # an Atoms with a Potential attached as a calculator (weakref)
-        for at in fitting_configs:
-            at.calc = None
-
-        if calc_fitting_error and not Path(final_GAPfiles_0 + '.fitting_err.json').exists():
-            if save_err_configs_basename:
-                co = ConfigSet_out(file_root=run_dir, output_files='fitting.' + save_err_configs_basename,
-                                   all_or_none=True, force=True)
-            else:
-                co = ConfigSet_out()
-            fitting_error = ref_error_calc(fitting_configs, co,
-                                           calculator=final_gap, ref_property_prefix=ref_property_prefix,
-                                           category_keys=err_category_keys)
-            print('fitting error')
-            pprint(fitting_error)
-            with open(final_GAPfiles_0 + '.fitting_err.json', 'w') as fout:
-                json.dump(clean_up_for_json(fitting_error), fout)
-
-        if testing_configs is not None and not Path(final_GAPfiles_0 + '.testing_err.json').exists():
-            if save_err_configs_basename is not None:
-                co = ConfigSet_out(file_root=run_dir, output_files='testing.' + save_err_configs_basename,
-                                   all_or_none=True, force=True)
-            else:
-                co = ConfigSet_out()
-            if not isinstance(testing_configs, list):
-                # Convert from ConfigSet_in to list so that objects are in memory and copy_properties
-                # can actually modify them to put reference data where ref_error_calc can find it.
-                testing_configs = list(testing_configs)
-            testing_error = ref_error_calc(testing_configs, co,
-                                           calculator=final_gap, ref_property_prefix=ref_property_prefix,
-                                           category_keys=err_category_keys)
-            print('testing error')
-            pprint(testing_error)
-            with open(final_GAPfiles_0 + '.testing_err.json', 'w') as fout:
-                json.dump(clean_up_for_json(testing_error), fout)
-
-    return fitting_error, testing_error
 
 def GAP_xml_modify_label(GAPfile, new_label=None):
     """fix internal GAP name and return updated label

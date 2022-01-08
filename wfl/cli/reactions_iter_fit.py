@@ -132,10 +132,10 @@ def do_initial_step(ctx, active_iter, verbose):
 
     # write e0 to file
     print_log('writing isolated atoms')
-    single_atoms = ConfigSet_out(file_root=run_dir, output_files='DFT_evaluated.single_atoms.xyz', all_or_none=True,
+    isolated_atoms = ConfigSet_out(file_root=run_dir, output_files='DFT_evaluated.isolated_atoms.xyz', all_or_none=True,
                                  force=True)
-    atoms_and_dimers.single_atom_from_e0(single_atoms, e0_dict, cell_size=2 * params.get("initial_step/dimer/cutoff"),
-                                         energy_key="REF_energy")
+    atoms_and_dimers.isolated_atom_from_e0(isolated_atoms, e0_dict, cell_size=2 * params.get("initial_step/dimer/cutoff"),
+                                           energy_key="REF_energy")
 
     # normal mode sampling with glue
     print_log('normal mode sampling started')
@@ -166,7 +166,8 @@ def do_initial_step(ctx, active_iter, verbose):
     # fit
     print_log('fitting')
     database_configs = ConfigSet_in(input_configsets=[dimers_out.to_ConfigSet_in(), dft_normal_modes,
-                                                      single_atoms.to_ConfigSet_in(), dft_fragments])
+                                                      isolated_atoms.to_ConfigSet_in(), dft_fragments])
+    # WARNING: OUTDATED CALL - NEED TO UPDATE TO DO DATABASE MODIFY BEFORE AND REF ERROR CALC AFTER
     _ = gap_multistage.fit(database_configs, GAP_name='GAP_iter_0', params=fit_params,
                            database_modify_mod=params.get('fit/database_modify_mod'),
                            run_dir=run_dir, skip_if_present=True, verbose=verbose, ref_property_prefix="REF_",
@@ -288,6 +289,7 @@ def do_md_step(ctx, active_iter, verbose, skip_collision, do_neb, do_ts_irc):
     if dft_out_neb is not None:
         database_configs.merge(dft_out_neb.to_ConfigSet_in())
     print_log("fitting database is: " + str(database_configs) + "\n")
+    # WARNING: OUTDATED CALL - NEED TO UPDATE TO DO DATABASE MODIFY BEFORE AND REF ERROR CALC AFTER
     _ = gap_multistage.fit(database_configs, GAP_name='GAP_iter_{}'.format(active_iter),
                            params=fit_params, database_modify_mod=params.get('fit/database_modify_mod'),
                            run_dir=run_dir, skip_if_present=True, verbose=verbose, ref_property_prefix="REF_",

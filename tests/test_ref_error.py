@@ -6,8 +6,8 @@ from pytest import approx
 
 from wfl.calculators.generic import run as calc_run
 from wfl.configset import ConfigSet_in, ConfigSet_out
-from wfl.fit.ref_error import calc as ref_err_calc, calc_from_calculated_ats as ref_err_calc_from_calculated_ats, \
-    clean_up_for_json
+from wfl.fit.ref_error import calc as ref_err_calc, err_from_calculated_ats
+from wfl.utils.misc import dict_tuple_keys_to_str
 
 # values to check against
 __ALL__energy = 1085377319.8139253
@@ -84,9 +84,10 @@ def test_ref_error(tmp_path, ref_atoms):
     assert ref_err_dict[(None,)]['virial_per_atom'][0] == 4 * 6
 
 
-def test_ref_error_from_calc(ref_atoms):
+def test_err_from_calc(ref_atoms):
     _ = calc_run(ref_atoms, ConfigSet_out(), LennardJones(sigma=0.75), output_prefix='calc_')
-    ref_err_dict = ref_err_calc_from_calculated_ats(ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_')
+    ref_err_dict = err_from_calculated_ats(ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_',
+                                          properties=['energy_per_atom', 'forces', 'virial_per_atom'])
 
     print(ref_err_dict)
     assert approx(ref_err_dict['_ALL_']['energy_per_atom'][1]) == __ALL__energy_per_atom
@@ -101,7 +102,7 @@ def test_ref_error_properties(ref_atoms):
     _ = calc_run(ref_atoms, ConfigSet_out(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     # both energy and per atom
-    ref_err_dict = ref_err_calc_from_calculated_ats(
+    ref_err_dict = err_from_calculated_ats(
         ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["energy", "energy_per_atom"])
 
     assert len(ref_err_dict.keys()) == 1
@@ -114,7 +115,7 @@ def test_ref_error_properties(ref_atoms):
     assert ref_err_dict['_ALL_']['energy_per_atom'][0] == 10
 
     # only energy
-    ref_err_dict = ref_err_calc_from_calculated_ats(
+    ref_err_dict = err_from_calculated_ats(
         ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["energy"])
 
     assert len(ref_err_dict.keys()) == 1
@@ -124,7 +125,7 @@ def test_ref_error_properties(ref_atoms):
     assert approx(ref_err_dict['_ALL_']['energy'][1]) == __ALL__energy
 
     # only stress
-    ref_err_dict = ref_err_calc_from_calculated_ats(
+    ref_err_dict = err_from_calculated_ats(
         ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["stress", "virial"])
 
     assert len(ref_err_dict.keys()) == 1
@@ -141,16 +142,16 @@ def test_ref_error_forces(ref_atoms):
     _ = calc_run(ref_atoms, ConfigSet_out(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     # forces by element
-    ref_err_dict = ref_err_calc_from_calculated_ats(
+    ref_err_dict = err_from_calculated_ats(
         ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["forces"],
         forces_by_element=True)
     assert ref_err_dict['_ALL_']['forces'][13][0] == 40
     assert approx(ref_err_dict['_ALL_']['forces'][13][1]) == __ALL__forces
 
     # forces by component
-    ref_err_dict = ref_err_calc_from_calculated_ats(
+    ref_err_dict = err_from_calculated_ats(
         ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["forces"],
-        forces_by_element=True, forces_by_component=True)
+        forces_by_component=True, forces_by_element=True)
     assert ref_err_dict['_ALL_']['forces'][13][0] == 120
     assert approx(ref_err_dict['_ALL_']['forces'][13][1]) == 29490136730.741474
 
@@ -170,7 +171,7 @@ def test_ref_error_missing(ref_atoms):
             del at.arrays["REF_forces"]
 
     # forces by element
-    ref_err_dict = ref_err_calc_from_calculated_ats(
+    ref_err_dict = err_from_calculated_ats(
         ref_atoms_list, ref_property_prefix='REF_', calc_property_prefix='calc_', category_keys=[])
 
     assert ref_err_dict["_ALL_"]["energy_per_atom"][0] == 7
@@ -178,7 +179,7 @@ def test_ref_error_missing(ref_atoms):
     assert ref_err_dict["_ALL_"]["virial_per_atom"][0] == 42
 
 
-def test_cleanup_for_json():
+def test_dict_tuple_keys_to_str():
     in_dict = {"_just-a-str-key_": 0.12312,
                ("a single element tuple",): 172398,
                ("multi", "element", "tuple"): 1325235,
@@ -189,8 +190,14 @@ def test_cleanup_for_json():
                "(multi,element,tuple)": 1325235,
                "(my value is a dict)": {"a": 34}}
 
-    out = clean_up_for_json(in_dict)
+    out = dict_tuple_keys_to_str(in_dict)
 
+    from pprint import pprint
+    print('out_ref')
+    pprint(out_ref)
+    print('out')
+    pprint(out)
     for key, val in out.items():
+        print('key', key, 'val', val)
         assert key in out_ref.keys()
         assert out_ref[key] == val
