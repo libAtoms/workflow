@@ -200,7 +200,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         # GAPs are all OK, but errors might not be calculated
 
         if num_committee > 0:
-            return final_GAPfiles, finale_GAPnames
+            return final_GAPfiles, final_GAPnames
         else:
             return final_GAPfiles[0], final_GAPnames[0]
 
