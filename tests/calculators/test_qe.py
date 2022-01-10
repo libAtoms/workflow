@@ -198,7 +198,7 @@ def test_qe_errors():
 
 
 def test_qe_no_calculation(tmp_path):
-    results = evaluate_op(bulk("Si"), calculator_kwargs=dict(), output_prefix="dummy_")
+    results = evaluate_op(bulk("Si"), calculator_kwargs=dict(), output_prefix="dummy_", base_rundir=tmp_path)
 
     assert isinstance(results, Atoms)
     assert "dummy_energy" not in results.info.keys()

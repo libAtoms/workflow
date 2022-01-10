@@ -53,7 +53,7 @@ def prepare(outputs, atomic_numbers, bond_lengths=None, dimer_n_steps=41, dimer_
             max_cutoff += 0.1
         for z in atomic_numbers:
             at = Atoms(numbers=[z], cell=_make_cell(bond_lengths[z], max_cutoff), pbc=[False] * 3)
-            at.info['config_type'] = 'single_atom'
+            at.info['config_type'] = 'isolated_atom'
             at.info.update(extra_info)
             outputs.write(at)
 
@@ -75,7 +75,7 @@ def prepare(outputs, atomic_numbers, bond_lengths=None, dimer_n_steps=41, dimer_
     return outputs.to_ConfigSet_in()
 
 
-def single_atom_from_e0(outputs, e0_dict, cell_size, energy_key="energy", extra_info=None):
+def isolated_atom_from_e0(outputs, e0_dict, cell_size, energy_key="energy", extra_info=None):
     """Write single atoms with energy from e0 dictionary
 
     Parameters
@@ -104,7 +104,7 @@ def single_atom_from_e0(outputs, e0_dict, cell_size, energy_key="energy", extra_
 
         at = Atoms(key, cell=[cell_size] * 3, pbc=False)
         at.info[energy_key] = energy
-        at.info['config_type'] = 'single_atom'
+        at.info['config_type'] = 'isolated_atom'
         at.info.update(extra_info)
         outputs.write(at)
 

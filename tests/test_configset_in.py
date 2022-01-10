@@ -1,4 +1,4 @@
-# NEED TESTS OF LOCAL, RATHER THAN PER-CONFIG AVERAGE, DESCRIPTORS
+from pathlib import Path
 
 import pytest
 from ase.atoms import Atoms
@@ -57,3 +57,20 @@ def test_merge():
     c_ats1.merge(ConfigSet_in())
 
     assert len([at for at in c_ats1]) == 4
+
+def test_scratch(tmp_path):
+    ats = [Atoms('H'), Atoms('C')]
+    ase.io.write(tmp_path / 'at1.xyz', ats)
+    ase.io.write(tmp_path / 'at2.xyz', ats)
+
+    ci = ConfigSet_in(input_files=[str(tmp_path / 'at1.xyz'), str(tmp_path / 'at2.xyz')])
+
+    ci_s = ci.to_file(tmp_path / 'combined.xyz')
+    assert Path(ci_s).name == 'combined.xyz'
+    assert len(ase.io.read(ci_s, ':')) == 4
+
+    ci_s = ci.to_file(tmp_path / 'combined.xyz', scratch=True)
+    assert (Path(ci_s).name.startswith('combined.') and
+            Path(ci_s).name.endswith('.xyz') and
+            Path(ci_s).name != 'combined.xyz')
+    assert len(ase.io.read(ci_s, ':')) == 4

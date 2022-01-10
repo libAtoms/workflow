@@ -283,14 +283,15 @@ class ConfigSet_in:
             return False
 
 
-    def to_scratch_file(self, filename):
-        """Create a ConfigSet_in containing the same configs, but in one temporary file
+    def to_file(self, filename, scratch=False):
+        """Create a ConfigSet_in containing the same configs, but in one file, optionally with a unique temporary name
 
         Parameters
         ----------
         filename: str or Path
-            filename used as template for mkstemp
-
+            filename, optionally used as template for mkstemp
+        scratch: bool, default false
+            use filename as template to tempfile.mkstemp
 
         Returns
         -------
@@ -299,8 +300,12 @@ class ConfigSet_in:
         """
 
         filename = Path(filename)
-        filename = tempfile.mkstemp(prefix=filename.stem+'.', suffix=filename.suffix, dir=filename.parent)[1]
-        ase.io.write(filename, list(self))
+        if scratch:
+            fd_scratch, filename = tempfile.mkstemp(prefix=filename.stem + '.', suffix=filename.suffix, dir=filename.parent)
+            os.close(fd_scratch)
+        with open(filename, 'w') as fout:
+            for at in self:
+                ase.io.write(fout, at, format=ase.io.formats.filetype(filename, read=False))
 
         return filename
 

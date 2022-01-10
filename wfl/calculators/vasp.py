@@ -18,7 +18,7 @@ from .utils import clean_rundir, handle_nonperiodic, save_results
 from ..utils.misc import atoms_to_list
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
-__default_keep_files = ["POSCAR", "INCAR", "KPOINTS", "OUTCAR", "vasprun.xml"]
+__default_keep_files = ["POSCAR", "INCAR", "KPOINTS", "OUTCAR", "vasprun.xml", "vasp.out"]
 __default_properties = ["energy", "forces", "stress"]
 
 
@@ -28,8 +28,6 @@ def evaluate_op(
     dir_prefix="run_VASP_",
     calculator_command=None,
     calculator_kwargs=None,
-    potcar_top_dir=None,  # fixme: remove this parameter
-    potcar_rel_dir=".",  # fixme: remove this parameter
     output_prefix="VASP_",
     properties=None,
     keep_files="default",
@@ -47,13 +45,11 @@ def evaluate_op(
     calculator_command: str
         command to run for vasp (overrides VASP_COMMAND and VASP_COMMAND_GAMMA)
     calculator_kwargs: dict
-        arguments to vasp, plus optional additional keys 'INCAR_file' and 'KPOINTS_file'.  Normal VASP calculator
-        keys override contents of INCAR and KPOINTS
-    potcar_top_dir: str, default None
-        path to directory above <chem_symbol>/POTCAR directories (overrides VASP_PP_PATH)
-    potcar_rel_dir: str, default '.'
-        path below VASP_PP_PATH or potcar_top_dir containing <chem_symb>/POTCAR files (overrides Vasp guess based on
-        XC and vasp_kwargs['pp']
+        arguments to Vasp, plus optional additional keys 'INCAR_file' and 'KPOINTS_file'.  Normal VASP calculator
+        keys override contents of INCAR and KPOINTS.  To avoid ASE Vasp's annoying default POTCAR path
+        heuristics, key VASP\_PP\_PATH will be used to set corresponding env var (directory above <chem_symbol>/POTCAR),
+        and if 'pp' (extra path below VASP\_PP\_PATH) is not specified it will default to '.', rather than to guess
+        based on XC.
     output_prefix: str / None, default 'VASP\_'
         prefix for info/arrays keys where results will be saved, None for SinglePointCalculator
     properties: list(str), default ['energy', 'forces', 'stress']
@@ -90,10 +86,11 @@ def evaluate_op(
         calculator_kwargs = {}
 
     # override Vasp's annoying PAW path heuristics
-    if potcar_top_dir is not None:
-        os.environ["VASP_PP_PATH"] = potcar_top_dir
-    if potcar_rel_dir is not None:
-        calculator_kwargs["pp"] = potcar_rel_dir
+    VASP_PP_PATH = calculator_kwargs.pop("VASP_PP_PATH", None)
+    if VASP_PP_PATH is not None:
+        os.environ["VASP_PP_PATH"] = VASP_PP_PATH
+    if "pp" not in calculator_kwargs:
+        calculator_kwargs["pp"] = "."
 
     vasp_kwargs_def = {
         "isif": 2,
