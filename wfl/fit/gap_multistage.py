@@ -152,6 +152,12 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         try:
             # make sure all potentials are parseable
             for final_GAPfile in final_GAPfiles:
+                # this should be redundant with the Potential() reading below, except that if the file
+                # has a directory component QUIP's Fortran code will terminate rather than raising a
+                # python exception.
+                assert Path(final_GAPfile).is_file()
+                # NOTE: at least some FoX XML parsing errors lead to an immediate termination,
+                # rather than a python exception that will actually be caught here.
                 _ = Potential(param_filename=final_GAPfile)
 
             if num_committee > 0:
@@ -165,7 +171,8 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
     remote_info = to_RemoteInfo(remote_info, 'WFL_GAP_MULTISTAGE_FIT_REMOTEINFO')
     if remote_info is not None and remote_info != '_IGNORE':
 
-        output_files = remote_info.output_files + [str(run_dir)]
+        input_files = remote_info.output_files.copy()
+        output_files = remote_info.output_files.copy() + [str(run_dir)]
 
         fitting_configs = fitting_configs.in_memory()
 
@@ -175,7 +182,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         remote_info.env_vars.append('WFL_AUTOPARA_NPOOL=$EXPYRE_NCORES_PER_NODE')
 
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
-                     env_vars=remote_info.env_vars, input_files=remote_info.input_files, output_files=output_files, function=fit,
+                     env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=fit,
                      kwargs={'fitting_configs': fitting_configs, 'GAP_name': GAP_name, 'params': params, 'ref_property_prefix': ref_property_prefix,
                              'seeds': seeds, 'skip_if_present': skip_if_present, 'run_dir': run_dir, 
                              'num_committee': num_committee, 'committee_extra_seeds': committee_extra_seeds,
@@ -304,7 +311,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         ####################################################################################################
         if any([f != 1.0 for f in error_scale_factors]):
             # modify database using this stage's error_scale_factor.
-            # NOTE: somewhat ugly hack to reproduce previous behavior: exclude isolated_atom and dimer because 
+            # NOTE: somewhat ugly hack to reproduce previous behavior: exclude isolated_atom and dimer because
             # they were previously excluded by gap_rss_set_config_sigmas_from_convex_hull.py.modify(), which
             # is now being called manually from outside fitting function
             modify_scale_orig(fitting_configs, error_scale_factors[i_stage], config_type_exclude=['isolated_atom', 'dimer'])
