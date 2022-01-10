@@ -38,6 +38,9 @@ jobs:
       - name: Install pip from Conda
         run: conda install pip phono3py
 
+      - name: Install phono3py from Conda forge
+        run: conda install -c conda-forge phono3py
+
       - name: Install dependencies from pip (some will already be taken care of by conda's phonop3py and its dependencies)
         run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib phonopy phono3py rdkit-pypi flake8 pytest pytest-cov
 
