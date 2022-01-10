@@ -158,7 +158,8 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
                 return final_GAPfiles, final_GAPnames
             else:
                 return final_GAPfiles[0], final_GAPnames[0]
-        except FileNotFoundError:
+        except (FileNotFoundError, RuntimeError):
+            # Potential seems to return RuntimeError when file is missing
             pass
 
     remote_info = to_RemoteInfo(remote_info, 'WFL_GAP_MULTISTAGE_FIT_REMOTEINFO')
