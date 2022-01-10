@@ -155,7 +155,8 @@ def fit(fitting_configs, ACE_name, params, ref_property_prefix='REF_',
     use_params['key'] = [ [k, ref_property_prefix + v] for k,v in [('E', 'energy'), ('F', 'forces'), ('V', 'virial')] ]
     use_params['_repeat_key'] = True
 
-    # configs need to be in memory so they can be modified with stress -> virial
+    # configs need to be in memory so they can be modified with stress -> virial, and safest to
+    # have them as a list (rather than using ConfigSet_in.to_memory()) when passing to ase.io.write below
     fitting_configs = list(fitting_configs)
 
     # calculate virial from stress, since ASE uses stress but ace_fit.jl only knows about virial
