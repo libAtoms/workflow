@@ -39,7 +39,7 @@ jobs:
         run: conda install pip
 
       - name: Install dependencies from pip
-        run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib rdkit-pypi flake8 pytest pytest-cov
+        run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib phonopy phono3py rdkit-pypi flake8 pytest pytest-cov
 
       - name: Install Quippy from PyPI
         run: pip install quippy-ase

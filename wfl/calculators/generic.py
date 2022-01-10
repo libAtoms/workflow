@@ -53,7 +53,7 @@ def run_op(atoms, calculator, properties=None, output_prefix='_auto_', verbose=F
         at.calc = calculator
         calculation_succeeded = False
         try:
-            # explicitly pass system_changes=None because some calculators, e.g. ace.ACECalculator,
+            # explicitly pass system_changes=all_changes because some calculators, e.g. ace.ACECalculator,
             # don't have that as default
             at.calc.calculate(at, properties=properties, system_changes=all_changes)
             calculation_succeeded = True
