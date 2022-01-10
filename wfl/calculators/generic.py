@@ -1,6 +1,7 @@
 import warnings
 
 from ase import Atoms
+from ase.calculators.calculator import all_changes
 
 from wfl.pipeline import iterable_loop
 from wfl.utils.misc import atoms_to_list
@@ -52,7 +53,9 @@ def run_op(atoms, calculator, properties=None, output_prefix='_auto_', verbose=F
         at.calc = calculator
         calculation_succeeded = False
         try:
-            at.calc.calculate(at, properties=properties)
+            # explicitly pass system_changes=all_changes because some calculators, e.g. ace.ACECalculator,
+            # don't have that as default
+            at.calc.calculate(at, properties=properties, system_changes=all_changes)
             calculation_succeeded = True
         except Exception as exc:
             warnings.warn(f'calculation failed with exception {exc}')

@@ -9,8 +9,7 @@ import click
 import numpy as np
 from ase.units import GPa
 
-import wfl.calculators.castep
-import wfl.calculators.vasp
+from wfl.calculators.dft import evaluate_dft
 from wfl.configset import ConfigSet_in, ConfigSet_out
 from wfl.generate_configs.buildcell import run as run_buildcell
 
@@ -72,21 +71,13 @@ def cli(verbose, configuration, buildcell_inputs, buildcell_cmd, n_per_config, p
             evaluated_structs = ConfigSet_out(file_root=run_dir, output_files=f'DFT_evaluated.{key}_{param_val}.xyz',
                                               all_or_none=True, force=True)
 
-            # Should refactor evaluate_dft to take in kwargs as argument to avoid this code
-            # duplication. Waiting for PR that eliminates extra stuff like **kwargs and nonperiodic.
-            if params['calculator'] == 'VASP':
-                dft_evaluated[key][param_val] = wfl.calculators.vasp.evaluate(
-                    structs, evaluated_structs, base_rundir=os.path.join(run_dir, 'vasp_run'),
-                    vasp_kwargs=run_kwargs, potcar_top_dir=params.get('VASP_potcar_path', None),
+            dft_evaluated[key][param_val] = evaluate_dft(
+                    inputs=structs, outputs=evaluated_structs,
+                    calculator_name=params['calculator'],
+                    base_rundir=os.path.join(run_dir, 'vasp_run'),
+                    calculator_kwargs=run_kwargs,
                     output_prefix=output_prefix,
                     keep_files='default' if verbose else False)
-            elif params['calculator'] == 'CASTEP':
-                dft_evaluated[key][param_val] = wfl.calculators.castep.evaluate(
-                    structs, evaluated_structs, base_rundir=run_dir,
-                    castep_kw=run_kwargs, output_prefix=output_prefix,
-                    castep_pp_path=params.get("CASTEP_pp_path", None))
-            else:
-                raise NotImplementedError("DFT code not implemented in convergence_test", params['calculator'])
 
     print('E in eV/atom, F in eV/A, stress in GPa')
     print('"dX" is maximum over configs, atoms, and components, "mean" is mean absolute values over same set')

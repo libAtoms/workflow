@@ -19,7 +19,7 @@ def piecewise_linear(x, vals):
 
 
 # max energy 20
-# single_atom uses 0.0001:0.1:0.1:0.1
+# isolated_atom uses 0.0001:0.1:0.1:0.1
 # dimer uses 0.1:0.5:1.0:1.0
 # other configs:
 #     energy_sigma constant 0.001 eV up to 0.2 eV, then linear ramp to 0.1 eV by 1.0 eV, then constant above that
@@ -72,8 +72,8 @@ def modify(configs, overall_error_scale_factor=1.0, field_error_scale_factors=No
     for at in configs:
 
         # first deal with special nonperiodic configs
-        if 'config_type' in at.info and at.info['config_type'] == 'single_atom':
-            print("got single atom")
+        if 'config_type' in at.info and at.info['config_type'] == 'isolated_atom':
+            # print("got single atom")
             at.info['energy_sigma'] = 0.0001
             try:
                 del at.arrays[property_prefix + 'forces']

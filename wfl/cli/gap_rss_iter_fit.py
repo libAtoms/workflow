@@ -30,6 +30,7 @@ except ModuleNotFoundError:
 import wfl
 import wfl.calc_descriptor
 import wfl.descriptor_heuristics
+import wfl.fit.ref_error
 import wfl.fit.gap_multistage
 import wfl.generate_configs.atoms_and_dimers
 import wfl.generate_configs.buildcell
@@ -43,6 +44,7 @@ from wfl.selection_space import val_relative_to_nearby_composition_volume_min
 from wfl.descriptor_heuristics import descriptors_from_length_scales
 from wfl.utils.params import Params
 from wfl.utils.version import get_wfl_version
+from wfl.utils.misc import dict_tuple_keys_to_str
 from wfl.calculators.dft import evaluate_dft
 
 
@@ -355,11 +357,6 @@ def evaluate_ref(dft_in_configs, dft_evaluated_configs, params, run_dir, verbose
     else:
         keep_files = False
 
-    if params.dft_code == "VASP":
-        kw = dict(potcar_top_dir=params.get("DFT_evaluate/VASP_potcar_path"))
-    else:
-        kw = dict()
-
     return evaluate_dft(
         inputs=dft_in_configs,
         outputs=dft_evaluated_configs,
@@ -367,8 +364,7 @@ def evaluate_ref(dft_in_configs, dft_evaluated_configs, params, run_dir, verbose
         base_rundir=run_dir,
         calculator_kwargs=params.dft_params.get("kwargs", {}),
         output_prefix="REF_",
-        keep_files=keep_files,
-        **kw,
+        keep_files=keep_files
     )
 
 
@@ -418,18 +414,39 @@ def evaluate_iter_and_fit_all(cur_iter, run_dir, params, fitting_configs, testin
     else:
         testing_configs = None
 
+    # modify database if needed
+    if database_modify_mod is not None:
+        # load configs into memory so they can be modified
+        fitting_configs = ConfigSet_in(input_configsets=fitting_configs).in_memory()
+        import importlib
+        database_modify_mod = importlib.import_module(database_modify_mod)
+        database_modify_mod.modify(fitting_configs)
+
     print_log('fitting')
     # fit
     with open('multistage_GAP_fit_settings.yaml') as fin:
         fit_params = yaml.safe_load(fin)
-    GAP_xml_file = wfl.fit.gap_multistage.fit(fitting_configs, GAP_name=f'GAP_iter_{cur_iter}', params=fit_params,
-                                              database_modify_mod=params.get('fit/database_modify_mod'),
-                                              run_dir=run_dir, skip_if_present=True,
-                                              calc_fitting_error=params.get('fit/calc_fitting_error', default=True),
-                                              testing_configs=testing_configs,
-                                              err_category_keys=['config_type', 'gap_rss_iter'],
-                                              save_err_configs_basename=f'error_database.GAP_iter_{cur_iter}.xyz',
-                                              seeds=seeds, verbose=verbose)
+    GAP_xml_file, GAP_name = wfl.fit.gap_multistage.fit(fitting_configs, GAP_name=f'GAP_iter_{cur_iter}', params=fit_params,
+                                                        seeds=seeds, skip_if_present=True, run_dir=run_dir, verbose=verbose)
+
+    calculator = (Potential, [], {'param_filename': GAP_xml_file, 'args_str': f'Potential xml_label={GAP_name}'})
+
+    if params.get('fit/calc_fitting_error', default=True):
+        co = ConfigSet_out(file_root=run_dir, output_files=f'fitting.error_database.GAP_iter_{cur_iter}.xyz')
+        fitting_error = wfl.fit.ref_error.calc(fitting_configs, co, calculator,
+                'REF_', ['config_type', 'gap_rss_iter'])
+        with open(GAP_xml_file + '.fitting_err.json', 'w') as fout:
+            json.dump(dict_tuple_keys_to_str(fitting_error), fout)
+        print('FITTING ERROR')
+        pprint.pprint(fitting_error)
+    if testing_configs is not None:
+        co = ConfigSet_out(file_root=run_dir, output_files=f'testing.error_database.GAP_iter_{cur_iter}.xyz')
+        testing_error = wfl.fit.ref_error.calc(testing_configs, co, calculator,
+                'REF_', ['config_type', 'gap_rss_iter'])
+        with open(GAP_xml_file + '.testing_err.json', 'w') as fout:
+            json.dump(dict_tuple_keys_to_str(testing_error), fout)
+        print('TESTING ERROR')
+        pprint.pprint(testing_error)
 
     return GAP_xml_file
 

@@ -764,13 +764,13 @@ def _calc_descriptor(ctx, inputs, output_file, output_all_or_none, descriptor, k
 @click.option("--incar", type=click.STRING, help='INCAR file, optional')
 @click.option("--kpoints", type=click.STRING, help='KPOINTS file, optional')
 @click.option("--vasp-kwargs", type=click.STRING, default="isym=0 isif=7 nelm=300 ediff=1.0e-7",
-              help='QUIP-style key-value pairs for ASE vasp calculator kwargs that override contents of INCAR and KPOINTS if both are provided')
-@click.option("--potcar-top-dir", type=click.STRING, help='dir above <chem_symbol>/POTCAR, override ASE env var VASP_PP_PATH')
-@click.option("--potcar-rel-dir", type=click.STRING, default='.', help='directory below --potcar-top-dir, overrides ASE Vasp guess based on XC and Vasp kwarg "pp"')
+              help='QUIP-style key-value pairs for ASE vasp calculator kwargs that override contents of INCAR and KPOINTS if both are provided.'
+                   '"pp", which is normallly XC-based dir to put between VASP_PP_PATH and POTCAR dirs defaults to ".". Key VASP_PP_PATH will be '
+                   'used to set corresponding env var, which is used as dir above <chem_symbol>/POTCAR')
 @click.option("--vasp-command", type=click.STRING)
 def _vasp_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, directory_prefix,
                output_prefix, properties,
-               incar, kpoints, vasp_kwargs, potcar_top_dir, potcar_rel_dir, vasp_command):
+               incar, kpoints, vasp_kwargs, vasp_command):
     vasp_kwargs = key_val_str_to_dict(vasp_kwargs)
     vasp_kwargs['INCAR_file'] = incar
     vasp_kwargs['KPOINTS_file'] = kpoints
@@ -783,8 +783,6 @@ def _vasp_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, direct
         output_prefix=output_prefix,
         properties=properties.split(','),
         calculator_kwargs=vasp_kwargs,
-        potcar_top_dir=potcar_top_dir,
-        potcar_rel_dir=potcar_rel_dir,
         calculator_command=vasp_command)
 
     
@@ -1075,12 +1073,19 @@ def simple_gap_fit(ctx, gap_file, atoms_filename, param_file,
     with open(param_file) as yaml_file:
         params = yaml.safe_load(yaml_file)
 
-    if atoms_filename is not None:
-        if params.get('atoms_filename', False):
+    if atoms_filename is None:
+        # not on command line, try in params
+        if 'atoms_filename' in params:
+            atoms_filename = params['atoms_filename']
+        else:
+            raise RuntimeError('atoms_filename not given in params file or as '
+                               'command line input')
+    else:
+        if 'atoms_filename' in params:
             raise RuntimeError('atoms_filename given in params file and as '
                                'command line input')
-        else:
-            fitting_ci = ConfigSet_in(input_files=atoms_filename)
+
+    fitting_ci = ConfigSet_in(input_files=atoms_filename)
 
     if gap_file != 'GAP.xml':
         if params.get('gap_file', False):

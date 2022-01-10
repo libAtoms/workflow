@@ -22,7 +22,6 @@ def gap_relocate(old_file, new_file, extra_filename_glob=None, delete_old=False)
     delete_old: bool, default False
         delete the old_file and all the other related files
     """
-    print('BOB gap_relocate', old_file, new_file)
 
     old_file = Path(old_file)
     new_file = Path(new_file)

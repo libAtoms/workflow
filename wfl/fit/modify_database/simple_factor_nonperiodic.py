@@ -36,7 +36,7 @@ def modify(configs, overall_error_scale_factor=1.0, field_error_scale_factors=No
 
         # first deal with special nonperiodic configs
         if 'config_type' in at.info:
-            if at.info["config_type"] == "single_atom":
+            if at.info["config_type"] == "isolated_atom":
                 modify_with_factor(at, factor=1.0, energy_sigma=.0001, force_sigma=None, virial_sigma=None,
                                    hessian_sigma=None, property_prefix=property_prefix)
                 continue
