@@ -32,21 +32,9 @@ def new_log(self, forces=None):
 PreconLBFGS.log = new_log
 
 
-# Just a placeholder for now. Could perhaps include:
-#    equispaced in energy
-#    equispaced in Cartesian path length
-#    equispaced in some other kind of distance (e.g. SOAP)
-# also, should it also have max distance instead of number of samples?
-def _resample_traj(traj, n_samples):
-    if n_samples is None:
-        return traj
-
-    raise RuntimeError('trajectory resampling not implemented yet')
-
-
 # run that operates on ConfigSet, for multiprocessing
 def run(inputs, outputs, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
-        keep_symmetry=True, traj_step_interval=1, traj_equispaced_n=None, skip_failures=True,
+        keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
         results_prefix='minim_', chunksize=10, verbose=False, update_config_type=True, **opt_kwargs):
     # Normally each thread needs to call np.random.seed so that it will generate a different
     # set of random numbers.  This env var overrides that to produce deterministic output,
@@ -58,13 +46,13 @@ def run(inputs, outputs, calculator, fmax=1.0e-3, smax=None, steps=1000, pressur
     return iterable_loop(iterable=inputs, configset_out=outputs, op=run_op, chunksize=chunksize,
                          calculator=calculator, fmax=fmax, smax=smax, steps=steps,
                          pressure=pressure, keep_symmetry=keep_symmetry, traj_step_interval=traj_step_interval,
-                         traj_equispaced_n=traj_equispaced_n, skip_failures=skip_failures, results_prefix=results_prefix,
+                         traj_subselect=traj_subselect, skip_failures=skip_failures, results_prefix=results_prefix,
                          verbose=verbose, update_config_type=update_config_type,
                          initializer=initializer, hash_ignore=['initializer'], **opt_kwargs)
 
 
 def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
-           keep_symmetry=True, traj_step_interval=1, traj_equispaced_n=None, skip_failures=True,
+           keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
            results_prefix='minim_', verbose=False, update_config_type=True, **opt_kwargs):
     """runs a minimization
 
@@ -86,9 +74,9 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
         constrain symmetry to maintain initial
     traj_step_interval: int, default 1
         if present, interval between trajectory snapshots
-    traj_equispaced_n: int, default None
-        if present, number of configurations to save from trajectory,
-        trying to be equispaced in Cartesian path length
+    traj_subselect: "last_converged", default None
+        rule for sub-selecting configs from the full trajectory.
+        Currently implemented: "last_converged", which takes the last config, if converged.
     skip_failures: bool, default True
         just skip minimizations that raise an exception
     verbose: bool, default False
@@ -201,16 +189,48 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
                 print('final symmetry group number {}, international (Hermann-Mauguin) {} Hall {} prec {}'.format(
                     dataset['number'], dataset['international'], dataset['hall'], 0.01))
 
-        # Note that if resampling doesn't include original last config, later
-        # steps won't be able to identify those configs as the (perhaps unconverged) minima.
-        # Perhaps status should be set after resampling?
-        traj = _resample_traj(traj, traj_equispaced_n)
 
         if update_config_type:
             # save config_type
             for at0 in traj:
                 config_type_append(at0, at0.info['minim_config_type'])
 
+        # Note that if resampling doesn't include original last config, later
+        # steps won't be able to identify those configs as the (perhaps unconverged) minima.
+        # Perhaps status should be set after resampling?
+        traj = subselect_from_traj(traj, subselect=traj_subselect)
+
         all_trajs.append(traj)
 
     return all_trajs
+
+
+# Just a placeholder for now. Could perhaps include:
+#    equispaced in energy
+#    equispaced in Cartesian path length
+#    equispaced in some other kind of distance (e.g. SOAP)
+# also, should it also have max distance instead of number of samples?
+def subselect_from_traj(traj, subselect=None):
+    """Sub-selects configurations from trajectory.
+
+    Parameters
+    ----------
+    subselect: int or string, default None
+        None: full trajectory is returned
+        int: (not implemented) how many samples to take from the trajectory.
+        str:
+            - "last_converged": returns [last_config], if converged or None if not.
+
+    """
+    if subselect is None:
+        return traj
+
+    elif subselect == "last_converged":
+        converged_configs = [at for at in traj if at.info["minim_config_type"] == "minim_last_converged"]
+        if len(converged_configs) == 0:
+            return None
+        else:
+            return converged_configs
+
+    raise RuntimeError(f'Subselecting confgs from trajectory with rule '
+                       f'"subselect={subselect}" is not yet implemented')
