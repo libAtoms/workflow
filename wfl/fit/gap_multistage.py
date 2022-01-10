@@ -5,7 +5,7 @@ import warnings
 from copy import deepcopy
 
 from pathlib import Path
-from xml.etree import cElementTree
+from xml.etree import ElementTree, cElementTree
 
 import ase.io
 import numpy as np
@@ -162,7 +162,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
             for final_GAPfile in final_GAPfiles:
                 try:
                     cElementTree.parse(final_GAPfile)
-                except:
+                except (FileNotFoundError, ElementTree.ParseError):
                     need_to_fit = True
                     break
 
