@@ -277,7 +277,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         print('doing stage', i_stage, stage)
 
-        if skip_if_present and os.path.exists(GAPfile):
+        if skip_if_present and Path(GAPfile).is_file():
             print(f'stage {i_stage} already done, skipping')
             skipped_prev_iter = True
             continue
@@ -424,7 +424,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
     for i_committee in range(1, num_committee):
         GAPfile = final_GAPfiles[i_committee]
         GAPname = final_GAPnames[i_committee]
-        if skip_if_present and os.path.exists(GAPfile):
+        if skip_if_present and Path(GAPfile).is_file():
             print(f'committee {i_committee} already done, skipping')
             continue
 
