@@ -36,9 +36,9 @@ jobs:
         # run: conda env update --file=devtools/conda-envs/environment.yml --name=base
 
       - name: Install pip from Conda
-        run: conda install pip
+        run: conda install pip phono3py
 
-      - name: Install dependencies from pip
+      - name: Install dependencies from pip (some will already be taken care of by conda's phonop3py and its dependencies)
         run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib phonopy phono3py rdkit-pypi flake8 pytest pytest-cov
 
       - name: Install Quippy from PyPI
