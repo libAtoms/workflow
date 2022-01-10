@@ -155,7 +155,8 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
                 # this should be redundant with the Potential() reading below, except that if the file
                 # has a directory component QUIP's Fortran code will terminate rather than raising a
                 # python exception.
-                assert Path(final_GAPfile).is_file()
+                if not Path(final_GAPfile).is_file():
+                    raise FileNotFoundError
                 # NOTE: at least some FoX XML parsing errors lead to an immediate termination,
                 # rather than a python exception that will actually be caught here.
                 _ = Potential(param_filename=final_GAPfile)
