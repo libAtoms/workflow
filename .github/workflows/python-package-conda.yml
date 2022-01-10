@@ -36,7 +36,7 @@ jobs:
         # run: conda env update --file=devtools/conda-envs/environment.yml --name=base
 
       - name: Install pip from Conda
-        run: conda install pip phono3py
+        run: conda install pip
 
       - name: Install phono3py from Conda forge
         run: conda install -c conda-forge phono3py
