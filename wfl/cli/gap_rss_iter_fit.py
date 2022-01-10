@@ -116,7 +116,7 @@ def print_log(msg, show_time=True, blank_lines=False, logfiles=[sys.stdout, sys.
         if blank_lines:
             logf.write('\n')
         for l in msg.splitlines():
-            logf.write('LOG' + time_str + ':' + l + '\n')
+            logf.write('LOG' + time_str + ': ' + l + '\n')
         if blank_lines:
             logf.write('\n')
         logf.flush()

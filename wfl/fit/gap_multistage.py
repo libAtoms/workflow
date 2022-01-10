@@ -169,8 +169,11 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
             # Potential seems to return RuntimeError when file is missing
             pass
 
-    remote_info = to_RemoteInfo(remote_info, 'WFL_GAP_MULTISTAGE_FIT_REMOTEINFO')
-    if remote_info is not None and remote_info != '_IGNORE':
+    if remote_info == '_IGNORE':
+        remote_info = None
+    else:
+        remote_info = to_RemoteInfo(remote_info, 'WFL_GAP_MULTISTAGE_FIT_REMOTEINFO')
+    if remote_info is not None:
 
         input_files = remote_info.output_files.copy()
         output_files = remote_info.output_files.copy() + [str(run_dir)]
@@ -192,7 +195,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name,
                   exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
-        results, stdout, stderr = xpr.get_results()
+        results, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
         sys.stdout.write(stdout)
         sys.stderr.write(stderr)
 

@@ -88,7 +88,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
 
         xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name,
                   exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
-        results, stdout, stderr = xpr.get_results()
+        results, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
         sys.stdout.write(stdout)
         sys.stderr.write(stderr)
 

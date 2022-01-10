@@ -12,9 +12,8 @@ class RemoteInfo:
         name for job (unique within this project)
     resources: dict or Resources
         expyre.resources.Resources or kwargs for its constructor
-    job_chunksize: int
-        chunksize for each job, default -100. If negative will be
-        multiplied by iterable_op chunksize
+    job_chunksize: int, default -100
+        chunksize for each job. If negative will be multiplied by iterable_op chunksize
     pre_cmds: list(str)
         commands to run before starting job
     post_cmds: list(str)
@@ -55,7 +54,7 @@ class RemoteInfo:
 
 
     def __str__(self):
-        return f'{self.sys_name} {self.job_name} {self.resources} {self.job_chunksize} {self.exact_fit} {self.partial_node}'
+        return f'{self.sys_name} {self.job_name} {self.resources} {self.job_chunksize} {self.exact_fit} {self.partial_node} {self.timeout} {self.check_interval}'
 
 
 def grouper(n, iterable):
