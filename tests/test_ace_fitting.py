@@ -38,7 +38,7 @@ def test_dict_to_ace_fit_string():
 
 
 @pytest.mark.skipif(not shutil.which("ace_fit.jl"), reason="ace_fit.jl not in PATH")
-def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
+def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     print('getting fitting data from ', request.fspath)
 
     # kinda ugly, but remote running of multistage fit doesn't support absolute run_dir, so test
@@ -55,7 +55,7 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     t0 = time.time()
     ACE_size = fit(ConfigSet_in(input_files=fit_config_file),
                    ACE_name='ACE.B_test', params=params, ref_property_prefix='REF_',
-                   run_dir=str(run_dir), dry_run=True)
+                   run_dir=str(run_dir), dry_run=True, skip_if_present=True)
     time_actual = time.time() - t0
     assert len(ACE_size) == 2
     assert isinstance(ACE_size[0], int) and isinstance(ACE_size[1], int)
@@ -65,7 +65,7 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     t0 = time.time()
     ACE_size_rerun = fit(ConfigSet_in(input_files=fit_config_file),
                          ACE_name='ACE.B_test', params=params, ref_property_prefix='REF_',
-                         run_dir=str(run_dir), dry_run=True)
+                         run_dir=str(run_dir), dry_run=True, skip_if_present=True)
     time_rerun = time.time() - t0
 
     assert ACE_size == ACE_size_rerun
@@ -75,7 +75,7 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
 
 
 @pytest.mark.skipif(not shutil.which("ace_fit.jl"), reason="ace_fit.jl not in PATH")
-def test_ace_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
+def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     print('getting fitting data from ', request.fspath)
 
     # kinda ugly, but remote running of multistage fit doesn't support absolute run_dir, so test
@@ -92,7 +92,7 @@ def test_ace_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     t0 = time.time()
     ACE = fit(ConfigSet_in(input_files=fit_config_file),
               ACE_name='ACE.B_test', params=params, ref_property_prefix='REF_',
-              run_dir=str(run_dir))
+              run_dir=str(run_dir), skip_if_present=True)
     time_actual = time.time() - t0
     print('ACE', ACE)
 
@@ -102,7 +102,7 @@ def test_ace_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     t0 = time.time()
     ACE = fit(ConfigSet_in(input_files=fit_config_file),
               ACE_name='ACE.B_test', params=params, ref_property_prefix='REF_',
-              run_dir=str(run_dir))
+              run_dir=str(run_dir), skip_if_present=True)
     time_rerun = time.time() - t0
 
     # rerun should reuse files, be much faster

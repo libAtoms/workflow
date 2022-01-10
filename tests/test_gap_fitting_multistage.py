@@ -2,6 +2,7 @@ import shutil
 import json, yaml
 import os
 import re
+import time
 
 from pathlib import Path
 from xml.etree import cElementTree
@@ -79,11 +80,13 @@ def test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir='run
     # need to apply modify here
     # database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
 
+    t0 = time.time()
     GAP = fit(ConfigSet_in(input_files=fit_config_file),
               run_dir=run_dir,
               GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
               num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25])
     print('GAP', GAP)
+    t_run = time.time() - t0
 
     # for debugging purposes
     print(f'ls -l {tmp_path}/{run_dir}')
@@ -97,6 +100,15 @@ def test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir='run
 
     assert os.path.exists(os.path.join(tmp_path, run_dir, f'GAP.B_test.committee_{i}.xml'))
 
+    t0 = time.time()
+    GAP = fit(ConfigSet_in(input_files=fit_config_file),
+              run_dir=run_dir,
+              GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
+              num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25], skip_if_present=True)
+    print('GAP', GAP)
+    t_rerun = time.time() - t0
+
+    assert t_rerun < t_run / 3
 
 @pytest.mark.skipif(not shutil.which("gap_fit"), reason="gap_fit not in PATH")  # skips it if gap_fit not in path
 @pytest.mark.remote

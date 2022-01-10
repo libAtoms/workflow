@@ -1,11 +1,10 @@
 import sys
-import json
-import os
 import warnings
 from copy import deepcopy
+from pathlib import Path
+from xml.etree import cElementTree
 
 from pathlib import Path
-from xml.etree import ElementTree, cElementTree
 
 import ase.io
 import numpy as np
@@ -93,8 +92,8 @@ def max_cutoff(params):
 
 # noinspection PyPep8,PyPep8Naming
 def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
-        seeds=None, skip_if_present=False, run_dir=None,
-        num_committee=0, committee_extra_seeds=None, committee_name_postfix=None,
+        seeds=None, skip_if_present=False, run_dir='.',
+        num_committee=0, committee_extra_seeds=None, committee_name_postfix='.committee_',
         verbose=False, remote_info=None):
     """Fit a GAP iteratively, setting delta from error relative to previous stage
 
@@ -121,7 +120,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         refits the last stage a total of this many times
     committee_extra_seeds: list(int) / None
         random seeds to use for committee of models after 0th
-    committee_name_postfix: str / None
+    committee_name_postfix: str, default ".committee_"
         str to add to name of committee models in the format: "{GAP_name}{committee_name_postfix}{num}.xml"
     remote_info: dict or wfl.pipeline.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
@@ -141,73 +140,61 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
     final_GAP_file, final_GAP_name
         string name of final GAP xml file, and name of corresponding GAP (xml label)
     """
-    if run_dir is None:
-        run_dir = '.'
-    if committee_name_postfix is None:
-        committee_name_postfix = ".committee_"
+    run_dir = Path(run_dir)
 
     if num_committee > 0:
         final_GAPnames = [f'{GAP_name}{committee_name_postfix}{i}' for i in range(num_committee)]
     else:
         final_GAPnames = [GAP_name]
-    final_GAPfiles = [os.path.join(run_dir, name + '.xml') for name in final_GAPnames]
+    final_GAPfiles = [str(run_dir / (name + '.xml')) for name in final_GAPnames]
+
+    if skip_if_present:
+        try:
+            # make sure all potentials are parseable
+            for final_GAPfile in final_GAPfiles:
+                _ = Potential(param_filename=final_GAPfile)
+
+            if num_committee > 0:
+                return final_GAPfiles, final_GAPnames
+            else:
+                return final_GAPfiles[0], final_GAPnames[0]
+        except FileNotFoundError:
+            pass
 
     remote_info = to_RemoteInfo(remote_info, 'WFL_GAP_MULTISTAGE_FIT_REMOTEINFO')
-
     if remote_info is not None and remote_info != '_IGNORE':
-        # check if we can skip
-        need_to_fit = True
-        if skip_if_present:
-            need_to_fit = False
-            for final_GAPfile in final_GAPfiles:
-                try:
-                    cElementTree.parse(final_GAPfile)
-                except (FileNotFoundError, ElementTree.ParseError):
-                    need_to_fit = True
-                    break
 
-        if need_to_fit:
-            input_files = remote_info.input_files.copy()
-            output_files = remote_info.output_files.copy()
+        output_files = remote_info.output_files + [str(run_dir)]
 
-            fitting_configs = fitting_configs.in_memory()
+        fitting_configs = fitting_configs.in_memory()
 
-            output_files.append(str(run_dir))
+        # set number of threads in queued job
+        # NOTE: should this be hardwired here, or up to the user?
+        remote_info.env_vars.append('GAP_FIT_OMP_NUM_THREADS=$EXPYRE_NCORES_PER_NODE')
+        remote_info.env_vars.append('WFL_AUTOPARA_NPOOL=$EXPYRE_NCORES_PER_NODE')
 
-            # set number of threads in queued job
-            # NOTE: should this be hardwired here, or up to the user?
-            remote_info.env_vars.append('GAP_FIT_OMP_NUM_THREADS=$EXPYRE_NCORES_PER_NODE')
-            remote_info.env_vars.append('WFL_AUTOPARA_NPOOL=$EXPYRE_NCORES_PER_NODE')
+        xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
+                     env_vars=remote_info.env_vars, input_files=remote_info.input_files, output_files=output_files, function=fit,
+                     kwargs={'fitting_configs': fitting_configs, 'GAP_name': GAP_name, 'params': params, 'ref_property_prefix': ref_property_prefix,
+                             'seeds': seeds, 'skip_if_present': skip_if_present, 'run_dir': run_dir, 
+                             'num_committee': num_committee, 'committee_extra_seeds': committee_extra_seeds,
+                             'committee_name_postfix': committee_name_postfix, 'verbose': verbose, 'remote_info': '_IGNORE'})
 
-            xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
-                         env_vars=remote_info.env_vars, input_files=remote_info.input_files, output_files=output_files, function=fit,
-                         kwargs={'fitting_configs': fitting_configs, 'GAP_name': GAP_name, 'params': params, 'ref_property_prefix': ref_property_prefix,
-                                 'seeds': seeds, 'skip_if_present': skip_if_present, 'run_dir': run_dir, 
-                                 'num_committee': num_committee, 'committee_extra_seeds': committee_extra_seeds,
-                                 'committee_name_postfix': committee_name_postfix, 'verbose': verbose, 'remote_info': '_IGNORE'})
+        xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name,
+                  exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
+        results, stdout, stderr = xpr.get_results()
+        sys.stdout.write(stdout)
+        sys.stderr.write(stderr)
 
-            xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name,
-                      exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
-            results, stdout, stderr = xpr.get_results()
-            sys.stdout.write(stdout)
-            sys.stderr.write(stderr)
+        # no outputs to rename since everything should be in run_dir
+        xpr.mark_processed()
 
-            # no outputs to rename since everything should be in run_dir
-            xpr.mark_processed()
-
-            return results
-
-        # GAPs are all OK, but errors might not be calculated
-
-        if num_committee > 0:
-            return final_GAPfiles, final_GAPnames
-        else:
-            return final_GAPfiles[0], final_GAPnames[0]
+        return results
 
     assert isinstance(ref_property_prefix, str) and len(ref_property_prefix) > 0
 
-    if not Path(run_dir).exists():
-        Path(run_dir).mkdir(parents=True)
+    if not run_dir.exists():
+        run_dir.mkdir(parents=True)
 
     max_seed = np.iinfo(np.int32).max
 
@@ -286,7 +273,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
             # last stage, just give it final name
             GAPfile = final_GAPfiles[0]
         else:
-            GAPfile = '{}.stage_{}.xml'.format(os.path.join(run_dir, GAP_name), i_stage)
+            GAPfile = f'{run_dir / GAP_name}.stage_{i_stage}.xml'
 
         print('doing stage', i_stage, stage)
 
@@ -297,7 +284,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         # read back from prev iter's file, in case in this run previous iter was skipped
         if i_stage > 0:
-            prev_GAPfile = '{}.stage_{}.xml'.format(os.path.join(run_dir, GAP_name), i_stage - 1)
+            prev_GAPfile = f'{run_dir / GAP_name}.stage_{i_stage - 1}.xml'
             prev_GAP = Potential(param_filename=prev_GAPfile)
 
             if skipped_prev_iter:
@@ -321,9 +308,9 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
             # is now being called manually from outside fitting function
             modify_scale_orig(fitting_configs, error_scale_factors[i_stage], config_type_exclude=['isolated_atom', 'dimer'])
 
-        database_file = os.path.join(run_dir, 'fitting_database.combined.{}.stage_{}.extxyz'.format(GAP_name, i_stage))
+        database_file = run_dir / f'fitting_database.combined.{GAP_name}.stage_{i_stage}.extxyz'
         ase.io.write(database_file, fitting_configs)
-        database_ci = ConfigSet_in(input_files=database_file)
+        database_ci = ConfigSet_in(input_files=str(database_file))
 
         # compute number of descriptors for i_stage'th one
         count_descs = []
@@ -421,7 +408,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
             yaml.dump(gap_simple_fit, fout)
 
         # do a simple fit using gap_simple_fit
-        stdout_file = os.path.join(run_dir, 'stdout.{}.stage_{}.gap_fit'.format(GAP_name, i_stage))
+        stdout_file = run_dir / f'stdout.{GAP_name}.stage_{i_stage}.gap_fit'
         run_gap_fit(database_ci, gap_simple_fit, stdout_file=stdout_file, verbose=verbose)
 
         print('')
@@ -448,7 +435,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         gap_simple_fit["rnd_seed"] = committee_extra_seeds[i_committee - 1]
 
         # perform the fit
-        stdout_file = os.path.join(run_dir, f'stdout.{GAP_name}{committee_name_postfix}{i_committee}.gap_fit')
+        stdout_file = run_dir / f'stdout.{GAP_name}{committee_name_postfix}{i_committee}.gap_fit'
         run_gap_fit(database_ci, gap_simple_fit, stdout_file=stdout_file, verbose=verbose)
 
         GAP_xml_modify_label(GAPfile, new_label=GAPname)

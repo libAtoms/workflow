@@ -21,7 +21,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
         set of configurations to fit
     fitting_dict: dict
         dict of keys to turn into command line for gap_fit
-    stdout_file: str
+    stdout_file: str / Path
         filename to pass standard output to
     gap_fit_exec: str, default "gap_fit"
         executable for gap_fit

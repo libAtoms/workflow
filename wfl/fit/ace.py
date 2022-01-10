@@ -16,7 +16,7 @@ from expyre import ExPyRe
 import wfl.scripts
 
 def fit(fitting_configs, ACE_name, params, ref_property_prefix='REF_',
-        skip_if_present=True, run_dir='.',
+        skip_if_present=False, run_dir='.',
         formats = ['json', 'yace'], ace_fit_exec=str((Path(wfl.scripts.__file__).parent / 'ace_fit.jl').resolve()), dry_run=False,
         verbose=True, remote_info=None, wait_for_results=True):
     """Runs ace_fit on a a set of fitting configs
@@ -32,7 +32,7 @@ def fit(fitting_configs, ACE_name, params, ref_property_prefix='REF_',
         '-' (single characer) or '--' (longer name)
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
-    skip_if_present: bool, default True
+    skip_if_present: bool, default False
         skip fitting if output is already present
     run_dir: str, default '.'
         directory to run in
