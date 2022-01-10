@@ -31,6 +31,11 @@ def check_step(runner, step_type, seeds, iter_i):
 
     # actually run step
     result = runner.invoke(cli, ["-c", "LiCu.json", "--seeds", seeds, step_type])
+    print('STDOUT')
+    print(result.stdout_bytes.decode())
+    if result.stderr_bytes is not None:
+        print('STDERR')
+        print(result.stderr_bytes.decode())
     # make sure it ran and created something
     assert result.exit_code == 0
     assert (run_iter / f"GAP_iter_{iter_i}.xml").exists()
@@ -114,7 +119,7 @@ def test_cli_rss_full(tmp_path):
     runner = CliRunner()
     if "GAP_RSS_TEST_SETUP" in os.environ:
         # setup run that actually does work and creates files
-        orig_dir = os.getcwd()
+        orig_dir = Path.cwd()
         try:
             os.chdir(os.environ.get("GAP_RSS_TEST_SETUP"))
             do_full_test(runner, assets_dir)

@@ -21,8 +21,7 @@ def test_vasp_gamma(tmp_path):
         outputs=ConfigSet_out(file_root=tmp_path, output_files='vasp_out.gamma.xyz'),
         calculator_name="VASP",
         base_rundir=tmp_path,
-        calculator_kwargs={'encut': 200},
-        potcar_top_dir=os.environ['TEST_VASP_POTCAR_DIR'],
+        calculator_kwargs={'encut': 200, 'VASP_PP_PATH': os.environ['TEST_VASP_POTCAR_DIR']},
         output_prefix='TEST_',
         keep_files=True
     )
@@ -46,8 +45,7 @@ def test_vasp(tmp_path):
         outputs=ConfigSet_out(file_root=tmp_path, output_files='vasp_out.regular.xyz'),
         calculator_name="VASP",
         base_rundir=tmp_path,
-        calculator_kwargs={'encut': 200, 'kspacing': 1.0},
-        potcar_top_dir=os.environ['TEST_VASP_POTCAR_DIR'],
+        calculator_kwargs={'encut': 200, 'kspacing': 1.0, 'VASP_PP_PATH': os.environ['TEST_VASP_POTCAR_DIR']},
         output_prefix='TEST_',
         keep_files=True)
 
@@ -71,8 +69,7 @@ def test_vasp_keep_default(tmp_path):
         outputs=ConfigSet_out(file_root=tmp_path, output_files='vasp_out.keep_default.xyz'),
         calculator_name="VASP",
         base_rundir=tmp_path,
-        calculator_kwargs={'encut': 200, 'kspacing': 1.0},
-        potcar_top_dir=os.environ['TEST_VASP_POTCAR_DIR'],
+        calculator_kwargs={'encut': 200, 'kspacing': 1.0, 'VASP_PP_PATH': os.environ['TEST_VASP_POTCAR_DIR']},
         output_prefix='TEST_',
         keep_files='default')
 
@@ -96,8 +93,7 @@ def test_vasp_keep_False(tmp_path):
         outputs=ConfigSet_out(file_root=tmp_path, output_files='vasp_out.keep_False.xyz'),
         calculator_name="VASP",
         base_rundir=tmp_path,
-        calculator_kwargs={'encut': 200, 'kspacing': 1.0},
-        potcar_top_dir=os.environ['TEST_VASP_POTCAR_DIR'],
+        calculator_kwargs={'encut': 200, 'kspacing': 1.0, 'VASP_PP_PATH': os.environ['TEST_VASP_POTCAR_DIR']},
         output_prefix='TEST_',
         keep_files=False)
 
@@ -118,8 +114,7 @@ def test_vasp_to_SPC(tmp_path):
         inputs=ConfigSet_in(input_files=os.path.join(tmp_path, 'vasp_in.xyz')),
         outputs=ConfigSet_out(file_root=tmp_path, output_files='vasp_out.to_SPC.xyz'),
         calculator_name="VASP",
-        base_rundir=tmp_path, calculator_kwargs={'encut': 200, 'kspacing': 1.0},
-        potcar_top_dir=os.environ['TEST_VASP_POTCAR_DIR'],
+        base_rundir=tmp_path, calculator_kwargs={'encut': 200, 'kspacing': 1.0, 'VASP_PP_PATH': os.environ['TEST_VASP_POTCAR_DIR']},
         output_prefix=None)
 
     ats = list(configs_eval)

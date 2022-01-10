@@ -1,63 +1,63 @@
 import warnings
+from pathlib import Path
+from pprint import pprint
+import json
 
 import numpy as np
 
-from wfl.calculators.generic import run as calc_run
+from wfl.configset import ConfigSet_out
+from wfl.calculators.generic import run as generic_calc
 
 
-def calc(input_configs, output_configs, calculator, ref_property_prefix, calc_property_prefix='calc_',
-         properties=None, category_keys=None,
-         forces_by_component=False, forces_by_element=False):
-    """calculate error for calculation results relative to stored reference values
+def calc(input_configs, output_configs, calculator,
+         ref_property_prefix, category_keys):
+    """Calculate errors for some potential relative to some reference data.
+    NOTE: several optional args such as properties and forces_by_components are not yet available.
 
     Parameters
     ----------
     input_configs: ConfigSet_in
-        input configurations with reference values in info/arrays
+        configs to check
     output_configs: ConfigSet_out
-        storage for configs with calculator results
-    calculator: tuple / Calculator
-        calculator to evaluate, as required by wfl.calculators.generic.run()
+        optional location for calculated configs (otherwise will be in memory, and lost when function returns)
+    calculator: tuple(constructor, args, kwargs)
+        contructor for calculator with any args or kwargs
     ref_property_prefix: str
-        prefix to info/array keys for reference properties
-    calc_property_prefix: str, default 'calc\_'
-        prefix to info/array keys for calculated properties
-    properties: list(str)
-        list of 'energy', 'energy_per_atom', 'forces', 'stress', 'virial', 'virial_per_atom' to compute error for
-    category_keys: str / list(str)
-        results will be averaged by category, defined by a tuple containing the values of these
-        keys in atoms.info, in addition to overall average None category.
-    forces_by_component: bool, default False
-        define force error as difference between each component, rather than norm of vector difference
-    forces_by_element: bool, default False
-        calculate force error for each element separately
+        prefix to property names for reference values
+    category_keys: list(str)
+        list of info keys to use to create categories that configs are grouped into
 
     Returns
     -------
-        errors: dict of energy per atom, force, virial per atom rms errors for each category
+    error: dict
+        error for each quantity by group
     """
-    properties, calculator_properties = process_properties(properties)
 
-    if calc_property_prefix is None:
-        raise ValueError('Reference error calculator cannot use SinglePointCalculator '
-                         'calculated properties (calc_property_prefix is None)')
+    # remove calc because multiprocessing.pool.map (used by the iterable_loop invoked in
+    # calc) will send an Atoms object with pickle, and you can't pickle
+    # an Atoms with a Potential attached as a calculator (weakref)
+    input_configs = input_configs.in_memory()
+    for at in input_configs:
+        at.calc = None
+
+    if output_configs is None:
+        output_configs = ConfigSet_out()
+
+    properties, calculator_properties = get_properties()
 
     # NOTE: should this, which requires storing all calculation results (in memory or a file), be the abstraction,
     # or should a single routine loop over atoms, do a calc, and accumulate error?
     # current approach nicely parallelizes using existing calculator parallelization over ConfigSet
-    calculated_ats = calc_run(input_configs, output_configs, calculator, properties=calculator_properties,
-                              output_prefix=calc_property_prefix)
+    calculated_ats = generic_calc(input_configs, output_configs, calculator, properties=calculator_properties,
+                                  output_prefix='calc_')
 
-    return calc_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_prefix=calc_property_prefix,
-                                    properties=None, category_keys=category_keys,
-                                    forces_by_component=forces_by_component, forces_by_element=forces_by_element)
+    return err_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_prefix='calc_',
+                                   properties=properties, category_keys=category_keys)
 
 
-def process_properties(properties):
+def get_properties(properties=None):
     if properties is None:
         properties = ['energy_per_atom', 'forces', 'virial_per_atom']
-    assert all(
-        [p in ['energy', 'energy_per_atom', 'forces', 'stress', 'virial', 'virial_per_atom'] for p in properties])
     calculator_properties = []
     if 'energy' or 'energy_per_atom' in properties:
         calculator_properties.append('energy')
@@ -68,7 +68,7 @@ def process_properties(properties):
     return properties, calculator_properties
 
 
-def calc_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_prefix,
+def err_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_prefix,
                              properties=None, category_keys=None,
                              forces_by_component=False, forces_by_element=False):
     """calculate error for calculation results relative to stored reference values
@@ -96,7 +96,7 @@ def calc_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_
         errors: dict of energy per atom, force, virial per atom rms errors for each category
     """
 
-    properties, _ = process_properties(properties)
+    properties, _ = get_properties(properties)
 
     if isinstance(category_keys, str):
         category_keys = [category_keys]
@@ -205,24 +205,3 @@ def calc_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_
     del all_errors[None]
 
     return all_errors
-
-
-def clean_up_for_json(error_dict):
-    """Cleans error dictionary to be JSON serializable,
-    building on format of calc above, and converting the tuple keys to strings
-
-    Parameters
-    ----------
-    error_dict: dict
-
-    Returns
-    -------
-    error_dict_json_compatible: dict
-
-    """
-    error_dict_json_compatible = {}
-    for k, v in error_dict.items():
-        if isinstance(k, tuple):
-            k = '(' + ','.join([str(k_el) for k_el in k]) + ')'
-        error_dict_json_compatible[k] = v
-    return error_dict_json_compatible

@@ -318,7 +318,7 @@ B        0.49682872       2.31677448       0.63420493       4.82215700       9.2
 B        1.40838669      -0.14123037       0.14656488      -0.33898020      -0.36595756      -0.12011174
 B        0.80195168       0.00675253       3.26450393      -0.64942529       0.10327533      -0.04488455
 1
-Lattice="10.2 0.0 0.0 0.0 10.2 0.0 0.0 0.0 10.2" Properties=species:S:1:pos:R:3:REF_forces:R:3 config_type=single_atom vasp_rundir=run_iter_0/run_VASP_dzqsunrl REF_energy=-0.0046603 pbc="F F F"
+Lattice="10.2 0.0 0.0 0.0 10.2 0.0 0.0 0.0 10.2" Properties=species:S:1:pos:R:3:REF_forces:R:3 config_type=isolated_atom vasp_rundir=run_iter_0/run_VASP_dzqsunrl REF_energy=-0.0046603 pbc="F F F"
 B        0.00000000       0.00000000       0.00000000       0.00000688      -0.00000154       0.00000348
 2
 Lattice="10.2 0.0 0.0 0.0 10.2 0.0 0.0 0.0 10.2" Properties=species:S:1:pos:R:3:REF_forces:R:3 config_type=dimer vasp_rundir=run_iter_0/run_VASP_c2t1zw71 REF_energy=-2.91650228 pbc="F F F"
