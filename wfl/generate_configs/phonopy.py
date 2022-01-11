@@ -44,7 +44,7 @@ def run_op(atoms, displacements, strain_displs, ph2_supercell, ph3_supercell=Non
 
 
     """
-    def sc_to_mat(sc):
+    def _sc_to_mat(sc):
         if sc is None:
             return None
 
@@ -61,8 +61,8 @@ def run_op(atoms, displacements, strain_displs, ph2_supercell, ph3_supercell=Non
 
         return sc_mat
 
-    ph2_sc_mat = sc_to_mat(ph2_supercell)
-    ph3_sc_mat = sc_to_mat(ph3_supercell)
+    ph2_sc_mat = _sc_to_mat(ph2_supercell)
+    ph3_sc_mat = _sc_to_mat(ph3_supercell)
 
     ats_pert = []
 
@@ -76,31 +76,39 @@ def run_op(atoms, displacements, strain_displs, ph2_supercell, ph3_supercell=Non
 
             d2 = []
             d3 = []
-            if ph2_supercell is not None:
+            if ph2_sc_mat is not None:
                 ph2 = phonopy.Phonopy(at_ph, ph2_sc_mat)
                 ph2.generate_displacements(distance=displ)
                 d2_undispl = ph2.supercell
                 d2 = ph2.supercells_with_displacements
-            if ph3_supercell is not None:
-                ph3 = phono3py.Phono3py(at_ph, supercell_matrix=ph3_sc_mat)
-                ph3.generate_displacements(distance=displ, cutoff_pair_distance=pair_cutoff)
-                d3_undispl = ph3.supercell
-                d3 = [a for a in ph3.supercells_with_displacements if a is not None]
 
-            if len(d2) > 0:
                 if displ_i == 0:
+                    # store undisplaced phonon (harmonic) config
                     at_pert = Atoms(cell=d2_undispl.cell, positions=d2_undispl.positions, numbers=d2_undispl.numbers, pbc=[True]*3)
-                    at_pert.info["config_type"] = f"phonon_harmonic_undispl"
+                    if ph3_sc_mat is not None and np.any(ph2_sc_mat != ph3_sc_mat):
+                        # fc2 and fc3 are different supercells, need different undisplaced configs
+                        at_pert.info["config_type"] = f"phonon_harmonic_undispl"
+                    else:
+                        at_pert.info["config_type"] = f"phonon_undispl"
                     ats_pert[-1].append(at_pert)
                 for at in d2:
                     at_pert = Atoms(cell=at.cell, positions=at.positions, numbers=at.numbers, pbc=[True]*3)
                     at_pert.info["config_type"] = f"phonon_harmonic_{displ_i}"
                     ats_pert[-1].append(at_pert)
 
-            if len(d3) > 0:
-                if displ_i == 0:
+            if ph3_sc_mat is not None:
+                ph3 = phono3py.Phono3py(at_ph, supercell_matrix=ph3_sc_mat)
+                ph3.generate_displacements(distance=displ, cutoff_pair_distance=pair_cutoff)
+                d3_undispl = ph3.supercell
+                d3 = [a for a in ph3.supercells_with_displacements if a is not None]
+
+                if displ_i == 0 and (ph2_sc_mat is None or np.any(ph2_sc_mat != ph3_sc_mat)):
+                    # store undisplaced fc3 (cubic) config
                     at_pert = Atoms(cell=d3_undispl.cell, positions=d3_undispl.positions, numbers=d3_undispl.numbers, pbc=[True]*3)
-                    at_pert.info["config_type"] = f"phonon_cubic_undispl"
+                    if ph2_sc_mat is not None and np.any(ph2_sc_mat != ph3_sc_mat):
+                        at_pert.info["config_type"] = f"phonon_cubic_undispl"
+                    else:
+                        at_pert.info["config_type"] = f"phonon_undispl"
                     ats_pert[-1].append(at_pert)
                 for at in d3:
                     at_pert = Atoms(cell=at.cell, positions=at.positions, numbers=at.numbers, pbc=[True]*3)
