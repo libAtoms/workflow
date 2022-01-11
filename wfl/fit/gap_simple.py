@@ -107,7 +107,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
     if not fitting_configs_filename:
         fitting_configs_scratch_filename = fitting_configs.to_file('_GAP_fitting_configs.xyz', scratch=True)
         fitting_configs_filename = fitting_configs_scratch_filename
-
+    
     # kwargs overwrite the fitting_dict given
     use_fitting_dict = dict(fitting_dict, atoms_filename=fitting_configs_filename, **kwargs)
 
@@ -169,6 +169,7 @@ def dict_to_gap_fit_string(param_dict):
 
     descriptors = param_dict.pop('_gap')
 
+    param_dict = _Path_to_str(param_dict)
     gap_fit_string = dict_to_quip_str(param_dict)
 
     descriptor_string_list = [dict_to_quip_str(desc_dict, list_brackets='{{}}') for
@@ -177,3 +178,14 @@ def dict_to_gap_fit_string(param_dict):
     gap_fit_string += ' gap={ ' + ' : '.join(descriptor_string_list) + ' }'
 
     return gap_fit_string
+
+def _Path_to_str(param_dict):
+
+    possible_file_keys = ["atoms_filename", "at_file", "baseline_param_filename", 
+                          "core_param_file", "gap_file", "gp_file", "template_file"]
+
+    for key in possible_file_keys:
+        if key in param_dict.keys():
+            param_dict[key] = str(param_dict[key])
+
+    return param_dict

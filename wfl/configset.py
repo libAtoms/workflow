@@ -50,8 +50,9 @@ class ConfigSet_in:
         path to prepend to every file name
     input_files: str / iterable(str) / 2-tuple(str) / iterable(2-tuple(str))
         Input file name globs, optionally as 2-tuples of (filename_glob, index).
-        The latter only works with more than one tuple
-        index here overrides separate default_index arg
+        The latter only works with more than one tuple. 
+        Index here overrides separate default_index arg. 
+        pathlib.Path may be used instead of str. 
     default_index: str, default `:`
         default indexing, applied to all files unless overridden by indexing specified in input_files argument
     input_queries: dict/str / iterable(dict/str)
@@ -83,11 +84,11 @@ class ConfigSet_in:
         self.abcd = _parse_abcd(abcd_conn)
 
         # copy input args to self attributes
-        self.file_root = file_root
         self.input_files = None
         self.input_queries = input_queries
         self.input_configs = input_configs
         self.default_index = default_index
+        self.file_root = Path(file_root)
 
         # properties needed elsewhere
         self.current_input_file = None
@@ -104,7 +105,7 @@ class ConfigSet_in:
         elif input_files is not None:
             # fix up files
             self.input_files = []
-            if isinstance(input_files, str):
+            if isinstance(input_files, str) or isinstance(input_files, Path):
                 # single string, one glob
                 # can't accept one 2-tuple of (file, index) because there's no perfect way of distinguishing it from
                 #    2-tuple of filenames (unless we want to test whether second file is in form of an index and assume
@@ -112,8 +113,10 @@ class ConfigSet_in:
                 input_files = [input_files]
 
             for glob_index in input_files:
-                if isinstance(glob_index, str):
+                if isinstance(glob_index, str) or isinstance(glob_index, Path):
                     glob_index = (glob_index, self.default_index)
+                if isinstance(glob_index[0], Path):
+                    glob_index = (str(glob_index[0]), glob_index[1])
                 try:
                     if len(glob_index) != 2:
                         raise RuntimeError(
@@ -121,10 +124,11 @@ class ConfigSet_in:
                     if self.verbose:
                         print('adding files in ', glob_index)
                     self.input_files.extend(
-                        [(f, glob_index[1]) for f in sorted(glob.glob(os.path.join(file_root, glob_index[0])))])
+                        [(Path(f), glob_index[1]) for f in sorted(glob.glob(str(self.file_root / glob_index[0])))])
+
                 except Exception as exc:
                     raise RuntimeError(('Got input_files \'{}\' with some contents type '
-                                        'not str or 2-tuple of str').format(input_files)) from exc
+                                        'not str/Path or 2-tuple of str/Path').format(input_files)) from exc
             if len(self.input_files) == 0:
                 raise RuntimeError('input glob(s) \'{}\' did not match any files'.format(input_files))
         elif self.input_configs is not None:
@@ -258,6 +262,7 @@ class ConfigSet_in:
         """
 
         if self.input_configs is not None:
+            # keep nesting in case the configs are stored as list of lists of Atoms
             return ConfigSet_in(input_configs=self.input_configs)
         else:
             return ConfigSet_in(input_configs=list(self))
@@ -334,7 +339,7 @@ class ConfigSet_out:
         dict of tags and value to set in every config
     file_root: str, default ``
         path to prepend to every file name
-    output_files: str / dict / list(len=1) / tuple(len=1), default=None
+    output_files: str / pathlib.Path / dict / list(len=1) / tuple(len=1), default=None
         output file, or dict mapping from input to output files
     output_abcd: bool, default False
         write output to ABCD
@@ -390,6 +395,8 @@ class ConfigSet_out:
         self.output_files = None
         self.output_files_map = None
         self.output_configs = None
+        self.file_root = Path(file_root)
+
         if self.output_abcd:
             if self.all_or_none:
                 raise RuntimeError('all-or-none for database output not implemented')
@@ -399,22 +406,32 @@ class ConfigSet_out:
                 print('writing to ABCD')
         elif output_files is not None:
             if isinstance(output_files, dict):
-                self.output_files = [os.path.join(file_root, fout) for fout in output_files.values()]
-                self.output_files_map = lambda fin: os.path.join(file_root, output_files.get(fin))
+                output_files = {Path(k): Path(v) for k, v in output_files.items()}
+                self.output_files = [file_root/ fout for fout in output_files.values()]
+                self.output_files_map = lambda fin: file_root / output_files.get(Path(fin)) \
+                                                    if isinstance(fin, str) \
+                                                    else file_root / output_files.get(fin)
+
             else:
-                if not isinstance(output_files, str):
+                if isinstance(output_files, str):
+                    output_files = Path(output_files)
+
+                if not isinstance(output_files, Path):
                     try:
-                        if len(output_files) == 1 and isinstance(next(iter(output_files)), str):
-                            # extract single string from iterable
-                            output_files = next(iter(output_files))
+                        if len(output_files) == 1: 
+                            entry = next(iter(output_files))
+                            if isinstance(entry, str) or isinstance(entry, Path):
+                                # extract single string from iterable
+                                output_files = Path(entry)
                         else:
-                            raise ValueError(f'Got type {type(output_files)} of length {len(output_files)} other '
-                                             f'than 1 or content type other than str, cannot map to it')
+                            raise ValueError(f'Got `output_files` of type {type(output_files)} and length {len(output_files)}, '
+                                             f'which either has more than one entry or its content is not one of: '
+                                             f'str, dict, pathlib.Path')
                     except Exception as e:
                         traceback.print_exc()
-                        raise RuntimeError(f'Got output_files type {type(output_files)} other than iterable with '
-                                           f'1 str item, str, or dict')
-                self.output_files = [os.path.join(file_root, output_files)]
+                        raise RuntimeError(f'Got output_files of type {type(output_files)} which is not one of: '
+                                           f'str, dict, pathlib.Path or iterable with one str or pathlib.Path item.')
+                self.output_files = [file_root / output_files]
                 self.output_files_map = lambda fin: self.output_files[0]
             if self.verbose:
                 print('writing to output_files', self.output_files)
@@ -442,7 +459,7 @@ class ConfigSet_out:
 
         if self.output_files is not None:
             # if all files exist, it must be done, since all_or_none must be set
-            return all([os.path.exists(fout) for fout in self.output_files])
+            return all([fout.exists() for fout in self.output_files])
 
         # fall through to here only if output is a list of configs, never already available
         return False
@@ -456,7 +473,7 @@ class ConfigSet_out:
                 raise RuntimeError('Got non-unique set_tags, pass force to override')
         if self.output_files is not None:
             for fout in self.output_files:
-                if os.path.exists(fout):
+                if fout.exists():
                     raise RuntimeError(('Will write to file \'{}\' that exists, '
                                         'pass force to override').format(fout))
 
@@ -474,7 +491,18 @@ class ConfigSet_out:
             self.output_configs = []
 
     def write(self, ats, from_input_file=None, flush_interval=10):
-        """ Iteratively write to place corresponding to config input iterator last returned. """
+        """ Iteratively write to place corresponding to config input iterator last returned. 
+        
+            Parameters
+            ----------
+            ats: Atoms / list(Atoms)
+                Atoms to write
+            from_input_file: str or Path, default None
+                If ConfigSet_out was initialised with dict(input_file=output_file, ...):
+                input file based on which the corresponding output file is selected.  
+            flush_interval: int, default 10
+                Interval (s) for writing to files. 
+        """
 
         # promote to iterable(Atoms)
         if isinstance(ats, Atoms):
@@ -505,16 +533,13 @@ class ConfigSet_out:
                     self.output_files_map, from_input_file))
 
             if self.all_or_none:
-                t = list(os.path.split(real_output_filename))
-                # should we add something more unique, e.g. uuid4?
-                t[-1] = 'tmp.' + t[-1]
-                use_output_filename = os.path.join(*t)
+                use_output_filename = real_output_filename.parent / ('tmp.' + str(real_output_filename.name))
             else:
                 use_output_filename = real_output_filename
 
             # this assumes each output file is hit only once
             # should we think about how to deal with appending?
-            if self.current_output_file is None or self.current_output_file.name != use_output_filename:
+            if self.current_output_file is None or self.current_output_file.name != str(use_output_filename):
                 if self.current_output_file:
                     self.current_output_file.close()
                 self.current_output_file = open(use_output_filename, 'w')
@@ -532,7 +557,7 @@ class ConfigSet_out:
                 self.last_flush = cur_time
 
             if self.verbose:
-                print('write wrote {} to {}'.format(len(ats), self.current_output_file.name))
+                print('ConfigSet_out.write wrote {} to {}'.format(len(ats), self.current_output_file.name))
 
 
     def end_write(self):
@@ -590,3 +615,4 @@ class ConfigSet_out:
         if self.abcd is not None:
             s += _fmt('ABCD connection', str(self.abcd))
         return s
+
