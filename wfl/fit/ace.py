@@ -129,7 +129,7 @@ def fit(fitting_configs, ACE_name, params, ref_property_prefix='REF_',
 
         if not wait_for_results:
             return None
-        results, stdout, stderr = xpr.get_results()
+        results, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
 
         sys.stdout.write(stdout)
         sys.stderr.write(stderr)
