@@ -14,7 +14,7 @@ from wfl.configset import ConfigSet_in, ConfigSet_out
 from wfl.descriptor_heuristics import descriptor_2brn_uniform_file, descriptors_from_length_scales
 from wfl.fit.gap_simple import run_gap_fit
 from wfl.utils.quip_cli_strings import dict_to_quip_str
-from .utils import to_RemoteInfo
+from .utils import get_RemoteInfo
 from .modify_database.scale_orig import modify as modify_scale_orig
 
 try:
@@ -169,9 +169,8 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
             # Potential seems to return RuntimeError when file is missing
             pass
 
-    remote_info = to_RemoteInfo(remote_info, 'WFL_GAP_MULTISTAGE_FIT_REMOTEINFO')
+    remote_info = get_RemoteInfo(remote_info, 'WFL_GAP_MULTISTAGE_FIT_REMOTEINFO')
     if remote_info is not None and remote_info != '_IGNORE':
-
         input_files = remote_info.output_files.copy()
         output_files = remote_info.output_files.copy() + [str(run_dir)]
 

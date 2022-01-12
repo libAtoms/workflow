@@ -110,16 +110,15 @@ def copy_properties(configs, ref_property_keys, stress_to_virial=True, force=Tru
     return ref_property_keys
 
 
-
-def to_RemoteInfo(remote_info, env_var):
-    if remote_info is None:
-        if env_var in os.environ:
-            try:
-                remote_info = json.loads(os.environ[env_var])
-            except:
-                with open(os.environ[env_var]) as fin:
-                    remote_info = json.load(fin)
-            remote_info = RemoteInfo(**remote_info)
+def get_RemoteInfo(remote_info, env_var):
+    if remote_info is None and env_var in os.environ:
+        try:
+            # interpret as JSON string
+            remote_info = json.loads(os.environ[env_var])
+        except:
+            # interpret as name of file with JSON in it
+            with open(os.environ[env_var]) as fin:
+                remote_info = json.load(fin)
 
     if isinstance(remote_info, dict):
         remote_info = RemoteInfo(**remote_info)
