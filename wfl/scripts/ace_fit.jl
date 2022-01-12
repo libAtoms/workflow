@@ -31,25 +31,36 @@ parser = ArgParseSettings(description="Fit an ACE potential from data in a file"
     "--r0", "-r"
         help = "typical range, default to mean of rnn() of species.  Required if any rnn() values are not available."
         arg_type = Float64
-    "--r_inner", "-i"
-        help = "manybody inner cutoff, default to 0.8 * r0"
+    "--cutoff_mb_inner", "-I"
+        help = "manybody inner cutoff, default to 0.8 * r0. Mutually exclusive with \"cutoffs_mb\""
         arg_type = Float64
-    "--cutoff_mb", "-C"
-        help = "manybody cutoff, default to 2.0 * r0"
+    "--cutoff_mb_outer", "-C"
+        help = "manybody cutoff, default to 2.0 * r0. Mutually exclusive with \"cutoffs_mb\""
         arg_type = Float64
-    "--cutoff_pair", "-c"
+    "--cutoffs_mb"
+        help = "JSON sting specifying per-element-pair cutoff parsed into " *
+               "Dict((AtomicNumber, AtomicNumber) => (Float, Float)). " *
+               "AtomicNumber should be stored as str(element) (e.g. \"H\") " *
+               "Mutually exclusive with (r_inner_mb and cutoff_mb)"
+    "--cutoff_pair_outer", "-c"
         help = "pair potential cutoff, default to 3.0 * r0"
         arg_type = Float64
-    "--body_order", "-N"
-        help = "body order (correlation + 1)"
+    "--body_order"
+        help = "body order (correlation_order + 1)"
         arg_type = Int
-        default = 3
+    "--correlation_order", "-N"
+        help = "correlation order"
+        arg_type = Int
+        default = 2 
     "--degree", "-D"
-        help = "manybody potential poly degree"
-        arg_type = Int
-        default = 12
+        help = "manybody potential polynomial degree." *
+            "either (string parsed to) Int or a JSON string specifying polynomial degree " *
+            "for each correlation order. Dictionary keys can also be a tuple of " *
+            "(correlation_order, AtomicNumber)." 
+        arg_type = String 
+        default = "12"
     "--degree_pair", "-d"
-        help = "pair potential poly degree"
+        help = "pair potential polynomial degree"        
         arg_type = Int
         default = 3
     "--solver", "-s"
@@ -106,6 +117,49 @@ end
 
 @show args
 
+
+function parse_degree_site(input::AbstractString)
+
+    try
+        # parse single integer
+        degree = parse(Int, input)
+        return degree
+    catch err
+        # throw anything unexpected
+        if ~isa(err, ArgumentError)
+            throw(err)
+        end
+    end
+
+    # parse JSON
+    raw_dict = JSON.parse(input)
+    out_dict = Dict() 
+    for (key, val) in raw_dict
+        if key == "default"
+            out_dict[key] = val
+        elseif occursin(",", key) 
+            # parse key as a tuple
+            new_key = parse_degree_string_into_tuple(key)
+            out_dict[new_key] = val
+        else
+            # key is a correlation order (Int)
+            new_key = parse(Int, key)
+            out_dict[new_key] = val
+        end
+    end
+
+    return out_dict
+end
+
+function parse_degree_string_into_tuple(input::AbstractString)
+    input = strip(input, ['(', ')'])
+    entries = [strip(s) for s in split(input, ",")]
+    correlation_order = parse(Int, entries[1])
+    atomic_number = AtomicNumber(Meta.parse(entries[2]))
+    return (correlation_order, atomic_number)
+end
+
+
 using JSON
 using IPFitting
 using ACE
@@ -151,8 +205,19 @@ for suffix in suffixes
 end
 @show suffixes
 
-N = args["body_order"] - 1
-deg_site = args["degree"]
+if length(args["body_order"]) != 0
+    if length(args["correlation_order"]) != 0
+        Throw(ArgumentError("Both \"body_order\" and \"correlation_order\" are given."))
+    end
+    N = args["body_order"] - 1
+else
+    N = args["correlation_order"]
+end
+
+# Acutlaly, I and Noam use deg_site differently. 
+# I: to construct ACE.RPI.SparsePSHDegreeM, 
+# Noam: as maxdeg. 
+deg_site = parse_degree_site(args["degree"])
 deg_pair = args["degree_pair"]
 
 ####################################################################################################
@@ -193,24 +258,85 @@ if isnothing(args["r0"])
     end
     r0 = Statistics.mean(rnn.(species))
 end
-# things set from r0
-rin_mb = isnothing(args["r_inner"]) ? 0.8*r0 : args["r_inner"]
-rcut_mb = isnothing(args["cutoff_mb"]) ? 2.0*r0 : args["cutoff_mb"]
-rcut_pair = isnothing(args["cutoff_pair"]) ? 3.0*r0 : args["cutoff_pair"]
 
+
+something = nothing
+# inner and outer cutoffs
+if ~isnothing(args["cutoffs_mb"])
+    if ~isnothing(args["r_inner_mb"]) or ~isnothing(args["cutoff_mb"])
+        throw(Argumenterror("\"cutoffs_mb\" and (\"r_inner_mb\" & \"cutoff_mb\") are mutually exclusive"))
+    end
+    # deal with multi-body cutoffs
+    cuttoffs = something 
+    rcut = nothing
+    rin = nothing
+elseif true
+    # check for inner cutoff
+    # check for outer cutoff
+    # set defaults or given
+    cutoffs = nothing
+    rcut = something
+    rin = something 
+end
+# rin_mb = isnothing(args["r_inner_mb"]) ? 0.8*r0 : args["r_inner_mb"]
+# rcut_mb = isnothing(args["cutoff_mb"]) ? 2.0*r0 : args["cutoff_mb"]
+# rcut_pair = isnothing(args["cutoff_pair"]) ? 3.0*r0 : args["cutoff_pair"]
+
+# construction of a (basic) basis for site energies 
 @show "rpi_basis", N, deg_site, r0, rin_mb, rcut_mb
-# construction of a basic basis for site energies 
-Bsite = rpi_basis(species = [sp for sp in species],
-                  N = N,       # correlation order = body-order - 1
-                  maxdeg = deg_site,  # polynomial degree
-                  r0 = r0,     # estimate for NN distance
-                  rin = rin_mb, rcut = rcut_mb,   # domain for radial basis (cf documentation)
-                  pin = 2)                     # require smooth inner cutoff
+
+
+# write out explicitly what before was in function rpi_basis()
+pcut=2
+pin=2
+constants = false
+# species=[:C, :H] # defined above, don't need anymore
+
+# separate definitions depending on how cutoffs and transform are defined
+# might work if combined together, but I'm not confident enough that'd 
+# work as it's supposed to.
+if ~isnothing(cutoffs)
+
+    # eg - The first example I got had the following
+    maxdeg = 1.0
+    #n weights
+    Dn = Dict( "default" => 1.0 )
+    #l weights
+    Dl = Dict( "default" => 1.5 ) 
+
+    Deg = ACE.RPI.SparsePSHDegreeM(Dn, Dl, deg_site)
+
+
+    # keep the transforms as, but need to specify it for each element pair
+    trans_general = PolyTransform(2, r0)
+    # Could put `(:X, :X)` => PolyTransform(2, r0) to cover all species?
+    transforms = Dict(
+            (:C, :C) => trans_general, 
+            (:C, :H) => trans_general, 
+            (:H, :H) => trans_general)
+
+    trans = multitransform(transforms, cutoffs=cutoffs)
+    rbasis = transformed_jacobi(get_maxn(Deg, maxdeg, species), trans; pcut=pcut, pin=pin)
+
+else
+    maxdeg = deg_site
+    Deg = SparsePSHDegree()
+    trans = PolyTransform(2, r0)
+    rbasis = transformed_jacobi(get_maxn(Deg, maxdeg, species), trans, rcut_mb, rin_mb; pcut=pcut, pin=pin)
+end
+
+basis1p = BasicPSH1pBasis(rbasis; species=species, D=Deg)
+Bsite=RPIBasis(basis1p, N, Deg, maxdeg, constants)
+
+
 # pair potential basis 
 @show "pair_basis", r0, deg_pair, rcut_pair
-Bpair = pair_basis(species = [sp for sp in species], r0 = r0, maxdeg = deg_pair, 
-                   rcut = rcut_pair, rin = 0.0, 
-                   pin = 0 )   # pin = 0 means no inner cutoff
+
+pair_rin = 0.0
+pair_trans = PolyTransform(2, r0)
+rbasis = transformed_jacobi(deg_pair, pair_trans, rcut_pair, pair_rin; pcut=2, pin=0)
+Bpair = PolyPairBasis(rbasis, species)
+
 B = JuLIP.MLIPs.IPSuperBasis([Bpair, Bsite]);
 @show length(B)
 
