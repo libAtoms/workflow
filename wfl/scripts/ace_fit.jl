@@ -42,6 +42,7 @@ parser = ArgParseSettings(description="Fit an ACE potential from data in a file"
                "Dict((AtomicNumber, AtomicNumber) => (Float, Float)). " *
                "AtomicNumber should be stored as str(element) (e.g. \"H\") " *
                "Mutually exclusive with (r_inner_mb and cutoff_mb)"
+        arg_type = String
     "--cutoff_pair_outer", "-c"
         help = "pair potential cutoff, default to 3.0 * r0"
         arg_type = Float64
@@ -139,7 +140,7 @@ function parse_degree_site(input::AbstractString)
             out_dict[key] = val
         elseif occursin(",", key) 
             # parse key as a tuple
-            new_key = parse_degree_string_into_tuple(key)
+            new_key = parse_string_into_tuple(key)
             out_dict[new_key] = val
         else
             # key is a correlation order (Int)
@@ -147,16 +148,56 @@ function parse_degree_site(input::AbstractString)
             out_dict[new_key] = val
         end
     end
-
     return out_dict
 end
 
-function parse_degree_string_into_tuple(input::AbstractString)
+function parse_string_into_tuple(input::AbstractString)
     input = strip(input, ['(', ')'])
     entries = [strip(s) for s in split(input, ",")]
-    correlation_order = parse(Int, entries[1])
-    atomic_number = AtomicNumber(Meta.parse(entries[2]))
-    return (correlation_order, atomic_number)
+    return Tuple([parse_entry(entry) for entry in entries])
+end
+
+function parse_entry(input::AbstractString)
+        input = strip(input, ['\''])
+
+        # try parse into an integer 
+        # the case if entry gives correlation order
+        try
+            entry = parse(Int, input)
+            return entry
+        catch 
+        end
+        # parse into float (cutoff)
+        try 
+            entry = parse(Float64, input)
+            return entry
+        catch 
+        end
+        # parse into AtomicNumber or expression
+        try
+            if ':' in input
+                entry = Meta.parse(strip(input, [':']))
+                return entry
+            else
+                entry = AtomicNumber(Meta.parse(input))
+                return entry
+            end
+        catch
+        end
+    throw(ArgumentError("Could not parse the entry \"$(input)\", of type $(typeof(input)) into one of Int, Float64 or AtomicNumber."))        
+
+end
+
+function parse_cutoffs_mb(input::AbstractString)
+    # parse JSON
+    raw_dict = JSON.parse(input)
+    out_dict = Dict()
+    for (key, val) in raw_dict
+        parsed_key = parse_string_into_tuple(key)
+        parsed_val = parse_string_into_tuple(val)
+        out_dict[parsed_key] = parsed_val
+    end
+    return out_dict
 end
 
 
@@ -267,14 +308,14 @@ if ~isnothing(args["cutoffs_mb"])
         throw(Argumenterror("\"cutoffs_mb\" and (\"r_inner_mb\" & \"cutoff_mb\") are mutually exclusive"))
     end
     # deal with multi-body cutoffs
-    cuttoffs = something 
+    cuttoffs_mb = parse_cutoffs_mb(args["cutoffs_mb"]) 
     rcut = nothing
     rin = nothing
 elseif true
     # check for inner cutoff
     # check for outer cutoff
     # set defaults or given
-    cutoffs = nothing
+    cutoffs_mb = nothing
     rcut = something
     rin = something 
 end
@@ -295,7 +336,7 @@ constants = false
 # separate definitions depending on how cutoffs and transform are defined
 # might work if combined together, but I'm not confident enough that'd 
 # work as it's supposed to.
-if ~isnothing(cutoffs)
+if ~isnothing(cutoffs_mb)
 
     # eg - The first example I got had the following
     maxdeg = 1.0
@@ -315,7 +356,7 @@ if ~isnothing(cutoffs)
             (:C, :H) => trans_general, 
             (:H, :H) => trans_general)
 
-    trans = multitransform(transforms, cutoffs=cutoffs)
+    trans = multitransform(transforms, cutoffs=cutoffs_mb)
     rbasis = transformed_jacobi(get_maxn(Deg, maxdeg, species), trans; pcut=pcut, pin=pin)
 
 else
