@@ -110,35 +110,17 @@ def copy_properties(configs, ref_property_keys, stress_to_virial=True, force=Tru
     return ref_property_keys
 
 
-
-def to_RemoteInfo(remote_info, env_var):
-    """create a RemoteInfo object out of input or env var
-
-    Parameters
-    ----------
-    remote_info: RemoteInfo or dict or str or None
-        input structure (just returned), dict used as kwargs for constructor, or string to be interpreted as JSON string or filename 
-    env_var: str
-        name of env var to be used if remote_info is None
-
-    Returns
-    -------
-    None or RemoteInfo
-    """
-    if remote_info is None:
-        # try to get default from env_var
-        remote_info = os.environ.get(env_var, None)
-
-    if isinstance(remote_info, str):
+def get_RemoteInfo(remote_info, env_var):
+    if remote_info is None and env_var in os.environ:
         try:
-            remote_info = json.loads(remote_info)
-        except json.decoder.JSONDecodeError:
-            with open(remote_info) as fin:
+            # interpret as JSON string
+            remote_info = json.loads(os.environ[env_var])
+        except:
+            # interpret as name of file with JSON in it
+            with open(os.environ[env_var]) as fin:
                 remote_info = json.load(fin)
 
     if isinstance(remote_info, dict):
         remote_info = RemoteInfo(**remote_info)
-
-    assert remote_info is None or isinstance(remote_info, RemoteInfo)
 
     return remote_info

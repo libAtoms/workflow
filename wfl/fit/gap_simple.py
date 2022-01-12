@@ -6,7 +6,7 @@ from copy import deepcopy
 
 from wfl.configset import ConfigSet_in
 from wfl.utils.quip_cli_strings import dict_to_quip_str
-from .utils import to_RemoteInfo
+from .utils import get_RemoteInfo
 from .gap_relocate import gap_relocate
 
 from expyre import ExPyRe
@@ -43,10 +43,9 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
         contructor to be used to run fitting in separate queued job
     GAP_FIT_OMP_NUM_THREADS: number of threads to set for OpenMP of gap_fit
     """
-
-    remote_info = to_RemoteInfo(remote_info, 'WFL_GAP_SIMPLE_FIT_REMOTEINFO')
     assert 'atoms_filename' not in fitting_dict and 'at_file' not in fitting_dict
 
+    remote_info = get_RemoteInfo(remote_info, 'WFL_GAP_SIMPLE_FIT_REMOTEINFO')
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.input_files.copy()
         output_files = remote_info.output_files.copy()

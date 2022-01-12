@@ -10,7 +10,7 @@ import ase.io
 from ase.stress import voigt_6_to_full_3x3_stress
 
 from wfl.configset import ConfigSet_in
-from .utils import to_RemoteInfo
+from .utils import get_RemoteInfo
 
 from expyre import ExPyRe
 import wfl.scripts
@@ -104,8 +104,7 @@ def fit(fitting_configs, ACE_name, params, ref_property_prefix='REF_',
             # continue below for actual size calculation or fitting
             pass
 
-    remote_info = to_RemoteInfo(remote_info, 'WFL_ACE_FIT_REMOTEINFO')
-
+    remote_info = get_RemoteInfo(remote_info, 'WFL_ACE_FIT_REMOTEINFO')
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.input_files.copy()
         output_files = remote_info.output_files.copy()
