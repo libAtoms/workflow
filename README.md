@@ -53,18 +53,22 @@ abcd.get_atoms(output_tags)
 
 Operations that have been wrapped in `iterable_loop` can be split into independent jobs with minimal
 coding.  A `config.json` file must describe the available queuing sytem resources (see
-[expyre README](wfl/expyre/README.md)), and a JSON file (content or path in
+[expyre README](https://github.com/libAtoms/ExPyRe#readme)), and a JSON file (content or path in
 env var `WFL_AUTOPARA_REMOTEINFO`) describes the resources needed by any `iterable_loop` call that
 should be executed this way.  Any remote machine to be used requires that the `wfl` python
 module be installed.  If needed, commands needed to make this module available (e.g. setting `PYTHONPATH`)
 can be set on a per-machine basis in the `config.json` file mentioned below.
 
-In addition, `wfl.fit.gap_simple` and `wfl.fit.gap_multistage` have been wrapped, as a single
-job each.  The simple fit is controlled by the `WFL_GAP_SIMPLE_FIT_REMOTEINFO` env var.  Setting
+In addition, `wfl.fit.gap_simple`, `wfl.fit.gap_multistage`, and `wfl.fit.ace` have been wrapped, as a single
+job each.  The GAP simple fit is controlled by the `WFL_GAP_SIMPLE_FIT_REMOTEINFO` env var.  Setting
 this variable will also lead to the multistage fit submitting each simple fit as its own job.
 In addition, the multistage fit can be turned into a single job containing all the stages
 with the `WFL_GAP_MULTISTAGE_FIT_REMOTEINFO` env var.  In principle, doing each simple fit
 as its own job could enable running committee fits in parallel, but that is not supported right now.
+The env var `WFL_ACE_FIT_REMOTEINFO` is used for ACE fits.
+
+[NOTE: now that the multistage fit does very little other than the repeated simple fitting, does
+it need its own level of remote job execution]
 
 ### Example
 
@@ -113,7 +117,7 @@ python3 ./do_workflow.py
 where `${sys_name}` is set to the name of the system you want to run on, and `${vasp_path}$`
 is the path to the vasp executable on the remote machine.
 
-In addition a `config.json` file (see example in [expyre README](wfl/expyre/README.md))
+In addition a `config.json` file (see example in [expyre README]https://github.com/libAtoms/ExPyRe#readme))
 with available systems needs to be created
 (usually in `$HOME/.expyre/`, otherwise in the `_expyre` directory
 mentioned below), and a directory called `some/path/_expyre/` (note
@@ -123,7 +127,7 @@ to separate the jobs database from any other project.
 
 Restarts are supposed to be handled automatically - if the workflow script is
 interrupted, just rerun it.  If the entire `iterable_loop` call is complete,
-specifying `force=True, all_or_none=True` for `ConfigSet_out()` will allow
+the default of `force=True, all_or_none=True` for `ConfigSet_out()` will allow
 it to skip the operation entirely.  If the operation is not entirely done,
 the remote running package will detect an attempt to compute a previously
 initiated call (based on a hash of pickles of the function and all of its
@@ -182,40 +186,18 @@ system.  By default, all tests that actually require a remote running system
 will run on every system defined in `$HOME/.expyre/config.json`.  The
 `EXPYRE_PYTEST_SYSTEMS` can define a regexp that is used to filter those.
 
-Note: the `expyre/test_func.py::test_clean` test, since it is destructive,
-requires that the `--cleanremote` flag be passed to pytest.  If it is
-not, the test will only report the `rm` commands it is planning to run,
-but `xfail`.
-
-Required env vars:
- - `EXPYRE_PYTEST_QUEUED_JOB_RESOURCES`: Filename or content of JSON file containing
-   a dict with system names as keys.  Values are 2-entry arrays, each with a dict
-   to be used as a Resources kwargs.  The first must create a small job in a
-   partition/queue.  The second must create a job that fills up the entire
-   partition/queue, so that it will be stuck in the queued state behind the first job.
-
 Optional env vars:
  - `EXPYRE_PYTEST_SYSTEMS`: regexp to filter systems in `$HOME/.expyre/config.json` that will
    be used for testing.
- - `EXPYRE_PYTEST_SSH`: used by `expyre/test_subprocess.py` to ssh to `$HOSTNAME`, defaults
-   to `/usr/bin/ssh`.
  - `WFL_PYTEST_REMOTE_INFO`: dict of fields to _add_ to `RemoteInfo` object when doing high
    level (`iterable_loop`, `gap_fit`) remote run tests.
 
-#### pytest example
-
+#### pytest with remote run example
+Running a maximally complete set of tests with somehwat verbose output:
 ```
-> export EXPYRE_PYTEST_QUEUED_JOB_RESOURCES='{"my_sys" : [ { "n" : [ 1, "nodes" ],
-    "partition" : "regular" }, {"n" : [ 48, "nodes" ], "partition" : "regular" } ] }'
-> env EXPYRE_PYTEST_SYSTEMS='(local_sys|remote_sys)' pytest -s --basetemp $HOME/pytest --runremote \
-      --cleanremote -rxXs tests/expyre tests/test_remote_run.py tests/test_gap_fitting*py
+> env EXPYRE_PYTEST_SYSTEMS='(local_sys|remote_sys)' pytest -s --basetemp $HOME/pytest \
+      --runremote --runslow -rxXs
 ```
-
-The first, small, job is 1 regular node.  The second, larger, job is 48
-regular nodes.  There are only 48 regular nodes, so that job should not
-be able to run until the first is done (unless something weird is going
-on like both getting queued and the system giving preference to large
-jobs), which should take at least 5 minutes.
 
 ## TODO
 
