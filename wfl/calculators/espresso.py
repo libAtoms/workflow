@@ -11,7 +11,11 @@ import warnings
 import numpy as np
 from ase import Atoms
 from ase.calculators.calculator import all_changes, CalculationFailed
-from ase.calculators.espresso import Espresso, EspressoProfile
+from ase.calculators.espresso import Espresso
+try:
+    from ase.calculators.espresso import EspressoProfile
+except ImportError:
+    EspressoProfile = None
 from ase.io.espresso import kspacing_to_grid
 
 from .utils import clean_rundir, handle_nonperiodic, save_results
@@ -86,13 +90,16 @@ def evaluate_op(
         )
 
         if calculator_command is not None:
-            profile = EspressoProfile(argv=calculator_command.split())
-        else:
-            profile = None
+            if EspressoProfile is None:
+                # older syntax
+                kwargs_this_calc["command"] = f"{calculator_command} -in PREFIX.pwi > PREFIX.pwo"
+            else:
+                # newer syntax
+                kwargs_this_calc['profile'] = EspressoProfile(argv=calculator_command.split())
 
         # create temp dir and calculator
         rundir = tempfile.mkdtemp(dir=base_rundir, prefix=dir_prefix)
-        at.calc = Espresso(directory=rundir, profile=profile, **kwargs_this_calc)
+        at.calc = Espresso(directory=rundir, **kwargs_this_calc)
 
         # calculate
         calculation_succeeded = False
