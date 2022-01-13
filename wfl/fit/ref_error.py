@@ -114,10 +114,10 @@ def err_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_p
 
         at_errors = {}
 
-        def _get(key, display_name, per_atom):
+        def _get(key, display_name, per_atom_prop):
             # simple getter for ref/calc properties
             try:
-                if per_atom:
+                if per_atom_prop:
                     return at.arrays[key]
                 else:
                     return at.info[key]
@@ -135,8 +135,10 @@ def err_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_p
                 e_error = e_calc - e_ref
                 if 'energy' in properties:
                     at_errors['energy'] = [e_error]
+                    at.info['energy_error'] = e_error
                 if 'energy_per_atom' in properties:
                     at_errors['energy_per_atom'] = [e_error / len(at)]
+                    at.info['energy_per_atom_error'] = e_error
 
         if 'forces' in properties:
             f_ref = _get(ref_property_prefix + 'forces', "reference forces", True)
@@ -144,6 +146,7 @@ def err_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_p
 
             if f_ref is not None and f_calc is not None:
                 f_errors = f_calc - f_ref
+                at.new_array('forces_error', f_errors)
                 if forces_by_component:
                     f_errors = f_errors.reshape((-1))
                     atomic_numbers = np.asarray([[Z, Z, Z] for Z in at.numbers]).reshape((-1))
@@ -161,13 +164,16 @@ def err_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_p
 
             if stress_ref is not None and stress_calc is not None:
                 stress_errors = stress_calc - stress_ref
-                v_errors = -stress_errors * at.get_volume()
+                vir_errors = -stress_errors * at.get_volume()
                 if 'stress' in properties:
                     at_errors['stress'] = stress_errors
+                    at.info['stress_error'] = stress_errors
                 if 'virial' in properties:
-                    at_errors['virial'] = v_errors
+                    at_errors['virial'] = vir_errors
+                    at.info['virial_error'] = vir_errors
                 if 'virial_per_atom' in properties:
-                    at_errors['virial_per_atom'] = v_errors / len(at)
+                    at_errors['virial_per_atom'] = vir_errors / len(at)
+                    at.info['virial_per_atom_error'] = vir_errors
 
         cats = [category]
         if category is not None:
