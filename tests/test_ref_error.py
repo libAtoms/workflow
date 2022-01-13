@@ -148,6 +148,12 @@ def test_ref_error_forces(ref_atoms):
     assert ref_err_dict['_ALL_']['forces'][13][0] == 40
     assert approx(ref_err_dict['_ALL_']['forces'][13][1]) == __ALL__forces
 
+    # remove error info so next call won't complain
+    for at in ref_atoms:
+        at.info = {k: v for k, v in at.info.items() if not k.endswith('_error')}
+    for at in ref_atoms:
+        at.arrays = {k: v for k, v in at.arrays.items() if not k.endswith('_error')}
+
     # forces by component
     ref_err_dict = err_from_calculated_ats(
         ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["forces"],
