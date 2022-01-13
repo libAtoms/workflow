@@ -1,0 +1,27 @@
+atoms_filename: assets/tiny_gap.train_set.xyz
+outfile_base: dummy
+outfile_format: .json
+load_dbfile:  
+save_dbfile:  
+r0: 1.1
+cutoffs_mb: 
+  "(:C, :H)": "(0.8, 4.4)"
+  "(:C, :C)": "(0.8, 4.4)"
+  "(:H, :H)": "(0.6, 4.4)"
+cutoff_pair: 5.5
+correlation_order: 3
+degree:
+  default: 20
+  1: 20 
+  2: 20
+  "(3, H)": 20
+  "(3, C)": 20
+degree_pair: 6
+solver: 
+  - ard
+  - [0.1, 100]
+key: 
+  - [E, dft_energy]
+  - [F, dft_forces]
+_repeat_key: true
+dry_run: 

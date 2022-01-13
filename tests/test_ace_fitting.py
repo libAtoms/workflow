@@ -36,6 +36,13 @@ def test_dict_to_ace_fit_string():
     print('s', s)
     assert s == '--atoms_filename dummy.xyz --outfile_base dummy --key E REF_energy --key F REF_forces --solver lsqr \'[[0.1, 1e-06]]\' --weights \'{"default": {"E": 1, "F": 1, "V": 1}}\''
 
+    param_fname = Path(__file__).resolve().parent / "assets" / "ace_params.yml"
+    with open(param_fname, 'r') as f: params = yaml.safe_load(f)
+
+    s = dict_to_ace_fit_string(params).strip()
+    print(f's: {s}')
+    assert s == '--atoms_filename assets/tiny_gap.train_set.xyz --outfile_base dummy --outfile_format .json --load_dbfile  --save_dbfile  --r0 1.1 --cutoffs_mb \'{"(:C, :H)": "(0.8, 4.4)", "(:C, :C)": "(0.8, 4.4)", "(:H, :H)": "(0.6, 4.4)"}\' --cutoff_pair 5.5 --correlation_order 3 --degree \'{"default": 20, "1": 20, "2": 20, "(3, H)": 20, "(3, C)": 20}\' --degree_pair 6 --solver ard \'[0.1, 100]\' --key E dft_energy --key F dft_forces --dry_run'
+
 
 @pytest.mark.skipif(not shutil.which("ace_fit.jl"), reason="ace_fit.jl not in PATH")
 def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):

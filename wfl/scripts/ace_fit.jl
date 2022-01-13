@@ -43,16 +43,15 @@ parser = ArgParseSettings(description="Fit an ACE potential from data in a file"
                "AtomicNumber should be stored as str(element) (e.g. \"H\") " *
                "Mutually exclusive with (r_inner_mb and cutoff_mb)"
         arg_type = String
-    "--cutoff_pair_outer", "-c"
+    "--cutoff_pair", "-c"
         help = "pair potential cutoff, default to 3.0 * r0"
         arg_type = Float64
     "--body_order"
         help = "body order (correlation_order + 1)"
         arg_type = Int
     "--correlation_order", "-N"
-        help = "correlation order"
+        help = "correlation order, default N=2. "
         arg_type = Int
-        default = 2 
     "--degree", "-D"
         help = "manybody potential polynomial degree." *
             "either (string parsed to) Int or a JSON string specifying polynomial degree " *
@@ -93,6 +92,7 @@ parser = ArgParseSettings(description="Fit an ACE potential from data in a file"
         default = ["{}"]
         action = :append_arg
     "--E0"
+    # I'd remove this altogether? 
         help = "WARNING: do not use unless you know what you are doing - will result in potentials that "*
                "do not necessarily predict isolated atom energies correctly. E0 value for each element symbol, "*
                "instead of using config_type=='isolated_atom'. Cannot be specified for elements that have "*
@@ -207,6 +207,8 @@ using ACE
 using JuLIP
 using Statistics
 using LinearAlgebra
+using ACE.RPI: get_maxn
+using ACE.Transforms: multitransform
 
 if haskey(ENV, "ACE_FIT_BLAS_THREADS")
     nprocs = parse(Int, ENV["ACE_FIT_BLAS_THREADS"])
@@ -214,20 +216,20 @@ if haskey(ENV, "ACE_FIT_BLAS_THREADS")
     BLAS.set_num_threads(nprocs)
 end
 
-keys = Dict("E" => "_NONE_", "F" => "_NONE_", "V" => "_NONE_")
+property_keys = Dict("E" => "_NONE_", "F" => "_NONE_", "V" => "_NONE_")
 if length(args["key"]) == 0
-    keys["E"] = "energy"
-    keys["F"] = "forces"
-    keys["V"] = "virial"
+    property_keys["E"] = "energy"
+    property_keys["F"] = "forces"
+    property_keys["V"] = "virial"
 else
     for EFV_key in args["key"]
         if EFV_key[1] == "S"
             error("fitting key stress S not supported")
         end
-        keys[EFV_key[1]] = EFV_key[2]
+        property_keys[EFV_key[1]] = EFV_key[2]
     end
 end
-@show keys
+@show property_keys
 
 E0 = Dict{Symbol, Float64}()
 if length(E0) > 0
@@ -246,13 +248,15 @@ for suffix in suffixes
 end
 @show suffixes
 
-if length(args["body_order"]) != 0
-    if length(args["correlation_order"]) != 0
-        Throw(ArgumentError("Both \"body_order\" and \"correlation_order\" are given."))
+if ~isnothing(args["body_order"])
+    if ~isnothing(args["correlation_order"])
+        throw(ArgumentError("Both \"body_order\" and \"correlation_order\" are given."))
     end
     N = args["body_order"] - 1
-else
+elseif ~isnothing(args["correlation_order"]) 
     N = args["correlation_order"]
+else
+    N = 2
 end
 
 # Acutlaly, I and Noam use deg_site differently. 
@@ -265,7 +269,7 @@ deg_pair = args["degree_pair"]
 
 cfgs = Vector{Dat}()
 for atfile in args["atoms_filename"]
-    append!(cfgs, IPFitting.Data.read_xyz(atfile, energy_key=keys["E"], force_key=keys["F"], virial_key=keys["V"]))
+    append!(cfgs, IPFitting.Data.read_xyz(atfile, energy_key=property_keys["E"], force_key=property_keys["F"], virial_key=property_keys["V"]))
 end
 @show unique(configtype.(cfgs));
 
@@ -282,6 +286,7 @@ for cfg in cfgs
         end
     end
 end
+species = [sp for sp in species]
 @show species
 @show E0
 
@@ -304,34 +309,28 @@ end
 something = nothing
 # inner and outer cutoffs
 if ~isnothing(args["cutoffs_mb"])
-    if ~isnothing(args["r_inner_mb"]) or ~isnothing(args["cutoff_mb"])
-        throw(Argumenterror("\"cutoffs_mb\" and (\"r_inner_mb\" & \"cutoff_mb\") are mutually exclusive"))
+    if ~isnothing(args["cutoff_mb_inner"]) or ~isnothing(args["cutoff_mb_outer"])
+        throw(Argumenterror("\"cutoffs_mb\" and (\"cutoff_mb_inner\" & \"cutoff_mb_outer\") are mutually exclusive"))
     end
     # deal with multi-body cutoffs
-    cuttoffs_mb = parse_cutoffs_mb(args["cutoffs_mb"]) 
-    rcut = nothing
-    rin = nothing
+    cutoffs_mb = parse_cutoffs_mb(args["cutoffs_mb"]) 
+    rin_mb = nothing
+    rcut_mb = nothing
 elseif true
-    # check for inner cutoff
-    # check for outer cutoff
-    # set defaults or given
     cutoffs_mb = nothing
-    rcut = something
-    rin = something 
+    rin_mb = isnothing(args["cutoff_mb_outer"]) ? 0.8*r0 : args["cutoff_mb_inner"]
+    rcut_mb = isnothing(args["cutoff_mb_outer"]) ? 2.0*r0 : args["cutoff_mb_outer"]
 end
-# rin_mb = isnothing(args["r_inner_mb"]) ? 0.8*r0 : args["r_inner_mb"]
-# rcut_mb = isnothing(args["cutoff_mb"]) ? 2.0*r0 : args["cutoff_mb"]
-# rcut_pair = isnothing(args["cutoff_pair"]) ? 3.0*r0 : args["cutoff_pair"]
+rcut_pair = isnothing(args["cutoff_pair"]) ? 3.0*r0 : args["cutoff_pair"]
 
 # construction of a (basic) basis for site energies 
-@show "rpi_basis", N, deg_site, r0, rin_mb, rcut_mb
+@show "rpi_basis", N, deg_site, r0, rin_mb, rcut_mb, cutoffs_mb
 
 
 # write out explicitly what before was in function rpi_basis()
 pcut=2
 pin=2
 constants = false
-# species=[:C, :H] # defined above, don't need anymore
 
 # separate definitions depending on how cutoffs and transform are defined
 # might work if combined together, but I'm not confident enough that'd 
@@ -346,7 +345,6 @@ if ~isnothing(cutoffs_mb)
     Dl = Dict( "default" => 1.5 ) 
 
     Deg = ACE.RPI.SparsePSHDegreeM(Dn, Dl, deg_site)
-
 
     # keep the transforms as, but need to specify it for each element pair
     trans_general = PolyTransform(2, r0)
@@ -411,9 +409,6 @@ if isnothing(dB)
 end
 
 Vref = OneBody(E0)
-
-# 1.05 - sacrifice 5% of min error for regularization
-# IP, lsqinfo = lsqfit(dB, solver=(:rid, 1.05), weights = weights, Vref = Vref);
 
 @warn "finally starting lsqfit"
 @show args["weights"]
