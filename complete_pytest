@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# should include both tin and tin_ssh - not as good as real remote machine, but maybe close enough
+export EXPYRE_PYTEST_SYSTEMS='tin'
+
+echo  "GIT VERSION " $( git describe --always --tags --dirty ) > pytest_complete_test.out 
+echo "" >> pytest_complete_test.out 
+
+rm -rf $HOME/pytest_wfl
+pytest -s --basetemp $HOME/pytest_wfl --runremote --runslow -rxXs >> pytest_complete_test.out 2>&1
+
+l=`egrep 'passed.*xfailed' pytest_complete_test.out`
+
+# ===== 76 passed, 13 skipped, 1 xfailed, 206 warnings in 4046.00s (1:07:25) =====
+
+echo $l | grep -q ' 13 skipped'
+if [ $? != 0 ]; then
+    echo "Unexpected number skipped not 0 '$l'" 1>&2
+    exit 1
+fi
+echo $l | grep -q ' 76 passed'
+if [ $? != 0 ]; then
+    echo "Unexpected number passed not 22 '$l'" 1>&2
+    exit 1
+fi
+echo $l | grep -q ' 1 xfailed'
+if [ $? != 0 ]; then
+    echo "Unexpected number xfailed not 1 '$l'" 1>&2
+    exit 1
+fi

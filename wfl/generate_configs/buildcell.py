@@ -237,7 +237,7 @@ def run_op(config_is, buildcell_cmd, buildcell_input, extra_info=None,
             at0.rattle(perturbation)
 
             # handle the symmetry
-            dataset = spglib.get_symmetry_dataset((at0.cell, at0.positions, at0.numbers), symprec=symprec)
+            dataset = spglib.get_symmetry_dataset((at0.cell, at0.get_scaled_positions(), at0.numbers), symprec=symprec)
             at0.info['buildcell_symmetry'] = '{} {} {} @ {}'.format(dataset['number'], dataset['international'],
                                                                     dataset['hall'], symprec)
             atoms_list.append(at0)
