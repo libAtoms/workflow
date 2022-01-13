@@ -5,11 +5,13 @@ Quantum Espresso interface
 import os
 import pathlib
 import tempfile
+import subprocess
+import warnings
 
 import numpy as np
 from ase import Atoms
-from ase.calculators.calculator import CalculationFailed
-from ase.calculators.espresso import Espresso
+from ase.calculators.calculator import all_changes, CalculationFailed
+from ase.calculators.espresso import Espresso, EspressoProfile
 from ase.io.espresso import kspacing_to_grid
 
 from .utils import clean_rundir, handle_nonperiodic, save_results
@@ -84,20 +86,24 @@ def evaluate_op(
         )
 
         if calculator_command is not None:
-            kwargs_this_calc[
-                "command"
-            ] = f"{calculator_command} -in PREFIX.pwi > PREFIX.pwo"
+            profile = EspressoProfile(argv=calculator_command.split())
+        else:
+            profile = None
 
         # create temp dir and calculator
         rundir = tempfile.mkdtemp(dir=base_rundir, prefix=dir_prefix)
-        at.calc = Espresso(directory=rundir, **kwargs_this_calc)
+        at.calc = Espresso(directory=rundir, profile=profile, **kwargs_this_calc)
 
         # calculate
         calculation_succeeded = False
         try:
-            at.calc.calculate(at)
+            at.calc.calculate(at, properties=properties_use, system_changes=all_changes)
             calculation_succeeded = True
-        except CalculationFailed:
+        except (CalculationFailed, subprocess.CalledProcessError) as exc:
+            # CalculationFailed is probably what's supposed to be returned
+            # for failed convergence, Espresso currently returns subprocess.CalledProcessError
+            #     since pw.x returns a non-zero status
+            warnings.warn(f'Calculation failed with exc {exc}')
             pass
 
         # save results
