@@ -230,15 +230,16 @@ def run_op(config_is, buildcell_cmd, buildcell_input, extra_info=None,
             if len(ats) != 1:
                 raise RuntimeError(
                     'Got unexpected number of atoms {} != 1 from converting buildcell output'.format(len(ats)))
-            ats[0].info['config_type'] = 'buildcell'
-            ats[0].info['buildcell_config_i'] = config_i
-            ats[0].info.update(extra_info)
-            ats[0].rattle(perturbation)
+            at0 = ats[0]
+            at0.info['config_type'] = 'buildcell'
+            at0.info['buildcell_config_i'] = config_i
+            at0.info.update(extra_info)
+            at0.rattle(perturbation)
 
             # handle the symmetry
-            dataset = spglib.get_symmetry_dataset(ats[0], symprec=symprec)
-            ats[0].info['buildcell_symmetry'] = '{} {} {} @ {}'.format(dataset['number'], dataset['international'],
-                                                                       dataset['hall'], symprec)
-            atoms_list.append(ats[0])
+            dataset = spglib.get_symmetry_dataset((at0.cell, at0.positions, at0.numbers), symprec=symprec)
+            at0.info['buildcell_symmetry'] = '{} {} {} @ {}'.format(dataset['number'], dataset['international'],
+                                                                    dataset['hall'], symprec)
+            atoms_list.append(at0)
 
     return atoms_list

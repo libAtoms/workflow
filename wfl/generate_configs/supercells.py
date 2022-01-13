@@ -54,7 +54,7 @@ def _get_primitive(at, symprec=1.0e-3):
     Atoms with primitive cell, info from original Atoms object, and new info field 'primitive_cell'
     """
 
-    lat_pos_nums = spglib.standardize_cell(at, to_primitive=True, symprec=symprec)
+    lat_pos_nums = spglib.standardize_cell((at.cell, at.positions, at.numbers), to_primitive=True, symprec=symprec)
     if lat_pos_nums is not None:
         # successfully identified primitive cell
         prim_at = Atoms(numbers=lat_pos_nums[2], cell=lat_pos_nums[0], scaled_positions=lat_pos_nums[1], pbc=[True] * 3)
