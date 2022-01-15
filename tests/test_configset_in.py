@@ -33,12 +33,12 @@ def test_configset_from_ConfigSets(tmp_path):
     assert len([at for at in c_ats]) == 4
 
 
-@pytest.mark.xfail(reason="should fail creating ConfigSet_in from mix of ConfigSet_ins using input files and input configs")
 def test_configset_from_ConfigSets_mismatched(tmp_path):
     ats = [Atoms('H'), Atoms('C')]
     ase.io.write(tmp_path / 'at1.xyz', ats)
 
-    c_ats = ConfigSet_in(input_configsets=[ConfigSet_in(input_files=str(tmp_path / 'at1.xyz')), ConfigSet_in(input_configs=ats)])
+    with pytest.raises(RuntimeError):
+        c_ats = ConfigSet_in(input_configsets=[ConfigSet_in(input_files=str(tmp_path / 'at1.xyz')), ConfigSet_in(input_configs=ats)])
 
 
 def test_merge():
