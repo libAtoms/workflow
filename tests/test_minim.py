@@ -160,9 +160,8 @@ def test_subselect_from_traj(cu_slab):
     cu_slab_optimised = cu_slab.copy()
     cu_slab_optimised.set_positions(expected_relaxed_positions_constant_pressure)
 
-    inputs = ConfigSet_in(input_configs = [cu_slab, cu_slab_optimised] )
-
     # returns full optimisation trajectories
+    inputs = [cu_slab.copy(), cu_slab_optimised.copy()]
     atoms_opt = minim.run_op(inputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215, 
                           steps=2, traj_subselect=None)
@@ -173,6 +172,7 @@ def test_subselect_from_traj(cu_slab):
     assert isinstance(atoms_opt[1][0], Atoms)
 
     # returns [None] for unconverged and last config for converged otpimisation
+    inputs = [cu_slab.copy(), cu_slab_optimised.copy()]
     atoms_opt = minim.run_op(inputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215, 
                           steps=2, traj_subselect="last_converged")
@@ -182,11 +182,12 @@ def test_subselect_from_traj(cu_slab):
     assert atoms_opt[0] is None
 
     # check that iterable_loop handles Nones as expected
+    inputs = ConfigSet_in(input_configs = [cu_slab.copy(), cu_slab_optimised.copy()] )
     outputs = ConfigSet_out()
     atoms_opt = minim.run(inputs, outputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215, 
                           steps=2, traj_subselect="last_converged")
 
-    atoms_opt = [at for at in atoms_opt]
+    atoms_opt = list(atoms_opt)
     assert len(atoms_opt) == 1
     assert isinstance(atoms_opt[0], Atoms)

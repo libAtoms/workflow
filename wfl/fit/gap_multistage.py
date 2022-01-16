@@ -14,7 +14,7 @@ from wfl.configset import ConfigSet_in, ConfigSet_out
 from wfl.descriptor_heuristics import descriptor_2brn_uniform_file, descriptors_from_length_scales
 from wfl.fit.gap_simple import run_gap_fit
 from wfl.utils.quip_cli_strings import dict_to_quip_str
-from .utils import to_RemoteInfo
+from .utils import get_RemoteInfo
 from .modify_database.scale_orig import modify as modify_scale_orig
 
 try:
@@ -169,12 +169,8 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
             # Potential seems to return RuntimeError when file is missing
             pass
 
-    if remote_info == '_IGNORE':
-        remote_info = None
-    else:
-        remote_info = to_RemoteInfo(remote_info, 'WFL_GAP_MULTISTAGE_FIT_REMOTEINFO')
-    if remote_info is not None:
-
+    remote_info = get_RemoteInfo(remote_info, 'WFL_GAP_MULTISTAGE_FIT_REMOTEINFO')
+    if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.output_files.copy()
         output_files = remote_info.output_files.copy() + [str(run_dir)]
 
@@ -185,6 +181,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
             remote_info.env_vars.append('GAP_FIT_OMP_NUM_THREADS=$EXPYRE_NCORES_PER_NODE')
         if not any([var.split('=')[0] == 'WFL_AUTOPARAL_NPOOL' for var in remote_info.env_vars]):
             remote_info.env_vars.append('WFL_AUTOPARA_NPOOL=$EXPYRE_NCORES_PER_NODE')
+
 
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                      env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=fit,

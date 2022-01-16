@@ -36,7 +36,7 @@ def find_voids(at, transl_symprec=1.0e-1, symprec=1.0e-2):
     del at_w_interst[list(del_list)]
 
     # handle symmetry
-    dataset = spglib.get_symmetry_dataset(at_w_interst, symprec)
+    dataset = spglib.get_symmetry_dataset((at_w_interst.cell, at_w_interst.get_scaled_positions(), at_w_interst.numbers), symprec)
     if dataset is not None:
         equivalent_indices = set(dataset["equivalent_atoms"][len(at):])
     else:

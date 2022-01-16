@@ -113,7 +113,7 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
         if keep_symmetry:
             sym = FixSymmetry(at)
             at.set_constraint(sym)
-            dataset = spglib.get_symmetry_dataset(at, 0.01)
+            dataset = spglib.get_symmetry_dataset((at.cell, at.get_scaled_positions(), at.numbers), 0.01)
             if 'buildcell_config_i' in at.info:
                 print(at.info['buildcell_config_i'], end=' ')
             print('initial symmetry group number {}, international (Hermann-Mauguin) {} Hall {} prec {}'.format(
@@ -180,7 +180,7 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
 
         if keep_symmetry:
             # should we check that initial is subgroup of final, i.e. no symmetry was lost?
-            dataset = spglib.get_symmetry_dataset(traj[-1], 0.01)
+            dataset = spglib.get_symmetry_dataset((traj[-1].cell, traj[-1].get_scaled_positions(), traj[-1].numbers), 0.01)
             if 'buildcell_config_i' in at.info:
                 print(at.info['buildcell_config_i'], end=' ')
             if dataset is None:
