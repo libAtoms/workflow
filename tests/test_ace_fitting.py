@@ -13,6 +13,8 @@ import ase.io
 from wfl.configset import ConfigSet_in
 from wfl.fit.ace import fit, dict_to_ace_fit_string
 
+have_julia_with_modules = os.system("julia -e 'using ACE, IPFitting'") == 0
+
 def test_dict_to_ace_fit_string():
     # atomsfile: list of strings
     # outfile_base: string
@@ -37,7 +39,7 @@ def test_dict_to_ace_fit_string():
     assert s == '--atoms_filename dummy.xyz --outfile_base dummy --key E REF_energy --key F REF_forces --solver lsqr \'[[0.1, 1e-06]]\' --weights \'{"default": {"E": 1, "F": 1, "V": 1}}\''
 
 
-@pytest.mark.skipif(not shutil.which("ace_fit.jl"), reason="ace_fit.jl not in PATH")
+@pytest.mark.skipif(not have_julia_with_modules, reason="no julia with appropriate modules available")
 def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     print('getting fitting data from ', request.fspath)
 
@@ -74,7 +76,7 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     assert time_rerun < time_actual / 10
 
 
-@pytest.mark.skipif(not shutil.which("ace_fit.jl"), reason="ace_fit.jl not in PATH")
+@pytest.mark.skipif(not have_julia_with_modules, reason="no julia with appropriate modules available")
 def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     print('getting fitting data from ', request.fspath)
 
@@ -109,7 +111,7 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     assert time_rerun < time_actual / 10
 
 
-@pytest.mark.skipif(not shutil.which("ace_fit.jl"), reason="ace_fit.jl not in PATH")
+@pytest.mark.skipif(not have_julia_with_modules, reason="no julia with appropriate modules available")
 @pytest.mark.remote
 def test_ace_fit_remote(request, tmp_path, expyre_systems, monkeypatch):
     ri = {'resources' : {'max_time': '10m', 'n': [1, 'nodes']},
