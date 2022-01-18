@@ -10,7 +10,7 @@ from wfl.configset import ConfigSet_in, ConfigSet_out
 pytestmark = pytest.mark.skipif('VASP_COMMAND' not in os.environ or
                                 'VASP_COMMAND_GAMMA' not in os.environ or
                                 'TEST_VASP_POTCAR_DIR' not in os.environ,
-                                reason='missing env var VASP_COMMAND or VASP_COMMAND_GAMMA')
+                                reason='missing env var VASP_COMMAND or VASP_COMMAND_GAMMA or TEST_VASP_POTCAR_DIR')
 
 
 def test_vasp_gamma(tmp_path):
@@ -74,9 +74,9 @@ def test_vasp_keep_default(tmp_path):
         keep_files='default')
 
     run_dir = glob.glob(os.path.join(tmp_path, 'run_VASP_*'))
-    nfiles = len([i for i in os.scandir(run_dir[0])])
+    nfiles = len(list(os.scandir(run_dir[0])))
 
-    assert nfiles == 4
+    assert nfiles == 5
 
     ats = list(configs_eval)
     assert 'TEST_energy' in ats[0].info
