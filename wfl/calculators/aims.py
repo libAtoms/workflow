@@ -116,7 +116,6 @@ def evaluate_op(
         raise ValueError('compute_analytical_stress and contents of properties are inconsistent')
 
     # can specifiy
-    print(calculator_command)
     if 'aims_command' in aims_calc_kwargs:
         raise ValueError('unexpected key aims_command in the aims kwargs dicitionary')
 
