@@ -1,13 +1,14 @@
 """
-This is a unified wrapper for Plane Wave DFT codes.
+This is a unified wrapper for Plane Wave DFT codes and FHIaims.
 
 Currently implemented codes:
 - CASTEP
 - VASP
 - Quantum Espresso
+- FHIaims
 """
 from wfl.pipeline import iterable_loop
-from wfl.calculators import castep, vasp, espresso
+from wfl.calculators import castep, vasp, espresso, aims
 
 
 def evaluate_dft(
@@ -31,8 +32,8 @@ def evaluate_dft(
         input atomic configs, needs to be iterable
     outputs: list(Atoms) / Configset_out
         output atomic configs
-    calculator_name: str {"CASTEP", "VASP", "QE"}
-        name of Plane Wave DFT calculator, options are: "CASTEP", "VASP", "QE"
+    calculator_name: str {"CASTEP", "VASP", "QE", "AIMS"}
+        name of Plane Wave DFT calculator, options are: "CASTEP", "VASP", "QE", "AIMS"
     base_rundir: path-like, default os.getcwd()
         directory to put calculation directories into
     dir_prefix: str, default 'DFT\_'
@@ -74,6 +75,8 @@ def evaluate_dft(
         op = vasp.evaluate_op
     elif calculator_name == "QE":
         op = espresso.evaluate_op
+    elif calculator_name == "AIMS":
+        op = aims.evaluate_op
     else:
         raise ValueError(f"Calculator name `{calculator_name}` not understood")
 

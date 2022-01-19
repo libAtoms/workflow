@@ -785,6 +785,46 @@ def _vasp_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, direct
         calculator_kwargs=vasp_kwargs,
         calculator_command=vasp_command)
 
+
+
+@subcli_calculators.command("aims-eval")
+@click.pass_context
+@click.argument("inputs", nargs=-1)
+@click.option("--output-file", type=click.STRING, required=True)
+@click.option("--output-all-or-none", is_flag=True)
+@click.option("--output-prefix", type=click.STRING, default="", help="prefix in info/arrays for results")
+@click.option("--base-rundir", type=click.STRING, help="directory to put all calculation directories into")
+@click.option("--directory-prefix", type=click.STRING, default='run_AIMs_')
+@click.option("--properties", type=click.STRING, default='energy',
+              help="properties to calculate, string is split")
+@click.option("--aims-command", type=click.STRING, help="command, including mpirun")
+@click.option("--aims-kwargs-file", type=click.STRING, help="AIMs keywords, passed as dict")
+@click.option("--keep-files", type=click.STRING, default="default",
+              help="How much of files to keep, default is NOMAD compatible subset")
+@click.option("--force", is_flag=True)
+def _aims_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, directory_prefix, properties,
+                 aims_command, aims_kwargs_file, keep_files, output_prefix, force):
+
+    with open(aims_kwargs_file) as fp:
+        aims_kwargs = json.load(fp)
+
+    if len(output_prefix)==0:
+        output_prefix=None
+
+    evaluate_dft(
+        inputs=ConfigSet_in(input_files=inputs),
+        outputs=ConfigSet_out(output_files=output_file, all_or_none=output_all_or_none, force=force),
+        calculator_name="AIMS",
+        base_rundir=base_rundir,
+        dir_prefix=directory_prefix,
+        properties=properties.split(),
+        calculator_command=aims_command,
+        keep_files=keep_files,
+        calculator_kwargs=aims_kwargs,
+        output_prefix=output_prefix
+    )
+
+
     
 @subcli_calculators.command("castep-eval")
 @click.pass_context
