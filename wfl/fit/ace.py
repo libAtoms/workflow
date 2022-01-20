@@ -63,7 +63,9 @@ def fit(fitting_configs, ACE_name, params, ref_property_prefix='REF_',
     ---------------------
     WFL_ACE_FIT_REMOTEINFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
         contructor to be used to run fitting in separate queued job
-    ACE_FIT_JULIA_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will use julia multithreading (LSQ assembly)
+    WFL_ACE_FIT_JULIA_NUM_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will use julia multithreading (LSQ assembly)
+    WFL_ACE_FIT_JULIA_PROJECT: used to set JULIA_PROJECT for ace_fit.jl.  If not specified and user does not define
+        JULIA_PROJECT env var, JULIA_PROJECT will default to Project.toml packaged as part of wfl.
     ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
     """
     assert isinstance(ref_property_prefix, str) and len(ref_property_prefix) > 0
@@ -182,9 +184,15 @@ def fit(fitting_configs, ACE_name, params, ref_property_prefix='REF_',
     if verbose:
         print('fitting command:\n', cmd)
 
-    orig_julia_num_threads = (os.environ.get('JULIA_NUM_THREADS', None))
-    if 'ACE_FIT_JULIA_THREADS' in os.environ:
-        os.environ['JULIA_NUM_THREADS'] = os.environ['ACE_FIT_JULIA_THREADS']
+    orig_julia_num_threads = os.environ.get('JULIA_NUM_THREADS', None)
+    if 'WFL_ACE_FIT_JULIA_NUM_THREADS' in os.environ:
+        os.environ['JULIA_NUM_THREADS'] = os.environ['WFL_ACE_FIT_JULIA_NUM_THREADS']
+
+    orig_julia_project = os.environ.get('JULIA_PROJECT', None)
+    if 'WFL_ACE_FIT_JULIA_PROJECT' in os.environ:
+        os.environ['JULIA_PROJECT'] = os.environ['WFL_ACE_FIT_JULIA_PROJECT']
+    elif 'JULIA_PROJECT' not in os.environ:
+        os.environ['JULIA_PROJECT'] = str((Path(wfl.scripts.__file__).parent).resolve())
 
     # this will raise an error if return status is not 0
     # we could also capture stdout and stderr here, but right now that's done by shell
@@ -223,6 +231,14 @@ def fit(fitting_configs, ACE_name, params, ref_property_prefix='REF_',
     else:
         try:
             del os.environ['JULIA_NUM_THREADS']
+        except KeyError:
+            pass
+
+    if orig_julia_project is not None:
+        os.environ['JULIA_PROJECT'] = orig_julia_project
+    else:
+        try:
+            del os.environ['JULIA_PROJECT']
         except KeyError:
             pass
 

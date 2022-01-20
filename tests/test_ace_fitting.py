@@ -13,7 +13,7 @@ import ase.io
 from wfl.configset import ConfigSet_in
 from wfl.fit.ace import fit, dict_to_ace_fit_string
 
-have_julia_with_modules = os.system("julia -e 'using ACE, IPFitting'") == 0
+have_julia_with_modules = os.system("julia -e 'using ACE1, IPFitting'") == 0
 
 def test_dict_to_ace_fit_string():
     # atomsfile: list of strings

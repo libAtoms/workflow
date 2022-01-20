@@ -2,6 +2,8 @@
 
 pot_suffixes = [".json", ".yace"]
 
+print("using project: " * Base.active_project() * "\n")
+
 using ArgParse
 parser = ArgParseSettings(description="Fit an ACE potential from data in a file")
 @add_arg_table parser begin
@@ -108,7 +110,7 @@ end
 
 using JSON
 using IPFitting
-using ACE
+using ACE1
 using JuLIP
 using Statistics
 using LinearAlgebra
@@ -280,7 +282,7 @@ for (weights_i, weights_json) in enumerate(args["weights"])
             if suffix == ".json"
                 save_dict(outfile, Dict("IP" => write_dict(IP), "info" => lsqinfo))
             elseif suffix == ".yace"
-                ACE.ExportMulti.export_ACE(outfile, IP)
+                ACE1.ExportMulti.export_ACE(outfile, IP)
             else
                 error("IMPOSSIBLE! Trying to write to unknown file type suffix '" * suffix * "'")
             end
