@@ -190,7 +190,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
                              'num_committee': num_committee, 'committee_extra_seeds': committee_extra_seeds,
                              'committee_name_postfix': committee_name_postfix, 'verbose': verbose, 'remote_info': '_IGNORE'})
 
-        xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name,
+        xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
                   exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
         results, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
         sys.stdout.write(stdout)

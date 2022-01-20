@@ -128,7 +128,7 @@ def fit(fitting_configs, ACE_name, params, ref_property_prefix='REF_',
                                'run_dir': str(run_dir), 'formats': formats, 'ace_fit_exec': ace_fit_exec,
                                'dry_run': dry_run, 'verbose': verbose, 'remote_info': '_IGNORE'})
 
-        xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name,
+        xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
                   exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
 
         if not wait_for_results:
