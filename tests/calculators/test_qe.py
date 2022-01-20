@@ -40,7 +40,9 @@ def qe_cmd_and_pseudo(tmp_path_factory):
     else:
         cmd = which("pw.x")
 
-    url = "https://www.quantum-espresso.org/upf_files/Si.pbe-n-kjpaw_psl.1.0.0.UPF"
+    # broken due to need for account/license click
+    # url = "https://www.quantum-espresso.org/upf_files/Si.pbe-n-kjpaw_psl.1.0.0.UPF"
+    url = "http://nninc.cnf.cornell.edu/psp_files/Si.pz-vbc.UPF"
 
     # get the pseudo potential file, ~1.2MB
     try:
@@ -130,7 +132,7 @@ def test_qe_kpoints():
     assert kw["koffset"] == (0, 0, 0)
 
 
-@pytest.mark.xfail(reason="PP download link broken, Hard-wired values are wrong, also calculation does not converge with default conv_thr")
+@pytest.mark.xfail(reason="PP file changes. Even before that hard-wired values are wrong, also calculation does not converge with default conv_thr")
 def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
     # command and pspot
     qe_cmd, pspot = qe_cmd_and_pseudo
@@ -212,7 +214,6 @@ def test_qe_no_calculation(tmp_path, qe_cmd_and_pseudo):
     assert "dummy_forces" not in results.arrays
 
 
-@pytest.mark.xfail(reason="PP download link broken")
 def test_qe_to_spc(tmp_path, qe_cmd_and_pseudo):
     # command and pspot
     _, pspot = qe_cmd_and_pseudo
