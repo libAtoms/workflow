@@ -69,7 +69,7 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
     for xpr in xprs:
         if not quiet:
             sys.stderr.write(f'Starting job for {xpr.id}\n')
-        xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name,
+        xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
                   exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
 
     # gather results and write them to original configset_out
