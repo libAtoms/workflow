@@ -65,6 +65,11 @@ def fit(fitting_configs, ACE_name, params, ref_property_prefix='REF_',
         contructor to be used to run fitting in separate queued job
     WFL_ACE_FIT_JULIA_NUM_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will use julia multithreading (LSQ assembly)
     ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
+
+    Note that julia can depend on the JULIA_PROJECT env var.  For remote jobs the Project.toml and optionally Manifest.toml
+    should be staged out and the env var set appropriately.  The simplest is if those files are in the current directory, and 
+    "Project.toml" (also "Manifest.toml") can then be added to the RemoteInfo "input_files", and "JULIA_PROJECT=." can be 
+    added the env "env_vars".  More complex configurations are left as an exercise to the reader.
     """
     assert isinstance(ref_property_prefix, str) and len(ref_property_prefix) > 0
 
