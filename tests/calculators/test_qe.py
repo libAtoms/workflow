@@ -130,7 +130,7 @@ def test_qe_kpoints():
     assert kw["koffset"] == (0, 0, 0)
 
 
-@pytest.mark.xfail(reason="Hard-wired values are wrong, also calculation does not converge with default conv_thr")
+@pytest.mark.xfail(reason="PP download link broken, Hard-wired values are wrong, also calculation does not converge with default conv_thr")
 def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
     # command and pspot
     qe_cmd, pspot = qe_cmd_and_pseudo
@@ -212,6 +212,7 @@ def test_qe_no_calculation(tmp_path, qe_cmd_and_pseudo):
     assert "dummy_forces" not in results.arrays
 
 
+@pytest.mark.xfail(reason="PP download link broken")
 def test_qe_to_spc(tmp_path, qe_cmd_and_pseudo):
     # command and pspot
     _, pspot = qe_cmd_and_pseudo
