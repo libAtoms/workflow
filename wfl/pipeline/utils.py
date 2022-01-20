@@ -24,6 +24,8 @@ class RemoteInfo:
         input_files to stage in starting job
     output_files: list(str)
         output_files to stage out when job is done
+    header_extra: list(str), optional
+        extra lines to add to queuing system header
     exact_fit: bool, default True
         require exact fit to node size
     partial_node: bool, default True
@@ -34,7 +36,8 @@ class RemoteInfo:
         check_interval arg to pass to get_results
     """
     def __init__(self, sys_name, job_name, resources, job_chunksize=-100, pre_cmds=[], post_cmds=[],
-                 env_vars=[], input_files=[], output_files=[], exact_fit=True, partial_node=False, timeout=3600, check_interval=30):
+                 env_vars=[], input_files=[], output_files=[], header_extra=[],
+                 exact_fit=True, partial_node=False, timeout=3600, check_interval=30):
 
         self.sys_name = sys_name
         self.job_name = job_name
@@ -46,6 +49,7 @@ class RemoteInfo:
                          "OMP_NUM_THREADS=${EXPYRE_NCORES_PER_TASK}"] + env_vars
         self.input_files = input_files.copy()
         self.output_files = output_files.copy()
+        self.header_extra = header_extra.copy()
 
         self.exact_fit = exact_fit
         self.partial_node = partial_node
