@@ -811,6 +811,18 @@ def _aims_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, direct
     if len(output_prefix)==0:
         output_prefix=None
 
+    if output_file == "":
+        if type(inputs) == list:
+            output_file = []
+            for inputf in inputs:
+                head = os.path.split(inputf)[0]
+                tail = os.path.split(inputf)[1]
+                output_file.append(os.path.join(head, "annotated" + tail))
+        else:
+            head = os.path.split(inputs)[0]
+            tail = os.path.split(inputs)[1]
+            output_file = os.path.join(head, "annotated" + tail)
+
     evaluate_dft(
         inputs=ConfigSet_in(input_files=inputs),
         outputs=ConfigSet_out(output_files=output_file, all_or_none=output_all_or_none, force=force),
