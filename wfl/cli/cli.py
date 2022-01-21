@@ -749,7 +749,7 @@ def _CUR_global(ctx, inputs, output_file, output_all_or_none, n_configs,
 @click.option("--local", is_flag=True, help="calculate a local (per-atom) descriptor")
 @click.option("--force", is_flag=True, help="overwrite existing info or arrays item if present")
 def _calc_descriptor(ctx, inputs, output_file, output_all_or_none, descriptor, key, local, force):
-    _do_calc_descriptor(inputs, output_file, all_or_none, descriptor, key, local, force)
+    _do_calc_descriptor(inputs, output_file, output_all_or_none, descriptor, key, local, force)
 
 
 def _do_calc_descriptor(inputs, output_file, output_all_or_none, descriptor, key, local, force):
