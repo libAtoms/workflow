@@ -499,6 +499,7 @@ def do_initial_step(ctx, cur_iter, verbose):
                                              [grp['testing_confs'] for grp in groups.values()],
                                              params.get('fit/database_modify_mod'),
                                              params.get('fit/calc_fitting_error', default=True),
+                                             extra_fitting_files=params.get('fit/extra_fitting_files', default=[]),
                                              seeds=ctx.obj['seeds'], verbose=verbose)
 
     print_log('done')
@@ -556,6 +557,7 @@ def do_rss_step(ctx, cur_iter, verbose):
                                              [grp['testing_confs'] for grp in groups.values()],
                                              params.get('fit/database_modify_mod'),
                                              params.get('fit/calc_fitting_error', default=True),
+                                             extra_fitting_files=params.get('fit/extra_fitting_files', default=[]),
                                              seeds=ctx.obj['seeds'], verbose=verbose)
 
     print_log('done')
@@ -725,6 +727,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                                              [grp['testing_confs'] for grp in groups.values()],
                                              params.get('fit/database_modify_mod'),
                                              params.get('fit/calc_fitting_error', default=True),
+                                             extra_fitting_files=params.get('fit/extra_fitting_files', default=[]),
                                              seeds=ctx.obj['seeds'], verbose=verbose)
 
     print_log('done')
