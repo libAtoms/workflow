@@ -821,7 +821,7 @@ def _aims_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, direct
         else:
             head = os.path.split(inputs)[0]
             tail = os.path.split(inputs)[1]
-            output_file = os.path.join(head, "annotated" + tail)
+            output_file = os.path.join(head, "annotated_" + tail)
 
     evaluate_dft(
         inputs=ConfigSet_in(input_files=inputs),
