@@ -94,7 +94,7 @@ def max_cutoff(params):
 def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         seeds=None, skip_if_present=False, run_dir='.',
         num_committee=0, committee_extra_seeds=None, committee_name_postfix='.committee_',
-        verbose=False, remote_info=None):
+        verbose=False, remote_info=None, wait_for_results=True):
     """Fit a GAP iteratively, setting delta from error relative to previous stage
 
     Parameters
@@ -128,6 +128,8 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         will try to use env var WFL_GAP_MULTISTAGE_FIT_REMOTEINFO used (see below). '_IGNORE' is for
         internal use, to ensure that remotely running job does not itself attempt to spawn another
         remotely running job.
+    wait_for_results: bool, default True
+        wait for results of remotely executed job, otherwise return after starting job
 
     Environment Variables
     ---------------------
@@ -192,7 +194,11 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
                   exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
+
+        if not wait_for_results:
+            return None
         results, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
+
         sys.stdout.write(stdout)
         sys.stderr.write(stderr)
 
