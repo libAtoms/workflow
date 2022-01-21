@@ -716,19 +716,26 @@ def _repeat_buildcell(ctx, output_file, output_all_or_none, buildcell_input, bui
 @click.option("--output-all-or-none", is_flag=True)
 @click.option("--n-configs", "-N", type=click.INT, required=True,
               help="number of configs to select")
-@click.option("--descriptor-key", type=click.STRING, required=True,
-              help="Atoms.info key for descriptor vector")
+@click.option("--descriptor-key", type=click.STRING, help="Atoms.info key for descriptor vector", default="_CUR_desc")
+@click.option("--descriptor", type=click.STRING, help="quippy.Descriptor arg string")
+@click.option("--keep_descriptor", is_flag=True, help="keep the descriptor value in the final config file")
 @click.option("--kernel_exponent", type=click.FLOAT, help="exponent of dot-product for kernel")
 @click.option("--deterministic", is_flag=True,
               help="use deterministic (not stochastic) CUR selection")
-def _CUR_global(ctx, inputs, output_file, output_all_or_none, descriptor_key, kernel_exponent,
-                n_configs,
-                deterministic):
+def _CUR_global(ctx, inputs, output_file, output_all_or_none, n_configs,
+                descriptor_key, descriptor, keep_descriptor,
+                kernel_exponent, deterministic):
+    if descriptor is not None:
+        # calculate descriptor
+        _do_calc_descriptor(inputs, '_desc.xyz', output_all_or_none, descriptor, descriptor_key, False, True)
+        inputs = '_desc.xyz'
+
     wfl.select_configs.by_descriptor.CUR_conf_global(
         inputs=ConfigSet_in(input_files=inputs),
         outputs=ConfigSet_out(output_files=output_file, all_or_none=output_all_or_none),
         num=n_configs,
-        at_descs_info_key=descriptor_key, kernel_exp=kernel_exponent, stochastic=not deterministic)
+        at_descs_info_key=descriptor_key, kernel_exp=kernel_exponent, stochastic=not deterministic,
+        keep_descriptor_info=keep_descriptor)
 
 
 @subcli_descriptor.command("calc")
@@ -742,9 +749,13 @@ def _CUR_global(ctx, inputs, output_file, output_all_or_none, descriptor_key, ke
 @click.option("--local", is_flag=True, help="calculate a local (per-atom) descriptor")
 @click.option("--force", is_flag=True, help="overwrite existing info or arrays item if present")
 def _calc_descriptor(ctx, inputs, output_file, output_all_or_none, descriptor, key, local, force):
+    _do_calc_descriptor(inputs, output_file, all_or_none, descriptor, key, local, force)
+
+
+def _do_calc_descriptor(inputs, output_file, output_all_or_none, descriptor, key, local, force):
     wfl.calc_descriptor.calc(
         inputs=ConfigSet_in(input_files=inputs),
-        outputs=ConfigSet_out(output_files=output_file, all_or_none=output_all_or_none),
+        outputs=ConfigSet_out(output_files=output_file, all_or_none=output_all_or_none, force=force),
         descs=descriptor,
         key=key,
         local=local,
