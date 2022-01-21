@@ -790,7 +790,7 @@ def _vasp_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, direct
 @subcli_calculators.command("aims-eval")
 @click.pass_context
 @click.argument("inputs", nargs=-1)
-@click.option("--output-file", type=click.STRING, required=True)
+@click.option("--output-file", type=click.STRING, default="")
 @click.option("--output-all-or-none", is_flag=True)
 @click.option("--output-prefix", type=click.STRING, default="", help="prefix in info/arrays for results")
 @click.option("--base-rundir", type=click.STRING, help="directory to put all calculation directories into")
@@ -812,12 +812,12 @@ def _aims_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, direct
         output_prefix=None
 
     if output_file == "":
-        if type(inputs) == list:
-            output_file = []
+        if type(inputs) == list or type(inputs) == tuple:
+            output_file = {}
             for inputf in inputs:
                 head = os.path.split(inputf)[0]
                 tail = os.path.split(inputf)[1]
-                output_file.append(os.path.join(head, "annotated" + tail))
+                output_file[inputf] = os.path.join(head, "annotated" + tail)
         else:
             head = os.path.split(inputs)[0]
             tail = os.path.split(inputs)[1]
