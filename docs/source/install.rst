@@ -1,7 +1,7 @@
 .. _installation:
 
 #################################
-Instalation 
+Installation 
 #################################
 
 Quick start that should install all of the mandatory dependencies:
