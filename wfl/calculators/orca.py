@@ -178,6 +178,7 @@ def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
         if calculation_succeeded and not basin_hopping:
             # task='opt' in ExtendedORCA performs geometry optimisation,
             # results are for the relaxed positions
+            # alternative option: task='copt' for cartesian optimisation
             if "relaxed_positions" in at.calc.extra_results.keys():
                 at.set_positions(at.calc.extra_results["relaxed_positions"])
 
@@ -741,7 +742,7 @@ class ExtendedORCA(ORCA):
             task = self.parameters["task"]
             if task is None:
                 task = "engrad"
-            elif "engrad" not in task and "opt" not in task:
+            elif "engrad" not in task and "opt" not in task and "copt" not in task:
                 task += " engrad"
 
             f.write(f"! {task} {self.parameters['orcasimpleinput']} \n")
@@ -796,7 +797,7 @@ class ExtendedORCA(ORCA):
         self.read_forces()
 
         self.read_dipole()
-        if 'opt' in self.parameters.task:
+        if 'opt' in self.parameters.task or "copt" in self.parameters.task:
             self.read_opt_atoms()
             self.read_trajectory()
         if 'freq' in self.parameters.task:
