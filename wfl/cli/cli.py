@@ -716,7 +716,7 @@ def _repeat_buildcell(ctx, output_file, output_all_or_none, buildcell_input, bui
 @click.option("--output-all-or-none", is_flag=True)
 @click.option("--n-configs", "-N", type=click.INT, required=True,
               help="number of configs to select")
-@click.option("--descriptor-key", type=click.STRING, help="Atoms.info key for descriptor vector", default="_CUR_desc")
+@click.option("--descriptor-key", type=click.STRING, help="Atoms.info key for descriptor vector")
 @click.option("--descriptor", type=click.STRING, help="quippy.Descriptor arg string")
 @click.option("--keep_descriptor", is_flag=True, help="keep the descriptor value in the final config file")
 @click.option("--kernel_exponent", type=click.FLOAT, help="exponent of dot-product for kernel")
@@ -725,8 +725,13 @@ def _repeat_buildcell(ctx, output_file, output_all_or_none, buildcell_input, bui
 def _CUR_global(ctx, inputs, output_file, output_all_or_none, n_configs,
                 descriptor_key, descriptor, keep_descriptor,
                 kernel_exponent, deterministic):
+    if descriptor is None:
+        if descriptor_key is None:
+            raise RuntimeError('CUR-global needs --descriptor or --descriptor-key')
     if descriptor is not None:
         # calculate descriptor
+        if descriptor_key is None:
+            descriptor_key = '_CUR_desc'
         _do_calc_descriptor(inputs, '_desc.xyz', output_all_or_none, descriptor, descriptor_key, False, True)
         inputs = '_desc.xyz'
 
