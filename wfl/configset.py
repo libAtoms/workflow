@@ -315,7 +315,7 @@ class ConfigSet_in:
         if self.input_configs is not None and len(self.input_configs) > 0:
             s += _fmt("input configs #", [str(len(at_group)) for at_group in self.input_configs])
         if self.input_files is not None and len(self.input_files) > 0:
-            s += _fmt("input files", [f"{fn} @ {idx}" for fn, idx in self.input_files])
+            s += _fmt("input files", [f"{str(fn)} @ {idx}" for fn, idx in self.input_files])
         if self.input_queries is not None and len(self.input_queries) > 0:
             s += _fmt("input queries", [str(q) for q in self.input_queries])
 
@@ -610,7 +610,7 @@ class ConfigSet_out:
         if self.output_abcd:
             s += _fmt('output to ABCD', "")
         elif self.output_files is not None:
-            s += _fmt('output files: ', self.output_files)
+            s += _fmt('output files: ', [str(p) for p in self.output_files])
 
         if self.abcd is not None:
             s += _fmt('ABCD connection', str(self.abcd))
