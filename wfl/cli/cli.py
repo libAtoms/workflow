@@ -9,6 +9,7 @@ import os
 import sys
 import warnings
 from pprint import pformat, pprint
+from pathlib import Path
 
 import ase.data
 import ase.io
@@ -728,12 +729,14 @@ def _CUR_global(ctx, inputs, output_file, output_all_or_none, n_configs,
     if descriptor is None:
         if descriptor_key is None:
             raise RuntimeError('CUR-global needs --descriptor or --descriptor-key')
+    clean_tmp_files = False
     if descriptor is not None:
         # calculate descriptor
         if descriptor_key is None:
             descriptor_key = '_CUR_desc'
-        _do_calc_descriptor(inputs, '_desc.xyz', output_all_or_none, descriptor, descriptor_key, False, True)
-        inputs = '_desc.xyz'
+        _do_calc_descriptor(inputs, '_tmp_desc.xyz', output_all_or_none, descriptor, descriptor_key, local=False, force=True)
+        inputs = ['_tmp_desc.xyz']
+        clean_tmp_files = True
 
     wfl.select_configs.by_descriptor.CUR_conf_global(
         inputs=ConfigSet_in(input_files=inputs),
@@ -741,6 +744,10 @@ def _CUR_global(ctx, inputs, output_file, output_all_or_none, n_configs,
         num=n_configs,
         at_descs_info_key=descriptor_key, kernel_exp=kernel_exponent, stochastic=not deterministic,
         keep_descriptor_info=keep_descriptor)
+
+    if clean_tmp_files:
+        for input_file in inputs:
+            Path(input_file).unlink()
 
 
 @subcli_descriptor.command("calc")
