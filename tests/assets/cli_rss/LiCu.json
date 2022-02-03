@@ -21,7 +21,11 @@
   },
   "prep": {
     "length_scales_file": "length_scales.yaml",
-    "dimer_n_steps": 40
+    "dimer_n_steps": 40,
+    "buildcell" : {
+        "default": [6, 24],
+        "MD_bulk_defect" : [4, 8]
+    }
   },
   "initial_step": {
     "buildcell_total_N": 100,

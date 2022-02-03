@@ -7,10 +7,10 @@ def _select_by_bin(weights, bin_edges, quantities, n, kT, verbose=False):
     if verbose:
         print('got histogram', len(weights), weights)
 
-    if 0 >= n:
+    if n <= 0:
         raise ValueError("Not defined for non-positive n")
 
-    if kT <= 0:
+    if kT is None or kT <= 0:
         kT = np.Infinity
 
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])

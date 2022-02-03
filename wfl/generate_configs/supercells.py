@@ -1,4 +1,5 @@
 import math
+import warnings
 
 import ase.build
 import numpy as np
@@ -14,9 +15,10 @@ def largest_bulk(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, c
                          chunksize=chunksize, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec)
 
 
-def vacancy(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, chunksize=10):
+def vacancy(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, n_vac=1, cluster_r=0.0, chunksize=10):
     return iterable_loop(iterable=inputs, configset_out=outputs, op=vacancy_op,
-                         chunksize=chunksize, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec)
+                         chunksize=chunksize, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec,
+                         n_vac=n_vac, cluster_r=cluster_r)
 
 
 def interstitial(inputs, outputs, max_n_atoms, interstitial_probability_radius_exponent=3.0,
@@ -148,7 +150,7 @@ def largest_bulk_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3
     return supercells
 
 
-def vacancy_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3):
+def vacancy_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3, n_vac=1, cluster_r=0.0):
     """make vacancies in largest bulk-like supercells
 
     Parameters
@@ -163,6 +165,11 @@ def vacancy_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3):
         reduce input Atoms to primitive cell using spglib
     symprec: float, default 1.0e-3
         symprec for primitive lattice check
+    n_vac: int, default 1
+        number of vacancies to create in each supercell
+    cluster_r: float, default 0.0
+        if > 0.0, multiply by 1st nn distance of initial vacancy, and make vacancies in cluster of
+        atoms within this distance of initial vacancy.
 
     Returns
     -------
@@ -170,11 +177,44 @@ def vacancy_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3):
     """
     supercells = largest_bulk_op(atoms, max_n_atoms, primitive=primitive, symprec=symprec)
     for at in supercells:
-        vac_i = np.random.choice(len(at))
+        if len(at) <= n_vac:
+            # should this be an error?
+            warnings.warn(f'Cannot make {n_vac} vacancies in structure with {len(at)} atoms')
+            continue
+
+        if cluster_r > 0.0:
+            # cluster
+            nns = []
+            n_try = 0
+            while n_try < 20:
+                init_vac_i = np.random.choice(len(at))
+                inds = list(range(len(at)))
+                dists = at.get_distances(init_vac_i, inds, mic=True)
+                nearest_d = np.amin(dists[np.where(dists > 0.0)])
+                nns = np.where(np.logical_and(dists <= cluster_r*nearest_d, dists > 0.0))[0]
+                if len(nns) >= n_vac:
+                    break
+                n_try += 1
+
+            if len(nns) < n_vac:
+                # should this be an error?
+                warnings.warn(f'Failed to find vacancy with at least {n_vac}-1 neighbors after 20 tries')
+                continue
+
+            vac_i = np.concatenate(([init_vac_i], np.random.choice(nns, size=n_vac-1, replace=False)))
+        else:
+            # entirely random set
+            vac_i = np.random.choice(len(at), size=n_vac, replace=False)
+
         at.info["vacancy_Z"] = at.numbers[vac_i]
         at.info["vacancy_pos"] = at.positions[vac_i]
         del at[vac_i]
         at.info["config_type"] = "supercell_vacancy"
+        if n_vac > 1:
+            at.info["config_type"] += f'_{n_vac}'
+        if cluster_r > 0.0:
+            at.info["config_type"] += f'_r_{cluster_r}_{nearest_d:.3f}'
+
 
         at.positions += pert * np.random.normal(size=at.positions.shape)
         ####################################################################################################
