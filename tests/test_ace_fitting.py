@@ -13,32 +13,7 @@ import ase.io
 from wfl.configset import ConfigSet_in
 from wfl.fit.ace import fit, dict_to_ace_fit_string
 
-# have_julia_with_modules = os.system("julia -e 'using ACE, IPFitting'") == 0
 have_julia_with_modules = os.system("julia -e  'using ACE1pack'") == 0
-
-# def test_dict_to_ace_fit_string():
-#     # atomsfile: list of strings
-#     # outfile_base: string
-#     # solver: list of string and list
-#     # weights: dict
-#     # cutoff float
-#     params = {'atoms_filename': ['dummy.xyz', 'dummy2.xyz'], 'outfile_base': 'dummy', 'solver': [ 'lsqr', [[0.1, 1.0e-6]] ],
-#               'weights': {'default' : { 'E' : 1, 'F' : 1, 'V' : 1}}, 'cutoff' : 3.0, 'dry_run': None }
-#     s = dict_to_ace_fit_string(params).strip()
-#     print('s', s)
-#     assert s == '--atoms_filename dummy.xyz dummy2.xyz --outfile_base dummy --solver lsqr \'[[0.1, 1e-06]]\' --weights \'{"default": {"E": 1, "F": 1, "V": 1}}\' --cutoff 3.0 --dry_run'
-
-#     # atomsfile: string
-#     # outfile_base: string
-#     # key: repeated list of strings
-#     # weights: dict
-#     params = {'atoms_filename': 'dummy.xyz', 'outfile_base': 'dummy',
-#               '_repeat_key': True, 'key': [['E', 'REF_energy'], ['F', 'REF_forces']], 'solver': [ 'lsqr', [[0.1, 1.0e-6]] ],
-#               'weights': {'default' : { 'E' : 1, 'F' : 1, 'V' : 1}} }
-#     s = dict_to_ace_fit_string(params).strip()
-#     print('s', s)
-#     assert s == '--atoms_filename dummy.xyz --outfile_base dummy --key E REF_energy --key F REF_forces --solver lsqr \'[[0.1, 1e-06]]\' --weights \'{"default": {"E": 1, "F": 1, "V": 1}}\''
-
 
 @pytest.mark.skipif(not have_julia_with_modules, reason="no julia with appropriate modules available")
 def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):

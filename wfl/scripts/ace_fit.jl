@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 
-using ACE1pack, JSON, ArgParse
+using ACE1pack, ArgParse
 parser = ArgParseSettings(descirption="Fit an ACE potential from parameters file")
 @add_arg_table parser begin
     "--fit-params", "-p"
@@ -10,24 +10,42 @@ parser = ArgParseSettings(descirption="Fit an ACE potential from parameters file
         action = :store_true
 end
 
-args = parse_args(parser)
-fit_params = ACE1pack.json_to_params(args["fit-params"])
+get_basis_size(d::Dict) = 
+    sum([length(ACE1pack.generate_basis(basis_params)) for (basis_name, basis_params) in d])
 
-if args["dry-run"]
-    # dataset size
-    data = ACE1pack.read_data(fit_params["data"])    
-    # basis size
-    ACE_basis = ACE1pack.generate_rpi_basis(fit_params["rpi_basis"])
-    pair_basis = ACE1pack.generate_pair_basis(fit_params["pair_basis"])
+function get_num_observations(d::Dict)
+    # doesn't work properly somehow
+    data = ACE1pack.read_data(d)    
+    n_obs = 0
+    for (okey, d, _) in IPFitting.observations(data)
+        len = length(IPFitting.observation(d, okey))
+        global n_obs += len
+     end
+     return 
+end
+
+function save_dry_run_info(fit_params)
+    num_observations = get_num_observations(fit_params["data"])
+    basis_size = get_basis_size(fit_params["basis"])
     dry_fit_filename = fit_params["ACE_fname_stem"] * ".size"
-    open(dry_fit_filename, "w") do fit_info
-        # TODO check that $(length(data)) is what we need
-        write(fit_info, "LSQ matrix rows $(length(data)) basis $(length(ACE_basis) + length(pair_basis))\n") 
-    end
+    size_info = Dict("lsq_matrix_shape" => (num_observations, basis_size))
+    save_json(dry_fit_filename, size_info)
     exit(0)
 end
 
-# TODO: option to read from a saved database
+if haskey(ENV, "ACE_FIT_BLAS_THREADS")
+    nprocs = parse(Int, ENV["ACE_FIT_BLAS_THREADS"])
+    @warn "Using $nprocs threads for BLAS"
+    BLAS.set_num_threads(nprocs)
+end
+
+args = parse_args(parser)
+fit_params = fill_defaults!(load_dict(args["fit_params"]))
+
+if args["dry-run"]
+    save_dry_run_info(fit_params)
+end
+
 # TODO: ACE_FIT_BLAS_THREADS??
 ACE1pack.fit_ace(fit_params)
 
