@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 
 using ACE1pack, ArgParse
-parser = ArgParseSettings(descirption="Fit an ACE potential from parameters file")
+parser = ArgParseSettings(description="Fit an ACE potential from parameters file")
 @add_arg_table parser begin
     "--fit-params", "-p"
         help = "A JSON filename with parameters for the fit"
@@ -16,12 +16,12 @@ get_basis_size(d::Dict) =
 function get_num_observations(d::Dict)
     # doesn't work properly somehow
     data = ACE1pack.read_data(d)    
-    n_obs = 0
+    global n_obs = 0
     for (okey, d, _) in IPFitting.observations(data)
         len = length(IPFitting.observation(d, okey))
-        global n_obs += len
+        n_obs += len
      end
-     return 
+     return n_obs
 end
 
 function save_dry_run_info(fit_params)
@@ -40,13 +40,13 @@ if haskey(ENV, "ACE_FIT_BLAS_THREADS")
 end
 
 args = parse_args(parser)
-fit_params = fill_defaults!(load_dict(args["fit_params"]))
+raw_params = load_dict(args["fit-params"])
+fit_params = fill_defaults!(raw_params)
 
 if args["dry-run"]
     save_dry_run_info(fit_params)
 end
 
-# TODO: ACE_FIT_BLAS_THREADS??
 ACE1pack.fit_ace(fit_params)
 
 
