@@ -11,7 +11,7 @@ import pytest
 import ase.io
 
 from wfl.configset import ConfigSet_in
-from wfl.fit.ace import fit, prepare_params_and_fit
+from wfl.fit.ace import fit, prepare_params, prepare_configs
 
 have_julia_with_modules = os.system("julia -e  'using ACE1pack'") == 0
 
@@ -26,21 +26,25 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     (tmp_path / run_dir).mkdir()
 
     fit_config_file = os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')
+    fit_configs = prepare_configs(ConfigSet_in(input_files=fit_config_file), ref_property_prefix="REF_")
 
     # Only mandatory params
     params = {
-        "data": {},
         "basis": {
             "rpi": {"type": "rpi", "species": ["B"], "N": 3, "maxdeg": 6},
             "pair": {"type": "pair", "species": ["B"], "maxdeg": 4}},
         "solver": {"solver": "lsqr"}}
 
+    params = prepare_params(fit_configs, 
+                            ACE_fname='ACE.B_test.json',
+                            ace_fit_params=params,
+                            ref_property_prefix="REF_")
+
+
     t0 = time.time()
-    ACE_size = prepare_params_and_fit(
-        ConfigSet_in(input_files=fit_config_file),
-        ACE_fname_stem='ACE.B_test', 
+    ACE_size = fit(
+        fit_configs,
         ace_fit_params=params, 
-        ref_property_prefix='REF_',
         run_dir=str(run_dir), 
         dry_run=True, 
         skip_if_present=True)
@@ -52,11 +56,9 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     assert os.path.exists(os.path.join(tmp_path, run_dir, f'ACE.B_test.size'))
 
     t0 = time.time()
-    ACE_size_rerun = prepare_params_and_fit(
-        ConfigSet_in(input_files=fit_config_file),
-        ACE_fname_stem='ACE.B_test', 
+    ACE_size_rerun = fit(
+        fit_configs,
         ace_fit_params=params, 
-        ref_property_prefix='REF_',
         run_dir=str(run_dir), 
         dry_run=True, 
         skip_if_present=True)
@@ -78,6 +80,8 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     (tmp_path / run_dir).mkdir()
 
     fit_config_file = os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')
+    fit_configs = prepare_configs(ConfigSet_in(input_files=fit_config_file), ref_property_prefix="REF_")
+
     # Only mandatory params
     params = {
         "data": {},
@@ -86,15 +90,15 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
             "pair": {"type": "pair", "species": ["B"], "maxdeg": 4}},
         "solver": {"solver": "lsqr"}}
 
-    # removed from fit, maybe should do here, if we actually want to test the resulting potential?
-    # database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
+    params = prepare_params(fit_configs, 
+                        ACE_fname='ACE.B_test.json',
+                        ace_fit_params=params,
+                        ref_property_prefix="REF_")
 
     t0 = time.time()
-    ACE = prepare_params_and_fit(
-        ConfigSet_in(input_files=fit_config_file),
-        ACE_fname_stem='ACE.B_test', 
+    ACE = fit(
+        fit_configs,
         ace_fit_params=params, 
-        ref_property_prefix='REF_',
         run_dir=str(run_dir), 
         skip_if_present=True)
     time_actual = time.time() - t0
@@ -103,12 +107,12 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     assert os.path.exists(os.path.join(tmp_path, run_dir, f'ACE.B_test.json'))
     # assert os.path.exists(os.path.join(tmp_path, run_dir, f'ACE.B_test.yace'))
 
+    print(params)
+
     t0 = time.time()
-    ACE = prepare_params_and_fit(
-        ConfigSet_in(input_files=fit_config_file),
-        ACE_fname_stem='ACE.B_test', 
+    ACE = fit(
+        fit_configs,
         ace_fit_params=params, 
-        ref_property_prefix='REF_',
         run_dir=str(run_dir), 
         skip_if_present=True)
     time_rerun = time.time() - t0
