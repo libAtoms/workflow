@@ -13,10 +13,11 @@ import ase.io
 from wfl.configset import ConfigSet_in
 from wfl.fit.ace import fit, prepare_params, prepare_configs
 
-have_julia_with_modules = os.system("julia -e  'using ACE1pack'") == 0
-
-@pytest.mark.skipif(not have_julia_with_modules, reason="no julia with appropriate modules available")
 def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
+
+    have_julia_with_modules = os.system("julia -e  'using ACE1pack'") == 0
+    if not have_julia_with_modules:
+        pytest.skip("no julia with appropriate modules available")
 
     print('getting fitting data from ', request.fspath)
 
@@ -70,8 +71,13 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     assert time_rerun < time_actual / 10
 
 
-@pytest.mark.skipif(not have_julia_with_modules, reason="no julia with appropriate modules available")
 def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
+
+    have_julia_with_modules = os.system("julia -e  'using ACE1pack'") == 0
+    if not have_julia_with_modules:
+        pytest.skip("no julia with appropriate modules available")
+
+
     print('getting fitting data from ', request.fspath)
 
     # kinda ugly, but remote running of multistage fit doesn't support absolute run_dir, so test
@@ -121,7 +127,6 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     assert time_rerun < time_actual / 10
 
 
-@pytest.mark.skipif(not have_julia_with_modules, reason="no julia with appropriate modules available")
 @pytest.mark.remote
 def test_ace_fit_remote(request, tmp_path, expyre_systems, monkeypatch):
     ri = {'resources' : {'max_time': '10m', 'n': [1, 'nodes']},

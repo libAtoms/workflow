@@ -189,7 +189,11 @@ def fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir='.',
 
 
 def _write_fitting_configs(fitting_configs, use_params, ace_file_base):
-    """ Writes fitting configs to file and updates ace fitting parameters"""
+    """
+    Writes fitting configs to file and updates ace fitting parameters. 
+    Configurations and filename handled by Workflow owervrite any filename
+    specified in parameters. 
+    """
 
     # configs need to be in memory so they can be modified with stress -> virial, and safest to
     # have them as a list (rather than using ConfigSet_in.to_memory()) when passing to ase.io.write below
@@ -207,7 +211,6 @@ def _write_fitting_configs(fitting_configs, use_params, ace_file_base):
         warnings.warn(f"File name for configs ace_params ({fit_cfgs_fname_given}), exists; "
                       f"Fitting to configs given to ace.fit(), which are in {fit_cfgs_fname}.")
 
-    print(fit_cfgs_fname)
     ase.io.write(fit_cfgs_fname, fitting_configs)
     use_params["data"]["fname"] = fit_cfgs_fname
 
