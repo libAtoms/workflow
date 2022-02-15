@@ -127,7 +127,7 @@ def fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir='.',
             if dry_run:
                 return _read_size(ace_file_base)
 
-            _check_output_files(ace_file_base, [".json"])
+            _check_output_files(ace_file_base)
 
             return str(ace_file_base)
         except (FileNotFoundError, json.decoder.JSONDecodeError):
@@ -157,6 +157,7 @@ def fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir='.',
 
         if not wait_for_results:
             return None
+            
         results, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
 
         sys.stdout.write(stdout)
@@ -185,7 +186,7 @@ def fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir='.',
     if verbose:
         print('fitting command:\n', cmd)
 
-    return _execute_fit(cmd, ace_file_base, dry_run)
+    return _execute_fit_command(cmd, ace_file_base, dry_run)
 
 
 def _write_fitting_configs(fitting_configs, use_params, ace_file_base):
@@ -219,19 +220,15 @@ def _read_size(ace_file_base):
         info = json.loads(fin.read())
     return info["lsq_matrix_shape"]
 
-def _check_output_files(ace_file_base, formats):
-    # TODO: update formats depending of whether we need a yace
-    for fmt in formats:
-        with open(ace_file_base + fmt) as fin:
-            if fmt == '.json':
-                _ = json.load(fin)
-            elif fmt == '.yace':
-                warnings.warn('Cannot parse yace format (can contain dicts with list keys), so just checking its existence')
-                # _ = yaml.safe_load(fin)
-            else:
-                raise ValueError(f'Cannot parse ACE file with format {fmt}')
+def _check_output_files(ace_file_base):
+    ace_filename = ace_file_base + ".json"
+    with open(ace_filename) as fin:
+        try:
+            _ = json.load(fin)
+        except json.JSONDecodeError:
+            raise ValueError(f'Cannot parse ACE file {ace_filename}')
 
-def _execute_fit(cmd, ace_file_base, dry_run):
+def _execute_fit_command(cmd, ace_file_base, dry_run):
 
     orig_julia_num_threads = (os.environ.get('JULIA_NUM_THREADS', None))
     if 'ACE_FIT_JULIA_THREADS' in os.environ:
@@ -267,7 +264,7 @@ def _execute_fit(cmd, ace_file_base, dry_run):
 
     # run can fail without raising an exception in subprocess.run, at least make sure that
     # ACE files exist and are readable
-    _check_output_files(ace_file_base, [".json"])
+    _check_output_files(ace_file_base)
 
     if orig_julia_num_threads is not None:
         os.environ['JULIA_NUM_THREADS'] = orig_julia_num_threads

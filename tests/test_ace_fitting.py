@@ -1,14 +1,10 @@
-import shutil
-import json, yaml
+import json
 import os
-import re
 import time
 
 from pathlib import Path
 
 import pytest
-
-import ase.io
 
 from wfl.configset import ConfigSet_in
 from wfl.fit.ace import fit, prepare_params, prepare_configs
@@ -40,7 +36,6 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
                             ACE_fname='ACE.B_test.json',
                             ace_fit_params=params,
                             ref_property_prefix="REF_")
-
 
     t0 = time.time()
     ACE_size = fit(
@@ -111,7 +106,6 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     print('ACE', ACE)
 
     assert os.path.exists(os.path.join(tmp_path, run_dir, f'ACE.B_test.json'))
-    # assert os.path.exists(os.path.join(tmp_path, run_dir, f'ACE.B_test.yace'))
 
     print(params)
 
