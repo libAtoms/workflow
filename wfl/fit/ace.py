@@ -19,7 +19,7 @@ from .utils import get_RemoteInfo
 from expyre import ExPyRe
 import wfl.scripts
 
-def fit(fitting_configs, ACE_fname, ace_fit_params, ref_property_prefix='REF_',
+def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
         skip_if_present=False, run_dir='.',
         ace_fit_exec=str((Path(wfl.scripts.__file__).parent / 'ace_fit.jl').resolve()), dry_run=False,
         verbose=True, remote_info=None, wait_for_results=True):
@@ -29,7 +29,7 @@ def fit(fitting_configs, ACE_fname, ace_fit_params, ref_property_prefix='REF_',
     ----------
     fitting_configs: ConfigSet_in
         set of configurations to fit
-    ACE_fname: str
+    ACE_name: str
         name of ACE potential (a .json). Overwrites any fileme given in the `params`. 
     ace_fit_params: dict
         parameters for ACE1pack. 
@@ -59,7 +59,7 @@ def fit(fitting_configs, ACE_fname, ace_fit_params, ref_property_prefix='REF_',
 
     Returns
     -------
-    ace_fname: Path
+    ace_filename: Path
 
     Environment Variables
     ---------------------
@@ -69,7 +69,7 @@ def fit(fitting_configs, ACE_fname, ace_fit_params, ref_property_prefix='REF_',
     ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
     """
 
-    ace_fit_params = prepare_params(fitting_configs, ACE_fname, ace_fit_params, ref_property_prefix)
+    ace_fit_params = prepare_params(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix)
     fitting_configs = prepare_configs(fitting_configs, ref_property_prefix)
 
     return run_ace_fit(fitting_configs, ace_fit_params,
@@ -77,7 +77,7 @@ def fit(fitting_configs, ACE_fname, ace_fit_params, ref_property_prefix='REF_',
                 verbose=verbose, remote_info=remote_info, wait_for_results=wait_for_results)
 
 
-def prepare_params(fitting_configs, ACE_fname, ace_fit_params, ref_property_prefix='REF_'):
+def prepare_params(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_'):
     """Prepare ace_fit parameters so they are compatible with the rest of workflow.
     Runs ace_fit on a a set of fitting configs
 
@@ -85,11 +85,12 @@ def prepare_params(fitting_configs, ACE_fname, ace_fit_params, ref_property_pref
     ----------
     fitting_configs: ConfigSet_in
         set of configurations to fit
-    ACE_fname: str
-        name of ACE potential, with .json or .yace suffix 
+    ACE_name: str
+        name of ACE potential.
+        Will overwrite any `ACE_fname` present in `ace_fit_params`
     ace_fit_params: dict
         dict with all fitting parameters for ACE1pack, 
-        to be updated with ACE_fname and ref_property_prefix 
+        to be updated with ACE_name and ref_property_prefix 
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
 
@@ -105,8 +106,8 @@ def prepare_params(fitting_configs, ACE_fname, ace_fit_params, ref_property_pref
     ace_fit_params = deepcopy(ace_fit_params)
 
     if "ACE_fname" in ace_fit_params.keys():
-        warnings.warn(f"Saving the potential to {ACE_fname}, not {ace_fit_params['ACE_fit_params']} found in ace_fit params")
-    ace_fit_params["ACE_fname"] = str(ACE_fname)
+        warnings.warn(f"Saving the potential to {ACE_name}, not {ace_fit_params['ACE_fit_params']} found in ace_fit params")
+    ace_fit_params["ACE_fname"] = str(ACE_name)
 
     if "data" not in ace_fit_params.keys():
         ace_fit_params["data"] = {}
