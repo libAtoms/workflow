@@ -23,7 +23,6 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     (tmp_path / run_dir).mkdir()
 
     fit_config_file = os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')
-    fit_configs = prepare_configs(ConfigSet_in(input_files=fit_config_file), ref_property_prefix="REF_")
 
     # Only mandatory params
     params = {
@@ -32,15 +31,12 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
             "pair": {"type": "pair", "species": ["B"], "maxdeg": 4}},
         "solver": {"solver": "lsqr"}}
 
-    params = prepare_params(fit_configs, 
-                            ACE_fname='ACE.B_test.json',
-                            ace_fit_params=params,
-                            ref_property_prefix="REF_")
-
     t0 = time.time()
     ACE_size = fit(
-        fit_configs,
+        fitting_configs=ConfigSet_in(input_files=fit_config_file),
+        ACE_fname="ACE.B_test.json",
         ace_fit_params=params, 
+        ref_property_prefix="REF_",
         run_dir=str(run_dir), 
         dry_run=True, 
         skip_if_present=True)
@@ -53,8 +49,10 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
 
     t0 = time.time()
     ACE_size_rerun = fit(
-        fit_configs,
+        fitting_configs=ConfigSet_in(input_files=fit_config_file),
+        ACE_fname="ACE.B_test.json",
         ace_fit_params=params, 
+        ref_property_prefix="REF_",
         run_dir=str(run_dir), 
         dry_run=True, 
         skip_if_present=True)
@@ -81,7 +79,6 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     (tmp_path / run_dir).mkdir()
 
     fit_config_file = os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')
-    fit_configs = prepare_configs(ConfigSet_in(input_files=fit_config_file), ref_property_prefix="REF_")
 
     # Only mandatory params
     params = {
@@ -91,15 +88,13 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
             "pair": {"type": "pair", "species": ["B"], "maxdeg": 4}},
         "solver": {"solver": "lsqr"}}
 
-    params = prepare_params(fit_configs, 
-                        ACE_fname='ACE.B_test.json',
-                        ace_fit_params=params,
-                        ref_property_prefix="REF_")
 
     t0 = time.time()
     ACE = fit(
-        fit_configs,
+        fitting_configs=ConfigSet_in(input_files=fit_config_file),
+        ACE_fname="ACE.B_test.json",
         ace_fit_params=params, 
+        ref_property_prefix="REF_",
         run_dir=str(run_dir), 
         skip_if_present=True)
     time_actual = time.time() - t0
@@ -111,8 +106,10 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
 
     t0 = time.time()
     ACE = fit(
-        fit_configs,
+        fitting_configs=ConfigSet_in(input_files=fit_config_file),
+        ACE_fname="ACE.B_test.json",
         ace_fit_params=params, 
+        ref_property_prefix="REF_",
         run_dir=str(run_dir), 
         skip_if_present=True)
     time_rerun = time.time() - t0

@@ -27,7 +27,7 @@ end
 function save_dry_run_info(fit_params)
     num_observations = get_num_observations(fit_params["data"])
     basis_size = get_basis_size(fit_params["basis"])
-    dry_fit_filename = fit_params["ACE_fname_stem"] * ".size"
+    dry_fit_filename = replace(fit_params["ACE_fname"], ".json" => ".size")
     size_info = Dict("lsq_matrix_shape" => (num_observations, basis_size))
     save_json(dry_fit_filename, size_info)
     exit(0)
