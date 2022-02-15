@@ -33,7 +33,6 @@ def test_phonopy(tmp_path):
         for v in at.positions[1:]:
             assert min(np.linalg.norm(sc.positions[1:] - v, axis=1)) < 1.0e-7
 
-@pytest.mark.xfail(reason="Trouble with installing phono3py")
 def test_phono3py(tmp_path):
     at0 = Atoms(numbers=[29], cell = [[0, 2, 2], [2, 0, 2], [2, 2, 0]], positions = [[0, 0, 0]], pbc = [True]*3)
     at1 = Atoms(numbers=[29], cell = [[0, 1.9, 1.9], [1.9, 0, 1.9], [1.9, 1.9, 0]], positions = [[0, 0, 0]], pbc = [True]*3)
@@ -63,7 +62,6 @@ def test_phono3py(tmp_path):
     assert sum([at.info["config_type"] == "phonon_cubic_1" for at in pert]) == 13*2
 
 
-@pytest.mark.xfail(reason="Trouble with installing phono3py")
 def test_phono3py_same_supercell(tmp_path):
     at0 = Atoms(numbers=[29], cell = [[0, 2, 2], [2, 0, 2], [2, 2, 0]], positions = [[0, 0, 0]], pbc = [True]*3)
     at1 = Atoms(numbers=[29], cell = [[0, 1.9, 1.9], [1.9, 0, 1.9], [1.9, 1.9, 0]], positions = [[0, 0, 0]], pbc = [True]*3)
