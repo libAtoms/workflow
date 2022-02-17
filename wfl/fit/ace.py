@@ -217,7 +217,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                       env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=run_ace_fit,
-                      kwargs= {'fitting_configs': fitting_configs, 'ACE_name': ACE_name, 'ace_fit_params': ace_fit_params,
+                      kwargs= {'fitting_configs': fitting_configs, 'ace_fit_params': ace_fit_params,
                                'run_dir': run_dir, 'ace_fit_exec': ace_fit_exec,
                                'dry_run': dry_run, 'verbose': verbose, 'remote_info': '_IGNORE'})
 
