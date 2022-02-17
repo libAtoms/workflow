@@ -115,7 +115,7 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
     ace_fit_params["data"]["force_key"] = f"{ref_property_prefix}forces"
     ace_fit_params["data"]["virial_key"] = f"{ref_property_prefix}virial" # TODO is this correct?
 
-    ace_filename = str(run_dir / ACE_name) + '.json'
+    ace_filename = os.path.join(run_dir, ACE_name) + '.json'
     if "ACE_fname" in ace_fit_params:
         warnings.warn(f"Overriding 'ACE_fname' in ace_fit_params '{ace_fit_params['ACE_fname']}' with '{ace_filename}'")
     ace_fit_params["ACE_fname"] = ace_filename
@@ -253,9 +253,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
     if verbose:
         print('fitting command:\n', cmd)
 
-    _execute_fit_command(cmd, ace_file_base, ace_fit_params["ACE_fname"], dry_run)
-
-    return Path(ace_fit_params["ACE_fname"])
+    return _execute_fit_command(cmd, ace_file_base, ace_fit_params["ACE_fname"], dry_run)
 
 
 def _write_fitting_configs(fitting_configs, use_params, ace_file_base):
@@ -340,13 +338,6 @@ def _execute_fit_command(cmd, ace_file_base, ACE_fname, dry_run):
         for l in fin:
             print('STDERR', l, end='')
 
-    if dry_run:
-        return _read_size(ace_file_base)
-
-    # run can fail without raising an exception in subprocess.run, at least make sure that
-    # ACE files exist and are readable
-    _check_output_files(ACE_fname)
-
     if orig_julia_num_threads is not None:
         os.environ['JULIA_NUM_THREADS'] = orig_julia_num_threads
     else:
@@ -354,6 +345,14 @@ def _execute_fit_command(cmd, ace_file_base, ACE_fname, dry_run):
             del os.environ['JULIA_NUM_THREADS']
         except KeyError:
             pass
+
+    if dry_run:
+        return _read_size(ace_file_base)
+    else:
+        # run can fail without raising an exception in subprocess.run, at least make sure that
+        # ACE files exist and are readable
+        _check_output_files(ACE_fname)
+        return Path(ACE_fname)
 
 
 def _stress_to_virial(fitting_configs, ref_property_prefix):

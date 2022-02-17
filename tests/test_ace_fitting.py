@@ -34,7 +34,7 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     t0 = time.time()
     ACE_size = fit(
         fitting_configs=ConfigSet_in(input_files=fit_config_file),
-        ACE_name="ACE.B_test.json",
+        ACE_name="ACE.B_test",
         ace_fit_params=params, 
         ref_property_prefix="REF_",
         run_dir=str(run_dir), 
@@ -50,7 +50,7 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     t0 = time.time()
     ACE_size_rerun = fit(
         fitting_configs=ConfigSet_in(input_files=fit_config_file),
-        ACE_name="ACE.B_test.json",
+        ACE_name="ACE.B_test",
         ace_fit_params=params, 
         ref_property_prefix="REF_",
         run_dir=str(run_dir), 
@@ -92,7 +92,7 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     t0 = time.time()
     ACE = fit(
         fitting_configs=ConfigSet_in(input_files=fit_config_file),
-        ACE_name="ACE.B_test.json",
+        ACE_name="ACE.B_test",
         ace_fit_params=params, 
         ref_property_prefix="REF_",
         run_dir=str(run_dir), 
@@ -107,7 +107,7 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     t0 = time.time()
     ACE = fit(
         fitting_configs=ConfigSet_in(input_files=fit_config_file),
-        ACE_name="ACE.B_test.json",
+        ACE_name="ACE.B_test",
         ace_fit_params=params, 
         ref_property_prefix="REF_",
         run_dir=str(run_dir), 
