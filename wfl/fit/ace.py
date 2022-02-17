@@ -30,17 +30,17 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
     fitting_configs: ConfigSet_in
         set of configurations to fit
     ACE_name: str
-        name of ACE potential (a .json). Overwrites any fileme given in the `params`. 
+        name of ACE potential (i.e. stem for resulting .json file). Overwrites any filename given in `ace_fit_params`.
     ace_fit_params: dict
-        parameters for ACE1pack. 
-        Any file names (ACE, fitting configs) already present will be updated, 
-        proprty keys to fit to will be prepended with `ref_property_prefix` and e0 
-        set up, if needed. 
+        parameters for ACE1pack.
+        Any file names (ACE, fitting configs) already present will be updated,
+        property keys to fit to will be prepended with `ref_property_prefix` and e0
+        set up, if needed.
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
     skip_if_present: bool, default False
         skip fitting if output is already present
-    run_dir: str, default '.'
+    run_dir: str or Path, default '.'
         directory to run in
     ace_fit_exec: str, default "wfl/scripts/ace_fit.jl"
         executable for ace_fit
@@ -59,7 +59,9 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
 
     Returns
     -------
-    ace_filename: Path
+    ace_filename: Path of saved ACE json file (if not dry_run)
+    OR
+    size: (int, int) size of least-squares matrix (if dry_run)
 
     Environment Variables
     ---------------------
@@ -69,7 +71,7 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
     ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
     """
 
-    ace_fit_params = prepare_params(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix)
+    ace_fit_params = prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir, ref_property_prefix)
     fitting_configs = prepare_configs(fitting_configs, ref_property_prefix)
 
     return run_ace_fit(fitting_configs, ace_fit_params,
@@ -77,44 +79,46 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
                 verbose=verbose, remote_info=remote_info, wait_for_results=wait_for_results)
 
 
-def prepare_params(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_'):
+def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_property_prefix='REF_'):
     """Prepare ace_fit parameters so they are compatible with the rest of workflow.
     Runs ace_fit on a a set of fitting configs
 
     Parameters
     ----------
+    ACE_name: str
+        name of ACE model, used as initial part of final potential JSON file, as well as other scratch files.
+        Overrides any previous 'ACE_fname' in ace_fit_params
     fitting_configs: ConfigSet_in
         set of configurations to fit
-    ACE_name: str
-        name of ACE potential.
-        Will overwrite any `ACE_fname` present in `ace_fit_params`
     ace_fit_params: dict
-        dict with all fitting parameters for ACE1pack, 
-        to be updated with ACE_name and ref_property_prefix 
+        dict with all fitting parameters for ACE1pack,
+        to be updated with data keys (with ref_property_prefix), and e0 values
+    run_dir: str or Path, default '.'
+        path of directory to run in
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
 
     Returns
     -------
     ace_fit_params: Dict
-        with updated `ACE_fname`, energy/force/virial keys and e0 values. 
-
+        with updated energy/force/virial keys and e0 values.
     """
 
     assert isinstance(ref_property_prefix, str) and len(ref_property_prefix) > 0
 
     ace_fit_params = deepcopy(ace_fit_params)
 
-    if "ACE_fname" in ace_fit_params.keys():
-        warnings.warn(f"Saving the potential to {ACE_name}, not {ace_fit_params['ACE_fit_params']} found in ace_fit params")
-    ace_fit_params["ACE_fname"] = str(ACE_name)
-
-    if "data" not in ace_fit_params.keys():
+    if "data" not in ace_fit_params:
         ace_fit_params["data"] = {}
 
     ace_fit_params["data"]["energy_key"] = f"{ref_property_prefix}energy"
     ace_fit_params["data"]["force_key"] = f"{ref_property_prefix}forces"
     ace_fit_params["data"]["virial_key"] = f"{ref_property_prefix}virial" # TODO is this correct?
+
+    ace_filename = str(run_dir / ACE_name) + '.json'
+    if "ACE_fname" in ace_fit_params:
+        warnings.warn(f"Overriding 'ACE_fname' in ace_fit_params '{ace_fit_params['ACE_fname']}' with '{ace_filename}'")
+    ace_fit_params["ACE_fname"] = ace_filename
 
     _prepare_e0(ace_fit_params, fitting_configs, ref_property_prefix)
 
@@ -133,8 +137,9 @@ def prepare_configs(fitting_configs, ref_property_prefix='REF_'):
 
     return fitting_configs
 
-def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir='.', 
-        ace_fit_exec=str((Path(wfl.scripts.__file__).parent / 'ace_fit.jl').resolve()), dry_run=False, 
+
+def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir='.',
+        ace_fit_exec=str((Path(wfl.scripts.__file__).parent / 'ace_fit.jl').resolve()), dry_run=False,
         verbose=True, remote_info=None, wait_for_results=True):
     """Runs ace_fit on a a set of fitting configs
 
@@ -143,16 +148,16 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
     fitting_configs: ConfigSet_in
         set of configurations to fit
     ace_fit_params: dict
-        dict with all fitting parameters for ACE1pack. 
-        Only any file names (ACE, fitting configs) already present will be updated.
+        dict with all fitting parameters for ACE1pack.
+        Any file names (ACE, fitting configs) already present will be updated.
     skip_if_present: bool, default False
         skip fitting if output is already present
-    run_dir: str, default '.'
+    run_dir: str or Path, default '.'
         directory to run in
     ace_fit_exec: str, default "wfl/scripts/ace_fit.jl"
         executable for ace_fit
     dry_run: bool, default False
-        do a dry run, which returns the matrix size, rather than the potential name
+        do a dry run, which returns the matrix size, rather than the potential file path
     verbose: bool, default True
         print verbose output
     remote_info: dict or wfl.pipeline.utils.RemoteInfo, or '_IGNORE' or None
@@ -166,7 +171,9 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
     Returns
     -------
-    ace_fname: Path
+    ace_filename: Path of saved ACE json file (if not dry_run)
+    OR
+    size: (int, int) size of least-squares matrix (if dry_run)
 
     Environment Variables
     ---------------------
@@ -176,20 +183,22 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
     ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
 
     """
-    ace_fit_params = deepcopy(ace_fit_params)
-    ace_fit_params["ACE_fname"] = os.path.join(run_dir, ace_fit_params["ACE_fname"])
-    ace_file_base = os.path.splitext(ace_fit_params["ACE_fname"])[0]
+    run_dir = Path(run_dir)
 
-    # return early if fit calculations are done and output files are present (and readable, when that's
-    # possible to check)
+    ace_fit_params = deepcopy(ace_fit_params)
+    # base path, without any suffix, as string (including run_dir, which is only known at runtime)
+    ace_filename = Path(ace_fit_params["ACE_fname"])
+    ace_file_base = str(ace_filename.parent / ace_filename.stem)
+
+    # return early if fit calculations are done and output files are present and readable
     if skip_if_present:
         try:
             if dry_run:
                 return _read_size(ace_file_base)
 
-            _check_output_files(ace_file_base)
+            _check_output_files(ace_filename)
 
-            return str(ace_file_base)
+            return ace_filename
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             # continue below for actual size calculation or fitting
             pass
@@ -209,7 +218,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                       env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=run_ace_fit,
                       kwargs= {'fitting_configs': fitting_configs, 'ace_fit_params': ace_fit_params,
-                               'run_dir': str(run_dir), 'ace_fit_exec': ace_fit_exec,
+                               'run_dir': run_dir, 'ace_fit_exec': ace_fit_exec,
                                'dry_run': dry_run, 'verbose': verbose, 'remote_info': '_IGNORE'})
 
         xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
@@ -217,7 +226,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
         if not wait_for_results:
             return None
-            
+
         results, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
 
         sys.stdout.write(stdout)
@@ -228,63 +237,79 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
         return results
 
-    Path(run_dir).mkdir(exist_ok=True, parents=True)
+    run_dir.mkdir(exist_ok=True, parents=True)
 
-    use_params = deepcopy(ace_fit_params)
-
-    _write_fitting_configs(fitting_configs, use_params, ace_file_base)
+    _write_fitting_configs(fitting_configs, ace_fit_params, ace_file_base)
 
     ace_fit_params_filename = ace_file_base + "_fit_params.json"
     with open(ace_fit_params_filename, "w") as f:
-        f.write(json.dumps(use_params, indent=4))
+        f.write(json.dumps(ace_fit_params, indent=4))
 
     cmd = f"{ace_fit_exec} --fit-params {ace_fit_params_filename} "
-    if dry_run: 
+    if dry_run:
         cmd += "--dry-run "
     cmd +=  f"> {ace_file_base}.stdout 2> {ace_file_base}.stderr "
 
     if verbose:
         print('fitting command:\n', cmd)
 
-    return _execute_fit_command(cmd, ace_file_base, dry_run)
+    _execute_fit_command(cmd, ace_file_base, ace_fit_params["ACE_fname"], dry_run)
+
+    return Path(ace_fit_params["ACE_fname"])
 
 
 def _write_fitting_configs(fitting_configs, use_params, ace_file_base):
     """
-    Writes fitting configs to file and updates ace fitting parameters. 
+    Writes fitting configs to file and updates ace fitting parameters.
     Configurations and filename handled by Workflow overwrite any filename
-    specified in parameters. 
+    specified in parameters.
     """
 
-    if "data" not in use_params.keys():
+    if "data" not in use_params:
         use_params["data"] = {}
 
-    fit_cfgs_fname_given = None 
-    if "fname" in use_params["data"].keys():
-        fit_cfgs_fname_given = use_params["data"]["fname"]
-
     fit_cfgs_fname = ace_file_base + "_fitting_database.extxyz"
-    if fit_cfgs_fname_given is not None and fit_cfgs_fname_given.exists():
-        warnings.warn(f"File name for configs ace_params ({fit_cfgs_fname_given}), exists; "
-                      f"Fitting to configs given to ace.fit(), which are in {fit_cfgs_fname}.")
 
-    ase.io.write(fit_cfgs_fname, fitting_configs)
+    if "fname" in use_params["data"]:
+        warnings.warn(f"Ignoring configs file '{use_params['data']['fname']}' in ace_fit_params, "
+                      f"instead using configs passed in and saved to '{fit_cfgs_fname}'.")
+
     use_params["data"]["fname"] = fit_cfgs_fname
+    ase.io.write(fit_cfgs_fname, fitting_configs)
+
 
 def _read_size(ace_file_base):
     with open(ace_file_base + ".size") as fin:
         info = json.loads(fin.read())
     return info["lsq_matrix_shape"]
 
-def _check_output_files(ace_file_base):
-    ace_filename = ace_file_base + ".json"
-    with open(ace_filename) as fin:
-        try:
-            _ = json.load(fin)
-        except json.JSONDecodeError:
-            raise ValueError(f'Cannot parse ACE file {ace_filename}')
 
-def _execute_fit_command(cmd, ace_file_base, dry_run):
+def _check_output_files(ace_filename):
+    with open(ace_filename) as fin:
+        if str(ace_filename).endswith('.json'):
+            try:
+                # check that it's valid JSON, although not necessarily valid ACE JSON
+                _ = json.load(fin)
+            except json.JSONDecodeError:
+                raise ValueError(f'Cannot parse ACE JSON file {ace_filename}')
+        else:
+            raise ValueError(f'Cannot parse unknown suffix ACE file {ace_filename}')
+
+
+def _execute_fit_command(cmd, ace_file_base, ACE_fname, dry_run):
+    """runs actual ace_fit.jl script
+
+    Parameters
+    ----------
+    cmd: str
+        command to run
+    ace_file_base: str
+        path to ace files, without suffix, to use for stdou/stderr dry_run output
+    ACE_fname: str
+        name of ACE file that will be written, to use for checking
+    dry_run: bool
+        do a dry run (LSQ matrix sie only)
+    """
 
     orig_julia_num_threads = (os.environ.get('JULIA_NUM_THREADS', None))
     if 'ACE_FIT_JULIA_THREADS' in os.environ:
@@ -295,11 +320,11 @@ def _execute_fit_command(cmd, ace_file_base, dry_run):
     try:
         subprocess.run(cmd, shell=True, check=True)
     except subprocess.CalledProcessError as e:
-        with open(ace_file_base +'.stdout') as fin:
+        with open(ace_file_base + '.stdout') as fin:
             for l in fin:
                 print('STDOUT', l, end='')
 
-        with open(ace_file_base +'.stderr') as fin:
+        with open(ace_file_base + '.stderr') as fin:
             for l in fin:
                 print('STDERR', l, end='')
 
@@ -307,11 +332,11 @@ def _execute_fit_command(cmd, ace_file_base, dry_run):
         raise e
 
     # repeat output and error
-    with open(ace_file_base +'.stdout') as fin:
+    with open(ace_file_base + '.stdout') as fin:
         for l in fin:
             print('STDOUT', l, end='')
 
-    with open(ace_file_base +'.stderr') as fin:
+    with open(ace_file_base + '.stderr') as fin:
         for l in fin:
             print('STDERR', l, end='')
 
@@ -320,7 +345,7 @@ def _execute_fit_command(cmd, ace_file_base, dry_run):
 
     # run can fail without raising an exception in subprocess.run, at least make sure that
     # ACE files exist and are readable
-    _check_output_files(ace_file_base)
+    _check_output_files(ACE_fname)
 
     if orig_julia_num_threads is not None:
         os.environ['JULIA_NUM_THREADS'] = orig_julia_num_threads
@@ -330,7 +355,6 @@ def _execute_fit_command(cmd, ace_file_base, dry_run):
         except KeyError:
             pass
 
-    return Path(ace_file_base + ".json")
 
 def _stress_to_virial(fitting_configs, ref_property_prefix):
     for at in fitting_configs:
@@ -341,13 +365,12 @@ def _stress_to_virial(fitting_configs, ref_property_prefix):
                 stress = voigt_6_to_full_3x3_stress(stress)
 
             at.info[ref_property_prefix + 'virial'] = np.array((-stress * at.get_volume()).ravel())
-            
+
 
 def _prepare_e0(ace_fit_params, fitting_configs, ref_property_prefix):
 
-
     isolated_atoms = [at for at in fitting_configs if len(at) == 1]
-    if len(isolated_atoms) > 0 and "e0" in ace_fit_params.keys():
+    if len(isolated_atoms) > 0 and "e0" in ace_fit_params:
         raise RuntimeError("Got e0 both in isolated atoms and in ace_fit_params")
 
     if len(isolated_atoms) > 0:
@@ -355,10 +378,10 @@ def _prepare_e0(ace_fit_params, fitting_configs, ref_property_prefix):
         for at in isolated_atoms:
             e0[str(at.symbols)] = at.info[f"{ref_property_prefix}energy"]
         ace_fit_params["e0"] = e0
-    else: 
-        assert "e0" in ace_fit_params.keys()
+    else:
+        assert "e0" in ace_fit_params
 
     all_elements = set(list(itertools.chain(*[list(at.symbols) for at in fitting_configs])))
     assert all_elements.issubset(set(ace_fit_params["e0"].keys()))
-    
+
     return e0
