@@ -71,25 +71,30 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
     ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
     """
 
-    ace_fit_params = prepare_params(fitting_configs, ace_fit_params, ref_property_prefix)
+    ace_fit_params = prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir, ref_property_prefix)
     fitting_configs = prepare_configs(fitting_configs, ref_property_prefix)
 
-    return run_ace_fit(fitting_configs, ACE_name, ace_fit_params,
+    return run_ace_fit(fitting_configs, ace_fit_params,
                 skip_if_present=skip_if_present, run_dir=run_dir, ace_fit_exec=ace_fit_exec, dry_run=dry_run,
                 verbose=verbose, remote_info=remote_info, wait_for_results=wait_for_results)
 
 
-def prepare_params(fitting_configs, ace_fit_params, ref_property_prefix='REF_'):
+def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_property_prefix='REF_'):
     """Prepare ace_fit parameters so they are compatible with the rest of workflow.
     Runs ace_fit on a a set of fitting configs
 
     Parameters
     ----------
+    ACE_name: str
+        name of ACE model, used as initial part of final potential JSON file, as well as other scratch files.
+        Overrides any previous 'ACE_fname' in ace_fit_params
     fitting_configs: ConfigSet_in
         set of configurations to fit
     ace_fit_params: dict
         dict with all fitting parameters for ACE1pack,
         to be updated with data keys (with ref_property_prefix), and e0 values
+    run_dir: str or Path, default '.'
+        path of directory to run in
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
 
@@ -97,7 +102,6 @@ def prepare_params(fitting_configs, ace_fit_params, ref_property_prefix='REF_'):
     -------
     ace_fit_params: Dict
         with updated energy/force/virial keys and e0 values.
-
     """
 
     assert isinstance(ref_property_prefix, str) and len(ref_property_prefix) > 0
@@ -110,6 +114,11 @@ def prepare_params(fitting_configs, ace_fit_params, ref_property_prefix='REF_'):
     ace_fit_params["data"]["energy_key"] = f"{ref_property_prefix}energy"
     ace_fit_params["data"]["force_key"] = f"{ref_property_prefix}forces"
     ace_fit_params["data"]["virial_key"] = f"{ref_property_prefix}virial" # TODO is this correct?
+
+    ace_filename = str(run_dir / ACE_name) + '.json'
+    if "ACE_fname" in ace_fit_params:
+        warnings.warn(f"Overriding 'ACE_fname' in ace_fit_params '{ace_fit_params['ACE_fname']}' with '{ace_filename}'")
+    ace_fit_params["ACE_fname"] = ace_filename
 
     _prepare_e0(ace_fit_params, fitting_configs, ref_property_prefix)
 
@@ -129,7 +138,7 @@ def prepare_configs(fitting_configs, ref_property_prefix='REF_'):
     return fitting_configs
 
 
-def run_ace_fit(fitting_configs, ACE_name, ace_fit_params, skip_if_present=False, run_dir='.',
+def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir='.',
         ace_fit_exec=str((Path(wfl.scripts.__file__).parent / 'ace_fit.jl').resolve()), dry_run=False,
         verbose=True, remote_info=None, wait_for_results=True):
     """Runs ace_fit on a a set of fitting configs
@@ -138,8 +147,6 @@ def run_ace_fit(fitting_configs, ACE_name, ace_fit_params, skip_if_present=False
     ----------
     fitting_configs: ConfigSet_in
         set of configurations to fit
-    ACE_name: str
-        name of ACE potential (i.e. stem for resulting .json file). Overrides ACE_fname given in `ace_fit_params`.
     ace_fit_params: dict
         dict with all fitting parameters for ACE1pack.
         Any file names (ACE, fitting configs) already present will be updated.
@@ -180,8 +187,8 @@ def run_ace_fit(fitting_configs, ACE_name, ace_fit_params, skip_if_present=False
 
     ace_fit_params = deepcopy(ace_fit_params)
     # base path, without any suffix, as string (including run_dir, which is only known at runtime)
-    ace_file_base = str(run_dir / ACE_name)
-    ace_filename = ace_file_base + '.json'
+    ace_filename = Path(ace_fit_params["ACE_fname"])
+    ace_file_base = str(ace_filename.parent / ace_filename.stem)
 
     # return early if fit calculations are done and output files are present and readable
     if skip_if_present:
@@ -191,7 +198,7 @@ def run_ace_fit(fitting_configs, ACE_name, ace_fit_params, skip_if_present=False
 
             _check_output_files(ace_filename)
 
-            return Path(ace_filename)
+            return ace_filename
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             # continue below for actual size calculation or fitting
             pass
@@ -231,10 +238,6 @@ def run_ace_fit(fitting_configs, ACE_name, ace_fit_params, skip_if_present=False
         return results
 
     run_dir.mkdir(exist_ok=True, parents=True)
-
-    if "ACE_fname" in ace_fit_params:
-        warnings.warn(f"Overriding 'ACE_fname' in ace_fit_params {ace_fit_params['ACE_fname']} with {ace_filename}")
-    ace_fit_params["ACE_fname"] = ace_filename
 
     _write_fitting_configs(fitting_configs, ace_fit_params, ace_file_base)
 
@@ -283,7 +286,7 @@ def _read_size(ace_file_base):
 
 def _check_output_files(ace_filename):
     with open(ace_filename) as fin:
-        if ace_filename.endswith('.json'):
+        if str(ace_filename).endswith('.json'):
             try:
                 # check that it's valid JSON, although not necessarily valid ACE JSON
                 _ = json.load(fin)
