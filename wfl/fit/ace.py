@@ -34,7 +34,7 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
     ace_fit_params: dict
         parameters for ACE1pack.
         Any file names (ACE, fitting configs) already present will be updated,
-        proprty keys to fit to will be prepended with `ref_property_prefix` and e0
+        property keys to fit to will be prepended with `ref_property_prefix` and e0
         set up, if needed.
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
