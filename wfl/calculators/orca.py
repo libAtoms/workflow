@@ -5,6 +5,7 @@ import shutil
 import sys
 import tempfile
 import traceback
+import warnings
 
 import ase.io
 import numpy as np

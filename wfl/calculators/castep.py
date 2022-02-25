@@ -6,6 +6,7 @@ CASTEP calculator with functionality to use both MPI and multiprocessing
 import os
 import pathlib
 import tempfile
+import warnings
 
 from ase import Atoms
 from ase.calculators.calculator import CalculationFailed
