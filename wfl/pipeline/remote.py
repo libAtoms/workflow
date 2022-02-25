@@ -1,5 +1,8 @@
 import sys
 import os
+import warnings
+
+from ase.atoms import Atoms
 
 from wfl.configset import ConfigSet_in, ConfigSet_out
 from .utils import grouper, RemoteInfo
@@ -37,12 +40,18 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
 
     # create all jobs (count on expyre detection of identical jobs to avoid rerunning things unnecessarily)
     xprs = []
+    # place to keep track of input files, one per input item, so that output can go to corresponding file
     input_files = []
+    # list of all items, wastes space so used only if remote_info.skip_failures is True
+    all_items = []
     for chunk_i, items_gen in enumerate(items_inputs_generator):
         items = []
         for (item, cur_input_file) in items_gen:
             items.append(item)
             input_files.append(cur_input_file)
+
+        if remote_info.skip_failures:
+            all_items.append(items)
 
         job_name = remote_info.job_name + f'_chunk_{chunk_i}'
         if not quiet:
@@ -75,15 +84,36 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
     # gather results and write them to original configset_out
     configset_out.pre_write()
     at_i = 0
-    for xpr in xprs:
+    for chunk_i, xpr in enumerate(xprs):
         if not quiet:
             sys.stderr.write(f'Gathering results for {xpr.id}\n')
-        ats_out, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
-        for at in ats_out.group_iter():
-            configset_out.write(at, from_input_file=input_files[at_i])
-            at_i += 1
-        sys.stdout.write(stdout)
-        sys.stderr.write(stderr)
+
+        try:
+            ats_out, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
+        except Exception as exc:
+            warnings.warn(f'Failed in remote job {xpr.id} on {xpr.system_name}')
+            if not remote_info.skip_failures:
+                raise
+            if len(all_items) > 0 and isinstance(all_items[chunk_i][0], Atoms):
+                # get ready to write input configs to output
+                ats_out = ConfigSet_in(input_configs=all_items[chunk_i])
+            else:
+                # either no inputs saved or inputs aren't configurations, so skip output
+                ats_out = None
+            stdout = ''
+            stderr = ''
+
+        if ats_out is None:
+            # Skip the right number of input files. If we're here,
+            # remote_info.skip_failures must be True, so all_items should be filled
+            at_i += len(all_items[chunk_i])
+        else:
+            for at in ats_out.group_iter():
+                configset_out.write(at, from_input_file=input_files[at_i])
+                at_i += 1
+            sys.stdout.write(stdout)
+            sys.stderr.write(stderr)
+
     configset_out.end_write()
 
     if 'WFL_AUTOPARA_REMOTE_NO_MARK_PROCESSED' not in os.environ:
