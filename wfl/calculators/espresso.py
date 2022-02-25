@@ -111,6 +111,7 @@ def evaluate_op(
             # for failed convergence, Espresso currently returns subprocess.CalledProcessError
             #     since pw.x returns a non-zero status
             warnings.warn(f'Calculation failed with exc {exc}')
+            at.info['DFT_FAILED_ESPRESSO'] = True
 
         # save results
         if calculation_succeeded:
