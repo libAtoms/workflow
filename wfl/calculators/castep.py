@@ -100,9 +100,9 @@ def evaluate_op(
         try:
             at.calc.calculate(at)
             calculation_succeeded = True
-        except (CalculationFailed, TypeError):
+        except Exception as exc:
             # TypeError needed here until https://gitlab.com/ase/ase/-/issues/912 is resolved
-            pass
+            warnings.warn(f'Calculation failed with exc {exc}')
 
         if calculation_succeeded:
             # NOTE: this try catch should not be necessary, but ASE castep calculator does not
