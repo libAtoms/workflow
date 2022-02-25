@@ -175,6 +175,7 @@ def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
             calculation_succeeded = True
         except Exception as exc:
             warnings.warn(f'Calculation failed with exc {exc}')
+            at.info['DFT_FAILED_ORCA'] = True
 
         if calculation_succeeded and not basin_hopping:
             # task='opt' in ExtendedORCA performs geometry optimisation,

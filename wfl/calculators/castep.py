@@ -104,6 +104,7 @@ def evaluate_op(
         except Exception as exc:
             # TypeError needed here until https://gitlab.com/ase/ase/-/issues/912 is resolved
             warnings.warn(f'Calculation failed with exc {exc}')
+            at.info['DFT_FAILED_CASTEP'] = True
 
         if calculation_succeeded:
             # NOTE: this try catch should not be necessary, but ASE castep calculator does not
