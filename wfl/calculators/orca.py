@@ -173,6 +173,8 @@ def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
         try:
             at.calc.calculate(at)
             calculation_succeeded = True
+            if 'DFT_FAILED_ORCA' in at.info:
+                del at.info['DFT_FAILED_ORCA']
         except Exception as exc:
             warnings.warn(f'Calculation failed with exc {exc}')
             at.info['DFT_FAILED_ORCA'] = True
