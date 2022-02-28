@@ -185,6 +185,10 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
     """
     run_dir = Path(run_dir)
 
+    # make sure that it's a list, so it's easy to pickle for remote jobs, and safe
+    # to pass to _write_fitting_configs which will pass it to ase.io.write
+    assert isinstance(fitting_configs, list)
+
     ace_fit_params = deepcopy(ace_fit_params)
     # base path, without any suffix, as string (including run_dir, which is only known at runtime)
     ace_filename = Path(ace_fit_params["ACE_fname"])
