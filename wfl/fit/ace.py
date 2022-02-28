@@ -145,7 +145,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
     Parameters
     ----------
-    fitting_configs: ConfigSet_in
+    fitting_configs: list(Atoms)
         set of configurations to fit
     ace_fit_params: dict
         dict with all fitting parameters for ACE1pack.
@@ -185,6 +185,10 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
     """
     run_dir = Path(run_dir)
 
+    # make sure that it's a list, so it's easy to pickle for remote jobs, and safe
+    # to pass to _write_fitting_configs which will pass it to ase.io.write
+    assert isinstance(fitting_configs, list)
+
     ace_fit_params = deepcopy(ace_fit_params)
     # base path, without any suffix, as string (including run_dir, which is only known at runtime)
     ace_filename = Path(ace_fit_params["ACE_fname"])
@@ -207,9 +211,6 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.input_files.copy()
         output_files = remote_info.output_files.copy()
-
-        # put configs in memory so they can be staged out easily
-        fitting_configs = fitting_configs.in_memory()
 
         # run dir will contain only things created by fitting, so it's safe to copy the
         # entire thing back as output
@@ -261,6 +262,15 @@ def _write_fitting_configs(fitting_configs, use_params, ace_file_base):
     Writes fitting configs to file and updates ace fitting parameters.
     Configurations and filename handled by Workflow overwrite any filename
     specified in parameters.
+
+    Parameters:
+    -----------
+    fitting_configs: list(Atoms)
+        configurations to fit to
+    use_params: dict
+        ACE fit parameters, will have input filename set based on where configs were written to
+    ace_file_base: str
+        base to all ACE-related files, used for saving fitting configs
     """
 
     if "data" not in use_params:
