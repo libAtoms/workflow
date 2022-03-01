@@ -5,6 +5,7 @@ import shutil
 import sys
 import tempfile
 import traceback
+import warnings
 
 import ase.io
 import numpy as np
@@ -172,8 +173,11 @@ def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
         try:
             at.calc.calculate(at)
             calculation_succeeded = True
-        except CalculationFailed:
-            pass
+            if 'DFT_FAILED_ORCA' in at.info:
+                del at.info['DFT_FAILED_ORCA']
+        except Exception as exc:
+            warnings.warn(f'Calculation failed with exc {exc}')
+            at.info['DFT_FAILED_ORCA'] = True
 
         if calculation_succeeded and not basin_hopping:
             # task='opt' in ExtendedORCA performs geometry optimisation,

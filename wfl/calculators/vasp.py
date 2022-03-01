@@ -165,8 +165,11 @@ def evaluate_op(
         try:
             at.calc.calculate(at, properties_use)
             calculation_succeeded = True
+            if 'DFT_FAILED_VASP' in at.info:
+                del at.info['DFT_FAILED_VASP']
         except Exception as exc:
             warnings.warn(f"VASP calculation failed with exception {exc}")
+            at.info['DFT_FAILED_VASP'] = True
 
         if calculation_succeeded:
             save_results(at, properties_use, output_prefix)
