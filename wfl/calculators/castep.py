@@ -6,6 +6,7 @@ CASTEP calculator with functionality to use both MPI and multiprocessing
 import os
 import pathlib
 import tempfile
+import warnings
 
 from ase import Atoms
 from ase.calculators.calculator import CalculationFailed
@@ -100,9 +101,12 @@ def evaluate_op(
         try:
             at.calc.calculate(at)
             calculation_succeeded = True
-        except (CalculationFailed, TypeError):
+            if 'DFT_FAILED_CASTEP' in at.info:
+                del at.info['DFT_FAILED_CASTEP']
+        except Exception as exc:
             # TypeError needed here until https://gitlab.com/ase/ase/-/issues/912 is resolved
-            pass
+            warnings.warn(f'Calculation failed with exc {exc}')
+            at.info['DFT_FAILED_CASTEP'] = True
 
         if calculation_succeeded:
             # NOTE: this try catch should not be necessary, but ASE castep calculator does not

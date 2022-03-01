@@ -34,10 +34,13 @@ class RemoteInfo:
         time to wait in get_results before giving up
     check_interval: int
         check_interval arg to pass to get_results
+    skip_failures: bool, default False
+        skip failures in remote jobs
     """
     def __init__(self, sys_name, job_name, resources, job_chunksize=-100, pre_cmds=[], post_cmds=[],
                  env_vars=[], input_files=[], output_files=[], header_extra=[],
-                 exact_fit=True, partial_node=False, timeout=3600, check_interval=30):
+                 exact_fit=True, partial_node=False, timeout=3600, check_interval=30,
+                 skip_failures=False):
 
         self.sys_name = sys_name
         self.job_name = job_name
@@ -55,6 +58,7 @@ class RemoteInfo:
         self.partial_node = partial_node
         self.timeout = timeout
         self.check_interval = check_interval
+        self.skip_failures = skip_failures
 
 
     def __str__(self):
