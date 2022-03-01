@@ -24,17 +24,17 @@ For now the documentation must be build from source.
 
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
     :caption: Contents:
 
-    install.rst
-    code_structure.rst
-    operations.rst
-    workflows.rst
-    command_line.rst
-    examples.rst
-    contributing.rst	
-    modules.rst
+    Install <install.rst>
+    Code structure <code_structure.rst>
+    Operations <operations.rst>
+    Workflows <workflows.rst>
+    Command Line Interface <command_line.rst>
+    Examples <examples.rst>
+    Contriubting <contributing.rst>
+    Modules <modules.rst>
 
 * :ref:`genindex`
 * :ref:`modindex`
