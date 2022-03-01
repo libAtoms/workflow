@@ -106,12 +106,14 @@ def evaluate_op(
         try:
             at.calc.calculate(at, properties=properties_use, system_changes=all_changes)
             calculation_succeeded = True
-        except (CalculationFailed, subprocess.CalledProcessError) as exc:
+            if 'DFT_FAILED_ESPRESSO' in at.info:
+                del at.info['DFT_FAILED_ESPRESSO']
+        except Exception as exc:
             # CalculationFailed is probably what's supposed to be returned
             # for failed convergence, Espresso currently returns subprocess.CalledProcessError
             #     since pw.x returns a non-zero status
             warnings.warn(f'Calculation failed with exc {exc}')
-            pass
+            at.info['DFT_FAILED_ESPRESSO'] = True
 
         # save results
         if calculation_succeeded:
