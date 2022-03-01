@@ -101,6 +101,8 @@ def evaluate_op(
         try:
             at.calc.calculate(at)
             calculation_succeeded = True
+            if 'DFT_FAILED_CASTEP' in at.info:
+                del at.info['DFT_FAILED_CASTEP']
         except Exception as exc:
             # TypeError needed here until https://gitlab.com/ase/ase/-/issues/912 is resolved
             warnings.warn(f'Calculation failed with exc {exc}')
