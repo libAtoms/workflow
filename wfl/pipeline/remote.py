@@ -97,6 +97,8 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
             if len(all_items) > 0 and isinstance(all_items[chunk_i][0], Atoms):
                 # get ready to write input configs to output
                 ats_out = ConfigSet_in(input_configs=all_items[chunk_i])
+                for at in ats_out:
+                    at.info['EXPYRE_REMOTE_JOB_FAILED'] = True
             else:
                 # either no inputs saved or inputs aren't configurations, so skip output
                 ats_out = None
