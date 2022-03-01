@@ -47,6 +47,9 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
     for chunk_i, items_gen in enumerate(items_inputs_generator):
         items = []
         for (item, cur_input_file) in items_gen:
+            if isinstance(item, Atoms) and 'EXPYRE_REMOTE_JOB_FAILED' in item.info:
+                del item.info['EXPYRE_REMOTE_JOB_FAILED']
+
             items.append(item)
             input_files.append(cur_input_file)
 
