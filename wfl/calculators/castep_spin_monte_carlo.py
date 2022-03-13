@@ -10,6 +10,7 @@ Scheme:
 randomly chosen initial spin
 - take the minimum energy configuration for the results
 """
+from abc import ABC, abstractmethod
 from typing import List
 
 import ase
@@ -20,22 +21,33 @@ from ase.units import kB
 from .castep import evaluate_op
 
 
-# TODO: convert the initializer to an ABC and subclass for possible different initialisation methods
 # todo: look up is VASP & QE can use the magnetic initialisation, because then we can have a general calculator
 
 
-class UniformSpinInitializer:
-    """Initialises spin from a uniform random distribution"""
+class SpinInitializerBase(ABC):
+    """Spin Initialiser class
 
-    def __init__(self, low: float, high: float):
-        self.low = low
-        self.high = high
+    Implement the .sample method that acts on an atoms object and
+    initialises the sping for it.
+    """
+
+    @abstractmethod
+    def sample(self, atoms: ase.Atoms) -> ase.Atoms:
+        ...
 
     def sample_multiple(
         self, atoms: ase.Atoms, number: int
     ) -> List[ase.Atoms]:
         assert number > 0
         return [self.sample(atoms) for _ in range(number)]
+
+
+class UniformSpinInitializer(SpinInitializerBase):
+    """Initialises spin from a uniform random distribution"""
+
+    def __init__(self, low: float, high: float):
+        self.low = low
+        self.high = high
 
     def sample(self, atoms: ase.Atoms) -> ase.Atoms:
         new_atoms = atoms.copy()
