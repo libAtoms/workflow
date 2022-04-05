@@ -6,7 +6,7 @@
 #SBATCH --exclusive
 #SBATCH --output=test_cli_rss_create_ref.stdout
 #SBATCH --error=test_cli_rss_create_ref.stderr
-#SBATCH --time=24:00:00
+#SBATCH --time=2:00:00
 
 pwd
 
@@ -28,5 +28,4 @@ export WFL_AUTOPARA_NPOOL=16
 
 pytest --runslow -rxXs -s tests/test_cli_rss.py 
 
-cd $PBS_O_WORKDIR
 cp job.test_cli_rss_create_ref.slurm test_cli_rss_create_ref.stdout tests/assets/cli_rss
