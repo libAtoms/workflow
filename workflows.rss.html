@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>How to do GAP-RSS &#8212; workflow  documentation</title>
     
-  <link href="_static/css/theme.css" rel="stylesheet">
-  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,20 +19,17 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=84ace793992934648b4de8eed757e5a2" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     
-  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx-book-theme.9d8b4a8b9bb19db25eeaddc40d639ba2.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Collisions" href="workflows.collisions.html" />
@@ -43,7 +41,21 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -52,14 +64,10 @@
     <div class="container-xl">
       <div class="row">
           
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<div class="col-12 col-md-3 bd-sidebar site-navigation " id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="index.html">
       
       
@@ -275,74 +283,135 @@
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
-</div>
-
-</div>
-
-
-          
-
-
-          
-<!-- This is an invisible pixel that we watch to see if we've scrolled. -->
-<div class="sbt-scroll-pixel-helper"></div>
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            <div class="topbar-left">
-                
-                <label class="nav-toggle-button" for="__navigation">
-                    <div class="visually-hidden">Toggle navigation</div>
-                    <i class="fas fa-bars"></i>
-                </label>
-                
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
             </div>
             
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
 
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
         
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="_sources/workflows.rss.rst.txt"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.rst</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/workflows.rss.rst.txt"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.rst</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
     </div>
 </div>
 
-            <!-- Source interaction buttons -->
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
-            </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#before-you-start">
    Before you start
@@ -397,12 +466,11 @@
  </li>
 </ul>
 
-            </nav>
-        </div>
-    </div>
+    </nav>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
                 <h1>How to do GAP-RSS</h1>
@@ -473,15 +541,16 @@
                     </div>
                 </div>
             </div>
-            
+            <main id="main-content" role="main">
+                
               <div>
                 
   <div class="section" id="how-to-do-gap-rss">
-<span id="rss"></span><h1>How to do GAP-RSS<a class="headerlink" href="#how-to-do-gap-rss" title="Permalink to this headline">¶</a></h1>
+<span id="rss"></span><h1>How to do GAP-RSS<a class="headerlink" href="#how-to-do-gap-rss" title="Permalink to this headline">#</a></h1>
 <p>You would like to explore the structural space of an element/alloy and gain a GAP potential at the same time? Here is a small introduction of how to do this in an automated manner with this repository.</p>
 <p>All you need to do is choose your favourite elements, follow the instructions below and run the workflow, then test, use and expand your model as you like.</p>
 <div class="section" id="before-you-start">
-<h2>Before you start<a class="headerlink" href="#before-you-start" title="Permalink to this headline">¶</a></h2>
+<h2>Before you start<a class="headerlink" href="#before-you-start" title="Permalink to this headline">#</a></h2>
 <p>Make a new directory and create the following files:
 - <code class="docutils literal notranslate"><span class="pre">length_scales.json</span></code> defining the bond lengths and typical volumes for the elements
 - <code class="docutils literal notranslate"><span class="pre">config.json</span></code> this is the main configuration file
@@ -516,13 +585,13 @@
 Additionally, general settings can be given in <code class="docutils literal notranslate"><span class="pre">gap_params</span></code> for the fit.</p>
 <p>The filename of this file goes into the main config’s <code class="docutils literal notranslate"><span class="pre">fit/GAP_template_file</span></code> field.</p>
 <div class="section" id="main-config">
-<h3>Main config<a class="headerlink" href="#main-config" title="Permalink to this headline">¶</a></h3>
+<h3>Main config<a class="headerlink" href="#main-config" title="Permalink to this headline">#</a></h3>
 <p>This is also a json file, with settings of how to execute certain steps of the GAP-RSS workflow. For the structure and keywords in the file please take a look at the examples. Here, we are giving a small overview of what the workflow is doing and what you can tweak in it.</p>
 <p>The structure and field names may change during development, input file structure may be updated later on.</p>
 </div>
 </div>
 <div class="section" id="steps-of-gap-rss">
-<h2>Steps of GAP-RSS<a class="headerlink" href="#steps-of-gap-rss" title="Permalink to this headline">¶</a></h2>
+<h2>Steps of GAP-RSS<a class="headerlink" href="#steps-of-gap-rss" title="Permalink to this headline">#</a></h2>
 <p>The GAP-RSS workflow consists of a few steps, which can be accessed with given command line options. Here is a summary of them and then more detailed overview of what they are doing.</p>
 <p>The central command line interface for iterative GAP-RSS is <code class="docutils literal notranslate"><span class="pre">gap_rss_iter_fit</span></code>, which has all the subcommands defined. If you are interested in the implementation, dig into it at <code class="docutils literal notranslate"><span class="pre">wfl/cli/gap_rss_iter_fit.py</span></code> where these are defined.</p>
 <p>The steps:
@@ -532,7 +601,7 @@ Additionally, general settings can be given in <code class="docutils literal not
 4. MD step: MD sampling of bulk defects, selection and fitting</p>
 </div>
 <div class="section" id="preparation-step">
-<h2>Preparation step<a class="headerlink" href="#preparation-step" title="Permalink to this headline">¶</a></h2>
+<h2>Preparation step<a class="headerlink" href="#preparation-step" title="Permalink to this headline">#</a></h2>
 <p>Use with <code class="docutils literal notranslate"><span class="pre">gap_rss_iter_fit</span> <span class="pre">--configuration</span> <span class="pre">&lt;main</span> <span class="pre">config</span> <span class="pre">json&gt;</span> <span class="pre">prep</span></code></p>
 <p>This step is reading the input files, summarises the compositions defined, created <code class="docutils literal notranslate"><span class="pre">buildcell</span></code> input files for them, and simple dimer and isolated atom configurations.</p>
 <p>The compositions are defined as tuples of formula unit and relative weight of them. These are normalised and the random structures are created with respective distribution.</p>
@@ -540,25 +609,25 @@ Additionally, general settings can be given in <code class="docutils literal not
 <p>Additionally the selection settings and the buildcell info are written to respective yaml files and a json file is created by processing the fitting settings, stages and descriptors with the  elements and their length scales specified. Finally the bare dimer and single atom configurations are written, DFT energy and forces will be evaluated on them in the initial step.</p>
 </div>
 <div class="section" id="dft-settings">
-<h2>DFT settings<a class="headerlink" href="#dft-settings" title="Permalink to this headline">¶</a></h2>
+<h2>DFT settings<a class="headerlink" href="#dft-settings" title="Permalink to this headline">#</a></h2>
 <p>The main config has a section of <code class="docutils literal notranslate"><span class="pre">DFT_evaluate</span></code> specifying the settings for reference calculations. Currently VASP and CASTEP are implemented as calculators, specify which one you are using in the <code class="docutils literal notranslate"><span class="pre">DFT_evaluate/calculator</span></code> field with upper case name.</p>
 <p>Note: the <code class="docutils literal notranslate"><span class="pre">/</span></code> refers to the hierarchy of the json file’s dictionaries, so <code class="docutils literal notranslate"><span class="pre">foo/bar</span></code> refers to the <code class="docutils literal notranslate"><span class="pre">bar</span></code> field in the <code class="docutils literal notranslate"><span class="pre">foo</span></code> dict.</p>
 <p>The keywords passed to the calculator are in <code class="docutils literal notranslate"><span class="pre">DFT_evaluate/kwargs</span></code>, please refer to the calculator for details of these and physical/modeling knowledge of the values you want to set.</p>
 <p>Additionally any keys can be given in <code class="docutils literal notranslate"><span class="pre">DFT_evaluate</span></code>, of which only some are read, specific to calculators. Eg. if using CASTEP, the <code class="docutils literal notranslate"><span class="pre">DFT_evaluate/CASTEP_pp_path</span></code> is used as the pseudopotential directory.</p>
 </div>
 <div class="section" id="config-selection">
-<h2>Config selection<a class="headerlink" href="#config-selection" title="Permalink to this headline">¶</a></h2>
+<h2>Config selection<a class="headerlink" href="#config-selection" title="Permalink to this headline">#</a></h2>
 <p>Currently two algorithms are implemented: CUR and greedy FPS. Both are using global descriptors and have no information of the previously selected set, only try to give the “best” from what they are given from the current step.</p>
 <p>The descriptor needs to be specified in <code class="docutils literal notranslate"><span class="pre">global/config_selection_descriptor</span></code>, where it is needed to use the <code class="docutils literal notranslate"><span class="pre">average</span></code> so that quippy is creating the global descriptor. Atomic types and length are adjusted automatically, use <code class="docutils literal notranslate"><span class="pre">global/config_selection_descriptor_add_species=manual_Zcenter</span></code> for this.</p>
 </div>
 <div class="section" id="initial-step">
-<h2>Initial step<a class="headerlink" href="#initial-step" title="Permalink to this headline">¶</a></h2>
+<h2>Initial step<a class="headerlink" href="#initial-step" title="Permalink to this headline">#</a></h2>
 <p>Use with <code class="docutils literal notranslate"><span class="pre">gap_rss_iter_fit</span> <span class="pre">--configuration</span> <span class="pre">&lt;main</span> <span class="pre">config</span> <span class="pre">json&gt;</span> <span class="pre">initial_step</span></code></p>
 <p>This is the first step for model building, where a preliminary GAP model needs to be created. The way this is done here is by creating random structures (<code class="docutils literal notranslate"><span class="pre">initial_step/buildcell_total_N</span></code>) with buildcell and sampling some (<code class="docutils literal notranslate"><span class="pre">initial_step/by_desc_select_N</span></code>) from them for DFT evaluation.</p>
 <p>Additionally, the isolated atoms and dimer structures are evaluated and added to the fit for e0 definition and core repulsion.</p>
 </div>
 <div class="section" id="rss-step">
-<h2>RSS step<a class="headerlink" href="#rss-step" title="Permalink to this headline">¶</a></h2>
+<h2>RSS step<a class="headerlink" href="#rss-step" title="Permalink to this headline">#</a></h2>
 <p>Use with <code class="docutils literal notranslate"><span class="pre">gap_rss_iter_fit</span> <span class="pre">--configuration</span> <span class="pre">&lt;main</span> <span class="pre">config</span> <span class="pre">json&gt;</span> <span class="pre">rss_step</span></code></p>
 <p>These are the main steps for learning the energy landscape of crystals and minima. Just as in AIRSS, random structures are created and relaxed, however here this is done with the latest GAP model. Pre-selection is carried out with flat histogram on the minima and on the trajectories, so descriptors are only calculated for a subset of the structures. Then descriptor based selection is performed.</p>
 <p>Minimisation can be done with pressure applied, which is defined in the <code class="docutils literal notranslate"><span class="pre">rss_step/minim_pressure</span></code> field, as one of the following:
@@ -572,7 +641,7 @@ Then the trajectories of the minima are used for a new flat histogram and descri
 <p>Additionally, the temperature of the flat histogram sampling can be specified, as an iteration specific value under <code class="docutils literal notranslate"><span class="pre">rss_step/iter_specific/flat_histo_kT</span></code> with keys of iteration number and values. These may be useful for the first few steps, setting somewhat larger value to sample the higher energy configs as well.</p>
 </div>
 <div class="section" id="md-step">
-<h2>MD step<a class="headerlink" href="#md-step" title="Permalink to this headline">¶</a></h2>
+<h2>MD step<a class="headerlink" href="#md-step" title="Permalink to this headline">#</a></h2>
 <p>Use with <code class="docutils literal notranslate"><span class="pre">gap_rss_iter_fit</span> <span class="pre">--configuration</span> <span class="pre">&lt;main</span> <span class="pre">config</span> <span class="pre">json&gt;</span> <span class="pre">MD_bulk_defect_step</span></code></p>
 <p>This is performing MD with bulk defects, aimed to sampling rather than physically correct experiments.</p>
 <p>The initial structure to create defects in can be specified with the <code class="docutils literal notranslate"><span class="pre">--minima_file</span></code> parameter, or is omitted then the same procedure is repeated as in an RSS step, but the final structures are not evaluated with DFT, but used as initial structures here. See parameters of the RSS step above.</p>
@@ -582,7 +651,7 @@ Then the trajectories of the minima are used for a new flat histogram and descri
 <p>Finally selection is carried out with pre-selection on flat histogram (<code class="docutils literal notranslate"><span class="pre">MD_bulk_defect_step/final_flat_histo_N</span></code>) and then by descriptor (<code class="docutils literal notranslate"><span class="pre">MD_bulk_defect_step/final_by_desc_select_N</span></code>) to yield the structures for DFT evaluation.</p>
 </div>
 <div class="section" id="job-script-and-runtime-settings">
-<h2>Job script and runtime settings<a class="headerlink" href="#job-script-and-runtime-settings" title="Permalink to this headline">¶</a></h2>
+<h2>Job script and runtime settings<a class="headerlink" href="#job-script-and-runtime-settings" title="Permalink to this headline">#</a></h2>
 <p>Having all of the configs, we only need to submit a job to a cluster and carry out the calculations. Here are a few ideas and hints of how to do this, as well as settings for runtime that will be needed.</p>
 <p>Take a node / workstation that has enough memory for the <code class="docutils literal notranslate"><span class="pre">gap_fit</span></code> steps with the size of dataset expected to be generated.</p>
 <p>The code is parallelised with python’s <code class="docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code> at many steps, for example minimisation, DFT evaluations and descriptor calculations.</p>
@@ -650,9 +719,11 @@ gap_rss_iter_fit -c <span class="si">${</span><span class="nv">system_json</span
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="workflows.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -668,24 +739,28 @@ gap_rss_iter_fit -c <span class="si">${</span><span class="nv">system_json</span
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+            </footer>
         </div>
     </div>
-    <footer class="footer">
-  <p>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
+  
+      &copy; Copyright .<br/>
+</p>
+        </footer>
+    </div>
     
-      By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
-    
-        &copy; Copyright .<br/>
-  </p>
-</footer>
-</main>
+</div>
 
 
       </div>
     </div>
   
-  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
 
   </body>
 </html>
