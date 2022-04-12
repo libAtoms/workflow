@@ -1,18 +1,18 @@
 7
-Lattice="2.94385 0.0 0.0 0.0 7.28361 0.0 0.0 -3.6418049999999984 6.3077912912583765" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=28 RSS_min_vol_per_atom=10.0 buildcell_type=narrow_odd gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="143 P3 P 3 @ 0.01" pbc="T T T"
-Li       0.91407720      -2.12243485       4.62991944
-Li       0.91407720       1.42904028       5.83091407
-Li       0.91407720       0.69339457       2.15474907
-Li       2.00116918       2.67859820       0.66809413
-Li       2.00116918       2.88109239       3.65401014
-Li       2.00116918       5.36572441       1.98568702
-Li       2.38593655       0.00000000       0.00000000
+Lattice="3.25815 0.0 0.0 -0.09004229007117619 6.452821808209083 0.0 -0.10695412416498655 -0.9987977422933264 6.869181909289771" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=28 RSS_min_vol_per_atom=10.0 buildcell_type=narrow_odd gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="1 P1 P 1 @ 0.01" pbc="T T T"
+Li       0.64057022       5.02732789       6.94187984
+Li       0.59192399       1.95839155       1.82822590
+Li       2.22185029       0.90944922       3.70948119
+Li       2.37714300       4.12291420       1.08168046
+Li       1.34054354       3.19660153       5.07910951
+Li       2.96585510       4.79554561       3.62940851
+Li       1.96171951       0.91719566       6.39847465
 7
-Lattice="3.59188 0.0 0.0 -0.1397981559068397 3.5891584542905104 0.0 -0.10397200330937897 -0.10810056410623961 10.750753802899949" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=29 RSS_min_vol_per_atom=10.0 buildcell_type=narrow_odd gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="5 C2 C 2y @ 0.01" pbc="T T T"
-Li       1.47627969       2.45962537       2.66630090
-Li       0.94780581       1.91016665       8.08445290
-Li       3.01007093      -0.01160044       6.68271587
-Li       3.47685528       0.47371917       4.06803794
-Li       3.37451414       0.45715154       1.37002661
-Li       3.02264283       0.09130799       9.38072719
-Li       1.57770560       1.93724935       0.00000000
+Lattice="4.07772 0.0 0.0 -0.27225842904398206 4.560620630507925 0.0 -2.033751417850311 -1.5836393471690018 7.233558240353774" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=29 RSS_min_vol_per_atom=10.0 buildcell_type=narrow_odd gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="1 P1 P 1 @ 0.01" pbc="T T T"
+Li       2.70895569       0.62214294       2.91714792
+Li       1.20436088       2.82690210       3.39622938
+Li       2.65661515       0.50101733       0.22031827
+Li       0.67601896       0.49710536       4.68958597
+Li      -0.81334808       2.89864169       1.57582198
+Li      -1.41599075       0.42488546       6.52626309
+Li      -0.83704134       2.68257086       5.16330519

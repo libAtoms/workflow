@@ -133,7 +133,7 @@ def do_full_test(runner, assets_dir, monkeypatch):
     # ACTUAL STEPS
     check_step(runner, "initial_step", "45,46,47", "0")
     check_step(runner, "rss_step", "48,49,50", "1")
-    check_step(runner, "MD_bulk_defect_step", "51,52,52", "2")
+    check_step(runner, "MD_bulk_defect_step", "51,52,53", "2")
 
 
 # @pytest.mark.skip(reason="too computationally expensive")

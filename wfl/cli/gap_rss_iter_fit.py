@@ -899,8 +899,8 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
             config_selection_descriptor_strs, config_selection_descriptor_local,
             int(step_params.get('minima_by_desc_select_N') * grp_frac), testing_N=0,
             vol_range=step_params.get('vol_range', 0.25), compos_range=step_params.get('composition_range', 0.01),
-            by_desc_exclude_list=exclude_list, flat_histo_by_bin=step_params.get('flat_histo_by_bin'),
-            flat_histo_replacement=step_params.get('flat_histo_with_replacement'),
+            by_desc_exclude_list=exclude_list, flat_histo_by_bin=step_params.get('flat_histo_by_bin', True),
+            flat_histo_replacement=step_params.get('flat_histo_with_replacement', False),
             verbose=verbose)
 
         if select_convex_hull:
