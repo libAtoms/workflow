@@ -417,7 +417,7 @@ def do_fit_and_test(cur_iter, run_dir, params, fitting_configs, testing_configs=
     return GAP_xml_file
 
 
-def evaluate_iter_and_fit_all(cur_iter, run_dir, params, cur_fitting_configs, testing_configs,
+def evaluate_iter_and_fit_all(cur_iter, run_dir, params, step_params, cur_fitting_configs, testing_configs,
                               database_modify_mod, calc_fitting_error, extra_fitting_files=[],
                               seeds=None, verbose=False):
     # code below is ugly mess of combining things with files, lists and ConfigSet_in - probably indicates
@@ -428,7 +428,21 @@ def evaluate_iter_and_fit_all(cur_iter, run_dir, params, cur_fitting_configs, te
     fitting_configs = ConfigSet_in(input_configsets=cur_fitting_configs)
     fitting_configs_out = ConfigSet_out(file_root=run_dir, output_files='DFT_evaluated_fitting.ALL.xyz',
                                         all_or_none=True, force=True)
-    fitting_configs = [evaluate_ref(fitting_configs, fitting_configs_out, params, run_dir, verbose)]
+    evaluated_configs = evaluate_ref(fitting_configs, fitting_configs_out, params, run_dir, verbose)
+
+    error_scale_factor = step_params.get('fit_error_scale_factor', None)
+    if error_scale_factor is not None:
+        # add fit_error_scale_factor to every config's Atoms.info dict
+        co = ConfigSet_out(file_root=run_dir, output_files="DFT_evaluated_fitting.error_scale_factor.ALL.xyz",
+                           all_or_none=True, force=True)
+        if not co.is_done():
+            for at in evaluated_configs:
+                at.info["fit_error_scale_factor"] = error_scale_factor
+                co.write(at)
+            co.end_write()
+        evaluated_configs = co.to_ConfigSet_in()
+
+    fitting_configs = [evaluated_configs]
     # gather old fitting files
     old_fitting_files = get_old_fitting_files(cur_iter, extra_fitting_files)
     if len(old_fitting_files) > 0:
@@ -512,7 +526,7 @@ def do_initial_step(ctx, cur_iter, verbose):
 
     atoms_dimers = ConfigSet_in(input_files='atoms_and_dimers.xyz')
 
-    GAP_xml_file = evaluate_iter_and_fit_all(cur_iter, run_dir, params,
+    GAP_xml_file = evaluate_iter_and_fit_all(cur_iter, run_dir, params, Params(params.get('initial_step'), cur_iter),
                                              [grp['cur_confs'] for grp in groups.values()] + [atoms_dimers],
                                              [grp['testing_confs'] for grp in groups.values()],
                                              params.get('fit/database_modify_mod'),
@@ -574,7 +588,7 @@ def do_rss_step(ctx, cur_iter, verbose):
                                           params.get('global/config_selection_descriptor_local', default=False),
                                           verbose=verbose)
 
-    GAP_xml_file = evaluate_iter_and_fit_all(cur_iter, run_dir, params,
+    GAP_xml_file = evaluate_iter_and_fit_all(cur_iter, run_dir, params, Params(params.get('rss_step'), cur_iter),
                                              [grp['cur_confs'] for grp in groups.values()],
                                              [grp['testing_confs'] for grp in groups.values()],
                                              params.get('fit/database_modify_mod'),
@@ -601,8 +615,8 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
     run_dir, Zs, compositions = step_startup(params, cur_iter)
 
     single_composition_group = params.get('global/single_composition_group', default=True)
-    minima_select_by_desc_method = params.get('global/prelim_select_by_desc_method', default='CUR')
-    select_by_desc_method = params.get('global/select_by_desc_method', default='CUR')
+    minima_select_by_desc_method = params.get('MD_bulk_defect_step/prelim_select_by_desc_method', default=params.get('global/prelim_select_by_desc_method', default='CUR'))
+    select_by_desc_method = params.get('MD_bulk_defect_step/select_by_desc_method', default=params.get('global/select_by_desc_method', default='CUR'))
     with open('gap_rss_iter_fit.prep.config_selection_descriptors.yaml') as fin:
         descriptor_strs = yaml.safe_load(fin)
 
@@ -757,7 +771,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
         run_dir, cur_iter, groups, Params(params.get('MD_bulk_defect_step'), cur_iter), Zs, 'md_energy', select_by_desc_method,
         descriptor_strs, params.get('global/config_selection_descriptor_local', default=False), verbose=verbose)
 
-    GAP_xml_file = evaluate_iter_and_fit_all(cur_iter, run_dir, params,
+    GAP_xml_file = evaluate_iter_and_fit_all(cur_iter, run_dir, params, Params(params.get('MD_bulk_defect_step'), cur_iter),
                                              [grp['cur_confs'] for grp in groups.values()],
                                              [grp['testing_confs'] for grp in groups.values()],
                                              params.get('fit/database_modify_mod'),
@@ -813,35 +827,35 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
 
     Parameters
     ----------
-        run_dir: pathlike
-            run directory
-        groups: dict
-            groups to separate runs into
-        step_params: Params
-            run parameters
-        Zs: list(int)
-            all atomic numbers in system
-        select_by_desc_method: str
-            method for select by descriptor
-        config_selected_descriptor_strs: list(str) / dict(Z : str)
-            descriptors strings for by-descriptor selection
-        config_selected_descriptor_local: bool
-            selection descriptor is local
-        prev_GAP: str
-            full path for GAP file for RSS
-        select_convex_hull: bool
-            always select minima on (x, V, E) convex hull
-        get_entire_trajectories: bool
-            return entire RSS trajectories leading up to minima
-        minim_kwargs: dict, default {}
-            optional kwargs for minim call
-        verbose: bool
-            verbose output
+    run_dir: pathlike
+        run directory
+    groups: dict
+        groups to separate runs into
+    step_params: Params
+        run parameters
+    Zs: list(int)
+        all atomic numbers in system
+    select_by_desc_method: str
+        method for select by descriptor
+    config_selected_descriptor_strs: list(str) / dict(Z : str)
+        descriptors strings for by-descriptor selection
+    config_selected_descriptor_local: bool
+        selection descriptor is local
+    prev_GAP: str
+        full path for GAP file for RSS
+    select_convex_hull: bool
+        always select minima on (x, V, E) convex hull
+    get_entire_trajectories: bool
+        return entire RSS trajectories leading up to minima
+    minim_kwargs: dict, default {}
+        optional kwargs for minim call
+    verbose: bool
+        verbose output
 
     Returns
     -------
-        None, but groups[grp_label]['cur_confs'] is set to minima or RSS traj configs (and optionally convex hull),
-        and groups[grp_label]['convex_hull'] is set to just convex hull (or None)
+    None, but groups[grp_label]['cur_confs'] is set to minima or RSS traj configs (and optionally convex hull),
+    and groups[grp_label]['convex_hull'] is set to just convex hull (or None)
     """
 
     for grp_label in groups:
@@ -885,7 +899,8 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
             config_selection_descriptor_strs, config_selection_descriptor_local,
             int(step_params.get('minima_by_desc_select_N') * grp_frac), testing_N=0,
             vol_range=step_params.get('vol_range', 0.25), compos_range=step_params.get('composition_range', 0.01),
-            by_desc_exclude_list=exclude_list,
+            by_desc_exclude_list=exclude_list, flat_histo_by_bin=step_params.get('flat_histo_by_bin'),
+            flat_histo_replacement=step_params.get('flat_histo_with_replacement'),
             verbose=verbose)
 
         if select_convex_hull:
@@ -914,6 +929,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
                             E_info_field, flat_histo_kT, flat_histo_N, select_by_desc_method,
                             config_selection_descriptor_strs, config_selection_descriptor_local, by_desc_select_N,
                             testing_N, by_desc_exclude_list, vol_range=0.25, compos_range=0.01, prev_selected_descs=None,
+                            flat_histo_by_bin=True, flat_histo_replacement=False,
                             verbose=False):
     """select by doing flat histo (optionally) and then by descriptor
 
@@ -951,6 +967,10 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
         range of vol/atom to be considered "nearby" when computing flat histogram energy distances
     compos_range: float, default 0.01
         range of composition x to be considered "nearby" when computing flat histogram energy distances
+    flat_histo_by_bin: bool, default True
+        do flat histogram selection by bin
+    flat_histo_replacement: bool, default False
+        do flat histogram selection with replacement
     prev_selected_descs: ndarray(n_descs, desc_len) / None, default None
         array of descriptors (row vectors) of previously selected configs
     verbose: bool, default False
@@ -963,7 +983,9 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
     if config_selection_descriptor_local:
         raise RuntimeError('Selection by descriptor not implemented for local descriptors')
 
-    if flat_histo_N is not None:
+    if flat_histo_N is None or flat_histo_N == 0:
+        configs_init = configs
+    elif flat_histo_N > 0:
         print_log(f'computing energy relative to nearby configs for group {grp_label} file {file_label}')
         # select from configs with flat histogram in energy relative to "nearby" configs
         # NOTE: may eventually need to deal with extxyz read not storing energy in Atoms.info
@@ -982,53 +1004,78 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
                                                                        all_or_none=True, force=True),
                                           num=flat_histo_N, info_field='E_per_atom_dist_to_nearby',
                                           kT=flat_histo_kT,
-                                          by_bin=True,  ## Changed, not compatible with old behavior
+                                          by_bin=flat_histo_by_bin,       ## Default changed, not compatible with old behavior
+                                          replace=flat_histo_replacement,
                                           verbose=verbose)
     else:
-        configs_init = configs
+        # flat_histo_N < 0 means select at random (UGLY HACK)
+        # NOTE: the following should probably be refactored into a simple_filters routine
+        n_configs = sum([1 for at in configs])
+        selected_inds = np.random.choice(n_configs, size=-flat_histo_N, replace=False)
+        configs_init = wfl.select_configs.simple_filters.by_index(configs,
+            ConfigSet_out(file_root=run_dir, output_files=f'{file_label}_random_init.{grp_label}.xyz',
+                          all_or_none=True, force=True),
+            selected_inds)
 
-    print_log(
-        f'computing descriptors and selecting from (optionally) flat histogram by descriptor for {file_label} ' + str(
-            config_selection_descriptor_strs))
-    # calc descriptors and by-desc select from flat histo selected
-    configs_flat_histo_with_desc = wfl.calc_descriptor.calc(
-        configs_init, ConfigSet_out(file_root=run_dir,
-                                    output_files=f'{file_label}_with_desc.{grp_label}.xyz',
-                                    all_or_none=True, force=True),
-        config_selection_descriptor_strs, 'config_selection_desc',
-        local=config_selection_descriptor_local,
-        verbose=verbose)
+    if select_by_desc_method == 'random':
+        n_configs = sum([1 for at in configs_init])
+        selected_inds = np.random.choice(n_configs, size=by_desc_select_N, replace=False)
+        configs_selected = wfl.select_configs.simple_filters.by_index(configs_init,
+            ConfigSet_out(file_root=run_dir, output_files=f'{file_label}_random_selected.{grp_label}.xyz',
+                          all_or_none=True, force=True),
+            selected_inds)
+        if testing_N > 0:
+            avail_inds = set(list(range(n_configs)))
+            avail_inds -= set(selected_inds)
+            selected_testing_inds = np.random.choice(list(avail_inds), size=testing_N, replace=False)
+            testing_configs = wfl.select_configs.simple_filters.by_index(configs_init,
+                ConfigSet_out(file_root=run_dir, output_files=f'{file_label}_testing.{grp_label}.xyz',
+                              all_or_none=True, force=True),
+                selected_testing_inds)
 
-    # no kwargs as default
-    extra_kwargs = {}
-    if select_by_desc_method == 'CUR':
-        selector_func = wfl.select_configs.by_descriptor.CUR_conf_global
-        extra_kwargs = {'kernel_exp': 4}  # fixme parameter
-    elif select_by_desc_method == 'greedy_fps' or select_by_desc_method == 'greedy_fps_all_iters':
-        selector_func = wfl.select_configs.by_descriptor.greedy_fps_conf_global
-        if select_by_desc_method == 'greedy_fps_all_iters':
-            extra_kwargs = {'prev_selected_descs': prev_selected_descs}
     else:
-        raise RuntimeError(f'Unknown method for selection by descriptor "{select_by_desc_method}"')
+        print_log(
+            f'computing descriptors and selecting from (optionally) flat histogram by descriptor for {file_label} ' + str(
+                config_selection_descriptor_strs))
+        # calc descriptors and by-desc select from flat histo selected
+        configs_flat_histo_with_desc = wfl.calc_descriptor.calc(
+            configs_init, ConfigSet_out(file_root=run_dir,
+                                        output_files=f'{file_label}_with_desc.{grp_label}.xyz',
+                                        all_or_none=True, force=True),
+            config_selection_descriptor_strs, 'config_selection_desc',
+            local=config_selection_descriptor_local,
+            verbose=verbose)
 
-    configs_by_desc = selector_func(configs_flat_histo_with_desc,
-                                    ConfigSet_out(file_root=run_dir,
-                                                  output_files=f'{file_label}_by_desc.{grp_label}.xyz',
-                                                  all_or_none=True, force=True),
-                                    num=by_desc_select_N, at_descs_info_key='config_selection_desc',
-                                    keep_descriptor_info=False, exclude_list=by_desc_exclude_list, **extra_kwargs)
-    if testing_N > 0:
-        by_desc_exclude_list = ConfigSet_in(input_configsets=[by_desc_exclude_list, configs_by_desc])
-        testing_configs = selector_func(configs_flat_histo_with_desc,
+        # no kwargs as default
+        extra_kwargs = {}
+        if select_by_desc_method == 'CUR':
+            selector_func = wfl.select_configs.by_descriptor.CUR_conf_global
+            extra_kwargs = {'kernel_exp': 4}  # fixme parameter
+        elif select_by_desc_method == 'greedy_fps' or select_by_desc_method == 'greedy_fps_all_iters':
+            selector_func = wfl.select_configs.by_descriptor.greedy_fps_conf_global
+            if select_by_desc_method == 'greedy_fps_all_iters':
+                extra_kwargs = {'prev_selected_descs': prev_selected_descs}
+        else:
+            raise RuntimeError(f'Unknown method for selection by descriptor "{select_by_desc_method}"')
+
+        configs_selected = selector_func(configs_flat_histo_with_desc,
                                         ConfigSet_out(file_root=run_dir,
-                                                      output_files=f'{file_label}_testing.{grp_label}.xyz',
+                                                      output_files=f'{file_label}_by_desc.{grp_label}.xyz',
                                                       all_or_none=True, force=True),
-                                        num=testing_N, at_descs_info_key='config_selection_desc',
+                                        num=by_desc_select_N, at_descs_info_key='config_selection_desc',
                                         keep_descriptor_info=False, exclude_list=by_desc_exclude_list, **extra_kwargs)
-    else:
-        testing_configs = None
+        if testing_N > 0:
+            by_desc_exclude_list = ConfigSet_in(input_configsets=[by_desc_exclude_list, configs_selected])
+            testing_configs = selector_func(configs_flat_histo_with_desc,
+                                            ConfigSet_out(file_root=run_dir,
+                                                          output_files=f'{file_label}_testing.{grp_label}.xyz',
+                                                          all_or_none=True, force=True),
+                                            num=testing_N, at_descs_info_key='config_selection_desc',
+                                            keep_descriptor_info=False, exclude_list=by_desc_exclude_list, **extra_kwargs)
+        else:
+            testing_configs = None
 
-    return configs_by_desc, testing_configs
+    return configs_selected, testing_configs
 
 
 def calc_descriptors_to_file(run_dir, basename, grp_label, configs, descriptor_strs, descriptor_local, verbose=False):
