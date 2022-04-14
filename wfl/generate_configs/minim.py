@@ -35,7 +35,7 @@ PreconLBFGS.log = new_log
 # run that operates on ConfigSet, for multiprocessing
 def run(inputs, outputs, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
         keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
-        results_prefix='minim_', chunksize=10, verbose=False, update_config_type=True, **opt_kwargs):
+        results_prefix='minim_', chunksize=10, verbose=False, update_config_type=True, clear_constraints=False, **opt_kwargs):
     # Normally each thread needs to call np.random.seed so that it will generate a different
     # set of random numbers.  This env var overrides that to produce deterministic output,
     # for purposes like testing
@@ -53,7 +53,7 @@ def run(inputs, outputs, calculator, fmax=1.0e-3, smax=None, steps=1000, pressur
 
 def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
            keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
-           results_prefix='minim_', verbose=False, update_config_type=True, **opt_kwargs):
+           results_prefix='minim_', verbose=False, update_config_type=True, clear_constraints=False, **opt_kwargs):
     """runs a minimization
 
     Parameters
@@ -84,6 +84,8 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
         optimisation logs are not printed unless this is True
     update_config_type: bool, default True
         append at.info['minim_config_type'] at.info['config_type']
+    clear_constraints: bool, default Flase
+        remove the constraints already present in an atoms object
     opt_kwargs
         keyword arguments for PreconLBFGS
 
@@ -112,7 +114,13 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
     for at in atoms_to_list(atoms):
         if keep_symmetry:
             sym = FixSymmetry(at)
-            at.set_constraint(sym)
+
+            if clear_constraints:
+                constraints = sym
+            else:
+                constraints = [*at.constraints, sym]
+            at.set_constraint(constraints)
+
             dataset = spglib.get_symmetry_dataset((at.cell, at.get_scaled_positions(), at.numbers), 0.01)
             if 'buildcell_config_i' in at.info:
                 print(at.info['buildcell_config_i'], end=' ')
