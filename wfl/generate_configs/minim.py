@@ -84,8 +84,6 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
         optimisation logs are not printed unless this is True
     update_config_type: bool, default True
         append at.info['minim_config_type'] at.info['config_type']
-    clear_constraints: bool, default Flase
-        remove the constraints already present in an atoms object
     opt_kwargs
         keyword arguments for PreconLBFGS
 
