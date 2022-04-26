@@ -5,6 +5,7 @@ import shutil
 import sys
 import tempfile
 
+from ase import Atoms
 from ase.calculators.calculator import all_changes, CalculationFailed
 from ase.calculators.calculator import Calculator
 
@@ -398,7 +399,7 @@ class BasinHoppingORCA(Calculator):
             internal one
 
         """
-        return ase.Atoms(self.atoms.get_chemical_symbols(),
+        return Atoms(self.atoms.get_chemical_symbols(),
                          positions=self.atoms.get_positions())
 
     def _generate_new_calculator(self, initial=False):
