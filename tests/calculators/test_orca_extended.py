@@ -1,5 +1,5 @@
 """
-This is testing the ExtendedORCA calculator given here, with an example orca output given to test on.
+This is testing the ORCA calculator given here, with an example orca output given to test on.
 
 the assets/ directory contains the orca files and this test depends on them
 """
@@ -10,7 +10,7 @@ import numpy as np
 from ase.build import molecule
 from pytest import approx
 
-from wfl.calculators.orca import ExtendedORCA
+from wfl.calculators.orca import ORCA
 
 ref_parameters = dict(charge=0,
                       mult=1,
@@ -58,7 +58,7 @@ ref_freq = {'normal_mode_eigenvalues': np.array([0., 0., 0., 0., 0., 0., -0.6007
 
 
 def test_extended_orca_calculator():
-    orca = ExtendedORCA()
+    orca = ORCA()
     orca.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'assets', 'orca'))
 
     # parameter reading
@@ -74,7 +74,7 @@ def test_extended_orca_calculator():
 
 def test_read_frequencies():
     mol = molecule("CH4")
-    orca = ExtendedORCA(label=os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'assets', 'orca_freq_dummy'))
+    orca = ORCA(label=os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'assets', 'orca_freq_dummy'))
     orca.atoms = mol
 
     # read the file given
@@ -89,7 +89,7 @@ def test_orca_is_converged():
     """function to check convergence from orca's output."""
 
     ref_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'assets')
-    orca = ExtendedORCA()
+    orca = ORCA()
 
     orca.label = os.path.join(ref_path, 'orca_scf_converged')
     assert orca.is_converged() is True

@@ -7,7 +7,7 @@ from ase.build import molecule
 from ase.calculators.calculator import CalculationFailed
 from pytest import approx, raises
 
-from wfl.calculators.orca import BasinHoppingORCA
+from wfl.calculators.orca.bh import BasinHoppingORCA
 
 
 def test_orca_utils(tmp_path):

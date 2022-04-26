@@ -45,6 +45,8 @@ from wfl.utils import gap_xml_tools
 from wfl.calculators.dft import evaluate_dft
 from wfl.calculators import committee
 import wfl.calculators.orca
+import wfl.calculators.orca.bh
+
 
 import wfl.fit.gap_multistage
 import wfl.fit.ref_error
@@ -908,7 +910,7 @@ def orca_eval(ctx, inputs, base_rundir, output_file, output_all_or_none, directo
         print(configset_out)
         print("ORCA wfn-basin hopping calculation parameters: ", calc_kwargs)
 
-    wfl.calculators.orca.evaluate_basin_hopping(
+    wfl.calculators.orca.bh.evaluate_basin_hopping(
         inputs=configset_in, outputs=configset_out, base_rundir=base_rundir, dir_prefix=directory_prefix,
         keep_files=keep_files, output_prefix=output_prefix, orca_kwargs=calc_kwargs
     )
