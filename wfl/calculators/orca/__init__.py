@@ -1,32 +1,31 @@
 import os
-import pathlib
 import re
 import shutil
-import sys
 import tempfile
-import traceback
 import warnings
+from pathlib import Path 
 
 import ase.io
 import numpy as np
 from ase import units
 from ase.calculators.calculator import CalculationFailed, Calculator, \
     FileIOCalculator, all_changes
-from ase.calculators.orca import ORCA
+import ase.calculators.orca
 
 from wfl.calculators.utils import clean_rundir, save_results
 from wfl.pipeline import iterable_loop
 from wfl.utils.misc import atoms_to_list, chunks
-from  wfl.calculators.orca.bh import BasinHoppingORCA
+from wfl.calculators.orca.bh import BasinHoppingORCA
 
 __default_keep_files = ["*.inp", "*.out", "*.ase", "*.engrad", "*.xyz",
                         "*_trj.xyz"]
 
 
+## RF this is not needed 
 def evaluate(inputs, outputs,
-             base_rundir=None, dir_prefix="ORCA_", keep_files="default",
-             orca_kwargs=None,
-             output_prefix=None, basin_hopping=False):
+            wdir_base=None, dir_prefix="ORCA_", keep_files="default",
+            orca_kwargs=None,
+            output_prefix=None, basin_hopping=False):
     """Evaluate with ORCA calculator, optionally BasinHopping
 
     Parameters
@@ -35,14 +34,14 @@ def evaluate(inputs, outputs,
         input atomic configs, needs to be iterable
     outputs: list(Atoms) / Configset_out
         output atomic configs
-    base_rundir: path-like, default os.getcwd()
+    wdir_base: path-like, default os.getcwd()
         directory to put calculation directories into
     dir_prefix: str, default 'ORCA\_'
         directory name prefix for calculations
     keep_files: "default" / bool
         what kind of files to keep from the run
             - "default : .out, .inp, .ase, .engrad is kept -- ase can read
-              the results again
+            the results again
             - True : all files kept
             - False : none kept
     orca_kwargs: dict
@@ -59,14 +58,15 @@ def evaluate(inputs, outputs,
         outputs.to_ConfigSet_in()
     """
     return iterable_loop(iterable=inputs, configset_out=outputs,
-                         op=evaluate_op,
-                         base_rundir=base_rundir, dir_prefix=dir_prefix,
-                         keep_files=keep_files, orca_kwargs=orca_kwargs,
-                         output_prefix=output_prefix,
-                         basin_hopping=basin_hopping)
+                        op=evaluate_op,
+                        wdir_base=wdir_base, dir_prefix=dir_prefix,
+                        keep_files=keep_files, orca_kwargs=orca_kwargs,
+                        output_prefix=output_prefix,
+                        basin_hopping=basin_hopping)
 
 
-def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
+# RF: this should be part of the calculator
+def evaluate_op(atoms, wdir_base=None, dir_prefix="ORCA_",
                 keep_files="default", orca_kwargs=None,
                 output_prefix="ORCA_", basin_hopping=False):
     """Evaluate with ORCA, optionally with BasinHopping
@@ -75,7 +75,7 @@ def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
     ----------
     atoms: Atoms / list(Atoms)
         input atomic configs
-    base_rundir: path-like, default os.getcwd()
+    wdir_base: path-like, default os.getcwd()
         directory to put calculation directories into
     dir_prefix: str, default 'ORCA\_'
         directory name prefix for calculations
@@ -98,38 +98,49 @@ def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
     results: Atoms / list(Atoms)
 
     """
+    # RF A 
+    # this is part of calculator set up 
+
+    # this will be done at the generic calculator level 
     at_list = atoms_to_list(atoms)
 
+    # this will be setup directly when constructing calculators
     if orca_kwargs is None:
         orca_kwargs = dict()
 
+    # will also be done in calculator
     if keep_files != "default" or not keep_files:
         keep_files = keep_files or orca_kwargs.get("keep_files", False)
 
-    if base_rundir is None:
+    # this is taken care of
+    if wdir_base is None:
         # using the current directory
-        base_rundir = os.getcwd()
+        wdir_base = os.getcwd()
     else:
-        pathlib.Path(base_rundir).mkdir(parents=True, exist_ok=True)
+        pathlib.Path(wdir_base).mkdir(parents=True, exist_ok=True)
 
+    # taken care in gneeric
     for at in at_list:
+        # RF basin hopping shouldn't happen here. 
         if not basin_hopping and "scratch_path" in orca_kwargs.keys():
             # ORCA has no concept of scratch_path, but setting it
             # here we can easily go around that
             rundir = tempfile.mkdtemp(dir=orca_kwargs["scratch_path"],
                                       prefix=dir_prefix)
         elif keep_files:
-            rundir = tempfile.mkdtemp(dir=base_rundir, prefix=dir_prefix)
+            rundir = tempfile.mkdtemp(dir=wdir_base, prefix=dir_prefix)
         else:
             rundir = "."
 
         # specify the calculator
+        # RF bhop not needed
         if basin_hopping:
             at.calc = BasinHoppingORCA(
                 **dict(orca_kwargs, directory=rundir, keep_files=keep_files))
         else:
             at.calc = ORCA(**dict(orca_kwargs, directory=rundir))
 
+        # handled at generic calculation    
         # skip if calculation fails
         calculation_succeeded = False
         try:
@@ -141,6 +152,8 @@ def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
             warnings.warn(f'Calculation failed with exc {exc}')
             at.info['DFT_FAILED_ORCA'] = True
 
+        RF move into try-except loop  or check if "if" is needed at all
+        RF: to be implemented as one of the properties
         if calculation_succeeded and not basin_hopping:
             # task='opt' in ORCA performs geometry optimisation,
             # results are for the relaxed positions
@@ -148,6 +161,7 @@ def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
             if "relaxed_positions" in at.calc.extra_results.keys():
                 at.set_positions(at.calc.extra_results["relaxed_positions"])
 
+            # RF this is moldy
             # reading of the normal mode data
             if "freq" in orca_kwargs.get("task", ""):
                 at.info[
@@ -160,15 +174,17 @@ def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
                     at.new_array(
                         f"{output_prefix}normal_mode_displacements_{i}", evec)
 
+            #RF: done in generic calculator
             save_results(at, ['energy', 'forces', 'dipole'], output_prefix)
 
+        # RF check if this is sound
         clean_rundir(rundir, keep_files, __default_keep_files,
                      calculation_succeeded)
 
         # handling of the scratch path for ORCA
         if not basin_hopping and "scratch_path" in orca_kwargs.keys() and \
                 os.path.isdir(rundir):
-            shutil.move(rundir, base_rundir)
+            shutil.move(rundir, wdir_base)
 
     if isinstance(atoms, ase.Atoms):
         return at_list[0]
@@ -176,9 +192,9 @@ def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
         return at_list
 
 
-class ORCA(ORCA):
+class ORCA(ase.calculators.orca.ORCA):
     """Extension of ASE's ORCA calculator with the following features:
-
+    # RF: TODO: update; list parameters. 
         - specify command for executable (ase devs don't let this to be
           merged in)
         - setting multiplicity: default in the properties in None, \
@@ -206,24 +222,74 @@ class ORCA(ORCA):
 
     def __init__(self, restart=None,
                  ignore_bad_restart_file=Calculator._deprecated,
-                 label='orca', atoms=None, **kwargs):
-        super(ORCA, self).__init__(restart, ignore_bad_restart_file,
+                 label='orca', atoms=None,
+                 keep_files="default", dir_prefix="ORCA_", scratch_path=None,
+                 **kwargs):
+        super(ase.calculators.orca.ORCA, self).__init__(restart, ignore_bad_restart_file,
                                            label, atoms, **kwargs)
-        # this is missing from the ase calculator and Ask was stubborn not
-        # to include it in a PR, shame
         if 'orca_command' in kwargs:
             self.command = f'{str(kwargs.get("orca_command"))} PREFIX.inp > ' \
                            f'PREFIX.out'
 
         self.extra_results = dict()
 
+        self.keep_files = keep_files
+        # set up the directories
+        # for now, for simplicity, don't leave much choice over directory structure
+        self.scratch_path = scratch_path
+        self.wdir_base = Path(dir_prefix + "calc_files")
+        self.wdir_base.mkdir(parents=True, exist_ok=True)
+
+        # RF: previous code distinguished between whether files are kept or not, but 
+        # I think if files aren't kept let's just delete everything, but we need to 
+        # run calculations somewhere. 
+        if scratch_path is not None:
+            self.directory = tempfile.mkdtemp(dir=self.scratch_path, prefix=dir_prefix)
+        else:
+            self.directory = tempfile.mkdtemp(dir=self.wdir_base, prefix=dir_prefix)
+
+    def calculate(self, atoms=None, properties=["energy", "forces"], system_changes=all_changes):
+        """Does the calculation. Handles the working directories in addition to regular 
+        ASE calculation operations (writing input, executing, reading_results) """
+        Calculator.calculate(self, atoms, properties, system_changes)
+        try:
+            # RF: make write_input handle directories
+            self.write_input(self.atoms, properties, system_changes)
+            self.execute()
+            # RF: read in the extra results
+            self.read_results()
+            # RF: might need to catch exceptions at self.execute level and 
+            calculation_succeeded=True
+        except Exception as e:
+            calculation_succeeded=False
+
+        clean_rundir(self.directory, self.keep_files, __default_keep_files, calculation_succeeded)
+        if self.scratch_path is not None:
+            shutil.move(self.directory, self.wdir_base)
+
+        if not calculation_succeeded:
+            raise e
+
+    def cleanup_after_calculation():
+        pass
+
+    def cleanup(self):
+        """Clean all (empty) directories that could not have been removed
+        immediately after the calculation, for example, because other parallel
+        process might be using them."""
+        if any(self.wdir_base.iterdir()):
+            print(f'{self.wdir_base.name} is not empty, not removing')
+        else:
+            self.wdir_base.rmdir()
+
+
     def write_input(self, atoms, properties=None, system_changes=None):
+        # RF: better description
         """This is setting the multiplicity, unless set previously
 
         Adapted from ase.io.orca.write_orca()
 
         Extensions:
-
             - choice of task
             - task parameter is directly inserted into the file
         """
@@ -275,9 +341,7 @@ class ORCA(ORCA):
 
         Returns
             ``None`` if "FINAL SINGLE POINT ENERGY" is not in the output
-
             ``False`` if "Wavefunction not fully converged" is in the file
-
             ``True`` otherwise
 
         Based on ase.calculators.orca.read_energy().
@@ -319,18 +383,11 @@ class ORCA(ORCA):
     def read_trajectory(self):
         """Reads the trajectory of the geometry optimisation
 
-        copied from normal_modes branch, code by eg475
-
         Notes
         -----
         Each comment line in output xyz has "Coordinates from ORCA-job orca
         E -154.812399026326";
-        tks32:
-        However the forces are calculated at each step as well, so that is
-        in the output file,
-        meaning we can parse it from there if we actually need it,
-        which can let us use the energy
-        from there as well.
+        # TODO parse out forces as well 
         """
         opt_trj = ase.io.read(f'{self.label}_trj.xyz', ':')
         for at in opt_trj:
@@ -347,7 +404,11 @@ class ORCA(ORCA):
 
         self.extra_results["opt_trajectory"] = opt_trj
 
+    # EG: The eigenvector reading is implemented incorrectly 
     def read_frequencies(self):
+        """Reads frequencies (dynamical matrix eigenvalues) and normal modes (eigenvectors) from output. 
+        Currently broken. """
+        raise NotImplementedError("Normal mode (eigenvector) parsing is not implemented")
         with open(self.label + '.out', mode='r', encoding='utf-8') as fd:
             text = fd.read()
 

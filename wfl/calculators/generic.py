@@ -57,14 +57,15 @@ def run_op(atoms, calculator, properties=None, output_prefix='_auto_', verbose=F
             # don't have that as default
             at.calc.calculate(at, properties=properties, system_changes=all_changes)
             calculation_succeeded = True
+            if f'{output_prefix}calculation_failed' in at.info:
+                del at.info[f'{output_prefix}calculation_failed']
         except Exception as exc:
             warnings.warn(f'calculation failed with exception {exc}')
+            at.info[f'{output_prefix}calculation_failed'] = True
 
         # clean up invalid properties, will be fixed in quip Potential soon?
-        try:
+        if 'virial' in at.clc.results:
             del at.calc.results['virial']
-        except KeyError:
-            pass
 
         if calculation_succeeded:
             save_results(at, properties, output_prefix)

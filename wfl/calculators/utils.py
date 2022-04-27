@@ -2,7 +2,7 @@ import numpy as np
 from ase.calculators.calculator import all_properties, PropertyNotImplementedError
 from ase.calculators.singlepoint import SinglePointCalculator
 
-from ..utils.file_utils import clean_dir
+from wfl.utils.file_utils import clean_dir
 
 per_atom_properties = ['forces', 'stresses', 'charges', 'magmoms', 'energies']
 per_config_properties = ['energy', 'stress', 'dipole', 'magmom', 'free_energy']
@@ -167,18 +167,19 @@ def save_results(atoms, properties, results_prefix=None):
             raise ValueError('Refusing to save calculator results into info/arrays fields with no prefix,'
                              ' too much chance of confusion with ASE extxyz reading/writing and conversion'
                              ' to SinglePointCalculator')
+    # RF: as far as I can tell that's only for ORCA, which I'd like to implement as properties to be calculated
     # copy per-config extra results
-    try:
-        for k, v in atoms.calc.extra_results['config'].items():
-            atoms.info[results_prefix + k] = v
-    except (AttributeError, KeyError):
-        pass
-    # copy per-atom extra results
-    try:
-        for k, v in atoms.calc.extra_results['atoms'].items():
-            atoms.new_array(results_prefix + k, v)
-    except (AttributeError, KeyError):
-        pass
+    # try:
+    #     for k, v in atoms.calc.extra_results['config'].items():
+    #         atoms.info[results_prefix + k] = v
+    # except (AttributeError, KeyError):
+    #     pass
+    # # copy per-atom extra results
+    # try:
+    #     for k, v in atoms.calc.extra_results['atoms'].items():
+    #         atoms.new_array(results_prefix + k, v)
+    # except (AttributeError, KeyError):
+    #     pass
 
 
 def clean_rundir(rundir, keep_files, default_keep_files, calculation_succeeded):
