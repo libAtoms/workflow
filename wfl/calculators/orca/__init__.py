@@ -17,16 +17,16 @@ from wfl.pipeline import iterable_loop
 from wfl.utils.misc import atoms_to_list, chunks
 from wfl.calculators.orca.bh import BasinHoppingORCA
 
-__default_keep_files = ["*.inp", "*.out", "*.ase", "*.engrad", "*.xyz",
+default_keep_files = ["*.inp", "*.out", "*.ase", "*.engrad", "*.xyz",
                         "*_trj.xyz"]
 
-
+"""
 ## RF this is not needed 
 def evaluate(inputs, outputs,
             wdir_base=None, dir_prefix="ORCA_", keep_files="default",
             orca_kwargs=None,
             output_prefix=None, basin_hopping=False):
-    """Evaluate with ORCA calculator, optionally BasinHopping
+    Evaluate with ORCA calculator, optionally BasinHopping
 
     Parameters
     ----------
@@ -56,7 +56,6 @@ def evaluate(inputs, outputs,
     -------
     results : Configset_in
         outputs.to_ConfigSet_in()
-    """
     return iterable_loop(iterable=inputs, configset_out=outputs,
                         op=evaluate_op,
                         wdir_base=wdir_base, dir_prefix=dir_prefix,
@@ -69,7 +68,7 @@ def evaluate(inputs, outputs,
 def evaluate_op(atoms, wdir_base=None, dir_prefix="ORCA_",
                 keep_files="default", orca_kwargs=None,
                 output_prefix="ORCA_", basin_hopping=False):
-    """Evaluate with ORCA, optionally with BasinHopping
+    Evaluate with ORCA, optionally with BasinHopping
 
     Parameters
     ----------
@@ -97,7 +96,6 @@ def evaluate_op(atoms, wdir_base=None, dir_prefix="ORCA_",
     -------
     results: Atoms / list(Atoms)
 
-    """
     # RF A 
     # this is part of calculator set up 
 
@@ -152,8 +150,8 @@ def evaluate_op(atoms, wdir_base=None, dir_prefix="ORCA_",
             warnings.warn(f'Calculation failed with exc {exc}')
             at.info['DFT_FAILED_ORCA'] = True
 
-        RF move into try-except loop  or check if "if" is needed at all
-        RF: to be implemented as one of the properties
+        # RF move into try-except loop  or check if "if" is needed at all
+        # RF: to be implemented as one of the properties
         if calculation_succeeded and not basin_hopping:
             # task='opt' in ORCA performs geometry optimisation,
             # results are for the relaxed positions
@@ -178,7 +176,7 @@ def evaluate_op(atoms, wdir_base=None, dir_prefix="ORCA_",
             save_results(at, ['energy', 'forces', 'dipole'], output_prefix)
 
         # RF check if this is sound
-        clean_rundir(rundir, keep_files, __default_keep_files,
+        clean_rundir(rundir, keep_files, default_keep_files,
                      calculation_succeeded)
 
         # handling of the scratch path for ORCA
@@ -190,6 +188,7 @@ def evaluate_op(atoms, wdir_base=None, dir_prefix="ORCA_",
         return at_list[0]
     else:
         return at_list
+        """
 
 
 class ORCA(ase.calculators.orca.ORCA):
@@ -225,7 +224,8 @@ class ORCA(ase.calculators.orca.ORCA):
                  label='orca', atoms=None,
                  keep_files="default", dir_prefix="ORCA_", scratch_path=None,
                  **kwargs):
-        super(ase.calculators.orca.ORCA, self).__init__(restart, ignore_bad_restart_file,
+
+        super(ORCA, self).__init__(restart, ignore_bad_restart_file,
                                            label, atoms, **kwargs)
         if 'orca_command' in kwargs:
             self.command = f'{str(kwargs.get("orca_command"))} PREFIX.inp > ' \
@@ -237,41 +237,40 @@ class ORCA(ase.calculators.orca.ORCA):
         # set up the directories
         # for now, for simplicity, don't leave much choice over directory structure
         self.scratch_path = scratch_path
-        self.wdir_base = Path(dir_prefix + "calc_files")
+        # self.directory is overwritten in self.calculate, so let's just keep track
+        self.home_dir = self.directory
+        self.dir_prefix = dir_prefix
+        self.wdir_base = Path(self.home_dir) / (self.dir_prefix + "calc_files")
         self.wdir_base.mkdir(parents=True, exist_ok=True)
 
-        # RF: previous code distinguished between whether files are kept or not, but 
-        # I think if files aren't kept let's just delete everything, but we need to 
-        # run calculations somewhere. 
-        if scratch_path is not None:
-            self.directory = tempfile.mkdtemp(dir=self.scratch_path, prefix=dir_prefix)
-        else:
-            self.directory = tempfile.mkdtemp(dir=self.wdir_base, prefix=dir_prefix)
 
     def calculate(self, atoms=None, properties=["energy", "forces"], system_changes=all_changes):
         """Does the calculation. Handles the working directories in addition to regular 
         ASE calculation operations (writing input, executing, reading_results) """
+
         Calculator.calculate(self, atoms, properties, system_changes)
+
+        if self.scratch_path is not None:
+            self.directory = tempfile.mkdtemp(dir=self.scratch_path, prefix=self.dir_prefix)
+        else:
+            self.directory = tempfile.mkdtemp(dir=self.wdir_base, prefix=self.dir_prefix)
+
         try:
-            # RF: make write_input handle directories
             self.write_input(self.atoms, properties, system_changes)
             self.execute()
             # RF: read in the extra results
             self.read_results()
-            # RF: might need to catch exceptions at self.execute level and 
             calculation_succeeded=True
         except Exception as e:
             calculation_succeeded=False
-
-        clean_rundir(self.directory, self.keep_files, __default_keep_files, calculation_succeeded)
-        if self.scratch_path is not None:
-            shutil.move(self.directory, self.wdir_base)
-
-        if not calculation_succeeded:
             raise e
+        finally:
+            # when exception is raised, `calculation_succeeded` is set to False, 
+            # the following code is executed and exception is re-raised. 
+            clean_rundir(self.directory, self.keep_files, default_keep_files, calculation_succeeded)
+            if self.scratch_path is not None and Path(self.directory).exists():
+                shutil.move(self.directory, self.wdir_base)
 
-    def cleanup_after_calculation():
-        pass
 
     def cleanup(self):
         """Clean all (empty) directories that could not have been removed
