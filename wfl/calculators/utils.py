@@ -147,11 +147,16 @@ def save_results(atoms, properties, results_prefix=None):
     if 'energies' in properties:
         atoms_results['energies'] = atoms.get_potential_energies()
 
+    if "extra_results" in dir(atoms.calc):
+        for key, vals in atoms.calc.extra_results["config"].items():
+            config_results[key] = vals
 
-    # Update atoms' positions if geometry was optimised
-    if "relaxed_positions" in atoms.calc.extra_results:
-        atoms.set_positions(atoms.calc.extra_results["relaxed_positions"])
+        for key, vals in atoms.calc.extra_results["atoms"].items():
+            atoms_results[key] = vals
 
+        # Update atoms' positions if geometry was optimised
+        if "relaxed_positions" in atoms.calc.extra_results:
+            atoms.set_positions(atoms.calc.extra_results["relaxed_positions"])
 
     # write to Atoms
     if results_prefix is None:
@@ -165,28 +170,6 @@ def save_results(atoms, properties, results_prefix=None):
             atoms.info[results_prefix + p] = v
         for p, v in atoms_results.items():
             atoms.new_array(results_prefix + p, v)
-
-    # refuse to copy extra results if results_prefix is None
-    if results_prefix is None:
-        if (hasattr(atoms.calc, 'extra_results') and (len(atoms.calc.extra_results.get('config', {})) > 0 or
-                                                      len(atoms.calc.extra_results.get('atoms', {})) > 0)):
-            raise ValueError('Refusing to save calculator results into info/arrays fields with no prefix,'
-                             ' too much chance of confusion with ASE extxyz reading/writing and conversion'
-                             ' to SinglePointCalculator')
-
-    # copy per-config extra results
-    try:
-        for k, v in atoms.calc.extra_results['config'].items():
-            atoms.info[results_prefix + k] = v
-    except (AttributeError, KeyError):
-        pass
-    # copy per-atom extra results
-    try:
-        for k, v in atoms.calc.extra_results['atoms'].items():
-            atoms.new_array(results_prefix + k, v)
-    except (AttributeError, KeyError):
-        pass
-    
 
 
 def clean_rundir(rundir, keep_files, default_keep_files, calculation_succeeded):

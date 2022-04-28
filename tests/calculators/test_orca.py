@@ -6,17 +6,19 @@ the assets/ directory contains the orca files and this test depends on them
 
 import os
 import shutil
+from functools import partial
 
 import pytest
 
 import numpy as np
 from ase.build import molecule
 from pytest import approx
+from pathlib import Path
 
 from ase import Atoms
 from ase.calculators.calculator import CalculationFailed 
 
-from wfl.calculators.orca import ORCA
+from wfl.calculators.orca import ORCA, parse_npa_output, natural_population_analysis
 from wfl.calculators import generic
 from wfl.configset import ConfigSet_in, ConfigSet_out
 
@@ -140,6 +142,61 @@ def test_orca_geometry_optimisation(tmp_path):
     out = [at for at in outputs.to_ConfigSet_in()][0]
 
     assert pytest.approx(out.get_distance(0, 1)) == 0.76812058465248
+
+
+@pytest.mark.skipif(shutil.which("orca") is None, reason="no ORCA executable in path")
+def test_post_processing(tmp_path):
+       
+    home_dir = tmp_path / "home_dir"
+
+    atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
+    calc = ORCA(directory=home_dir, 
+                keep_files = ["*.inp", "*.out", "*.post"], 
+                post_process=simplest_orca_post)
+
+    atoms.calc = calc
+    atoms.get_potential_energy()
+    assert Path(atoms.calc.label + '.post').exists()
+
+
+def test_parse_npa_output():
+    ref_populations = [8.8616525, 0.5691737, 0.5691737]
+    ref_charges = [-0.8616525437, 0.4308262720, 0.4308262720]
+    fname = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'assets', "orca", "orca.janpa")
+    elements, populations, charges = parse_npa_output(fname)
+    assert np.all([v1==v2 for v1, v2 in zip(elements, ["O", "H", "H"])])
+    assert np.all([pytest.approx(v1)==v2 for v1, v2 in zip(populations, ref_populations)])
+    assert np.all([pytest.approx(v1)==v2 for v1, v2 in zip(charges,ref_charges)]) 
+    
+
+def simplest_orca_post(orca_calc):
+
+    label = orca_calc.label
+    if Path(label + '.out').exists():
+        with open(label + ".post", "w") as f:
+            f.write("Dummy file generated after ORCA execution\n")
+
+
+@pytest.mark.skipif(shutil.which("orca") is None or "JANPA_HOME_DIR" not in os.environ, reason="no ORCA executable in path")
+def test_run_npa(tmp_path):
+
+    janpa_home_dir = os.environ["JANPA_HOME_DIR"]
+    post_func = partial(natural_population_analysis, janpa_home_dir)
+       
+    home_dir = tmp_path / "home_dir"
+
+    atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
+    calc = ORCA(directory=home_dir, 
+                keep_files = ["*.inp", "*.out", "*.janpa"], 
+                post_process=post_func)
+
+    inputs = ConfigSet_in(input_configs=atoms)
+    outputs = ConfigSet_out()
+    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", npool=0) 
+
+    atoms = [at for at in outputs.to_ConfigSet_in()][0]
+    assert "orca_NPA_electron_population" in atoms.arrays
+    assert "orca_NPA_charge" in atoms.arrays
 
 
 ref_freq = {'normal_mode_eigenvalues': np.array([0., 0., 0., 0., 0., 0., -0.60072079, -0.10155918, -0.07241669,

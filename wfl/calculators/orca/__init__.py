@@ -4,8 +4,10 @@ import shutil
 import tempfile
 import warnings
 from pathlib import Path 
+import subprocess
 
 import ase.io
+from ase.io.orca import read_geom_orcainp
 import numpy as np
 from ase import units
 from ase.calculators.calculator import CalculationFailed, Calculator, \
@@ -49,16 +51,22 @@ class ORCA(ase.calculators.orca.ORCA):
                  ignore_bad_restart_file=Calculator._deprecated,
                  label='orca', atoms=None,
                  keep_files="default", dir_prefix="ORCA_", scratch_path=None,
-                 orca_path = None, 
+                 orca_path="orca", post_process=None,
                  **kwargs):
 
         super(ORCA, self).__init__(restart, ignore_bad_restart_file,
                                            label, atoms, **kwargs)
-        if orca_path is not None:
+
+        self.orca_path = orca_path
+        if self.orca_path != "orca":
             self.command = f'{orca_path} PREFIX.inp > ' \
                            f'PREFIX.out'
 
         self.extra_results = dict()
+        # to make use of wfl.calculators.utils.save_results()
+        self.extra_results["atoms"] = {}
+        self.extra_results["config"] = {}
+
 
         self.keep_files = keep_files
         # set up the directories
@@ -67,6 +75,8 @@ class ORCA(ase.calculators.orca.ORCA):
         self.dir_prefix = dir_prefix
         self.wdir_base = Path(self.directory) / (self.dir_prefix + "calc_files")
         self.wdir_base.mkdir(parents=True, exist_ok=True)
+
+        self.post_process = post_process 
 
 
     def calculate(self, atoms=None, properties=["energy", "forces"], system_changes=all_changes):
@@ -84,6 +94,8 @@ class ORCA(ase.calculators.orca.ORCA):
             self.write_input(self.atoms, properties, system_changes)
             self.execute()
             self.read_results()
+            if self.post_process is not None:
+                self.post_process(self)
             calculation_succeeded=True
         except Exception as e:
             calculation_succeeded=False
@@ -126,11 +138,9 @@ class ORCA(ase.calculators.orca.ORCA):
             orcablocks += pcstring
             self.pcpot.write_mmcharges(self.label)
 
-        task = self.pick_task() 
-
         with open(self.label + '.inp', 'w') as f:
 
-            f.write(f"! {task} {self.parameters['orcasimpleinput']} \n")
+            f.write(f"! {self.pick_task()} {self.parameters['orcasimpleinput']} \n")
             f.write(f"{orcablocks} \n")
 
             f.write('*xyz')
@@ -350,3 +360,66 @@ class ORCA(ase.calculators.orca.ORCA):
         """
 
         return np.sum(atoms.get_atomic_numbers() - int(charge)) % 2 + 1
+
+
+def natural_population_analysis(janpa_home_dir, orca_calc):
+    """https://sourceforge.net/p/janpa/wiki/Home/"""
+
+    janpa_home_dir = Path(janpa_home_dir)
+
+    label = orca_calc.label
+
+    # just to get the elements
+    if orca_calc.atoms is not None:
+        ref_elements = list(orca_calc.atoms.symbols)
+    else:
+        atoms = read_geom_orcainp(label + '.inp')
+        ref_elements = list(atoms.symbols)
+
+
+    # 1. Convert from orca output to incomplete molden
+    command = f"{orca_calc.orca_path}_2mkl {label} -molden > {label}.orca_2mkl.out"
+    subprocess.run(command, shell=True)     # think about how to handle errors, etc
+
+    # 2. Clean up molden format
+    command = f"java -jar {janpa_home_dir / 'molden2molden.jar'} -i {label}.molden.input -o {label}.molden.cleanedup -fromorca3bf -orca3signs > {label}.molden2molden.stdout"
+    subprocess.run(command, shell=True)
+
+    # 3. Run natural population analysis
+    npa_output = f"{label}.janpa"
+    command = f'java -jar {janpa_home_dir / "janpa.jar"} -i {label}.molden.cleanedup > {npa_output}'
+    subprocess.run(command, shell=True)
+
+    # 4. Save results 
+    elements, electron_pop, npa_charge = parse_npa_output(npa_output)
+    assert np.all([v1==v2 for v1, v2 in zip(elements, ref_elements)])
+    orca_calc.extra_results["atoms"]["NPA_electron_population"] = electron_pop 
+    orca_calc.extra_results["atoms"]["NPA_charge"] = npa_charge
+
+
+def parse_npa_output(fname):
+    with open(fname, mode='r') as f:
+        text = f.read()
+
+    pattern_npa_block = re.compile(
+        r"Final electron populations and NPA charges:\n\n"
+        r"(?:.*\n)+\nAngular momentum contributions of the total atomic population:")
+    pattern_entry = re.compile(r"\s([a-zA-Z]+)(?:\d)\s+(?:[\d\.]+)\s+([\d\.]+)\s+(?:[\d\.]+)\s+([-\d\.]+)")
+
+    elements = []
+    electron_pop = []
+    npa_charge = [] 
+    
+    block = pattern_npa_block.findall(text)[0]
+    for line in block.split('\n'):
+        values = pattern_entry.search(line)
+        if values is not None:
+            values = values.groups()
+            elements.append(values[0])
+            electron_pop.append(float(values[1]))
+            npa_charge.append(float(values[2]))
+
+    return elements, np.array(electron_pop), np.array(npa_charge)
+
+
+
