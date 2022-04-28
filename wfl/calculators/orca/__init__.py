@@ -22,22 +22,18 @@ default_keep_files = ["*.inp", "*.out", "*.ase", "*.engrad", "*.xyz",
 
 
 class ORCA(ase.calculators.orca.ORCA):
-    """Extension of ASE's ORCA calculator with the following features:
-    # RF: TODO: update; list parameters. 
-        - specify command for executable (ase devs don't let this to be
-          merged in)
-        - setting multiplicity: default in the properties in None, \
-            which triggers the calculator to set to singlet or doublet
-        - geometry optimisation
-        - frequencies
+    """Extension of ASE's ORCA calculator:
+        - Specify Path to orca executable
+        - Unless specified, multiplicity is set to singlet/doublet for
+          closed-/open-shell structures
+        - Additional tasks with results stored in `extra_results` dictionary. 
 
     Handling of "task":
+        - ORCA programs to run, in addition or instead of calculating energy forces and dipole
+        - `task` will be pre-pended to the keyword line
+        - `engrad` is enforced by default, except in the case of geometry optimisation
+        - Supported conventional tasks: `opt`, `copt` (see orca manual)
 
-    1. directly written to file
-    2. default is "engrad", which is appended if not in task str
-    3. None -> "engrad"
-
-    For geometry optimisation and freq on the last frame, use task="opt freq".
     """
 
     implemented_properties = ["energy", "forces", "dipole"]
@@ -53,24 +49,23 @@ class ORCA(ase.calculators.orca.ORCA):
                  ignore_bad_restart_file=Calculator._deprecated,
                  label='orca', atoms=None,
                  keep_files="default", dir_prefix="ORCA_", scratch_path=None,
+                 orca_path = None, 
                  **kwargs):
 
         super(ORCA, self).__init__(restart, ignore_bad_restart_file,
                                            label, atoms, **kwargs)
-        if 'orca_command' in kwargs:
-            self.command = f'{str(kwargs.get("orca_command"))} PREFIX.inp > ' \
+        if orca_path is not None:
+            self.command = f'{orca_path} PREFIX.inp > ' \
                            f'PREFIX.out'
 
         self.extra_results = dict()
 
         self.keep_files = keep_files
         # set up the directories
-        # for now, for simplicity, don't leave much choice over directory structure
         self.scratch_path = scratch_path
         # self.directory is overwritten in self.calculate, so let's just keep track
-        self.home_dir = self.directory
         self.dir_prefix = dir_prefix
-        self.wdir_base = Path(self.home_dir) / (self.dir_prefix + "calc_files")
+        self.wdir_base = Path(self.directory) / (self.dir_prefix + "calc_files")
         self.wdir_base.mkdir(parents=True, exist_ok=True)
 
 
@@ -88,7 +83,6 @@ class ORCA(ase.calculators.orca.ORCA):
         try:
             self.write_input(self.atoms, properties, system_changes)
             self.execute()
-            # RF: read in the extra results
             self.read_results()
             calculation_succeeded=True
         except Exception as e:
@@ -113,15 +107,7 @@ class ORCA(ase.calculators.orca.ORCA):
 
 
     def write_input(self, atoms, properties=None, system_changes=None):
-        # RF: better description
-        """This is setting the multiplicity, unless set previously
-
-        Adapted from ase.io.orca.write_orca()
-
-        Extensions:
-            - choice of task
-            - task parameter is directly inserted into the file
-        """
+        """Writes orca.inp, based on the wfl ORCA calculator parameters"""
 
         if self.parameters.get("mult", None) is None:
             self.set(mult=self.get_default_multiplicity(atoms,
@@ -140,13 +126,9 @@ class ORCA(ase.calculators.orca.ORCA):
             orcablocks += pcstring
             self.pcpot.write_mmcharges(self.label)
 
+        task = self.pick_task() 
+
         with open(self.label + '.inp', 'w') as f:
-            # energy and force calculation is enforced
-            task = self.parameters["task"]
-            if task is None:
-                task = "engrad"
-            elif "engrad" not in task and "opt" not in task and "copt" not in task:
-                task += " engrad"
 
             f.write(f"! {task} {self.parameters['orcasimpleinput']} \n")
             f.write(f"{orcablocks} \n")
@@ -164,6 +146,15 @@ class ORCA(ase.calculators.orca.ORCA):
                         str(atom.position[1]) + ' ' +
                         str(atom.position[2]) + '\n')
             f.write('*\n')
+    
+    def pick_task(self):
+        # energy and force calculation is enforced
+        task = self.parameters["task"]
+        if task is None:
+            task = "engrad"
+        elif "engrad" not in task and "opt" not in task and "copt" not in task:
+            task += " engrad"
+        return task
 
     def is_converged(self):
         """checks for warnings about SCF/wavefunction not converging.
@@ -198,9 +189,11 @@ class ORCA(ase.calculators.orca.ORCA):
         self.read_forces()
 
         self.read_dipole()
+
         if 'opt' in self.parameters.task or "copt" in self.parameters.task:
             self.read_opt_atoms()
             self.read_trajectory()
+
         if 'freq' in self.parameters.task:
             self.read_frequencies()
 
@@ -237,7 +230,7 @@ class ORCA(ase.calculators.orca.ORCA):
     def read_frequencies(self):
         """Reads frequencies (dynamical matrix eigenvalues) and normal modes (eigenvectors) from output. 
         Currently broken. """
-        raise NotImplementedError("Normal mode (eigenvector) parsing is not implemented")
+        raise NotImplementedError("Normal mode (eigenvector) parsing is broken")
         with open(self.label + '.out', mode='r', encoding='utf-8') as fd:
             text = fd.read()
 
