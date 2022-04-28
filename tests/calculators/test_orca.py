@@ -120,6 +120,26 @@ def test_orca_with_generic(tmp_path):
     for at in outputs.to_ConfigSet_in():
         assert "orca_energy" in at.info or "orca_calculation_failed" in at.info
 
+@pytest.mark.skipif(shutil.which("orca") is None, reason="no ORCA executable in path")
+def test_orca_geometry_optimisation(tmp_path):
+    
+    home_dir = tmp_path / "home_dir"
+
+    atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
+    inputs = ConfigSet_in(input_configs=atoms)
+    outputs = ConfigSet_out()
+
+    calc = ORCA(directory=home_dir, 
+                keep_files = "default", 
+                mult=1, 
+                task="opt")
+
+
+    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", npool=0)
+
+    out = [at for at in outputs.to_ConfigSet_in()][0]
+
+    assert pytest.approx(out.get_distance(0, 1)) == 0.76812058465248
 
 
 ref_freq = {'normal_mode_eigenvalues': np.array([0., 0., 0., 0., 0., 0., -0.60072079, -0.10155918, -0.07241669,

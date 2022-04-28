@@ -147,6 +147,12 @@ def save_results(atoms, properties, results_prefix=None):
     if 'energies' in properties:
         atoms_results['energies'] = atoms.get_potential_energies()
 
+
+    # Update atoms' positions if geometry was optimised
+    if "relaxed_positions" in atoms.calc.extra_results:
+        atoms.set_positions(atoms.calc.extra_results["relaxed_positions"])
+
+
     # write to Atoms
     if results_prefix is None:
         # Filter out nonstandard properties that will cause SinglePointCalculator to fail
@@ -167,19 +173,20 @@ def save_results(atoms, properties, results_prefix=None):
             raise ValueError('Refusing to save calculator results into info/arrays fields with no prefix,'
                              ' too much chance of confusion with ASE extxyz reading/writing and conversion'
                              ' to SinglePointCalculator')
-    # RF: as far as I can tell that's only for ORCA, which I'd like to implement as properties to be calculated
+
     # copy per-config extra results
-    # try:
-    #     for k, v in atoms.calc.extra_results['config'].items():
-    #         atoms.info[results_prefix + k] = v
-    # except (AttributeError, KeyError):
-    #     pass
-    # # copy per-atom extra results
-    # try:
-    #     for k, v in atoms.calc.extra_results['atoms'].items():
-    #         atoms.new_array(results_prefix + k, v)
-    # except (AttributeError, KeyError):
-    #     pass
+    try:
+        for k, v in atoms.calc.extra_results['config'].items():
+            atoms.info[results_prefix + k] = v
+    except (AttributeError, KeyError):
+        pass
+    # copy per-atom extra results
+    try:
+        for k, v in atoms.calc.extra_results['atoms'].items():
+            atoms.new_array(results_prefix + k, v)
+    except (AttributeError, KeyError):
+        pass
+    
 
 
 def clean_rundir(rundir, keep_files, default_keep_files, calculation_succeeded):
