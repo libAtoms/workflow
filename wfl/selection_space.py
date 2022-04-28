@@ -6,6 +6,24 @@ from wfl.utils.vol_composition_space import composition_space_Zs, composition_sp
 
 
 def minima_among_neighbors(positions, ranges, values, cartesian_distance=True):
+    """find, for each config, lowest value config that's within some distance cutoffs (in
+    some feature space, typically composition and volume)
+
+    Parameters
+    ----------
+    positions: float array(Nsamples, Nfeatures)
+        array of positions in feature space
+    values: float array(Nsamples)
+        values for each sample
+    cartesian_distance: bool, default True
+        do Cartesian distance in feature space, otherwise require that max(dist) in each feature
+        dimension is < range of that dimension (Chebychev distance?)
+
+    Returns
+    -------
+    minima: float array(Nsamples)
+        value of nearby minimum for each sample
+    """
     assert positions.shape[1] == len(ranges)
     assert len(positions) == len(values)
 
@@ -65,6 +83,9 @@ def val_relative_to_nearby_composition_volume_min(inputs, outputs, vol_range, co
 
     if Zs is None:
         Zs = composition_space_Zs(inputs)
+
+    if vol_range is None:
+        vol_range = np.finfo(float).max
 
     positions = []
     values = []

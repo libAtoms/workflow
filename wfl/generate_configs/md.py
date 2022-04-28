@@ -56,8 +56,12 @@ def sample_op(atoms, calculator, steps, dt, temperature=None, temperature_tau=No
         time step (fs)
     steps: int
         number of steps
-    temperature: float or tuple(float, [float, [int]]), default None
-        temperature or initial, final temperatures and optional n_stages for ramp (K)
+    temperature: float or (float, float, [int]]), or list of dicts  default None
+        temperature control.  
+        - float: constant T
+        - tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp
+        - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with duration
+          defined as fraction of total number of steps
     temperature_tau: float, default None
         time scale that enables Berendsen constant T temperature rescaling (fs)
     pressure: None / float / tuple
@@ -90,8 +94,29 @@ def sample_op(atoms, calculator, steps, dt, temperature=None, temperature_tau=No
     else:
         logfile = None
 
-    if isinstance(temperature, (float, int)):
-        temperature = (temperature,)
+    if temperature_tau is None and not isinstance(temperature, float):
+        raise RuntimeError('NVE (temperature_tau is None) can only accept temperature=float for initial T')
+
+    if temperature is not None:
+        if isinstance(temperature, (float, int)):
+            # float into a list
+            temperature = [temperature]
+        if not isinstance(temperature[0], dict):
+            # create a stage dict from a constant or ramp
+            t_stage_data = temperature
+            # start with constant
+            t_stage = { 'T_i': t_stage_data[0], 'T_f' : t_stage_data[0], 'traj_frac': 1.0, 'n_stages': 10, 'steps': steps }
+            if len(t_stage_data) >= 2:
+                # set different final T for ramp
+                t_stage['T_f'] = t_stage_data[1]
+            if len(t_stage_data) >= 3:
+                # set number of stages
+                t_stage['n_stages'] = t_stage_data[2]
+            temperature = [t_stage]
+        else:
+            for t_stage in temperature:
+                if 'n_stages' not in t_stage:
+                    t_stage['n_stages'] = 10
 
     for at in atoms_to_list(atoms):
         at.calc = calculator
@@ -114,64 +139,79 @@ def sample_op(atoms, calculator, steps, dt, temperature=None, temperature_tau=No
 
         if temperature is not None:
             # set initial temperature
-            MaxwellBoltzmannDistribution(at, temperature[0] * kB, force_temp=True, communicator=None)
+            MaxwellBoltzmannDistribution(at, temperature[0]['T_i'] * kB, force_temp=True, communicator=None)
             Stationary(at, preserve_temperature=True)
 
-        base_kwargs = {'timestep': dt * fs, 'logfile': logfile}
+        stage_kwargs = {'timestep': dt * fs, 'logfile': logfile}
 
-        constructor_kwargs = []
-        run_kwargs = dict()
         if temperature_tau is None:
             # NVE
             if pressure is not None:
                 raise RuntimeError('Cannot do NPH dynamics')
             md_constructor = VelocityVerlet
-            # one stage, no extra args
-            constructor_kwargs = [base_kwargs]
-            run_kwargs = {'steps': steps}
+            # one stage, simple
+            all_stage_kwargs = [stage_kwargs.copy()]
+            all_run_kwargs = [ {'steps': steps} ]
         else:
             # NVT or NPT
+            all_stage_kwargs = []
+            all_run_kwargs = []
+
+            stage_kwargs['taut'] = temperature_tau * fs
+
             if pressure is not None:
                 md_constructor = NPTBerendsen
-                base_kwargs['pressure_au'] = pressure
-                base_kwargs['compressibility_au'] = compressibility
-                base_kwargs['taup'] = temperature_tau * fs * 3 if pressure_tau is None else pressure_tau * fs
+                stage_kwargs['pressure_au'] = pressure
+                stage_kwargs['compressibility_au'] = compressibility
+                stage_kwargs['taup'] = temperature_tau * fs * 3 if pressure_tau is None else pressure_tau * fs
             else:
                 md_constructor = NVTBerendsen
 
-            base_kwargs['taut'] = temperature_tau * fs
-            if len(temperature) == 1:
-                # constant T
-                base_kwargs['temperature_K'] = temperature[0]
-                # one stage, temperature and taut set
-                constructor_kwargs = [base_kwargs]
-                run_kwargs = {'steps': steps}
-            elif len(temperature) >= 2:
-                # T ramp with default n_stages=10
-                if len(temperature) == 3:
-                    n_stages = temperature[2]
+            for t_stage_i, t_stage in enumerate(temperature):
+                stage_steps = t_stage['traj_frac'] * steps
+
+                if t_stage['T_f'] == t_stage['T_i']:
+                    # constant T
+                    stage_kwargs['temperature_K'] = t_stage['T_i']
+                    all_stage_kwargs.append(stage_kwargs.copy())
+                    all_run_kwargs.append({'steps': int(np.round(stage_steps))})
                 else:
-                    n_stages = 10
-                for stage_i in range(n_stages):
-                    stage_kwargs = base_kwargs.copy()
-                    stage_kwargs['temperature_K'] = temperature[0] + stage_i * (temperature[1] - temperature[0]) / (
-                            n_stages - 1)
-                    constructor_kwargs.append(stage_kwargs)
-                run_kwargs = {'steps': int(steps / n_stages)}
+                    # ramp
+                    for T in np.linspace(t_stage['T_i'], t_stage['T_f'], t_stage['n_stages']):
+                        stage_kwargs['temperature_K'] = T
+                        all_stage_kwargs.append(stage_kwargs.copy())
+                    substage_steps = int(np.round(stage_steps / t_stage['n_stages']))
+                    all_run_kwargs.extend([{'steps': substage_steps}] * t_stage['n_stages'])
 
         traj = []
-        cur_step = 0
+        cur_step = 1
+        first_step_of_later_stage = False
 
         def process_step(interval):
-            nonlocal cur_step
-            if cur_step % interval == 0:
+            nonlocal cur_step, first_step_of_later_stage
+
+            if not first_step_of_later_stage and cur_step % interval == 0:
                 at.info['MD_time_fs'] = cur_step * dt
                 traj.append(at_copy_save_results(at, results_prefix=results_prefix))
+
+            first_step_of_later_stage = False
             cur_step += 1
 
-        for stage_kwargs in constructor_kwargs:
+        for stage_i, (stage_kwargs, run_kwargs) in enumerate(zip(all_stage_kwargs, all_run_kwargs)):
+            if verbose:
+                print('run stage', stage_kwargs, run_kwargs)
+
+            # avoid double counbing of steps and end of each stage and beginning of next
+            cur_step -= 1
+
+            if temperature_tau is not None:
+                at.info['MD_temperature_K'] = stage_kwargs['temperature_K']
+
             md = md_constructor(at, **stage_kwargs)
             md.attach(process_step, 1, traj_step_interval)
+
+            if stage_i > 0:
+                first_step_of_later_stage = True
 
             try:
                 md.run(**run_kwargs)

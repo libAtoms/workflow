@@ -1,4 +1,5 @@
 import os
+import warnings
 import shutil
 from pathlib import Path
 
@@ -20,6 +21,9 @@ def check_step(runner, step_type, seeds, iter_i):
     run_iter_s = f"run_iter_{iter_i}"
     run_iter = Path(run_iter_s)
 
+    ## run_iter_prev_s = f"run_iter_{iter_i - 1}"
+    ## run_iter_prev = Path(run_iter_prev_s)
+
     if "GAP_RSS_TEST_SETUP" not in os.environ:
         # copy files that cannot be created by CI (i.e. buildcell and vasp output) for step
         # from assets_dir
@@ -28,6 +32,10 @@ def check_step(runner, step_type, seeds, iter_i):
             shutil.copy(fn, run_iter / fn.name)
         for fn in (assets_dir / run_iter_s).glob("DFT_evaluated_*.xyz"):
             shutil.copy(fn, run_iter / fn.name)
+        ## # also copy in GAP*xml files for _previous_ iteration, in case gap_fit was unstable
+        ## # and produced only almost identical potential
+        ## for fn in (assets_dir / run_iter_prev_s).glob("GAP*xml"):
+            ## shutil.copy(fn, run_iter_prev / fn.name)
 
     # actually run step
     result = runner.invoke(cli, ["-c", "LiCu.json", "--seeds", seeds, step_type])
@@ -47,6 +55,10 @@ def check_step(runner, step_type, seeds, iter_i):
             shutil.copy(fn, assets_dir / run_iter_s / fn.name)
         for fn in run_iter.glob("DFT_evaluated_*.xyz"):
             shutil.copy(fn, assets_dir / run_iter_s / fn.name)
+        ## # also save GAP*xml, in case gap_fit is unstable and doesn't always produce exactly identical potentials
+        ## # correctness of produced potential is testing by comparing cli_rss_test_energies
+        ## for fn in run_iter.glob("GAP*xml"):
+            ## shutil.copy(fn, assets_dir / run_iter_s / fn.name)
 
     # save or use results so we can test that they are correct by checking GAP predictions
     if "GAP_RSS_TEST_SETUP" in os.environ:
@@ -72,7 +84,7 @@ def check_step(runner, step_type, seeds, iter_i):
             assert np.abs(at.get_potential_energy() - energy) < 1.0e-5
 
 
-def do_full_test(runner, assets_dir):
+def do_full_test(runner, assets_dir, monkeypatch):
     # copy in config files (for prep)
     for fn in [
         "LiCu.json",
@@ -97,11 +109,22 @@ def do_full_test(runner, assets_dir):
             fout.write("\n")
         with open(Path("dummy_potcars") / "Cu" / "POTCAR", "w") as fout:
             fout.write("\n")
-        os.environ["VASP_PP_PATH"] = "dummy_potcars"
+        monkeypatch.setenv("VASP_PP_PATH", "dummy_potcars")
 
     # make sure nothing is parallel so things are as deterministic as possible
-    os.environ["WFL_DETERMINISTIC_HACK"] = "1"
-    os.environ["WFL_AUTOPARA_NPOOL"] = "0"
+    monkeypatch.setenv("WFL_DETERMINISTIC_HACK", "1")
+    # monkeypatch.setenv("WFL_AUTOPARA_NPOOL", "0")
+    monkeypatch.setenv("OMP_NUM_THREADS", "1")
+    monkeypatch.setenv("GAP_FIT_OMP_NUM_THREADS", "1")
+
+    warnings.warn("gap_fit is not stable, and test does not actually use exact "
+                  "reference GAP potential, so CPU-dependent math may make this test fail.")
+    ## # work around issue in some versions of OpenBLAS, which numpy often uses,
+    ## # that gives different results on avx512 vs. non-avx512 CPUs, as per
+    ## #     https://github.com/xianyi/OpenBLAS/issues/3583
+    ## monkeypatch.setenv("OPENBLAS_CORETYPE", "HASWELL")
+    ## # won't necessarily fix all such behavior, so better to just make the unit test 
+    ## # more robust, e.g. by always using GAP*xml file from reference
 
     # PREP
     result = runner.invoke(cli, ["-c", "LiCu.json", "--seeds", "42,43,44", "prep"])
@@ -110,21 +133,21 @@ def do_full_test(runner, assets_dir):
     # ACTUAL STEPS
     check_step(runner, "initial_step", "45,46,47", "0")
     check_step(runner, "rss_step", "48,49,50", "1")
-    check_step(runner, "MD_bulk_defect_step", "51,52,52", "2")
+    check_step(runner, "MD_bulk_defect_step", "51,52,53", "2")
 
 
 # @pytest.mark.skip(reason="too computationally expensive")
 @pytest.mark.slow
-def test_cli_rss_full(tmp_path):
+def test_cli_rss_full(tmp_path, monkeypatch):
     runner = CliRunner()
     if "GAP_RSS_TEST_SETUP" in os.environ:
         # setup run that actually does work and creates files
         orig_dir = Path.cwd()
         try:
             os.chdir(os.environ.get("GAP_RSS_TEST_SETUP"))
-            do_full_test(runner, assets_dir)
+            do_full_test(runner, assets_dir, monkeypatch)
         finally:
             os.chdir(orig_dir)
     else:
         with runner.isolated_filesystem(tmp_path):
-            do_full_test(runner, assets_dir)
+            do_full_test(runner, assets_dir, monkeypatch)

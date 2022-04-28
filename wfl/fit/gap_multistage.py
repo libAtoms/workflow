@@ -82,11 +82,16 @@ def _select_info(ats, info_keys):
                 del at.info[k]
 
 
+# WARNING: this is hardwired to the names of fields in specific descriptors
+# such as SOAP and turboSOAP
 def max_cutoff(params):
     max_c = 0.0
     for stage in params['stages']:
         for desc in stage['descriptors']:
-            max_c = max(max_c, desc['descriptor']['cutoff'])
+            try:
+                max_c = max(max_c, desc['descriptor']['cutoff'])
+            except KeyError:
+                max_c = max(max_c, desc['descriptor']['rcut_hard'])
     return max_c
 
 

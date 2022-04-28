@@ -3,29 +3,48 @@ import sys
 import numpy as np
 
 
-def _select_by_bin(weights, bin_edges, quantities, n, kT, verbose=False):
+def _select_by_bin(weights, bin_edges, quantities, n, kT, replace=False, verbose=False):
     if verbose:
         print('got histogram', len(weights), weights)
 
-    if 0 >= n:
+    assert not replace
+
+    if n <= 0:
         raise ValueError("Not defined for non-positive n")
 
-    if kT <= 0:
+    if kT is None or kT <= 0:
         kT = np.Infinity
 
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
     bin_centers -= bin_centers[0]
 
-    # this will fail for non-uniform bins
+    # This will fail for non-uniform bins
     total_n = 0
-    n_per_bin = 0
+    prefactor_l = 0
+    prefactor_h = 1
+    # find prefactor_l and prefactor_h that bracket minimal prefactor to Boltzmann weights
+    # sufficient to get enough configs
     while total_n < n:
-        n_per_bin += 1
-        n_from_bin = [min(int(w), int(np.round(n_per_bin * np.exp(-bin_ctr / kT)))) for bin_ctr, w in
+        n_from_bin = [min(int(w), int(np.round(prefactor_h * np.exp(-bin_ctr / kT)))) for bin_ctr, w in
                       zip(bin_centers, weights)]
         total_n = sum(n_from_bin)
-    # noinspection PyUnboundLocalVariable
-    # this not being defined is caught somewhere up if n <= 0
+        if total_n < n:
+            prefactor_l = prefactor_h
+            prefactor_h *= 2
+    # binary search for optimal prefactor
+    while prefactor_h - prefactor_l > 1.0e-10 * prefactor_h:
+        prefactor_m = (prefactor_l + prefactor_h)/2.0
+        n_from_bin = [min(int(w), int(np.round(prefactor_m * np.exp(-bin_ctr / kT)))) for bin_ctr, w in
+                      zip(bin_centers, weights)]
+        total_n = sum(n_from_bin)
+        if total_n < n:
+            prefactor_l = prefactor_m
+        else:
+            prefactor_h = prefactor_m
+
+    # get final numbers from prefactor_h, which is large enough to get enough configs
+    n_from_bin = [min(int(w), int(np.round(prefactor_h * np.exp(-bin_ctr / kT)))) for bin_ctr, w in
+                  zip(bin_centers, weights)]
     n_from_bin = np.asarray(n_from_bin)
 
     # always remove excess from most occupied bins
@@ -52,7 +71,7 @@ def _select_by_bin(weights, bin_edges, quantities, n, kT, verbose=False):
     return selected_inds
 
 
-def _select_by_individual_weight(weights, bin_edges, quantities, n, kT, verbose=False):
+def _select_by_individual_weight(weights, bin_edges, quantities, n, kT, replace=False, verbose=False):
     min_quantity = np.min(quantities)
 
     # if this out of range then histogram is broken
@@ -68,10 +87,10 @@ def _select_by_individual_weight(weights, bin_edges, quantities, n, kT, verbose=
     # Doesn't work well when n is a significant fraction of len(prob),
     # even if enough samples are available to respect probabilities,
     # but manual implementation isn't any better.
-    return np.random.choice(np.arange(len(config_prob)), n, replace=False, p=config_prob)
+    return np.random.choice(np.arange(len(config_prob)), n, replace=replace, p=config_prob)
 
 
-def _select_indices_flat_boltzmann_biased(quantities, n, kT=-1.0, bins='auto', by_bin=True, verbose=False):
+def _select_indices_flat_boltzmann_biased(quantities, n, kT=-1.0, bins='auto', by_bin=True, replace=False, verbose=False):
     """Select samples by Boltzmann-weight biased flat histogram
 
     Parameters
@@ -87,6 +106,8 @@ def _select_indices_flat_boltzmann_biased(quantities, n, kT=-1.0, bins='auto', b
     by_bin: bool, default True
         do selection by bin, as opposed to setting probability for each config and trying to select that way
         produces better flat histograms
+    replace: bool, default False
+        do selection with replacement
     verbose: bool, default True
         verbose output
 
@@ -101,12 +122,40 @@ def _select_indices_flat_boltzmann_biased(quantities, n, kT=-1.0, bins='auto', b
     weights, bin_edges = np.histogram(quantities, bins=bins)
 
     if by_bin:
-        return _select_by_bin(weights, bin_edges, quantities, n, kT, verbose)
+        return _select_by_bin(weights, bin_edges, quantities, n, kT, replace=replace, verbose=verbose)
     else:
-        return _select_by_individual_weight(weights, bin_edges, quantities, n, kT, verbose)
+        return _select_by_individual_weight(weights, bin_edges, quantities, n, kT, replace=replace, verbose=verbose)
 
 
-def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', by_bin=True, verbose=False):
+def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', by_bin=True, replace=False, verbose=False):
+    """select configurations by Boltzmann biased flat histogram
+
+    Parameters
+    ----------
+    inputs: ConfigSet_in
+        input configurations
+    output: ConfigSet_out
+        output configurations
+    num: int
+        number of configs to select
+    info_field: string
+        quantity by which to select
+    kT: float, default -1
+        Boltzmann bias temperature, <= 0 to not bias
+    bins: np.histogram bins argument, default 'auto'
+        argument to pass to np.histogram
+    by_bin: bool, default True
+        do selections by bin, which is more accurate, but works badly for small kT and does not allow for selection with replacement
+    replace: bool, default False
+        do selection with replacement (i.e. repeat configs)
+    verbose: bool, default False
+        verbose output
+
+    Returns
+    -------
+    ConfigSet_in containing output configs
+    """
+
     if outputs.is_done():
         sys.stderr.write('Returning from {__name__} since output is done\n')
         return outputs.to_ConfigSet_in()
@@ -121,16 +170,18 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
             pass
 
     # convert to set for faster checking (O(1)?) of "in" below
-    selected_indices = set(
-        _select_indices_flat_boltzmann_biased(quantities, num, kT, bins=bins, by_bin=by_bin, verbose=verbose))
+    selected_indices = _select_indices_flat_boltzmann_biased(quantities, num, kT, bins=bins,
+                                                             by_bin=by_bin, replace=replace, verbose=verbose)
 
+    selected_indices = sorted(selected_indices)
+    selected_i = 0
     for at_i, at in enumerate(inputs):
-        try:
-            if avail_inds[at_i] in selected_indices:
+        while selected_i < len(selected_indices) and selected_indices[selected_i] <= at_i:
+            if selected_indices[selected_i] == at_i:
                 outputs.write(at)
-        except KeyError:
-            # skip configs that are not in avail_inds
-            pass
+            selected_i += 1
+        if selected_i >= len(selected_indices):
+            break
 
     outputs.end_write()
     return outputs.to_ConfigSet_in()

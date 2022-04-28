@@ -36,24 +36,26 @@ def qe_cmd_and_pseudo(tmp_path_factory):
     """
 
     if not which("pw.x"):
-        return skip()
+        skip("no pw.x executable")
     else:
         cmd = which("pw.x")
 
     # broken due to need for account/license click
     # url = "https://www.quantum-espresso.org/upf_files/Si.pbe-n-kjpaw_psl.1.0.0.UPF"
     url = "http://nninc.cnf.cornell.edu/psp_files/Si.pz-vbc.UPF"
+    # alternative
+    # url = "https://web.mit.edu/espresso_v6.1/amd64_linux26/qe-6.1/pseudo/Si.pz-vbc.UPF"
 
     # get the pseudo potential file, ~1.2MB
     try:
         r = requests.get(url)
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
         # no internet!
-        return skip()
+        skip(f"failed to make URL connection {url}")
 
     if r.status_code != requests.codes.ok:
         # the download has not worked
-        return skip()
+        skip(f"failed to download from URL {url}")
 
     # write to a temporary file
     pspot_file = tmp_path_factory.getbasetemp() / "Si.UPF"
