@@ -10,7 +10,7 @@ from .utils import save_results
 
 
 # run that operates on ConfigSet, for multiprocessing
-def run(inputs, outputs, calculator, properties=None, output_prefix='_auto_', , raise_calc_exceptions=False, 
+def run(inputs, outputs, calculator, properties=None, output_prefix='_auto_', raise_calc_exceptions=False, 
     chunksize=10, verbose=False, npool=None, remote_info=None):
     if properties is None:
         properties = ['energy', 'forces', 'stress']
