@@ -125,13 +125,20 @@ def modify(configs, overall_error_scale_factor=1.0, field_error_scale_factors=No
                     "WARNING: modifying sigmas based on distance from convex hull got a non-periodic config that "
                     "wasn't handled specially.  Skipping!")
                 continue
+            # energy, virial, and Hessian should be scaled by sqrt(N)
+            # add factors to keep relationship to previous, incorrect values that ignored this scaling
+            root_N_ratio = np.sqrt(len(at)) / np.sqrt(16)
             sigma_E_1 = 0.001
             sigma_E_2 = 0.100
             sigma_set = piecewise_linear(dE,
-                                         [(0.1, [sigma_E_1, np.sqrt(sigma_E_1), 2.0 * np.sqrt(sigma_E_1),
-                                                 2.0 * np.sqrt(sigma_E_1)]),
-                                          (1.0, [sigma_E_2, np.sqrt(sigma_E_2), 2.0 * np.sqrt(sigma_E_2),
-                                                 2.0 * np.sqrt(sigma_E_2)])])
+                                         [(0.1, [sigma_E_1 * root_N_ratio,
+                                                 np.sqrt(sigma_E_1),
+                                                 2.0 * np.sqrt(sigma_E_1 * root_N_ratio),
+                                                 2.0 * np.sqrt(sigma_E_1 * root_N_ratio)]),
+                                          (1.0, [sigma_E_2 * root_N_ratio,
+                                                 np.sqrt(sigma_E_2),
+                                                 2.0 * np.sqrt(sigma_E_2 * root_N_ratio),
+                                                 2.0 * np.sqrt(sigma_E_2 * root_N_ratio)])])
             for (field_i, field) in enumerate(['energy_sigma', 'force_sigma', 'virial_sigma', 'hessian_sigma']):
                 if "fix_" + field in at.info:
                     sys.stdout.write(

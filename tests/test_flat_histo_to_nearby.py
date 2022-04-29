@@ -51,7 +51,7 @@ def test_flat_histo_to_nearby(tmp_path):
     selected_ats = biased_select_conf(ConfigSet_in(input_configsets=output_ats),
                                       ConfigSet_out(file_root=tmp_path,
                                                     output_files='test_flat_histo_relative.selected.xyz'), 10,
-                                      'E_dist_to_nearby', kT=0.1)
+                                      'E_dist_to_nearby', kT=0.05)
 
     print("selected_ats", [at.info['config_i'] for at in selected_ats])
-    assert [at.info['config_i'] for at in selected_ats] == [72, 120, 130, 137, 211, 345, 419, 544, 883, 935]
+    assert [at.info['config_i'] for at in selected_ats] == [134, 248, 278, 375, 377, 398, 685, 799, 851, 993]
