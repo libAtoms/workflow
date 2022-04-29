@@ -69,11 +69,11 @@ def evaluate_dft(
 
     # choose the calculator
     if calculator_name == "CASTEP":
-        op = castep.evaluate_op
+        op = castep.evaluate_autopara_wrappable
     elif calculator_name == "VASP":
-        op = vasp.evaluate_op
+        op = vasp.evaluate_autopara_wrappable
     elif calculator_name == "QE":
-        op = espresso.evaluate_op
+        op = espresso.evaluate_autopara_wrappable
     else:
         raise ValueError(f"Calculator name `{calculator_name}` not understood")
 

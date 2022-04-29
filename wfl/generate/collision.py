@@ -200,7 +200,7 @@ class Supercollider:
             ase.io.write(fn, at, append=True)
 
 
-def post_process_collision_op(seed, calc,
+def post_process_collision_autopara_wrappable(seed, calc,
                            *,
                            do_neb=False, do_ts_irc=False, force=True,
                            minim_interval=50, minim_kwargs=None, neb_kwargs=None, ts_kwargs=None, irc_kwargs=None):
@@ -286,8 +286,8 @@ def post_process_collision_op(seed, calc,
         raise ValueError("TS+IRC cannot be performed without having done NEB as well")
 
 
-post_process_collision = functools.partial(iloop, post_process_collision_op)
-post_process_collision.__doc__ = post_process_collision_op.__doc__.format(iloop_docstring_post=iloop_docstring_post)
+post_process_collision = functools.partial(iloop, post_process_collision_autopara_wrappable)
+post_process_collision.__doc__ = post_process_collision_autopara_wrappable.__doc__.format(iloop_docstring_post=iloop_docstring_post)
 
 
 def run_pair(molecule1, molecule2, calc, seed="collision", nsteps=1000, **collision_kwargs):

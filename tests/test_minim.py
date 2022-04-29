@@ -162,7 +162,7 @@ def test_subselect_from_traj(cu_slab):
 
     # returns full optimisation trajectories
     inputs = [cu_slab.copy(), cu_slab_optimised.copy()]
-    atoms_opt = minim.run_op(inputs, calc, fmax=1e-2, precon=None,
+    atoms_opt = minim.run_autopara_wrappable(inputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215, 
                           steps=2, traj_subselect=None)
 
@@ -173,7 +173,7 @@ def test_subselect_from_traj(cu_slab):
 
     # returns [None] for unconverged and last config for converged otpimisation
     inputs = [cu_slab.copy(), cu_slab_optimised.copy()]
-    atoms_opt = minim.run_op(inputs, calc, fmax=1e-2, precon=None,
+    atoms_opt = minim.run_autopara_wrappable(inputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215, 
                           steps=2, traj_subselect="last_converged")
 

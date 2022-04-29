@@ -12,7 +12,7 @@ except ModuleNotFoundError:
 from scipy import sparse
 
 from wfl import configset
-from wfl.generate.minim import run_op
+from wfl.generate.minim import run_autopara_wrappable
 from wfl.generate.neb import neb_generic, neb_with_ts_and_irc
 from wfl.generate.ts import calc_ts
 
@@ -54,7 +54,7 @@ def trajectory_min(configset_in, configset_out, calculator, minimise_kwargs=None
     if minimise_kwargs is None:
         minimise_kwargs = {}
 
-    all_minim_trajectories = run_op(configset_in, calculator=calculator, **minimise_kwargs)
+    all_minim_trajectories = run_autopara_wrappable(configset_in, calculator=calculator, **minimise_kwargs)
 
     configset_out.pre_write()
     for at_list in all_minim_trajectories:

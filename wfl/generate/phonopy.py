@@ -15,12 +15,12 @@ except:
 
 
 def run(inputs, outputs, displacements, strain_displs, ph2_supercell, ph3_supercell=None, pair_cutoff=None, chunksize=10):
-    return autoparallelize(iterable=inputs, configset_out=outputs, op=run_op, chunksize=chunksize, 
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=run_autopara_wrappable, chunksize=chunksize, 
                          displacements=displacements, strain_displs=strain_displs, ph2_supercell=ph2_supercell,
                          ph3_supercell=ph3_supercell, pair_cutoff=pair_cutoff)
 
 
-def run_op(atoms, displacements, strain_displs, ph2_supercell, ph3_supercell=None, pair_cutoff=None):
+def run_autopara_wrappable(atoms, displacements, strain_displs, ph2_supercell, ph3_supercell=None, pair_cutoff=None):
     """create displaced configs with phonopy or phono3py for each structure in inputs
 
     Parameters

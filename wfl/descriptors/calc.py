@@ -103,11 +103,11 @@ def calc(inputs, outputs, descs, key, local=False, normalize=True, composition_w
     ConfigSet_in 
         ConfigSet_out.to_ConfigSet_in() Pointing to outputs
     """
-    return autoparallelize(iterable=inputs, configset_out=outputs, op=calc_op, descs=descs, key=key, local=local,
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=calc_autopara_wrappable, descs=descs, key=key, local=local,
                          force=force, verbose=verbose, normalize=normalize, composition_weight=composition_weight)
 
 
-def calc_op(atoms, descs, key, local=False, normalize=True, composition_weight=True, force=False, verbose=False):
+def calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, composition_weight=True, force=False, verbose=False):
     """Calculate descriptor for each config or atom
 
     Parameters

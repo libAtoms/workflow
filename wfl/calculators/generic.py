@@ -13,12 +13,12 @@ from .utils import save_results
 def run(inputs, outputs, calculator, properties=None, output_prefix='_auto_', chunksize=10, verbose=False):
     if properties is None:
         properties = ['energy', 'forces', 'stress']
-    return autoparallelize(iterable=inputs, configset_out=outputs, op=run_op, chunksize=chunksize,
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=run_autopara_wrappable, chunksize=chunksize,
                          calculator=calculator, properties=properties, output_prefix=output_prefix,
                          verbose=verbose)
 
 
-def run_op(atoms, calculator, properties=None, output_prefix='_auto_', verbose=False):
+def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_auto_', verbose=False):
     """evaluates configs using an arbitrary calculator and store results in SinglePointCalculator
 
     Parameters

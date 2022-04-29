@@ -21,13 +21,13 @@ def test_smi_to_atoms():
     assert np.all(atoms.symbols == 'CH4')
 
 
-def test_smiles_run_op():
+def test_smiles_run_autopara_wrappable():
     """test for wfl.generate_configs.smiles"""
 
     input_smiles = ['C', 'C(C)C']
     extra_info = {'config_type': 'testing', 'info_int': 5}
 
-    atoms = smiles.run_op(input_smiles, extra_info=extra_info)
+    atoms = smiles.run_autopara_wrappable(input_smiles, extra_info=extra_info)
 
     for smi, at in zip(input_smiles, atoms):
 
@@ -39,7 +39,7 @@ def test_smiles_run_op():
     input_smiles = 'C'
     extra_info = None
 
-    atoms = smiles.run_op(input_smiles, extra_info)
+    atoms = smiles.run_autopara_wrappable(input_smiles, extra_info)
 
     assert len(atoms) == 1
     assert atoms[0].info['smiles'] == input_smiles

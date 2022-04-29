@@ -158,13 +158,13 @@ def run(outputs, config_is, buildcell_cmd, buildcell_input, extra_info=None,
     """
     if extra_info is None:
         extra_info = {}
-    return autoparallelize(iterable=config_is, configset_out=outputs, op=run_op,
+    return autoparallelize(iterable=config_is, configset_out=outputs, op=run_autopara_wrappable,
                          buildcell_cmd=buildcell_cmd, buildcell_input=buildcell_input,
                          extra_info=extra_info, perturbation=perturbation, skip_failures=skip_failures,
                          verbose=verbose, symprec=symprec)
 
 
-def run_op(config_is, buildcell_cmd, buildcell_input, extra_info=None,
+def run_autopara_wrappable(config_is, buildcell_cmd, buildcell_input, extra_info=None,
            perturbation=0.0, skip_failures=True, symprec=0.01, verbose=False):
     """Creates atomic configurations by repeatedly running buildcell
 

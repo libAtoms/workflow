@@ -11,19 +11,19 @@ from wfl.utils.find_voids import find_voids
 
 
 def largest_bulk(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, chunksize=10):
-    return autoparallelize(iterable=inputs, configset_out=outputs, op=largest_bulk_op,
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=largest_bulk_autopara_wrappable,
                          chunksize=chunksize, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec)
 
 
 def vacancy(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, n_vac=1, cluster_r=0.0, chunksize=10):
-    return autoparallelize(iterable=inputs, configset_out=outputs, op=vacancy_op,
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=vacancy_autopara_wrappable,
                          chunksize=chunksize, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec,
                          n_vac=n_vac, cluster_r=cluster_r)
 
 
 def interstitial(inputs, outputs, max_n_atoms, interstitial_probability_radius_exponent=3.0,
                  primitive=True, symprec=1.0e-3, chunksize=10):
-    return autoparallelize(iterable=inputs, configset_out=outputs, op=interstitial_op,
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=interstitial_autopara_wrappable,
                          chunksize=chunksize, max_n_atoms=max_n_atoms,
                          interstitial_probability_radius_exponent=interstitial_probability_radius_exponent,
                          primitive=primitive, symprec=symprec)
@@ -32,7 +32,7 @@ def interstitial(inputs, outputs, max_n_atoms, interstitial_probability_radius_e
 def surface(inputs, outputs, max_n_atoms, min_thickness, vacuum,
             simple_cut=False, max_surface_cell_indices=1, duplicate_in_plane=True, pert=0.0,
             primitive=True, symprec=1.0e-3, chunksize=10):
-    return autoparallelize(iterable=inputs, configset_out=outputs, op=surface_op,
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=surface_autopara_wrappable,
                          chunksize=chunksize, max_n_atoms=max_n_atoms,
                          min_thickness=min_thickness, vacuum=vacuum, simple_cut=simple_cut,
                          max_surface_cell_indices=max_surface_cell_indices,
@@ -103,7 +103,7 @@ def _largest_isotropic_supercell(at, max_n_atoms, vary_cell_vectors=None):
 
 
 # try ase.build.supercells.find_optimal_cell_shape ?
-def largest_bulk_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3):
+def largest_bulk_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3):
     """make largest bulk-like supercells
 
     Parameters
@@ -150,7 +150,7 @@ def largest_bulk_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3
     return supercells
 
 
-def vacancy_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3, n_vac=1, cluster_r=0.0):
+def vacancy_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3, n_vac=1, cluster_r=0.0):
     """make vacancies in largest bulk-like supercells
 
     Parameters
@@ -175,7 +175,7 @@ def vacancy_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3, n_v
     -------
         list(Atoms) supercells with vacancies
     """
-    supercells = largest_bulk_op(atoms, max_n_atoms, primitive=primitive, symprec=symprec)
+    supercells = largest_bulk_autopara_wrappable(atoms, max_n_atoms, primitive=primitive, symprec=symprec)
     for at in supercells:
         if len(at) <= n_vac:
             # should this be an error?
@@ -224,7 +224,7 @@ def vacancy_op(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3, n_v
     return supercells
 
 
-def interstitial_op(atoms, max_n_atoms, pert=0.0, interstitial_probability_radius_exponent=3.0, primitive=True,
+def interstitial_autopara_wrappable(atoms, max_n_atoms, pert=0.0, interstitial_probability_radius_exponent=3.0, primitive=True,
                     symprec=1.0e-3):
     """make interstitials in largest bulk-like supercells
 
@@ -247,7 +247,7 @@ def interstitial_op(atoms, max_n_atoms, pert=0.0, interstitial_probability_radiu
     -------
         list(Atoms) supercells with interstitials
     """
-    supercells = largest_bulk_op(atoms, max_n_atoms, primitive=primitive, symprec=symprec)
+    supercells = largest_bulk_autopara_wrappable(atoms, max_n_atoms, primitive=primitive, symprec=symprec)
     for at in supercells:
         voids = np.asarray(find_voids(at))
         p_raw = voids[:, 0] ** interstitial_probability_radius_exponent
@@ -272,7 +272,7 @@ def _are_lin_dep(v1, v2):
     return np.abs(np.abs(np.dot(v1, v2)) - np.linalg.norm(v1) * np.linalg.norm(v2)) < 1.0e-10
 
 
-def surface_op(atoms, max_n_atoms, min_thickness, vacuum, simple_cut=False, max_surface_cell_indices=1,
+def surface_autopara_wrappable(atoms, max_n_atoms, min_thickness, vacuum, simple_cut=False, max_surface_cell_indices=1,
                duplicate_in_plane=True, pert=0.0,
                primitive=True, symprec=1.0e-3):
     """make surface supercells

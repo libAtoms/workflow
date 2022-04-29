@@ -50,13 +50,13 @@ def run(outputs, smiles, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, e
 
     """
 
-    return autoparallelize(iterable=smiles, configset_out=outputs, op=run_op,
+    return autoparallelize(iterable=smiles, configset_out=outputs, op=run_autopara_wrappable,
                          useBasicKnowledge=useBasicKnowledge,
                          useExpTorsionAnglePrefs=useExpTorsionAnglePrefs,
                          extra_info=extra_info)
 
 
-def run_op(smiles, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, extra_info=None):
+def run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, extra_info=None):
     """Creates atomic configurations by repeatedly running smi_to_xyz, I/O with ConfigSet_out.
 
     Parameters

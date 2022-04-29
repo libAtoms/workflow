@@ -31,7 +31,7 @@ def sample(inputs, outputs, calculator, steps, dt,
         initializer = None
     else:
         initializer = np.random.seed
-    return autoparallelize(iterable=inputs, configset_out=outputs, op=sample_op, chunksize=chunksize,
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=sample_autopara_wrappable, chunksize=chunksize,
                          calculator=calculator, steps=steps, dt=dt,
                          temperature=temperature, temperature_tau=temperature_tau,
                          pressure=pressure, pressure_tau=pressure_tau,
@@ -40,7 +40,7 @@ def sample(inputs, outputs, calculator, steps, dt,
                          results_prefix=results_prefix, verbose=verbose, initializer=initializer)
 
 
-def sample_op(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
+def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
               traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for

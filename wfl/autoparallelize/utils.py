@@ -13,7 +13,7 @@ class RemoteInfo:
     resources: dict or Resources
         expyre.resources.Resources or kwargs for its constructor
     job_chunksize: int, default -100
-        chunksize for each job. If negative will be multiplied by iterable_op chunksize
+        chunksize for each job. If negative will be multiplied by iterable_autopara_wrappable chunksize
     pre_cmds: list(str)
         commands to run before starting job
     post_cmds: list(str)

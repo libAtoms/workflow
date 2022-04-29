@@ -12,7 +12,7 @@ from ase import Atoms
 from ase.build import bulk
 from pytest import approx, fixture, raises, skip
 
-from wfl.calculators.espresso import evaluate_op, qe_kpoints_and_kwargs
+from wfl.calculators.espresso import evaluate_autopara_wrappable, qe_kpoints_and_kwargs
 from wfl.calculators.dft import evaluate_dft
 from wfl.configset import ConfigSet, OutputSpec
 
@@ -201,14 +201,14 @@ def test_qe_errors():
     with raises(
         ValueError, match="QE will not perform a calculation without settings given!"
     ):
-        evaluate_op(Atoms(), calculator_kwargs=None)
+        evaluate_autopara_wrappable(Atoms(), calculator_kwargs=None)
 
 
 def test_qe_no_calculation(tmp_path, qe_cmd_and_pseudo):
     # call just to skip if pw.x is missing
     _, _ = qe_cmd_and_pseudo
 
-    results = evaluate_op(bulk("Si"), calculator_kwargs=dict(), output_prefix="dummy_", base_rundir=tmp_path)
+    results = evaluate_autopara_wrappable(bulk("Si"), calculator_kwargs=dict(), output_prefix="dummy_", base_rundir=tmp_path)
 
     assert isinstance(results, Atoms)
     assert "dummy_energy" not in results.info

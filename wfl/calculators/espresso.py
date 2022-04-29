@@ -26,7 +26,7 @@ __default_keep_files = ["*.pwo"]
 __default_properties = ["energy", "forces", "stress"]
 
 
-def evaluate_op(
+def evaluate_autopara_wrappable(
     atoms,
     base_rundir=None,
     dir_prefix="run_QE_",

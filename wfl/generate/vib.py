@@ -393,7 +393,7 @@ class Vibrations:
                 displaced_ats=displaced_out_configset.output_configs)
 
         else:
-            displaced_out_atoms = generic.run_op(atoms=displaced_in_configset,
+            displaced_out_atoms = generic.run_autopara_wrappable(atoms=displaced_in_configset,
                                              calculator=calculator,
                                              properties=properties,
                                              output_prefix=self.prop_prefix)
@@ -537,7 +537,7 @@ def sample_normal_modes(inputs, outputs, temp, sample_size, prop_prefix,
     outputs.end_write()
 
 
-def generate_normal_modes_op(inputs, calculator, prop_prefix,
+def generate_normal_modes_autopara_wrappable(inputs, calculator, prop_prefix,
                              parallel_hessian):
     """Get normal mode information for all atoms in the input
 
@@ -577,7 +577,7 @@ def generate_normal_modes_parallel_atoms(inputs, outputs, calculator,
     parallel_hessian = False
 
     return autoparallelize(iterable=inputs, configset_out=outputs,
-                         op=generate_normal_modes_op, chunksize=chunksize,
+                         op=generate_normal_modes_autopara_wrappable, chunksize=chunksize,
                          calculator=calculator, prop_prefix=prop_prefix,
                          parallel_hessian=parallel_hessian)
 
@@ -585,7 +585,7 @@ def generate_normal_modes_parallel_atoms(inputs, outputs, calculator,
 def generate_normal_modes_parallel_hessian(inputs, outputs, calculator,
                                            prop_prefix):
     parallel_hessian = True
-    atoms_out = generate_normal_modes_op(inputs=inputs,
+    atoms_out = generate_normal_modes_autopara_wrappable(inputs=inputs,
                                          calculator=calculator,
                                          prop_prefix=prop_prefix,
                                          parallel_hessian=parallel_hessian)

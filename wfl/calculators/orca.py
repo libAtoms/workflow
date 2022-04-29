@@ -58,7 +58,7 @@ def evaluate(inputs, outputs,
         outputs.to_ConfigSet_in()
     """
     return autoparallelize(iterable=inputs, configset_out=outputs,
-                         op=evaluate_op,
+                         op=evaluate_autopara_wrappable,
                          base_rundir=base_rundir, dir_prefix=dir_prefix,
                          keep_files=keep_files, orca_kwargs=orca_kwargs,
                          output_prefix=output_prefix,
@@ -98,13 +98,13 @@ def evaluate_basin_hopping(inputs, outputs,
         outputs.to_ConfigSet_in()
     """
     return autoparallelize(iterable=inputs, configset_out=outputs,
-                         op=evaluate_op,
+                         op=evaluate_autopara_wrappable,
                          base_rundir=base_rundir, dir_prefix=dir_prefix,
                          keep_files=keep_files, orca_kwargs=orca_kwargs,
                          output_prefix=output_prefix, basin_hopping=True)
 
 
-def evaluate_op(atoms, base_rundir=None, dir_prefix="ORCA_",
+def evaluate_autopara_wrappable(atoms, base_rundir=None, dir_prefix="ORCA_",
                 keep_files="default", orca_kwargs=None,
                 output_prefix="ORCA_", basin_hopping=False):
     """Evaluate with ORCA, optionally with BasinHopping

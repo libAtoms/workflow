@@ -90,7 +90,7 @@ def iloop(func, *args, def_npool=None, def_chunksize=1, iterable_arg=0, def_skip
                          initializer, initargs, remote_info, label, hash_ignore, *args[2:], **kwargs)
 
 # do we want to allow for ops that only take singletons, not iterables, as input, maybe with chunksize=0?
-# that info would have to be passed down to _wrapped_op so it passes a singleton rather than a list into op
+# that info would have to be passed down to _wrapped_autopara_wrappable so it passes a singleton rather than a list into op
 #
 # some ifs (int positional vs. str keyword) could be removed if we required that the iterable be passed into a kwarg.
 def autoparallelize(npool=None, chunksize=1, iterable=None, configset_out=None, op=None, iterable_arg=0, skip_failed=True,

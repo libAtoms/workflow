@@ -11,7 +11,7 @@ from wfl.autoparallelize.mpipool_support import wfl_mpipool
 from .utils import grouper
 
 
-def _wrapped_op(op, iterable_arg, args, kwargs, item_inputs):
+def _wrapped_autopara_wrappable(op, iterable_arg, args, kwargs, item_inputs):
     """Wrap an operation to be run in parallel by pipeline
 
     Parameters:
@@ -54,7 +54,7 @@ def _wrapped_op(op, iterable_arg, args, kwargs, item_inputs):
 
 
 # do we want to allow for ops that only take singletons, not iterables, as input, maybe with chunksize=0?
-# that info would have to be passed down to _wrapped_op so it passes a singleton rather than a list into op
+# that info would have to be passed down to _wrapped_autopara_wrappable so it passes a singleton rather than a list into op
 #
 # some ifs (int positional vs. str keyword) could be removed if we required that the iterable be passed into a kwarg.
 def do_in_pool(npool=None, chunksize=1, iterable=None, configset_out=None, op=None, iterable_arg=0,
@@ -116,7 +116,7 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, configset_out=None, op=No
                           f'always uses all MPI processes {wfl_mpipool.size}')
             if initializer is not None:
                 # generate a task for each mpi process that will call initializer with positional initargs
-                _ = wfl_mpipool.map(functools.partial(_wrapped_op, initializer, None, initargs, {}),
+                _ = wfl_mpipool.map(functools.partial(_wrapped_autopara_wrappable, initializer, None, initargs, {}),
                                     grouper(1, ((None, None) for i in range(wfl_mpipool.size))))
             pool = wfl_mpipool
         else:
@@ -130,7 +130,7 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, configset_out=None, op=No
             map_f = pool.map
         else:
             map_f = pool.imap
-        results = map_f(functools.partial(_wrapped_op, op, iterable_arg, args, kwargs), items_inputs_generator)
+        results = map_f(functools.partial(_wrapped_autopara_wrappable, op, iterable_arg, args, kwargs), items_inputs_generator)
 
         if not wfl_mpipool:
             # only close pool if its from multiprocessing.pool
@@ -148,7 +148,7 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, configset_out=None, op=No
     else:
         # do directly, still not trivial because of chunksize
         for items_inputs_group in items_inputs_generator:
-            result_group = _wrapped_op(op, iterable_arg, args, kwargs, items_inputs_group)
+            result_group = _wrapped_autopara_wrappable(op, iterable_arg, args, kwargs, items_inputs_group)
 
             if configset_out is not None:
                 for at, from_input_file in result_group:
