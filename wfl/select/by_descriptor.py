@@ -71,7 +71,7 @@ def prep_descs_and_exclude(inputs, at_descs, at_descs_info_key, exclude_list):
 
     Parameters
     ----------
-    inputs: ConfigSet_in
+    inputs: ConfigSet
         input configurations
     at_descs: np.ndarray( n_configs x desc_len ), default None
         if not None, array of descriptors (as rows) for each config
@@ -122,9 +122,9 @@ def write_selected_and_clean(inputs, outputs, selected, at_descs_info_key=None, 
 
     Parameters
     ----------
-    inputs: ConfigSet_in
+    inputs: ConfigSet
         input configuration set
-    outputs: ConfigSet_out
+    outputs: OutputSpec
         target for output of selected configurations
     selected: list(int)
         list of indices to be selected, cannot have duplicates
@@ -161,9 +161,9 @@ def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
 
     Parameters
     ----------
-    inputs: ConfigSet_in
+    inputs: ConfigSet
         atomic configs to select from
-    outputs: ConfigSet_out
+    outputs: OutputSpec
         where to write output to
     num: int
         number to select
@@ -189,11 +189,11 @@ def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
 
     Returns
     -------
-    ConfigSet_in corresponding to selected configs output
+    ConfigSet corresponding to selected configs output
     """
     if outputs.is_done():
         warnings.warn('output is done, returning')
-        return outputs.to_ConfigSet_in()
+        return outputs.to_ConfigSet()
 
     at_descs, exclude_ind_list = prep_descs_and_exclude(inputs, at_descs, at_descs_info_key, exclude_list)
 
@@ -218,7 +218,7 @@ def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
 
     write_selected_and_clean(inputs, outputs, selected, at_descs_info_key, keep_descriptor_info)
 
-    return outputs.to_ConfigSet_in()
+    return outputs.to_ConfigSet()
 
 
 def greedy_fps_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
@@ -228,9 +228,9 @@ def greedy_fps_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_ke
 
     Parameters
     ----------
-    inputs: ConfigSet_in
+    inputs: ConfigSet
         atomic configs to select from
-    outputs: ConfigSet_out
+    outputs: OutputSpec
         where to write output to
     num: int
         number to select
@@ -251,12 +251,12 @@ def greedy_fps_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_ke
 
     Returns
     -------
-    selected_configs : ConfigSet_in
+    selected_configs : ConfigSet
         corresponding to selected configs output
     """
     if outputs.is_done():
         warnings.warn('output is done, returning')
-        return outputs.to_ConfigSet_in()
+        return outputs.to_ConfigSet()
 
     if prev_selected_descs is not None and not isinstance(prev_selected_descs, np.ndarray):
         prev_selected_descs = np.asarray(prev_selected_descs)
@@ -362,4 +362,4 @@ def greedy_fps_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_ke
 
     write_selected_and_clean(inputs, outputs, selected_indices, at_descs_info_key, keep_descriptor_info)
 
-    return outputs.to_ConfigSet_in()
+    return outputs.to_ConfigSet()

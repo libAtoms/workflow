@@ -43,7 +43,7 @@ def run(inputs, outputs, calculator, fmax=1.0e-3, smax=None, steps=1000, pressur
         initializer = None
     else:
         initializer = np.random.seed
-    return autoparallelize(iterable=inputs, configset_out=outputs, op=run_autopara_wrappable, chunksize=chunksize,
+    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, chunksize=chunksize,
                          calculator=calculator, fmax=fmax, smax=smax, steps=steps,
                          pressure=pressure, keep_symmetry=keep_symmetry, traj_step_interval=traj_step_interval,
                          traj_subselect=traj_subselect, skip_failures=skip_failures, results_prefix=results_prefix,

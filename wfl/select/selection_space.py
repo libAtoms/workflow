@@ -46,7 +46,7 @@ def compare_manual_minima(i, j, positions, nn_minima):
             print('mismatch', ii, np.min(positions[js]), nn_minima[ii])
 
 
-# should this be refactored so it can use pipeline.iterable_loop?
+# should this be refactored so it can use autoparalllize.autoparalllize?
 def val_relative_to_nearby_composition_volume_min(inputs, outputs, vol_range, compos_range, info_field_in,
                                                   info_field_out,
                                                   Zs=None, per_atom=True):
@@ -55,9 +55,9 @@ def val_relative_to_nearby_composition_volume_min(inputs, outputs, vol_range, co
 
     Parameters
     ----------
-    inputs: ConfigSet_in
+    inputs: ConfigSet
         input configurations
-    outputs: ConfigSet_out
+    outputs: OutputSpec
         corresponding place for output configs
     vol_range: float
         cutoff range for "nearby" in cell volume/atom [we should define what to do about nonperiodic systems]
@@ -74,12 +74,12 @@ def val_relative_to_nearby_composition_volume_min(inputs, outputs, vol_range, co
 
     Returns
     -------
-    ConfigSet_in
-        ConfigSet_in pointing to configurations with the saved relative value field
+    ConfigSet
+        ConfigSet pointing to configurations with the saved relative value field
     """
     if outputs.is_done():
         sys.stderr.write(f'Returning from {__name__} since output is done\n')
-        return outputs.to_ConfigSet_in()
+        return outputs.to_ConfigSet()
 
     if Zs is None:
         Zs = composition_space_Zs(inputs)
@@ -117,4 +117,4 @@ def val_relative_to_nearby_composition_volume_min(inputs, outputs, vol_range, co
         outputs.write(at, from_input_file=inputs.get_current_input_file())
     outputs.end_write()
 
-    return outputs.to_ConfigSet_in()
+    return outputs.to_ConfigSet()

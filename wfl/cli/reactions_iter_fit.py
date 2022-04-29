@@ -116,7 +116,7 @@ def do_initial_step(ctx, active_iter, verbose):
     print_log('evaluating with DFT - dimers')
     dimers_dft_intermediate = OutputSpec(file_root=run_dir, output_files='dimers_intermediate.xyz',
                                             all_or_none=True, force=True)
-    dft_dimers = evaluate_dft(dimers.to_ConfigSet_in(), dimers_dft_intermediate, params, run_dir)
+    dft_dimers = evaluate_dft(dimers.to_ConfigSet(), dimers_dft_intermediate, params, run_dir)
 
     # create glue & e0
     print_log('write baseline GLUE model')
@@ -162,12 +162,12 @@ def do_initial_step(ctx, active_iter, verbose):
     print_log('evaluating with DFT - normal modes')
     normal_modes_dft_out = OutputSpec(file_root=run_dir, output_files='DFT_evaluated.normal_modes.xyz',
                                          all_or_none=True, force=True)
-    dft_normal_modes = evaluate_dft(normal_modes_in.to_ConfigSet_in(), normal_modes_dft_out, params, run_dir)
+    dft_normal_modes = evaluate_dft(normal_modes_in.to_ConfigSet(), normal_modes_dft_out, params, run_dir)
 
     # fit
     print_log('fitting')
-    database_configs = ConfigSet(input_configsets=[dimers_out.to_ConfigSet_in(), dft_normal_modes,
-                                                      isolated_atoms.to_ConfigSet_in(), dft_fragments])
+    database_configs = ConfigSet(input_configsets=[dimers_out.to_ConfigSet(), dft_normal_modes,
+                                                      isolated_atoms.to_ConfigSet(), dft_fragments])
     # WARNING: OUTDATED CALL - NEED TO UPDATE TO DO DATABASE MODIFY BEFORE AND REF ERROR CALC AFTER
     _ = gap_multistage.fit(database_configs, GAP_name='GAP_iter_0', params=fit_params,
                            database_modify_mod=params.get('fit/database_modify_mod'),
@@ -271,7 +271,7 @@ def do_md_step(ctx, active_iter, verbose, skip_collision, do_neb, do_ts_irc):
         print_log('evaluating with DFT - NEB/TS samples')
         dft_out_neb = OutputSpec(file_root=run_dir, output_files='DFT_evaluated.NEB-selected.xyz',
                                     all_or_none=True, force=True)
-        _ = evaluate_dft(selected_neb_out.to_ConfigSet_in(), dft_out_neb, params, run_dir)
+        _ = evaluate_dft(selected_neb_out.to_ConfigSet(), dft_out_neb, params, run_dir)
     else:
         dft_out_neb = None
 
@@ -280,15 +280,15 @@ def do_md_step(ctx, active_iter, verbose, skip_collision, do_neb, do_ts_irc):
     dft_out = OutputSpec(file_root=run_dir, output_files='DFT_evaluated.MD-selected.xyz',
                             all_or_none=True, force=True)
     # fixme: add config_type here to the file directly somehow
-    _ = evaluate_dft(selected_out.to_ConfigSet_in(), dft_out, params, run_dir)
+    _ = evaluate_dft(selected_out.to_ConfigSet(), dft_out, params, run_dir)
 
     # fit
     print_log('fitting')
     old_configs = [os.path.join('run_iter_{}'.format(i), 'DFT_evaluated.*.xyz') for i in range(0, active_iter)]
     old_dft_evaluated_configs = ConfigSet(input_files=old_configs)
-    database_configs = ConfigSet(input_configsets=[old_dft_evaluated_configs, dft_out.to_ConfigSet_in()])
+    database_configs = ConfigSet(input_configsets=[old_dft_evaluated_configs, dft_out.to_ConfigSet()])
     if dft_out_neb is not None:
-        database_configs.merge(dft_out_neb.to_ConfigSet_in())
+        database_configs.merge(dft_out_neb.to_ConfigSet())
     print_log("fitting database is: " + str(database_configs) + "\n")
     # WARNING: OUTDATED CALL - NEED TO UPDATE TO DO DATABASE MODIFY BEFORE AND REF ERROR CALC AFTER
     _ = gap_multistage.fit(database_configs, GAP_name='GAP_iter_{}'.format(active_iter),
@@ -314,14 +314,14 @@ def evaluate_dft(dft_in_configs, dft_evaluated_configs, params, run_dir):
 
     Parameters
     ----------
-    dft_in_configs : ConfigSet_in
-    dft_evaluated_configs : ConfigSet_out
+    dft_in_configs : ConfigSet
+    dft_evaluated_configs : OutputSpec
     params : Params
         run parameters
 
     Returns
     -------
-    evaluated_configs : ConfigSet_in
+    evaluated_configs : ConfigSet
         as got from iterable_loop of the evaluators
 
     """
@@ -333,7 +333,7 @@ def evaluate_dft(dft_in_configs, dft_evaluated_configs, params, run_dir):
             sys.stderr.write(
                 'Returning before ORCA calculation since output is done on configset:\n' + str(
                     dft_evaluated_configs))
-            return dft_evaluated_configs.to_ConfigSet_in()
+            return dft_evaluated_configs.to_ConfigSet()
 
         # only non-periodic solution possible
         return basinhopping.evaluate_basin_hopping(inputs=dft_in_configs,
@@ -410,24 +410,24 @@ def calc_gap_committee(input_glob, gap_fn_list, run_dir, prefix="gap."):
     outputs = {fn: os.path.join(os.path.dirname(fn), f"{prefix}{os.path.basename(fn)}") for fn in input_files}
 
     # configsets -- with input file specified in
-    configset_in = ConfigSet(input_files=input_files)
-    configset_out = OutputSpec(output_files=outputs, force=True, all_or_none=True)
+    configset = ConfigSet(input_files=input_files)
+    outputspec = OutputSpec(output_files=outputs, force=True, all_or_none=True)
 
     # skip if done
-    if configset_out.is_done():
+    if outputspec.is_done():
         sys.stderr.write(
-            'Returning before GAP-committee calculation since output is done on configset:\n' + str(configset_out))
-        return configset_out.to_ConfigSet_in()
+            'Returning before GAP-committee calculation since output is done on configset:\n' + str(outputspec))
+        return outputspec.to_ConfigSet()
 
     # the calculation with all models
-    configset_out.pre_write()
-    for chunk in configset_in.group_iter():
+    outputspec.pre_write()
+    for chunk in configset.group_iter():
         out_chunk = committee.calculate_committee(chunk, gap_model_list, output_prefix="gap_committee_{}_",
                                                   properties=['energy', 'forces'])
-        configset_out.write(out_chunk, from_input_file=configset_in.get_current_input_file())
-    configset_out.end_write()
+        outputspec.write(out_chunk, from_input_file=configset.get_current_input_file())
+    outputspec.end_write()
 
-    return configset_out.to_ConfigSet_in()
+    return outputspec.to_ConfigSet()
 
 
 if __name__ == '__main__':

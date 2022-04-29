@@ -12,7 +12,7 @@ from .utils import grouper
 
 
 def _wrapped_autopara_wrappable(op, iterable_arg, args, kwargs, item_inputs):
-    """Wrap an operation to be run in parallel by pipeline
+    """Wrap an operation to be run in parallel by autoparallelize
 
     Parameters:
     -----------
@@ -57,7 +57,7 @@ def _wrapped_autopara_wrappable(op, iterable_arg, args, kwargs, item_inputs):
 # that info would have to be passed down to _wrapped_autopara_wrappable so it passes a singleton rather than a list into op
 #
 # some ifs (int positional vs. str keyword) could be removed if we required that the iterable be passed into a kwarg.
-def do_in_pool(npool=None, chunksize=1, iterable=None, configset_out=None, op=None, iterable_arg=0,
+def do_in_pool(npool=None, chunksize=1, iterable=None, outputspec=None, op=None, iterable_arg=0,
                skip_failed=True, initializer=None, initargs=None, args=[], kwargs={}):
     """parallelize some operation over an iterable
     
@@ -68,8 +68,8 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, configset_out=None, op=No
     chunksize: int, default 1
         number of items from iterable to pass to kach invocation of operation
     iterable: iterable, default None
-        iterable to loop over, often ConfigSet_in but could also be other things like range()
-    configset_out: ConfigSet_out, defaulat None
+        iterable to loop over, often ConfigSet but could also be other things like range()
+    outputspec: OutputSpec, defaulat None
         object containing returned Atoms objects
     op: callable
         function to call with each chunk
@@ -88,7 +88,7 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, configset_out=None, op=No
 
     Returns
     -------
-    ConfigSet_in containing returned configs if configset_out is not None, otherwise None
+    ConfigSet containing returned configs if outputspec is not None, otherwise None
     """
     if initargs is None:
         initargs = []
@@ -97,8 +97,8 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, configset_out=None, op=No
         npool = int(os.environ.get('WFL_AUTOPARA_NPOOL', 0))
 
     # actually do the work locally
-    if configset_out is not None:
-        configset_out.pre_write()
+    if outputspec is not None:
+        outputspec.pre_write()
 
     did_no_work = True
 
@@ -138,30 +138,30 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, configset_out=None, op=No
 
         # always loop over results to trigger lazy imap()
         for result_group in results:
-            if configset_out is not None:
+            if outputspec is not None:
                 for at, from_input_file in result_group:
                     if skip_failed and at is None:
                         continue
                     did_no_work = False
-                    configset_out.write(at, from_input_file=from_input_file)
+                    outputspec.write(at, from_input_file=from_input_file)
 
     else:
         # do directly, still not trivial because of chunksize
         for items_inputs_group in items_inputs_generator:
             result_group = _wrapped_autopara_wrappable(op, iterable_arg, args, kwargs, items_inputs_group)
 
-            if configset_out is not None:
+            if outputspec is not None:
                 for at, from_input_file in result_group:
                     if skip_failed and at is None:
                         continue
                     did_no_work = False
-                    configset_out.write(at, from_input_file=from_input_file)
+                    outputspec.write(at, from_input_file=from_input_file)
 
-    if configset_out is not None:
-        configset_out.end_write()
+    if outputspec is not None:
+        outputspec.end_write()
         if did_no_work:
             return ConfigSet()
         else:
-            return configset_out.to_ConfigSet_in()
+            return outputspec.to_ConfigSet()
     else:
         return None

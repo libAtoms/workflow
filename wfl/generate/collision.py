@@ -250,7 +250,7 @@ def post_process_collision_autopara_wrappable(seed, calc,
     cfs_in_min = ConfigSet(input_files=f"{seed}.raw_md.xyz", default_index=default_index)
     cfs_out_min = OutputSpec(output_files=f"{seed}.relax_frames.xyz", force=force)
     cfs_inter = trajectory_processing.trajectory_min(
-        configset_in=cfs_in_min, configset_out=cfs_out_min, calculator=calc,
+        configset=cfs_in_min, outputspec=cfs_out_min, calculator=calc,
         minimise_kwargs=minim_kwargs)
 
     # write the converged frames to file as well
@@ -265,22 +265,22 @@ def post_process_collision_autopara_wrappable(seed, calc,
                             neb_ts=f"{seed}.neb_ts.xyz",
                             neb_irc=f"{seed}.neb_irc.xyz")
 
-        configset_out = OutputSpec(output_files=out_file_map, force=force)
+        outputspec = OutputSpec(output_files=out_file_map, force=force)
 
         collected_images, collected_ts, collected_irc = trajectory_processing.trajectory_neb_ts_irc(
             cfs_inter, calc, neb_kwargs=neb_kwargs, ts_kwargs=ts_kwargs, irc_kwargs=irc_kwargs
         )
 
-        configset_out.pre_write()
+        outputspec.pre_write()
         for atoms_list in collected_images:
-            configset_out.write(atoms_list, from_input_file="neb_frames")
-        configset_out.write(collected_ts, from_input_file="neb_ts")
+            outputspec.write(atoms_list, from_input_file="neb_frames")
+        outputspec.write(collected_ts, from_input_file="neb_ts")
         for atoms_list in collected_irc:
-            configset_out.write(atoms_list, from_input_file="neb_irc")
-        configset_out.end_write()
+            outputspec.write(atoms_list, from_input_file="neb_irc")
+        outputspec.end_write()
     elif do_neb:
-        configset_out_neb = OutputSpec(output_files=f"{seed}.neb_frames.xyz", force=force)
-        trajectory_processing.trajectory_neb(configset_in=cfs_inter, configset_out=configset_out_neb, calculator=calc,
+        outputspec_neb = OutputSpec(output_files=f"{seed}.neb_frames.xyz", force=force)
+        trajectory_processing.trajectory_neb(configset=cfs_inter, outputspec=configset_out_neb, calculator=calc,
                                              neb_kwargs=neb_kwargs)
     elif do_ts_irc:
         raise ValueError("TS+IRC cannot be performed without having done NEB as well")

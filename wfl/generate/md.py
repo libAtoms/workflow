@@ -31,7 +31,7 @@ def sample(inputs, outputs, calculator, steps, dt,
         initializer = None
     else:
         initializer = np.random.seed
-    return autoparallelize(iterable=inputs, configset_out=outputs, op=sample_autopara_wrappable, chunksize=chunksize,
+    return autoparallelize(iterable=inputs, outputspec=outputs, op=sample_autopara_wrappable, chunksize=chunksize,
                          calculator=calculator, steps=steps, dt=dt,
                          temperature=temperature, temperature_tau=temperature_tau,
                          pressure=pressure, pressure_tau=pressure_tau,

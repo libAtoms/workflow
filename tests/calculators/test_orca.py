@@ -20,7 +20,7 @@ from ase.calculators.calculator import CalculationFailed
 
 from wfl.calculators.orca import ORCA, parse_npa_output, natural_population_analysis
 from wfl.calculators import generic
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 
 ref_parameters = dict(charge=0,
                       mult=1,
@@ -111,15 +111,15 @@ def test_orca_with_generic(tmp_path):
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
     atoms = [atoms] * 3 + [Atoms("H")]
-    inputs = ConfigSet_in(input_configs=atoms)
-    outputs = ConfigSet_out()
+    inputs = ConfigSet(input_configs=atoms)
+    outputs = OutputSpec()
 
     calc = ORCA(directory=home_dir, 
                 keep_files = "default", 
                 mult=1)
 
     generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", npool=0)
-    for at in outputs.to_ConfigSet_in():
+    for at in outputs.to_ConfigSet():
         assert "orca_energy" in at.info or "orca_calculation_failed" in at.info
 
 @pytest.mark.skipif(shutil.which("orca") is None, reason="no ORCA executable in path")
@@ -128,8 +128,8 @@ def test_orca_geometry_optimisation(tmp_path):
     home_dir = tmp_path / "home_dir"
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
-    inputs = ConfigSet_in(input_configs=atoms)
-    outputs = ConfigSet_out()
+    inputs = ConfigSet(input_configs=atoms)
+    outputs = OutputSpec()
 
     calc = ORCA(directory=home_dir, 
                 keep_files = "default", 
@@ -139,7 +139,7 @@ def test_orca_geometry_optimisation(tmp_path):
 
     generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", npool=0)
 
-    out = [at for at in outputs.to_ConfigSet_in()][0]
+    out = [at for at in outputs.to_ConfigSet()][0]
 
     assert pytest.approx(out.get_distance(0, 1)) == 0.76812058465248
 
@@ -190,11 +190,11 @@ def test_run_npa(tmp_path):
                 keep_files = ["*.inp", "*.out", "*.janpa"], 
                 post_process=post_func)
 
-    inputs = ConfigSet_in(input_configs=atoms)
-    outputs = ConfigSet_out()
+    inputs = ConfigSet(input_configs=atoms)
+    outputs = OutputSpec()
     generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", npool=0) 
 
-    atoms = [at for at in outputs.to_ConfigSet_in()][0]
+    atoms = [at for at in outputs.to_ConfigSet()][0]
     assert "orca_NPA_electron_population" in atoms.arrays
     assert "orca_NPA_charge" in atoms.arrays
 

@@ -59,8 +59,8 @@ class ConfigSet:
         ABCD queries, iterated over to form list of input configs
     input_configs: ase.Atoms / iterable(Atoms) / iterable(iterable(Atoms))
         Atoms structures given directly
-    input_configsets: iterable(ConfigSet_in)
-        ConfigSet_in objects to be merged
+    input_configsets: iterable(ConfigSet)
+        ConfigSet objects to be merged
     parallel_io: bool, default False
         parallel ASE atomic config input
     verbose: bool, default False
@@ -168,7 +168,7 @@ class ConfigSet:
         
         Parameters
         ----------
-        configset: ConfigSet_in
+        configset: ConfigSet
             Where to add configurations from. 
 
         """ 
@@ -254,11 +254,11 @@ class ConfigSet:
 
 
     def in_memory(self):
-        """Create a ConfigSet_in containing the same configs, but in memory (i.e. as ``self.input_configs``)
+        """Create a ConfigSet containing the same configs, but in memory (i.e. as ``self.input_configs``)
 
         Returns
         -------
-        ConfigSet_in
+        ConfigSet
         """
 
         if self.input_configs is not None:
@@ -284,7 +284,7 @@ class ConfigSet:
 
 
     def to_file(self, filename, scratch=False):
-        """Create a ConfigSet_in containing the same configs, but in one file, optionally with a unique temporary name
+        """Create a ConfigSet containing the same configs, but in one file, optionally with a unique temporary name
 
         Parameters
         ----------
@@ -311,7 +311,7 @@ class ConfigSet:
 
 
     def __str__(self):
-        s = 'ConfigSet_in:'
+        s = 'ConfigSet:'
         if self.input_configs is not None and len(self.input_configs) > 0:
             s += _fmt("input configs #", [str(len(at_group)) for at_group in self.input_configs])
         if self.input_files is not None and len(self.input_files) > 0:
@@ -498,7 +498,7 @@ class OutputSpec:
             ats: Atoms / list(Atoms)
                 Atoms to write
             from_input_file: str or Path, default None
-                If ConfigSet_out was initialised with dict(input_file=output_file, ...):
+                If OutputSpec was initialised with dict(input_file=output_file, ...):
                 input file based on which the corresponding output file is selected.  
             flush_interval: int, default 10
                 Interval (s) for writing to files. 
@@ -557,7 +557,7 @@ class OutputSpec:
                 self.last_flush = cur_time
 
             if self.verbose:
-                print('ConfigSet_out.write wrote {} to {}'.format(len(ats), self.current_output_file.name))
+                print('OutputSpec.write wrote {} to {}'.format(len(ats), self.current_output_file.name))
 
 
     def end_write(self):
@@ -582,12 +582,12 @@ class OutputSpec:
 
 
     # get list(Atoms) or ConfigSet reference to output
-    def to_ConfigSet_in(self):
-        """ Re-package configs held in this class to a ConfigSet_in to be used later in the workflow.
+    def to_ConfigSet(self):
+        """ Re-package configs held in this class to a ConfigSet to be used later in the workflow.
         
         Returns 
         -------
-        ConfigSet_in
+        ConfigSet
         
         """
         if self.output_configs is not None and len(self.output_configs) > 0:
@@ -603,7 +603,7 @@ class OutputSpec:
 
 
     def __str__(self):
-        s = 'ConfigSet_out:'
+        s = 'OutputSpec:'
         if self.set_tags is not None:
             s += _fmt('output tags', str(self.set_tags))
 

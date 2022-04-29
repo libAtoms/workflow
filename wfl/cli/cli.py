@@ -133,7 +133,7 @@ def configs_from_smiles(ctx, smiles, output, info, force):
 
     verbose = ctx.obj["verbose"]
 
-    configset_out = OutputSpec(output_files=output, force=force)
+    outputspec = OutputSpec(output_files=output, force=force)
 
     if info is not None:
         info = key_val_str_to_dict(info)
@@ -141,9 +141,9 @@ def configs_from_smiles(ctx, smiles, output, info, force):
     if verbose:
         print(f'smiles: {smiles}')
         print(f'info: {info}')
-        print(configset_out)
+        print(outputspec)
 
-    wfl.generate.smiles.run(outputs=configset_out, smiles=smiles, extra_info=info)
+    wfl.generate.smiles.run(outputs=outputspec, smiles=smiles, extra_info=info)
 
 
 @subcli_generate_configs.command('remove-sp3-Hs')
@@ -255,15 +255,15 @@ def file_gather(ctx, inputs, output, force, index):
     if not verbose:
         warnings.filterwarnings("ignore", category=UserWarning, module="ase.io.extxyz")
 
-    configset_in = ConfigSet(input_files=inputs, default_index=index)
-    configset_out = OutputSpec(output_files=output, force=force)
+    configset = ConfigSet(input_files=inputs, default_index=index)
+    outputspec = OutputSpec(output_files=output, force=force)
 
     if verbose:
-        print(configset_in)
-        print(configset_out)
+        print(configset)
+        print(outputspec)
 
-    configset_out.write(configset_in)
-    configset_out.end_write()
+    outputspec.write(configset)
+    outputspec.end_write()
 
 
 @subcli_file_operations.command("strip")
@@ -295,11 +295,11 @@ def strip(ctx, inputs, keep_info, keep_array, cell, output, force):
                 "at least")
         output = inputs
 
-    configset_in = ConfigSet(input_files=inputs)
-    configset_out = OutputSpec(output_files=output, force=force, all_or_none=True)
+    configset = ConfigSet(input_files=inputs)
+    outputspec = OutputSpec(output_files=output, force=force, all_or_none=True)
 
     # iterate, used for both progressbar and without the same way
-    for at in configset_in:
+    for at in configset:
         new_at = ase.Atoms(at.get_chemical_symbols(), positions=at.get_positions())
 
         if cell:
@@ -316,9 +316,9 @@ def strip(ctx, inputs, keep_info, keep_array, cell, output, force):
                 if key in keep_array:
                     new_at.arrays[key] = val
 
-        configset_out.write(new_at, configset_in.get_current_input_file())
+        outputspec.write(new_at, configset.get_current_input_file())
 
-    configset_out.end_write()
+    outputspec.end_write()
 
 
 @subcli_processing.command("committee")
@@ -345,12 +345,12 @@ def calc_ef_committee(ctx, inputs, prefix, gap_fn, stride, force):
     outputs = {fn: os.path.join(os.path.dirname(fn), f"{prefix}{os.path.basename(fn)}") for fn in
                inputs}
 
-    configset_in = ConfigSet(input_files=inputs, default_index=stride)
-    configset_out = OutputSpec(output_files=outputs, force=force)
+    configset = ConfigSet(input_files=inputs, default_index=stride)
+    outputspec = OutputSpec(output_files=outputs, force=force)
 
     if verbose:
-        print(configset_in)
-        print(configset_out)
+        print(configset)
+        print(outputspec)
 
     # read GAP models
     gap_fn_list = []
@@ -359,11 +359,11 @@ def calc_ef_committee(ctx, inputs, prefix, gap_fn, stride, force):
     gap_model_list = [(quippy.potential.Potential, "", dict(param_filename=fn)) for fn in gap_fn_list]
 
     # calculate E,F
-    for at in configset_in:
+    for at in configset:
         at = committee.calculate_committee(at, gap_model_list)
-        configset_out.write(at, configset_in.get_current_input_file())
+        outputspec.write(at, configset.get_current_input_file())
 
-    configset_out.end_write()
+    outputspec.end_write()
 
 
 @subcli_processing.command("max-similarity")
@@ -392,11 +392,11 @@ def calc_max_kernel_similarity(ctx, inputs, force, train_filename, cutoff_list, 
     outputs = {fn: os.path.join(os.path.dirname(fn), f"{prefix}{os.path.basename(fn)}") for fn in
                inputs}
 
-    configset_in = ConfigSet(input_files=inputs)
-    configset_out = OutputSpec(output_files=outputs, force=force)
+    configset = ConfigSet(input_files=inputs)
+    outputspec = OutputSpec(output_files=outputs, force=force)
     if verbose:
-        print(configset_in)
-        print(configset_out)
+        print(configset)
+        print(outputspec)
         sys.stdout.flush()
 
     # initialisations for calculation
@@ -405,11 +405,11 @@ def calc_max_kernel_similarity(ctx, inputs, force, train_filename, cutoff_list, 
     if verbose:
         print("Calculated SOAP vectors for training set")
 
-    for at in configset_in:
+    for at in configset:
         at = trajectory_processing.calc_max_similarity_atoms(at, soap_dict, desc_ref)
-        configset_out.write(at, from_input_file=configset_in.get_current_input_file())
+        outputspec.write(at, from_input_file=configset.get_current_input_file())
 
-    configset_out.end_write()
+    outputspec.end_write()
 
 
 @subcli_select_configs.command("weighted-cur")
@@ -444,15 +444,15 @@ def select_cur_and_committee(ctx, inputs, output, cut_threshold, limit, descript
     """
     verbose = ctx.obj["verbose"]
 
-    configset_in = ConfigSet(input_files=inputs,
+    configset = ConfigSet(input_files=inputs,
                                 default_index=(f"::{stride}" if stride is not None else ":"))
     if cut_threshold is not None:
         # cutting by global SOAP metric -- simply recreating the configset with indices calculated
         new_inputs = []
 
-        for subcfs in configset_in.group_iter():
+        for subcfs in configset.group_iter():
             idx = trajectory_processing.cut_trajectory_with_global_metric(subcfs, cut_threshold)
-            current_fn = configset_in.get_current_input_file()
+            current_fn = configset.get_current_input_file()
             if verbose:
                 print(f"cutting at index: {idx} on file {current_fn}")
 
@@ -470,13 +470,13 @@ def select_cur_and_committee(ctx, inputs, output, cut_threshold, limit, descript
             new_inputs.append((current_fn, str_index))
 
         # recreate the configset to have the file indices in it
-        configset_in = ConfigSet(input_files=new_inputs)
+        configset = ConfigSet(input_files=new_inputs)
 
-    configset_out = OutputSpec(output_files=output, force=force)
+    outputspec = OutputSpec(output_files=output, force=force)
 
     if verbose:
-        print(configset_in)
-        print(configset_out)
+        print(configset)
+        print(outputspec)
         sys.stdout.flush()
 
     z_list = []
@@ -487,8 +487,8 @@ def select_cur_and_committee(ctx, inputs, output, cut_threshold, limit, descript
     if verbose:
         print("(z, num) to take:", num_dict)
 
-    weighted_cur.selection(configset_in, configset_out, z_list, descriptor, limit, num_dict)
-    configset_out.end_write()
+    weighted_cur.selection(configset, outputspec, z_list, descriptor, limit, num_dict)
+    outputspec.end_write()
 
 
 
@@ -902,16 +902,16 @@ def orca_eval(ctx, inputs, base_rundir, output_file, output_all_or_none, directo
         if val is not None:
             calc_kwargs[key] = val
 
-    configset_in = ConfigSet(input_files=inputs)
-    configset_out = OutputSpec(output_files=output_file, all_or_none=output_all_or_none)
+    configset = ConfigSet(input_files=inputs)
+    outputspec = OutputSpec(output_files=output_file, all_or_none=output_all_or_none)
 
     if verbose:
-        print(configset_in)
-        print(configset_out)
+        print(configset)
+        print(outputspec)
         print("ORCA wfn-basin hopping calculation parameters: ", calc_kwargs)
 
     wfl.calculators.orca.basinhopping.evaluate_basin_hopping(
-        inputs=configset_in, outputs=configset_out, base_rundir=base_rundir, dir_prefix=directory_prefix,
+        inputs=configset, outputs=outputspec, base_rundir=base_rundir, dir_prefix=directory_prefix,
         keep_files=keep_files, output_prefix=output_prefix, orca_kwargs=calc_kwargs
     )
 
@@ -964,16 +964,16 @@ def orca_eval(ctx, inputs, base_rundir, output_file, output_all_or_none, directo
         if val is not None:
             calc_kwargs[key] = val
 
-    configset_in = ConfigSet(input_files=inputs)
-    configset_out = OutputSpec(output_files=output_file, all_or_none=output_all_or_none)
+    configset = ConfigSet(input_files=inputs)
+    outputspec = OutputSpec(output_files=output_file, all_or_none=output_all_or_none)
 
     if verbose:
-        print(configset_in)
-        print(configset_out)
+        print(configset)
+        print(outputspec)
         print("ORCA calculation parameters: ", calc_kwargs)
 
     wfl.calculators.orca.evaluate(
-        inputs=configset_in, outputs=configset_out, base_rundir=base_rundir,
+        inputs=configset, outputs=outputspec, base_rundir=base_rundir,
         dir_prefix=directory_prefix,
         keep_files=keep_files, output_prefix=output_prefix, orca_kwargs=calc_kwargs
     )

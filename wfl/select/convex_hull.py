@@ -7,7 +7,7 @@ from wfl.utils.convex_hull import find_hull
 def select(inputs, outputs, info_field, Zs=None, verbose=False):
     if outputs.is_done():
         sys.stderr.write('Returning from {__name__} since output is done\n')
-        return outputs.to_ConfigSet_in()
+        return outputs.to_ConfigSet()
 
     if Zs is None:
         Zs = composition_space_Zs(inputs)
@@ -35,4 +35,4 @@ def select(inputs, outputs, info_field, Zs=None, verbose=False):
             pass
 
     outputs.end_write()
-    return outputs.to_ConfigSet_in()
+    return outputs.to_ConfigSet()

@@ -132,9 +132,9 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
 
     Parameters
     ----------
-    inputs: ConfigSet_in
+    inputs: ConfigSet
         input configurations
-    output: ConfigSet_out
+    output: OutputSpec
         output configurations
     num: int
         number of configs to select
@@ -153,12 +153,12 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
 
     Returns
     -------
-    ConfigSet_in containing output configs
+    ConfigSet containing output configs
     """
 
     if outputs.is_done():
         sys.stderr.write('Returning from {__name__} since output is done\n')
-        return outputs.to_ConfigSet_in()
+        return outputs.to_ConfigSet()
 
     quantities = []
     avail_inds = {}
@@ -184,4 +184,4 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
             break
 
     outputs.end_write()
-    return outputs.to_ConfigSet_in()
+    return outputs.to_ConfigSet()

@@ -338,8 +338,8 @@ def evaluate_ref(dft_in_configs, dft_evaluated_configs, params, run_dir, verbose
 
     Parameters
     ----------
-    dft_in_configs : ConfigSet_in
-    dft_evaluated_configs : ConfigSet_out
+    dft_in_configs : ConfigSet
+    dft_evaluated_configs : OutputSpec
     params : Params
         run parameters
     run_dir
@@ -347,7 +347,7 @@ def evaluate_ref(dft_in_configs, dft_evaluated_configs, params, run_dir, verbose
 
     Returns
     -------
-    evaluated_configs : ConfigSet_in
+    evaluated_configs : ConfigSet
         as got from iterable_loop of the evaluators
 
     """
@@ -420,7 +420,7 @@ def do_fit_and_test(cur_iter, run_dir, params, fitting_configs, testing_configs=
 def evaluate_iter_and_fit_all(cur_iter, run_dir, params, step_params, cur_fitting_configs, testing_configs,
                               database_modify_mod, calc_fitting_error, extra_fitting_files=[],
                               seeds=None, verbose=False):
-    # code below is ugly mess of combining things with files, lists and ConfigSet_in - probably indicates
+    # code below is ugly mess of combining things with files, lists and ConfigSet - probably indicates
     # some design flaw someplace
 
     print_log('evaluating with DFT')
@@ -440,7 +440,7 @@ def evaluate_iter_and_fit_all(cur_iter, run_dir, params, step_params, cur_fittin
                 at.info["fit_error_scale_factor"] = error_scale_factor
                 co.write(at)
             co.end_write()
-        evaluated_configs = co.to_ConfigSet_in()
+        evaluated_configs = co.to_ConfigSet()
 
     fitting_configs = [evaluated_configs]
     # gather old fitting files
@@ -449,7 +449,7 @@ def evaluate_iter_and_fit_all(cur_iter, run_dir, params, step_params, cur_fittin
         fitting_configs += [ConfigSet(input_files=old_fitting_files)]
     # Only configsets from the same source can be merged like this
     # so we are implicitly relying on evaluate_ref to return a configset
-    # that is file based (because we added a ConfigSet_in based on old_fitting_files,
+    # that is file based (because we added a ConfigSet based on old_fitting_files,
     # which are definitely files), which might in principle be a problem.
     fitting_configs = ConfigSet(input_configsets=fitting_configs)
 
@@ -937,7 +937,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
     ----------
     run_dir: str
         run directory
-    configs: ConfigSet_in
+    configs: ConfigSet
         set of configs to pick from
     file_label: str
         label for files (that gets suffixes like _flat_histo and _by_desc appended to)

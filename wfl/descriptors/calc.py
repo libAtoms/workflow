@@ -76,9 +76,9 @@ def calc(inputs, outputs, descs, key, local=False, normalize=True, composition_w
 
     Parameters
     ----------
-    inputs: ConfigSet_in
+    inputs: ConfigSet
         input configurations
-    outputs: ConfigSet_out
+    outputs: OutputSpec
         where to write outputs
     descs: str / list(str) / dict(Z : str)
         descriptor (string or dict or quippy.descriptors.Descriptor) or list of descriptors (applied to all species) 
@@ -100,10 +100,10 @@ def calc(inputs, outputs, descs, key, local=False, normalize=True, composition_w
 
     Returns
     -------
-    ConfigSet_in 
-        ConfigSet_out.to_ConfigSet_in() Pointing to outputs
+    ConfigSet 
+        OutputSpec.to_ConfigSet() Pointing to outputs
     """
-    return autoparallelize(iterable=inputs, configset_out=outputs, op=calc_autopara_wrappable, descs=descs, key=key, local=local,
+    return autoparallelize(iterable=inputs, outputspec=outputs, op=calc_autopara_wrappable, descs=descs, key=key, local=local,
                          force=force, verbose=verbose, normalize=normalize, composition_weight=composition_weight)
 
 

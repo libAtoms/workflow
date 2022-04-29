@@ -128,11 +128,11 @@ def conv_buildcell_out(buildcell_output):
 
 def run(outputs, config_is, buildcell_cmd, buildcell_input, extra_info=None,
         perturbation=0.0, skip_failures=True, symprec=0.01, verbose=False):
-    """Creates atomic configurations by repeatedly running buildcell, I/O with ConfigSet_out
+    """Creates atomic configurations by repeatedly running buildcell, I/O with OutputSpec
 
     Parameters
     ----------
-    outputs: ConfigSet_out
+    outputs: OutputSpec
         where to write outputs
     config_is: int / list(int)
         numbers to set in buildcell_config_i info field
@@ -154,11 +154,11 @@ def run(outputs, config_is, buildcell_cmd, buildcell_input, extra_info=None,
 
     Returns
     ------
-        ConfigSet_in corresponding to output
+        ConfigSet corresponding to output
     """
     if extra_info is None:
         extra_info = {}
-    return autoparallelize(iterable=config_is, configset_out=outputs, op=run_autopara_wrappable,
+    return autoparallelize(iterable=config_is, outputspec=outputs, op=run_autopara_wrappable,
                          buildcell_cmd=buildcell_cmd, buildcell_input=buildcell_input,
                          extra_info=extra_info, perturbation=perturbation, skip_failures=skip_failures,
                          verbose=verbose, symprec=symprec)

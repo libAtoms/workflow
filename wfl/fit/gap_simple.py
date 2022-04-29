@@ -17,7 +17,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
 
     Parameters
     ----------
-    fitting_configs: ConfigSet_in
+    fitting_configs: ConfigSet
         set of configurations to fit
     fitting_dict: dict
         dict of keys to turn into command line for gap_fit
@@ -28,7 +28,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
     verbose: bool, default True
     do_fit: bool, default True
         carry out the fit, otherwise only print fitting command
-    remote_info: dict or wfl.pipeline.utils.RemoteInfo, or '_IGNORE' or None
+    remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
         will try to use env var WFL_GAP_SIMPLE_FIT_REMOTEINFO used (see below). '_IGNORE' is for

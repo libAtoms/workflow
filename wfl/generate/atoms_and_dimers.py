@@ -9,8 +9,10 @@ def prepare(outputs, atomic_numbers, bond_lengths=None, dimer_n_steps=41, dimer_
 
     Parameters
     ----------
-    outputs
-    atomic_numbers
+    outputs: OutputSpec
+        target for atom and dimer configurations
+    atomic_numbers: list(int)
+        list of atomic numbers
     bond_lengths : dict, None, default={Any -> 1.0}
         bond lengths by species, default is to assign 1.0 to all elements
     dimer_n_steps : int
@@ -32,7 +34,7 @@ def prepare(outputs, atomic_numbers, bond_lengths=None, dimer_n_steps=41, dimer_
 
     Returns
     -------
-
+    ConfigSet in with configs
     """
     if extra_info is None:
         extra_info = {}
@@ -72,7 +74,7 @@ def prepare(outputs, atomic_numbers, bond_lengths=None, dimer_n_steps=41, dimer_
                 outputs.write(at)
 
     outputs.end_write()
-    return outputs.to_ConfigSet_in()
+    return outputs.to_ConfigSet()
 
 
 def isolated_atom_from_e0(outputs, e0_dict, cell_size, energy_key="energy", extra_info=None):

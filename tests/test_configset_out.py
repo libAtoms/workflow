@@ -6,7 +6,7 @@ from ase.atoms import Atoms
 from wfl.configset import OutputSpec
 
 
-def test_configset_out_flush_interval(tmpdir):
+def test_outputspec_flush_interval(tmpdir):
     outfile = str(Path(tmpdir) / 'co.0.xyz')
     co = OutputSpec(output_files=outfile, all_or_none=False)
     co.pre_write()
@@ -29,7 +29,7 @@ def test_configset_out_flush_interval(tmpdir):
     assert Path(outfile).stat().st_size > 0
 
 
-def test_configset_out_flush_always(tmpdir):
+def test_outputspec_flush_always(tmpdir):
     outfile = str(Path(tmpdir) / 'co.1.xyz')
     co = OutputSpec(output_files=outfile, all_or_none=False)
     co.pre_write()

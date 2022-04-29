@@ -29,11 +29,11 @@ def smi_to_atoms(smi, useBasicKnowledge=True, useExpTorsionAnglePrefs=True):
 
 
 def run(outputs, smiles, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, extra_info=None):
-    """Creates atomic configurations by repeatedly running smi_to_xyz, I/O with ConfigSet_out.
+    """Creates atomic configurations by repeatedly running smi_to_xyz, I/O with OutputSpec.
 
     Parameters
     ----------
-    outputs: ConfigSet_out
+    outputs: OutputSpec
         where to write outputs
     smiles: str/list(str)
        smiles string to generate structure from
@@ -46,18 +46,18 @@ def run(outputs, smiles, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, e
 
     Returns
     -------
-    ConfigSet_in corresponding to output
+    ConfigSet corresponding to output
 
     """
 
-    return autoparallelize(iterable=smiles, configset_out=outputs, op=run_autopara_wrappable,
+    return autoparallelize(iterable=smiles, outputspec=outputs, op=run_autopara_wrappable,
                          useBasicKnowledge=useBasicKnowledge,
                          useExpTorsionAnglePrefs=useExpTorsionAnglePrefs,
                          extra_info=extra_info)
 
 
 def run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, extra_info=None):
-    """Creates atomic configurations by repeatedly running smi_to_xyz, I/O with ConfigSet_out.
+    """Creates atomic configurations by repeatedly running smi_to_xyz, I/O with OutputSpec.
 
     Parameters
     ----------

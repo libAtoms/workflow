@@ -16,9 +16,9 @@ def calc(input_configs, output_configs, calculator,
 
     Parameters
     ----------
-    input_configs: ConfigSet_in
+    input_configs: ConfigSet
         configs to check
-    output_configs: ConfigSet_out
+    output_configs: OutputSpec
         optional location for calculated configs (otherwise will be in memory, and lost when function returns)
     calculator: tuple(constructor, args, kwargs)
         contructor for calculator with any args or kwargs

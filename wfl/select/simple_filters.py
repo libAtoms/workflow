@@ -71,20 +71,20 @@ def apply(inputs, outputs, at_filter):
 
     Parameters
     ----------
-    inputs: ConfigSet_in
+    inputs: ConfigSet
         input configurations
-    outputs: ConfigSet_out
+    outputs: OutputSpec
         corresponding output configurations
     at_filter: callable
         callable that takes an iterable of Atoms and returns a list of selected Atoms
 
     Returns
     -------
-    ConfigSet_in pointing to selected configurations
+    ConfigSet pointing to selected configurations
 
     """
     # disable parallelization by passing npool=0
-    return autoparallelize(npool=0, iterable=inputs, configset_out=outputs, op=at_filter)
+    return autoparallelize(npool=0, iterable=inputs, outputspec=outputs, op=at_filter)
 
 
 # NOTE this could probably be done with iterable_loop by returning a list with multiple
@@ -95,9 +95,9 @@ def by_index(inputs, outputs, indices):
 
     Parameters
     ----------
-    inputs: ConfigSet_in
+    inputs: ConfigSet
         source configurations
-    outputs: ConfigSet_out
+    outputs: OutputSpec
         output configurations
     indices: list(int)
         Indices to be selected.  Values outside 0..len(inputs)-1 will be ignored.
@@ -105,28 +105,28 @@ def by_index(inputs, outputs, indices):
 
     Returns
     -------
-    ConfigSet_in pointing to selected configurations
+    ConfigSet pointing to selected configurations
 
     Notes
     -----
-    This routine depends on details of ConfigSet_in and ConfigSet_out,
+    This routine depends on details of ConfigSet and OutputSpec,
     so perhaps belongs as a use case of iterable_loop, but since it can return
     multiple outputs for a single input, this cannot be done eight now
 
     """
     if outputs.is_done():
         sys.stderr.write(f'Returning before by_index since output is done\n')
-        return outputs.to_ConfigSet_in()
+        return outputs.to_ConfigSet()
 
     if len(indices) == 0:
-        return outputs.to_ConfigSet_in()
+        return outputs.to_ConfigSet()
 
     indices = sorted(indices)
     ii = iter(enumerate(inputs))
     try:
         at_i, at = next(ii)
     except StopIteration:
-        return outputs.to_ConfigSet_in()
+        return outputs.to_ConfigSet()
     cur_i = np.searchsorted(indices, at_i)
     while True:
         if cur_i >= len(indices):
@@ -141,7 +141,7 @@ def by_index(inputs, outputs, indices):
                 break
 
     outputs.end_write()
-    return outputs.to_ConfigSet_in()
+    return outputs.to_ConfigSet()
 
 
 def by_energy(inputs, outputs, lower_limit, upper_limit, energy_parameter_name=None, e0=None):
@@ -149,9 +149,9 @@ def by_energy(inputs, outputs, lower_limit, upper_limit, energy_parameter_name=N
 
     Parameters
     ----------
-    inputs: ConfigSet_in
+    inputs: ConfigSet
         source configurations
-    outputs: ConfigSet_out
+    outputs: OutputSpec
         output configurations
     lower_limit: float / None
         lower energy limit for binding energy, None is -inf
@@ -165,7 +165,7 @@ def by_energy(inputs, outputs, lower_limit, upper_limit, energy_parameter_name=N
 
     Returns
     -------
-    ConfigSet_in pointing to selected configurations
+    ConfigSet pointing to selected configurations
 
     """
 
@@ -188,7 +188,7 @@ def by_energy(inputs, outputs, lower_limit, upper_limit, energy_parameter_name=N
 
     if outputs.is_done():
         sys.stderr.write(f'Returning before by_energy since output is done\n')
-        return outputs.to_ConfigSet_in()
+        return outputs.to_ConfigSet()
 
     selected_any = False
     for atoms in inputs:
@@ -198,6 +198,6 @@ def by_energy(inputs, outputs, lower_limit, upper_limit, energy_parameter_name=N
 
     outputs.end_write()
     if selected_any:
-        return outputs.to_ConfigSet_in()
+        return outputs.to_ConfigSet()
     else:
         return ConfigSet(input_configs=[])

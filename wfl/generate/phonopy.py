@@ -15,7 +15,7 @@ except:
 
 
 def run(inputs, outputs, displacements, strain_displs, ph2_supercell, ph3_supercell=None, pair_cutoff=None, chunksize=10):
-    return autoparallelize(iterable=inputs, configset_out=outputs, op=run_autopara_wrappable, chunksize=chunksize, 
+    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, chunksize=chunksize, 
                          displacements=displacements, strain_displs=strain_displs, ph2_supercell=ph2_supercell,
                          ph3_supercell=ph3_supercell, pair_cutoff=pair_cutoff)
 
@@ -40,7 +40,7 @@ def run_autopara_wrappable(atoms, displacements, strain_displs, ph2_supercell, p
 
     Returns
     -------
-    ConfigSet_in corresponding to outputs
+    ConfigSet corresponding to outputs
 
 
     """

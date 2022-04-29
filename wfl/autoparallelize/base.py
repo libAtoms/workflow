@@ -12,7 +12,7 @@ from .remote import do_remotely
 
 iloop_docstring_pre = """inputs: iterable
         input quantities (atoms, numbers, or anything else)
-    outputs: ConfigSet_out or None
+    outputs: OutputSpec or None
         where to write output atomic configs, or None for no output (i.e. only side-effects)"""
 
 iloop_docstring_post = """iterable_loop_related:
@@ -93,7 +93,7 @@ def iloop(func, *args, def_npool=None, def_chunksize=1, iterable_arg=0, def_skip
 # that info would have to be passed down to _wrapped_autopara_wrappable so it passes a singleton rather than a list into op
 #
 # some ifs (int positional vs. str keyword) could be removed if we required that the iterable be passed into a kwarg.
-def autoparallelize(npool=None, chunksize=1, iterable=None, configset_out=None, op=None, iterable_arg=0, skip_failed=True,
+def autoparallelize(npool=None, chunksize=1, iterable=None, outputspec=None, op=None, iterable_arg=0, skip_failed=True,
                   initializer=None, initargs=None, remote_info=None, label=None, hash_ignore=[], *args, **kwargs):
     """parallelize some operation over an iterable
 
@@ -104,8 +104,8 @@ def autoparallelize(npool=None, chunksize=1, iterable=None, configset_out=None, 
     chunksize: int, default 1
         number of items from iterable to pass to kach invocation of operation
     iterable: iterable, default None
-        iterable to loop over, often ConfigSet_in but could also be other things like range()
-    configset_out: ConfigSet_out, default None
+        iterable to loop over, often ConfigSet but could also be other things like range()
+    outputspec: OutputSpec, default None
         object containing returned Atoms objects
     op: callable
         function to call with each chunk
@@ -133,7 +133,7 @@ def autoparallelize(npool=None, chunksize=1, iterable=None, configset_out=None, 
 
     Returns
     -------
-    ConfigSet_in containing returned configs if configset_out is not None, otherwise None
+    ConfigSet containing returned configs if outputspec is not None, otherwise None
     """
     if initargs is None:
         initargs = []
@@ -174,18 +174,18 @@ def autoparallelize(npool=None, chunksize=1, iterable=None, configset_out=None, 
         assert len(args) >= iterable_arg
         # otherwise not enough args were provided
 
-    if configset_out is not None:
-        if not isinstance(configset_out, OutputSpec):
-            raise RuntimeError('iterable_loop requires configset_out be None or ConfigSet_out')
-        if configset_out.is_done():
+    if outputspec is not None:
+        if not isinstance(outputspec, OutputSpec):
+            raise RuntimeError('iterable_loop requires outputspec be None or OutputSpec')
+        if outputspec.is_done():
             sys.stderr.write(f'Returning before {op} since output is done\n')
-            return configset_out.to_ConfigSet_in()
+            return outputspec.to_ConfigSet()
 
     if remote_info is not None:
-        out = do_remotely(remote_info, hash_ignore, chunksize, iterable, configset_out,
+        out = do_remotely(remote_info, hash_ignore, chunksize, iterable, outputspec,
                           op, iterable_arg, skip_failed, initializer, initargs, args, kwargs)
     else:
-        out = do_in_pool(npool, chunksize, iterable, configset_out, op, iterable_arg,
+        out = do_in_pool(npool, chunksize, iterable, outputspec, op, iterable_arg,
                          skip_failed, initializer, initargs, args, kwargs)
 
     return out

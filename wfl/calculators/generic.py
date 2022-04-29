@@ -14,7 +14,7 @@ def run(inputs, outputs, calculator, properties=None, output_prefix='_auto_', ra
     chunksize=10, verbose=False, npool=None, remote_info=None):
     if properties is None:
         properties = ['energy', 'forces', 'stress']
-    return autoparallelize(iterable=inputs, configset_out=outputs, op=run_autopara_wrappable, chunksize=chunksize,
+    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, chunksize=chunksize,
                          calculator=calculator, properties=properties, output_prefix=output_prefix,
                          verbose=verbose, npool=npool, remote_info=remote_info,
                          raise_calc_exceptions=raise_calc_exceptions)

@@ -504,9 +504,9 @@ def sample_normal_modes(inputs, outputs, temp, sample_size, prop_prefix,
     Parameters
     ----------
 
-    inputs: Atoms / list(Atoms) / ConfigSet_in
+    inputs: Atoms / list(Atoms) / ConfigSet
         Structures with normal mode information (eigenvalues & eigenvectors)
-    outputs: ConfigSet_out
+    outputs: OutputSpec
     temp: float
         Temperature for normal mode displacements
     sample_size: int
@@ -576,7 +576,7 @@ def generate_normal_modes_parallel_atoms(inputs, outputs, calculator,
     # displaced structures needed for numerical hessian
     parallel_hessian = False
 
-    return autoparallelize(iterable=inputs, configset_out=outputs,
+    return autoparallelize(iterable=inputs, outputspec=outputs,
                          op=generate_normal_modes_autopara_wrappable, chunksize=chunksize,
                          calculator=calculator, prop_prefix=prop_prefix,
                          parallel_hessian=parallel_hessian)

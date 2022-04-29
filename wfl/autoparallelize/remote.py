@@ -11,7 +11,7 @@ from .pool import do_in_pool
 from expyre import ExPyRe
 
 
-def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configset_out=None, op=None, iterable_arg=0,
+def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, outputspec=None, op=None, iterable_arg=0,
                 skip_failed=True, initializer=None, initargs=None, args=[], kwargs={}, quiet=False):
     """run tasks as series of remote jobs
 
@@ -22,7 +22,7 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
     quiet: bool, default False
         do not output (to stderr) progress info
 
-    See pipeline.iterable_loop() for other args
+    See autoparallelize.autoparallelize() for other args
     """
     if ExPyRe is None:
         raise RuntimeError('Cannot run as remote jobs since expyre module could not be imported')
@@ -69,11 +69,11 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
         # ignore configset out for hashing of inputs, since that doesn't affect function
         # calls that have to happen (also it's not repeatable for some reason)
         xprs.append(ExPyRe(name=job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
-                            hash_ignore=hash_ignore + ['configset_out'],
+                            hash_ignore=hash_ignore + ['outputspec'],
                             env_vars=remote_info.env_vars, input_files=remote_info.input_files,
                             output_files=remote_info.output_files, function=do_in_pool,
                             kwargs={'npool': None, 'chunksize': chunksize, 'iterable': job_iterable,
-                                    'configset_out': co, 'op': op, 'iterable_arg': iterable_arg,
+                                    'outputspec': co, 'op': op, 'iterable_arg': iterable_arg,
                                     'skip_failed': skip_failed, 'initializer': initializer,
                                     'initargs': initargs, 'args': args, 'kwargs': kwargs}))
 
@@ -84,8 +84,8 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
         xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
                   exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
 
-    # gather results and write them to original configset_out
-    configset_out.pre_write()
+    # gather results and write them to original outputspec
+    outputspec.pre_write()
     at_i = 0
     for chunk_i, xpr in enumerate(xprs):
         if not quiet:
@@ -114,16 +114,16 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
             at_i += len(all_items[chunk_i])
         else:
             for at in ats_out.group_iter():
-                configset_out.write(at, from_input_file=input_files[at_i])
+                outputspec.write(at, from_input_file=input_files[at_i])
                 at_i += 1
             sys.stdout.write(stdout)
             sys.stderr.write(stderr)
 
-    configset_out.end_write()
+    outputspec.end_write()
 
     if 'WFL_AUTOPARA_REMOTE_NO_MARK_PROCESSED' not in os.environ:
-        # mark as processed only after configset_out has been finished
+        # mark as processed only after outputspec has been finished
         for xpr in xprs:
             xpr.mark_processed()
 
-    return configset_out.to_ConfigSet_in()
+    return outputspec.to_ConfigSet()

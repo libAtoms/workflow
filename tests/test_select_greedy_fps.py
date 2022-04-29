@@ -100,7 +100,7 @@ def calc_desc_fake(configs_in, configs_out, descs, key):
 
     configs_out.end_write()
 
-    return configs_out.to_ConfigSet_in()
+    return configs_out.to_ConfigSet()
 
 
 def get_indices(selected_configset):
@@ -190,7 +190,7 @@ def test_write_selected_and_clean():
         at.info["dummy_desc"] = 'dummy'
     write_selected_and_clean(cfs_in, cfs_out, [0, 1], "dummy_desc", False)
 
-    for at in cfs_out.to_ConfigSet_in():
+    for at in cfs_out.to_ConfigSet():
         assert "dummy_desc" not in at.info.keys()
 
 

@@ -36,13 +36,13 @@ def xyz_to_seed(filename):
     return path.join(path.dirname(filename), path.basename(filename).split(".")[0])
 
 
-def trajectory_min(configset_in, configset_out, calculator, minimise_kwargs=None):
+def trajectory_min(configset, outputspec, calculator, minimise_kwargs=None):
     """Minimises every structure in a configset and returns the trajectories
 
     Parameters
     ----------
-    configset_in: configset.Configset_in
-    configset_out: configset.Configset_out
+    configset: configset.Configset_in
+    outputspec: configset.Configset_out
     calculator: ase.calculator.Calculator
     minimise_kwargs
 
@@ -54,23 +54,23 @@ def trajectory_min(configset_in, configset_out, calculator, minimise_kwargs=None
     if minimise_kwargs is None:
         minimise_kwargs = {}
 
-    all_minim_trajectories = run_autopara_wrappable(configset_in, calculator=calculator, **minimise_kwargs)
+    all_minim_trajectories = run_autopara_wrappable(configset, calculator=calculator, **minimise_kwargs)
 
-    configset_out.pre_write()
+    outputspec.pre_write()
     for at_list in all_minim_trajectories:
-        configset_out.write(at_list)
-    configset_out.end_write()
+        outputspec.write(at_list)
+    outputspec.end_write()
 
     return configset.ConfigSet(input_configs=all_minim_trajectories)
 
 
-def trajectory_ts(configset_in, configset_out, calculator, ts_kwargs=None):
+def trajectory_ts(configset, outputspec, calculator, ts_kwargs=None):
     """Find TS every structure in a configset and returns the trajectories
 
     Parameters
     ----------
-    configset_in: configset.Configset_in
-    configset_out: configset.Configset_out
+    configset: configset.Configset_in
+    outputspec: configset.Configset_out
     calculator: ase.calculator.Calculator
     ts_kwargs
 
@@ -82,22 +82,22 @@ def trajectory_ts(configset_in, configset_out, calculator, ts_kwargs=None):
     if ts_kwargs is None:
         ts_kwargs = {}
 
-    all_minim_trajectories = calc_ts(configset_in, calculator=calculator, **ts_kwargs)
+    all_minim_trajectories = calc_ts(configset, calculator=calculator, **ts_kwargs)
 
-    configset_out.pre_write()
+    outputspec.pre_write()
     for at_list in all_minim_trajectories:
-        configset_out.write(at_list)
-    configset_out.end_write()
+        outputspec.write(at_list)
+    outputspec.end_write()
 
     return configset.ConfigSet(input_configs=all_minim_trajectories)
 
 
-def trajectory_neb_ts_irc(configset_in, calculator, neb_kwargs=None, ts_kwargs=None, irc_kwargs=None, index_key=None):
+def trajectory_neb_ts_irc(configset, calculator, neb_kwargs=None, ts_kwargs=None, irc_kwargs=None, index_key=None):
     """If neighboring frames are different, NEB+TS+IRC is calculated on them
 
     Parameters
     ----------
-    configset_in: configset.Configset_in
+    configset: configset.Configset_in
         minimisation trajectories in its groups, in order
         eg. output of trajectory_min
     calculator: ase.calculator.Calculator
@@ -124,7 +124,7 @@ def trajectory_neb_ts_irc(configset_in, calculator, neb_kwargs=None, ts_kwargs=N
     if index_key is None:
         index_key = "neb_index"
 
-    minima = [atl[-1] for atl in configset_in.group_iter()]
+    minima = [atl[-1] for atl in configset.group_iter()]
 
     if len(minima) < 2:
         print("Not enough minimisation trajectories.")
@@ -152,15 +152,15 @@ def trajectory_neb_ts_irc(configset_in, calculator, neb_kwargs=None, ts_kwargs=N
     return collected_images, collected_ts, collected_irc
 
 
-def trajectory_neb(configset_in, configset_out, calculator, neb_kwargs=None, index_key=None):
+def trajectory_neb(configset, outputspec, calculator, neb_kwargs=None, index_key=None):
     """Minimises every Nth structure in a trajectory and returns the trajectories
 
     Parameters
     ----------
-    configset_in: configset.Configset_in
+    configset: configset.Configset_in
         minimisation trajectories in its groups, in order
         eg. output of trajectory_min
-    configset_out: configset.Configset_out
+    outputspec: configset.Configset_out
     calculator: ase.calculator.Calculator
     neb_kwargs: dict
         kwargs for neb calculators
@@ -176,13 +176,13 @@ def trajectory_neb(configset_in, configset_out, calculator, neb_kwargs=None, ind
     if index_key is None:
         index_key = "neb_index"
 
-    minima = [atl[-1] for atl in configset_in.group_iter()]
+    minima = [atl[-1] for atl in configset.group_iter()]
 
     if len(minima) < 2:
         print("Not enough minimisation trajectories.")
         return
 
-    configset_out.pre_write()
+    outputspec.pre_write()
     for i in range(len(minima) - 1):
         start = minima[i]
         end = minima[i + 1]
@@ -193,9 +193,9 @@ def trajectory_neb(configset_in, configset_out, calculator, neb_kwargs=None, ind
             for j, at in enumerate(images):
                 at.info[index_key] = i + j / (len(images) + 1)
 
-            configset_out.write(images)
+            outputspec.write(images)
 
-    configset_out.end_write()
+    outputspec.end_write()
 
 
 def compare_minima(mol1, mol2, cutoff=6.0, threshold=0.95, zeta=2.0):

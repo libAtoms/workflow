@@ -46,8 +46,8 @@ def selection(configs_in, configs_out, z_list, descriptor_stubs, limit, n_select
 
     Parameters
     ----------
-    configs_in: ConfigSet_in
-    configs_out : ConfigSet_out
+    configs_in: ConfigSet
+    configs_out : OutputSpec
     z_list
     descriptor_stubs
     limit
@@ -82,8 +82,8 @@ def selection_full_desc(configs_in, configs_out, descriptor_strs, n_select, limi
 
     Parameters
     ----------
-    configs_in: ConfigSet_in
-    configs_out : ConfigSet_out
+    configs_in: ConfigSet
+    configs_out : OutputSpec
     descriptor_strs : dict
         z -> list(descriptor_strins)
     n_select: dict
@@ -96,7 +96,7 @@ def selection_full_desc(configs_in, configs_out, descriptor_strs, n_select, limi
     """
     if configs_out.is_done():
         print('output is done, returning')
-        return configs_out.to_ConfigSet_in()
+        return configs_out.to_ConfigSet()
 
     weights = trajectory_processing.calc_structure_weights(configs_in, limit)
 

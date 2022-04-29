@@ -15,7 +15,7 @@ def construct_glue_2b(inputs, energy_info_key, cutoff=None, do_e0=True, filename
 
     Parameters
     ----------
-    inputs : ConfigSet_in
+    inputs : ConfigSet
     energy_info_key : dict_key
         info key for energy, will not use the calculator's energy directly
     cutoff : float / dict, default None

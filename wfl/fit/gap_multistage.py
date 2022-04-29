@@ -104,7 +104,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
     Parameters
     ----------
-    fitting_configs: ConfigSet_in
+    fitting_configs: ConfigSet
         input fitting configurations
     GAP_name: str
         name of GAP label, also used as part of xml file
@@ -127,7 +127,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         random seeds to use for committee of models after 0th
     committee_name_postfix: str, default ".committee_"
         str to add to name of committee models in the format: "{GAP_name}{committee_name_postfix}{num}.xml"
-    remote_info: dict or wfl.pipeline.utils.RemoteInfo, or '_IGNORE' or None
+    remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
         will try to use env var WFL_GAP_MULTISTAGE_FIT_REMOTEINFO used (see below). '_IGNORE' is for

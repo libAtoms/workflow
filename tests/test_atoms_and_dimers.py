@@ -69,12 +69,12 @@ def test_dimers(tmp_path):
     assert all(
         [
             at.info.get("config_type", "") != "isolated_atom"
-            for at in configset_0.to_ConfigSet_in()
+            for at in configset_0.to_ConfigSet()
         ]
     )
 
-    distances_created = [at.get_distance(0, 1) for at in configset_0.to_ConfigSet_in()]
-    volumes_created = [at.get_volume() for at in configset_0.to_ConfigSet_in()]
+    distances_created = [at.get_distance(0, 1) for at in configset_0.to_ConfigSet()]
+    volumes_created = [at.get_volume() for at in configset_0.to_ConfigSet()]
     assert np.min(distances_created) == 0.5
     assert np.max(distances_created) == 20.0
     assert len(distances_created) == 18
@@ -93,11 +93,11 @@ def test_dimers(tmp_path):
         max_cutoff=6.0,
     )
     distances_created = [
-        at.get_distance(0, 1) for at in configset_1.to_ConfigSet_in() if len(at) > 1
+        at.get_distance(0, 1) for at in configset_1.to_ConfigSet() if len(at) > 1
     ]
     volume_isolated_atom = [
         at.get_volume()
-        for at in configset_1.to_ConfigSet_in()
+        for at in configset_1.to_ConfigSet()
         if at.info.get("config_type", "") == "isolated_atom"
     ]
     assert sorted(np.unique(distances_created)) == approx([0.4, 1.0, 1.6])
@@ -116,11 +116,11 @@ def test_dimers(tmp_path):
         max_cutoff=16.0,
     )
     distances_created = [
-        at.get_distance(0, 1) for at in configset_1p.to_ConfigSet_in() if len(at) > 1
+        at.get_distance(0, 1) for at in configset_1p.to_ConfigSet() if len(at) > 1
     ]
     volume_isolated_atom = [
         at.get_volume()
-        for at in configset_1p.to_ConfigSet_in()
+        for at in configset_1p.to_ConfigSet()
         if at.info.get("config_type", "") == "isolated_atom"
     ]
     assert sorted(np.unique(distances_created)) == approx([0.4, 1.0, 1.6])
@@ -136,5 +136,5 @@ def test_dimers(tmp_path):
         do_isolated_atoms=True,
         fixed_cell=[10, 20, 30],
     )
-    for at in configset_2.to_ConfigSet_in():
+    for at in configset_2.to_ConfigSet():
         assert at.cell.array == approx(np.array([[10, 0, 0], [0, 20, 0], [0, 0, 30]]))

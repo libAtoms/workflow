@@ -27,7 +27,7 @@ def evaluate_dft(
 
     Parameters
     ----------
-    inputs: list(Atoms) / Configset_in
+    inputs: list(Atoms) / Configset
         input atomic configs, needs to be iterable
     outputs: list(Atoms) / Configset_out
         output atomic configs
@@ -61,7 +61,7 @@ def evaluate_dft(
 
     Returns
     -------
-    ConfigSet_in of configurations with calculated properties
+    ConfigSet of configurations with calculated properties
     """
     # defaults
     if dir_prefix is None:
@@ -80,7 +80,7 @@ def evaluate_dft(
     # run the calculation in parallel
     return autoparallelize(
         iterable=inputs,
-        configset_out=outputs,
+        outputspec=outputs,
         op=op,
         base_rundir=base_rundir,
         dir_prefix=dir_prefix,
