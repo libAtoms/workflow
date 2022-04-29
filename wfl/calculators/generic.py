@@ -10,12 +10,14 @@ from .utils import save_results
 
 
 # run that operates on ConfigSet, for multiprocessing
-def run(inputs, outputs, calculator, properties=None, output_prefix='_auto_', chunksize=10, verbose=False, npool=None, remote_info=None):
+def run(inputs, outputs, calculator, properties=None, output_prefix='_auto_', , raise_calc_exceptions=False, 
+    chunksize=10, verbose=False, npool=None, remote_info=None):
     if properties is None:
         properties = ['energy', 'forces', 'stress']
     return iterable_loop(iterable=inputs, configset_out=outputs, op=run_op, chunksize=chunksize,
                          calculator=calculator, properties=properties, output_prefix=output_prefix,
-                         verbose=verbose, npool=npool, remote_info=remote_info)
+                         verbose=verbose, npool=npool, remote_info=remote_info,
+                         raise_calc_exceptions=raise_calc_exceptions)
 
 
 def run_op(atoms, calculator, properties=None, output_prefix='_auto_', verbose=False, raise_calc_exceptions=False):
