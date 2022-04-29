@@ -16,7 +16,7 @@ except ModuleNotFoundError:
 
 
 from wfl.calculators import committee
-from wfl.calculators.orca import bh
+from wfl.calculators.orca import basinhopping 
 from wfl.configset import ConfigSet_in, ConfigSet_out
 from wfl.descriptor_heuristics import descriptors_from_length_scales
 from wfl.generate_configs.vib import sample_normal_modes
@@ -336,7 +336,7 @@ def evaluate_dft(dft_in_configs, dft_evaluated_configs, params, run_dir):
             return dft_evaluated_configs.to_ConfigSet_in()
 
         # only non-periodic solution possible
-        return bh.evaluate_basin_hopping(inputs=dft_in_configs,
+        return basinhopping.evaluate_basin_hopping(inputs=dft_in_configs,
                                          outputs=dft_evaluated_configs,
                                          base_rundir=run_dir,
                                          orca_kwargs=params.dft_params.get("kwargs", {}),

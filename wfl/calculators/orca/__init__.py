@@ -17,7 +17,7 @@ import ase.calculators.orca
 from wfl.calculators.utils import clean_rundir, save_results
 from wfl.pipeline import iterable_loop
 from wfl.utils.misc import atoms_to_list, chunks
-from wfl.calculators.orca.bh import BasinHoppingORCA
+from wfl.calculators.orca.basinhopping import BasinHoppingORCA
 
 default_keep_files = ["*.inp", "*.out", "*.ase", "*.engrad", "*.xyz",
                         "*_trj.xyz"]
