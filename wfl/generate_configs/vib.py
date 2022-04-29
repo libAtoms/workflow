@@ -14,7 +14,7 @@ from ase import Atoms, units
 from scipy import stats
 
 from wfl.calculators import generic
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize import autoparallelize
 from wfl.utils.misc import atoms_to_list
 
@@ -376,9 +376,9 @@ class Vibrations:
         -------
         """
 
-        displaced_in_configset = ConfigSet_in(
+        displaced_in_configset = ConfigSet(
             input_configs=self._displace_at_in_xyz())
-        displaced_out_configset = ConfigSet_out()
+        displaced_out_configset = OutputSpec()
 
         properties = ['energy', 'forces']
 

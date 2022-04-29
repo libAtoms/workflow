@@ -13,7 +13,7 @@ import numpy as np
 import ase.io
 from ase.stress import voigt_6_to_full_3x3_stress
 
-from wfl.configset import ConfigSet_in
+from wfl.configset import ConfigSet
 from .utils import get_RemoteInfo
 
 from expyre import ExPyRe

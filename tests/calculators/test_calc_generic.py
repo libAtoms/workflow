@@ -8,7 +8,7 @@ from ase.calculators.lj import LennardJones
 from pytest import approx
 
 from wfl.calculators import generic
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 
 ref_lj_energy = -4.52573996914352
 ref_morse_energy = -3.4187397762024867
@@ -51,9 +51,9 @@ def test_atoms_list():
 
 def test_run(tmp_path):
     mol_in = [molecule("CH4"), molecule("CH4")]
-    mol_out = generic.run(mol_in, ConfigSet_out(output_files=join(tmp_path, "run.xyz")), LennardJones(),
+    mol_out = generic.run(mol_in, OutputSpec(output_files=join(tmp_path, "run.xyz")), LennardJones(),
                           properties=["energy", "forces"], output_prefix="_auto_")
-    assert isinstance(mol_out, ConfigSet_in)
+    assert isinstance(mol_out, ConfigSet)
     for at in mol_out:
         assert isinstance(at, Atoms)
 

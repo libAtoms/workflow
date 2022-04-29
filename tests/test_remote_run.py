@@ -15,7 +15,7 @@ import pytest
 
 pytestmark = pytest.mark.remote
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.calculators import generic
 from wfl.generate_configs import minim
 from wfl.calculators.dft import evaluate_dft
@@ -70,8 +70,8 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch):
     ase.io.write(tmp_path / f'ats_i_{sys_name}.xyz', ats)
 
     # calculate values via iterable loop with real jobs
-    ci = ConfigSet_in(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
-    co = ConfigSet_out(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
+    ci = ConfigSet(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
+    co = OutputSpec(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
 
     # cd to test dir, so that things like relative paths for POTCARs work
     # NOTE: very cumbersome with VASP, maybe need more sophisticated control of staging files?
@@ -134,8 +134,8 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch):
     print('len(ref_Es)', len(ref_Es))
 
     # calculate values via iterable loop with real jobs
-    ci = ConfigSet_in(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
-    co = ConfigSet_out(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
+    ci = ConfigSet(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
+    co = OutputSpec(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
 
     # do not mark as processed so next call can reuse
     monkeypatch.setenv('WFL_AUTOPARA_REMOTE_NO_MARK_PROCESSED', '1')
@@ -153,8 +153,8 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch):
 
     # pretend to run again, as though it was interrupted
     (tmp_path / f'ats_o_{sys_name}.xyz').unlink()
-    ci = ConfigSet_in(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
-    co = ConfigSet_out(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
+    ci = ConfigSet(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
+    co = OutputSpec(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
 
     t0 = time.time()
     results = generic.run(inputs=ci, outputs=co, calculator=calc)
@@ -199,16 +199,16 @@ def do_minim(tmp_path, sys_name, monkeypatch):
     ase.io.write(tmp_path / f'ats_i_{sys_name}_2.xyz', ats_2)
 
     infiles = [str(tmp_path / f'ats_i_{sys_name}_1.xyz'), str(tmp_path / f'ats_i_{sys_name}_2.xyz')]
-    ci = ConfigSet_in(input_files=infiles)
+    ci = ConfigSet(input_files=infiles)
 
     # run locally
-    co = ConfigSet_out(output_files={f: f.replace('_i_', '_o_local_') for f in infiles})
+    co = OutputSpec(output_files={f: f.replace('_i_', '_o_local_') for f in infiles})
     results = minim.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
 
     # run remotely
     monkeypatch.setenv('WFL_AUTOPARA_REMOTEINFO', json.dumps(ri))
 
-    co = ConfigSet_out(output_files={f: f.replace('_i_', '_o_') for f in infiles})
+    co = OutputSpec(output_files={f: f.replace('_i_', '_o_') for f in infiles})
     t0 = time.time()
     results = minim.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
     dt = time.time() - t0

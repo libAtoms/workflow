@@ -9,7 +9,7 @@ from ase.build import bulk
 from ase.calculators.emt import EMT
 
 from wfl.generate_configs import minim
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 
 expected_relaxed_positions_constant_pressure = np.array(
     [[ 7.64860000e-04,  6.66750000e-04,  1.12750000e-04],
@@ -63,8 +63,8 @@ def test_mult_files(cu_slab, tmp_path):
     ase.io.write(tmp_path / 'f1.xyz', [cu_slab] * 2)
     ase.io.write(tmp_path / 'f2.xyz', cu_slab)
     infiles = [str(tmp_path / 'f1.xyz'), str(tmp_path / 'f2.xyz')]
-    inputs = ConfigSet_in(input_files=infiles)
-    outputs = ConfigSet_out(output_files={f: f.replace('.xyz', '.out.xyz') for f in infiles})
+    inputs = ConfigSet(input_files=infiles)
+    outputs = OutputSpec(output_files={f: f.replace('.xyz', '.out.xyz') for f in infiles})
 
     calc = EMT()
 
@@ -81,8 +81,8 @@ def test_relax(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet_in(input_configs = cu_slab)
-    outputs = ConfigSet_out()
+    inputs = ConfigSet(input_configs = cu_slab)
+    outputs = OutputSpec()
 
     atoms_opt = minim.run(inputs, outputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215)
@@ -100,8 +100,8 @@ def test_relax_fixed_vol(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet_in(input_configs = cu_slab)
-    outputs = ConfigSet_out()
+    inputs = ConfigSet(input_configs = cu_slab)
+    outputs = OutputSpec()
 
 
     atoms_opt = minim.run(inputs, outputs, calc, fmax=1e-2, precon=None,
@@ -182,8 +182,8 @@ def test_subselect_from_traj(cu_slab):
     assert atoms_opt[0] is None
 
     # check that iterable_loop handles Nones as expected
-    inputs = ConfigSet_in(input_configs = [cu_slab.copy(), cu_slab_optimised.copy()] )
-    outputs = ConfigSet_out()
+    inputs = ConfigSet(input_configs = [cu_slab.copy(), cu_slab_optimised.copy()] )
+    outputs = OutputSpec()
     atoms_opt = minim.run(inputs, outputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215, 
                           steps=2, traj_subselect="last_converged")

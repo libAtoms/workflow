@@ -4,7 +4,7 @@ try:
 except ModuleNotFoundError:
     pass
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.reactions_processing import trajectory_processing
 
 try:

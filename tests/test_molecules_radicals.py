@@ -1,6 +1,6 @@
 import numpy as np
 from ase.build import molecule
-from wfl.configset import ConfigSet_out, ConfigSet_in
+from wfl.configset import OutputSpec, ConfigSet
 
 import pytest
 
@@ -48,8 +48,8 @@ def test_smiles_run_op():
 def test_abstract_sp3_hydrogens():
     
     smiles_list = ['C', 'C=CCO']
-    ConfigSet_in(input_configs=[smiles.smi_to_atoms(smi) for smi in smiles_list])
-    cfs_out = ConfigSet_out()
+    ConfigSet(input_configs=[smiles.smi_to_atoms(smi) for smi in smiles_list])
+    cfs_out = OutputSpec()
 
     expected_formuli = [['CH3']*4,
                          ['C3OH5']*2]

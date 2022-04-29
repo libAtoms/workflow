@@ -8,7 +8,7 @@ from pprint import pprint
 import requests
 
 from wfl.calculators.dft import evaluate_dft
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.utils.logging import print_log
 
 PSPOT_DOWNLOAD_MAP = [
@@ -70,8 +70,8 @@ def main(verbose=True):
     qe_command = "mpirun -n 2 pw.x"  # local command for pw.x, with MPI if needed
 
     # IO
-    configs_in = ConfigSet_in(input_files="periodic_structures.xyz")
-    configs_out = ConfigSet_out(
+    configs_in = ConfigSet(input_files="periodic_structures.xyz")
+    configs_out = OutputSpec(
         output_files="DFT_evaluated.QuantumEspresso.periodic_structures.xyz",
         force=True,
         all_or_none=True,

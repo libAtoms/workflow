@@ -20,7 +20,7 @@ from ase.md.langevin import Langevin
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary, ZeroRotation
 from ase.optimize import BFGS
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize import iloop, iloop_docstring_post
 from wfl.reactions_processing import trajectory_processing
 from wfl.utils import vector_utils
@@ -247,14 +247,14 @@ def post_process_collision_op(seed, calc,
         raise TypeError("minima_interval has incorrect type, not str or int, type given:", type(minim_interval))
 
     # minimisation
-    cfs_in_min = ConfigSet_in(input_files=f"{seed}.raw_md.xyz", default_index=default_index)
-    cfs_out_min = ConfigSet_out(output_files=f"{seed}.relax_frames.xyz", force=force)
+    cfs_in_min = ConfigSet(input_files=f"{seed}.raw_md.xyz", default_index=default_index)
+    cfs_out_min = OutputSpec(output_files=f"{seed}.relax_frames.xyz", force=force)
     cfs_inter = trajectory_processing.trajectory_min(
         configset_in=cfs_in_min, configset_out=cfs_out_min, calculator=calc,
         minimise_kwargs=minim_kwargs)
 
     # write the converged frames to file as well
-    cfs_out_min_converged = ConfigSet_out(output_files=f"{seed}.relax_converged.xyz", force=force)
+    cfs_out_min_converged = OutputSpec(output_files=f"{seed}.relax_converged.xyz", force=force)
     for atl in cfs_inter.group_iter():
         if "config_type" in atl[-1].info.keys() and atl[-1].info['config_type'] == 'minim_last_converged':
             cfs_out_min_converged.write(atl[-1])
@@ -265,7 +265,7 @@ def post_process_collision_op(seed, calc,
                             neb_ts=f"{seed}.neb_ts.xyz",
                             neb_irc=f"{seed}.neb_irc.xyz")
 
-        configset_out = ConfigSet_out(output_files=out_file_map, force=force)
+        configset_out = OutputSpec(output_files=out_file_map, force=force)
 
         collected_images, collected_ts, collected_irc = trajectory_processing.trajectory_neb_ts_irc(
             cfs_inter, calc, neb_kwargs=neb_kwargs, ts_kwargs=ts_kwargs, irc_kwargs=irc_kwargs
@@ -279,7 +279,7 @@ def post_process_collision_op(seed, calc,
             configset_out.write(atoms_list, from_input_file="neb_irc")
         configset_out.end_write()
     elif do_neb:
-        configset_out_neb = ConfigSet_out(output_files=f"{seed}.neb_frames.xyz", force=force)
+        configset_out_neb = OutputSpec(output_files=f"{seed}.neb_frames.xyz", force=force)
         trajectory_processing.trajectory_neb(configset_in=cfs_inter, configset_out=configset_out_neb, calculator=calc,
                                              neb_kwargs=neb_kwargs)
     elif do_ts_irc:

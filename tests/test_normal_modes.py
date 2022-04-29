@@ -5,7 +5,7 @@ import pytest
 from pytest import approx
 
 from wfl.generate_configs import vib
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 import wfl.plotting.normal_modes
 
 def test_getting_normal_modes():

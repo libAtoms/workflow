@@ -5,7 +5,7 @@ import os
 from pprint import pprint
 
 from wfl.calculators.dft import evaluate_dft
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.utils.logging import print_log
 
 
@@ -27,8 +27,8 @@ def main(verbose=True):
     assert "VASP_PP_PATH" in os.environ
 
     # IO
-    configs_in = ConfigSet_in(input_files="periodic_structures.xyz")
-    configs_out = ConfigSet_out(
+    configs_in = ConfigSet(input_files="periodic_structures.xyz")
+    configs_out = OutputSpec(
         output_files="DFT_evaluated.VASP.periodic_structures.xyz",
         force=True,
         all_or_none=True,

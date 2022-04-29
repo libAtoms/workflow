@@ -1,7 +1,7 @@
 import numpy as np
 from ase.atoms import Atoms
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.select_configs.flat_histogram import biased_select_conf
 from wfl.selection_space import val_relative_to_nearby_composition_volume_min
 
@@ -44,12 +44,12 @@ def test_flat_histo_to_nearby(tmp_path):
         ats.append(at)
 
     output_ats = val_relative_to_nearby_composition_volume_min(
-        ConfigSet_in(input_configs=ats),
-        ConfigSet_out(file_root=tmp_path, output_files='test_flat_histo_relative.xyz'),
+        ConfigSet(input_configs=ats),
+        OutputSpec(file_root=tmp_path, output_files='test_flat_histo_relative.xyz'),
         1.0, 0.25, 'energy', 'E_dist_to_nearby')
 
-    selected_ats = biased_select_conf(ConfigSet_in(input_configsets=output_ats),
-                                      ConfigSet_out(file_root=tmp_path,
+    selected_ats = biased_select_conf(ConfigSet(input_configsets=output_ats),
+                                      OutputSpec(file_root=tmp_path,
                                                     output_files='test_flat_histo_relative.selected.xyz'), 10,
                                       'E_dist_to_nearby', kT=0.05)
 

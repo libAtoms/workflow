@@ -10,7 +10,7 @@ import numpy as np
 from ase.units import GPa
 
 from wfl.calculators.dft import evaluate_dft
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate_configs.buildcell import run as run_buildcell
 
 
@@ -41,12 +41,12 @@ def cli(verbose, configuration, buildcell_inputs, buildcell_cmd, n_per_config, p
     for filename in buildcell_inputs:
         with open(filename) as fin:
             buildcell_input = fin.read()
-        c_out = ConfigSet_out(file_root=run_dir, output_files=f'structs.{filename}.xyz',
+        c_out = OutputSpec(file_root=run_dir, output_files=f'structs.{filename}.xyz',
                               all_or_none=True, force=True)
         structs.append(run_buildcell(c_out, range(n_per_config), buildcell_cmd=buildcell_cmd,
                                      buildcell_input=buildcell_input, verbose=verbose))
     # merge
-    structs = ConfigSet_in(input_configsets=structs)
+    structs = ConfigSet(input_configsets=structs)
 
     # get ranges of various keyword arguments
     ranges = {}
@@ -68,7 +68,7 @@ def cli(verbose, configuration, buildcell_inputs, buildcell_cmd, n_per_config, p
             # set desired value
             run_kwargs[key] = param_val
 
-            evaluated_structs = ConfigSet_out(file_root=run_dir, output_files=f'DFT_evaluated.{key}_{param_val}.xyz',
+            evaluated_structs = OutputSpec(file_root=run_dir, output_files=f'DFT_evaluated.{key}_{param_val}.xyz',
                                               all_or_none=True, force=True)
 
             dft_evaluated[key][param_val] = evaluate_dft(

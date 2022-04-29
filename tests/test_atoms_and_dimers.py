@@ -1,7 +1,7 @@
 import numpy as np
 from pytest import approx, raises
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate_configs.atoms_and_dimers import prepare, isolated_atom_from_e0
 
 
@@ -11,10 +11,10 @@ def test_isolated_atom_from_e0(tmp_path):
     extra_info_faulty = dict(energy=0.0)
     extra_info_ok = dict(some_info="dummy str")
 
-    configset_0 = ConfigSet_out(
+    configset_0 = OutputSpec(
         file_root=tmp_path, output_files="test.isolated0.xyz", force=True
     )
-    configset_1 = ConfigSet_out(
+    configset_1 = OutputSpec(
         file_root=tmp_path, output_files="test.isolated1.xyz", force=True
     )
 
@@ -24,7 +24,7 @@ def test_isolated_atom_from_e0(tmp_path):
 
     # normal behaviour
     isolated_atom_from_e0(configset_0, e0_dict, 10.0, "energy_key", extra_info_ok)
-    test_in0 = ConfigSet_in(file_root=tmp_path, input_files="test.isolated0.xyz")
+    test_in0 = ConfigSet(file_root=tmp_path, input_files="test.isolated0.xyz")
     for at in test_in0:
         assert at.info["energy_key"] == e0_dict[at.get_chemical_formula()]
         for key, val in extra_info_ok.items():
@@ -32,7 +32,7 @@ def test_isolated_atom_from_e0(tmp_path):
         assert np.all(at.cell == [[10.0, 0.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 10.0]])
 
     isolated_atom_from_e0(configset_1, e0_dict_num, 10.0)
-    test_in1 = ConfigSet_in(file_root=tmp_path, input_files="test.isolated1.xyz")
+    test_in1 = ConfigSet(file_root=tmp_path, input_files="test.isolated1.xyz")
     for at in test_in1:
         assert at.get_potential_energy() == e0_dict_num[at.get_atomic_numbers()[0]]
 
@@ -41,16 +41,16 @@ def test_dimers(tmp_path):
     atomic_numbers = [1, 6, 50]
     bond_lengths = {1: 1.0, 6: 3.0, 50: 10}
 
-    configset_0 = ConfigSet_out(
+    configset_0 = OutputSpec(
         file_root=tmp_path, output_files="test.dimer0.xyz", force=True
     )
-    configset_1 = ConfigSet_out(
+    configset_1 = OutputSpec(
         file_root=tmp_path, output_files="test.dimer1.xyz", force=True
     )
-    configset_1p = ConfigSet_out(
+    configset_1p = OutputSpec(
         file_root=tmp_path, output_files="test.dimer1p.xyz", force=True
     )
-    configset_2 = ConfigSet_out(
+    configset_2 = OutputSpec(
         file_root=tmp_path, output_files="test.dimer2.xyz", force=True
     )
 

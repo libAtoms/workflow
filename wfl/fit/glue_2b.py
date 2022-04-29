@@ -6,7 +6,7 @@ import ase
 import ase.data
 import numpy as np
 
-from wfl.configset import ConfigSet_in
+from wfl.configset import ConfigSet
 from wfl.utils.vol_composition_space import composition_space_Zs
 
 

@@ -10,7 +10,7 @@ import ase.io
 import numpy as np
 import yaml
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.descriptor_heuristics import descriptor_2brn_uniform_file, descriptors_from_length_scales
 from wfl.fit.gap_simple import run_gap_fit
 from wfl.utils.quip_cli_strings import dict_to_quip_str
@@ -331,7 +331,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         database_file = run_dir / f'fitting_database.combined.{GAP_name}.stage_{i_stage}.extxyz'
         ase.io.write(database_file, fitting_configs)
-        database_ci = ConfigSet_in(input_files=str(database_file))
+        database_ci = ConfigSet(input_files=str(database_file))
 
         # compute number of descriptors for i_stage'th one
         count_descs = []

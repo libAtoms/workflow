@@ -5,7 +5,7 @@ import json
 
 import numpy as np
 
-from wfl.configset import ConfigSet_out
+from wfl.configset import OutputSpec
 from wfl.calculators.generic import run as generic_calc
 
 
@@ -41,7 +41,7 @@ def calc(input_configs, output_configs, calculator,
         at.calc = None
 
     if output_configs is None:
-        output_configs = ConfigSet_out()
+        output_configs = OutputSpec()
 
     properties, calculator_properties = get_properties()
 

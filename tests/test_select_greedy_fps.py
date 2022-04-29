@@ -2,7 +2,7 @@ import numpy as np
 from ase.atoms import Atoms
 from pytest import raises
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.select_configs.by_descriptor import greedy_fps_conf_global, prep_descs_and_exclude, write_selected_and_clean
 
 ref_array = np.array(
@@ -127,14 +127,14 @@ def greedy_fps(calc_desc, tmp_path):
     for at_i, at in enumerate(ats):
         at.info['config_i'] = at_i
 
-    ats_desc = calc_desc(ConfigSet_in(input_configs=ats),
-                         ConfigSet_out(file_root=tmp_path, output_files='test.select_greedy_FPS.desc.xyz'),
+    ats_desc = calc_desc(ConfigSet(input_configs=ats),
+                         OutputSpec(file_root=tmp_path, output_files='test.select_greedy_FPS.desc.xyz'),
                          descs='soap n_max=4 l_max=4 cutoff=4.0 atom_sigma=0.25 average', key='desc')
 
     print('try with desc in Atoms.info no exclude')
     np.random.seed(42)
     selected_indices = get_indices(greedy_fps_conf_global(
-        ats_desc, ConfigSet_out(file_root=tmp_path, output_files='test.select_greedy_FPS.selected_no_exclude.xyz'),
+        ats_desc, OutputSpec(file_root=tmp_path, output_files='test.select_greedy_FPS.selected_no_exclude.xyz'),
         num=5, at_descs_info_key='desc'))
     print("real descs no exclude selected_indices", selected_indices)
     assert selected_indices == [1, 2, 3, 4, 7]
@@ -144,7 +144,7 @@ def greedy_fps(calc_desc, tmp_path):
     print('try with desc in Atoms.info')
     np.random.seed(42)
     selected_indices1 = get_indices(greedy_fps_conf_global(
-        ats_desc, ConfigSet_out(file_root=tmp_path, output_files='test.select_greedy_FPS.selected.xyz'),
+        ats_desc, OutputSpec(file_root=tmp_path, output_files='test.select_greedy_FPS.selected.xyz'),
         num=5, at_descs_info_key='desc', exclude_list=exclude_list))
     print("real descs selected_indices", selected_indices1)
     assert selected_indices1 == [0, 3, 4, 7, 8]
@@ -156,7 +156,7 @@ def greedy_fps(calc_desc, tmp_path):
         del at.info['desc']
     np.random.seed(42)
     selected_indices2 = get_indices(greedy_fps_conf_global(
-        ats, ConfigSet_out(file_root=tmp_path, output_files='test.select_greedy_FPS.selected_separate_array.xyz'),
+        ats, OutputSpec(file_root=tmp_path, output_files='test.select_greedy_FPS.selected_separate_array.xyz'),
         num=5, at_descs=separate_descs, exclude_list=exclude_list))
     print("separate selected_indices", selected_indices2)
     assert selected_indices2 == [0, 3, 4, 7, 8]
@@ -164,20 +164,20 @@ def greedy_fps(calc_desc, tmp_path):
     # test output being done
     selected_indices2_from_output = get_indices(greedy_fps_conf_global(
         ats[::-1],  # this changes the indices, so if the calculation is performed then this should fail
-        outputs=ConfigSet_out(file_root=tmp_path, output_files='test.select_greedy_FPS.selected_separate_array.xyz',
+        outputs=OutputSpec(file_root=tmp_path, output_files='test.select_greedy_FPS.selected_separate_array.xyz',
                               force=True, all_or_none=True),
         num=5, at_descs=separate_descs, exclude_list=exclude_list))
     assert selected_indices2_from_output == selected_indices2
 
     # test if errors are raised
     with raises(RuntimeError, match="Asked for 20 configs but only 10 are available"):
-        _ = greedy_fps_conf_global(inputs=ats_desc, outputs=ConfigSet_out(file_root=tmp_path, output_files="dummy.xyz"),
+        _ = greedy_fps_conf_global(inputs=ats_desc, outputs=OutputSpec(file_root=tmp_path, output_files="dummy.xyz"),
                                    num=20, at_descs_info_key='desc')
 
 
 def test_write_selected_and_clean():
-    cfs_in = ConfigSet_in(input_configs=[Atoms('Si', cell=[i, i, i]) for i in range(3)])
-    cfs_out = ConfigSet_out()
+    cfs_in = ConfigSet(input_configs=[Atoms('Si', cell=[i, i, i]) for i in range(3)])
+    cfs_out = OutputSpec()
 
     # expected errors
     with raises(RuntimeError, match=r".*Got False.*"):
@@ -195,7 +195,7 @@ def test_write_selected_and_clean():
 
 
 def test_prep_descs_and_exclude():
-    cfs_in = ConfigSet_in(input_configs=[Atoms('Si') for _ in range(3)])
+    cfs_in = ConfigSet(input_configs=[Atoms('Si') for _ in range(3)])
 
     with raises(AssertionError):
         _ = prep_descs_and_exclude(cfs_in, "None", "None", "None")
@@ -215,7 +215,7 @@ def test_speed(tmp_path):
     np.random.seed(42)
     t0 = -time.perf_counter()
     selected = greedy_fps_conf_global(ats_desc,
-                                      ConfigSet_out(file_root=tmp_path,
+                                      OutputSpec(file_root=tmp_path,
                                                     output_files='test.select_greedy_FPS.no_real_desc.selected_O_N_sq.xyz'),
                                       num=50, at_descs_info_key='desc', O_N_sq=True)
     t0 += time.perf_counter()
@@ -227,7 +227,7 @@ def test_speed(tmp_path):
     np.random.seed(42)
     t0 = -time.perf_counter()
     selected = greedy_fps_conf_global(ats_desc,
-                                      ConfigSet_out(file_root=tmp_path,
+                                      OutputSpec(file_root=tmp_path,
                                                     output_files='test.select_greedy_FPS.no_real_desc.selected_O_N.xyz'),
                                       num=50, at_descs_info_key='desc', O_N_sq=False)
     t0 += time.perf_counter()
@@ -258,12 +258,12 @@ def test_prev_excl(tmp_path):
     np.random.seed(42)
     no_excl_selected_O_N_2 = get_indices(greedy_fps_conf_global(
         inputs=ats_desc, num=3, at_descs_info_key='desc', O_N_sq=True,
-        outputs=ConfigSet_out(file_root=tmp_path,
+        outputs=OutputSpec(file_root=tmp_path,
                               output_files='test.select_greedy_FPS.no_real_desc.no_prev_excl_O_Nsq.xyz')))
 
     np.random.seed(42)
     selected_O_N_2 = get_indices(greedy_fps_conf_global(
-        inputs=ats_desc, outputs=ConfigSet_out(file_root=tmp_path,
+        inputs=ats_desc, outputs=OutputSpec(file_root=tmp_path,
                                                output_files='test.select_greedy_FPS.no_real_desc.prev_excl_O_Nsq.xyz'),
         num=3, at_descs_info_key='desc', prev_selected_descs=descs_prev, O_N_sq=True))
     # with previous descriptors specified, the result is not the same
@@ -271,7 +271,7 @@ def test_prev_excl(tmp_path):
 
     np.random.seed(42)
     selected_O_N = get_indices(greedy_fps_conf_global(
-        inputs=ats_desc, outputs=ConfigSet_out(file_root=tmp_path,
+        inputs=ats_desc, outputs=OutputSpec(file_root=tmp_path,
                                                output_files='test.select_greedy_FPS.no_real_desc.prev_excl_O_N.xyz'),
         num=3, at_descs_info_key='desc', prev_selected_descs=descs_prev, O_N_sq=False))
 
@@ -279,11 +279,11 @@ def test_prev_excl(tmp_path):
 
     # make sure that with verbose on, the code runs and the same results is observed
     indices_on2_verbose = get_indices(greedy_fps_conf_global(
-        inputs=ats_desc, outputs=ConfigSet_out(file_root=tmp_path,
+        inputs=ats_desc, outputs=OutputSpec(file_root=tmp_path,
                                                output_files='test.select_greedy_FPS.no_real_desc.prev_excl_O_N1.xyz'),
         num=3, at_descs_info_key='desc', prev_selected_descs=descs_prev, O_N_sq=True, verbose=True))
     indices_on_verbose = get_indices(greedy_fps_conf_global(
-        inputs=ats_desc, outputs=ConfigSet_out(file_root=tmp_path,
+        inputs=ats_desc, outputs=OutputSpec(file_root=tmp_path,
                                                output_files='test.select_greedy_FPS.no_real_desc.prev_excl_O_N2.xyz'),
         num=3, at_descs_info_key='desc', prev_selected_descs=descs_prev, O_N_sq=False, verbose=True))
 
@@ -291,7 +291,7 @@ def test_prev_excl(tmp_path):
     assert indices_on_verbose == indices_on2_verbose
 
     indices_desc_conversion = get_indices(greedy_fps_conf_global(
-        inputs=ats_desc, outputs=ConfigSet_out(file_root=tmp_path,
+        inputs=ats_desc, outputs=OutputSpec(file_root=tmp_path,
                                                output_files='test.select_greedy_FPS.no_real_desc.prev_excl_O_N3.xyz'),
         num=3, at_descs_info_key='desc', prev_selected_descs=descs_prev.tolist(), O_N_sq=False, verbose=True))
 

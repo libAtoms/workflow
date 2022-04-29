@@ -3,7 +3,7 @@ import json
 
 import pytest
 
-from wfl.configset import ConfigSet_out
+from wfl.configset import OutputSpec
 from wfl.generate_configs import buildcell
 
 
@@ -50,7 +50,7 @@ def do_buildcell(tmp_path, filename):
 #MINSEP=0.5 Li-Li=2.7
 ##EXTRA_INFO RSS_min_vol_per_atom=10.0"""
 
-    co = buildcell.run(ConfigSet_out(output_files=str(tmp_path / filename)), range(100),
+    co = buildcell.run(OutputSpec(output_files=str(tmp_path / filename)), range(100),
                       buildcell_cmd=os.environ['WFL_PYTEST_BUILDCELL'], buildcell_input=buildcell_input)
 
     assert len(list(co)) == 100

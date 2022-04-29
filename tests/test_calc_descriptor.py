@@ -5,7 +5,7 @@ import pytest
 from ase.atoms import Atoms
 from pytest import approx
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 
 try:
     from wfl.calc_descriptor import calc
@@ -21,9 +21,9 @@ def get_ats():
 
 def test_calc_descriptor_average_any_atomic_number():
     ats = get_ats()
-    ci = ConfigSet_in(input_configs=ats)
+    ci = ConfigSet(input_configs=ats)
 
-    ats_desc = calc(ci, ConfigSet_out(),
+    ats_desc = calc(ci, OutputSpec(),
                     'soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 average n_species=2 species_Z={6 14}', 'desc')
 
     d = Descriptor(
@@ -40,12 +40,12 @@ def test_calc_descriptor_average_any_atomic_number():
 
 def test_calc_descriptor_average_z_specific():
     ats = get_ats()
-    ci = ConfigSet_in(input_configs=ats)
+    ci = ConfigSet(input_configs=ats)
 
     descs = {6: 'soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 average Z=6 n_species=2 species_Z={6 14}',
              14: 'soap n_max=4 l_max=3 cutoff=5.0 atom_sigma=0.5 average Z=14 n_species=2 species_Z={6 14}'}
 
-    ats_desc = calc(ci, ConfigSet_out(), descs, 'desc')
+    ats_desc = calc(ci, OutputSpec(), descs, 'desc')
 
     d6 = Descriptor(descs[6]).calc(ats[0])['data'][0]
     d14 = Descriptor(descs[14]).calc(ats[0])['data'][0]

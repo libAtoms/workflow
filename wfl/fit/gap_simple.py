@@ -4,7 +4,7 @@ import subprocess
 from pathlib import Path
 from copy import deepcopy
 
-from wfl.configset import ConfigSet_in
+from wfl.configset import ConfigSet
 from wfl.utils.quip_cli_strings import dict_to_quip_str
 from .utils import get_RemoteInfo
 from .gap_relocate import gap_relocate

@@ -61,7 +61,7 @@ def trajectory_min(configset_in, configset_out, calculator, minimise_kwargs=None
         configset_out.write(at_list)
     configset_out.end_write()
 
-    return configset.ConfigSet_in(input_configs=all_minim_trajectories)
+    return configset.ConfigSet(input_configs=all_minim_trajectories)
 
 
 def trajectory_ts(configset_in, configset_out, calculator, ts_kwargs=None):
@@ -89,7 +89,7 @@ def trajectory_ts(configset_in, configset_out, calculator, ts_kwargs=None):
         configset_out.write(at_list)
     configset_out.end_write()
 
-    return configset.ConfigSet_in(input_configs=all_minim_trajectories)
+    return configset.ConfigSet(input_configs=all_minim_trajectories)
 
 
 def trajectory_neb_ts_irc(configset_in, calculator, neb_kwargs=None, ts_kwargs=None, irc_kwargs=None, index_key=None):

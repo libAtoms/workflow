@@ -3,7 +3,7 @@ import sys
 import numpy as np
 from ase import Atoms
 
-from wfl.configset import ConfigSet_in
+from wfl.configset import ConfigSet
 from wfl.autoparallelize import autoparallelize
 
 
@@ -200,4 +200,4 @@ def by_energy(inputs, outputs, lower_limit, upper_limit, energy_parameter_name=N
     if selected_any:
         return outputs.to_ConfigSet_in()
     else:
-        return ConfigSet_in(input_configs=[])
+        return ConfigSet(input_configs=[])

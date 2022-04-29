@@ -3,7 +3,7 @@ This is a simple example of how to use Quantum Espresso
 """
 from pprint import pprint
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.utils.logging import print_log
 from wfl.calculators.dft import evaluate_dft
 
@@ -28,8 +28,8 @@ def main(verbose=True):
     castep_command = "mpirun -n 2 castep.mpi"
 
     # IO
-    configs_in = ConfigSet_in(input_files="periodic_structures.xyz")
-    configs_out = ConfigSet_out(
+    configs_in = ConfigSet(input_files="periodic_structures.xyz")
+    configs_out = OutputSpec(
         output_files="DFT_evaluated.CASTEP.periodic_structures.xyz",
         force=True,
         all_or_none=True,

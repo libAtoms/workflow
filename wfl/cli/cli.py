@@ -28,7 +28,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 
 from wfl.plotting import reactions_plotting, plot_ef_correlation, plot_2b
 from wfl.plotting import normal_modes
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 import wfl.generate_configs.collision
 from wfl.generate_configs import vib
 import wfl.generate_configs.radicals
@@ -131,7 +131,7 @@ def configs_from_smiles(ctx, smiles, output, info, force):
 
     verbose = ctx.obj["verbose"]
 
-    configset_out = ConfigSet_out(output_files=output, force=force)
+    configset_out = OutputSpec(output_files=output, force=force)
 
     if info is not None:
         info = key_val_str_to_dict(info)
@@ -154,8 +154,8 @@ def configs_from_smiles(ctx, inputs, outputs, force):
 
     verbose = ctx.obj["verbose"]
 
-    inputs = ConfigSet_in(input_files=inputs)
-    outputs = ConfigSet_out(output_files=outputs, force=force)
+    inputs = ConfigSet(input_files=inputs)
+    outputs = OutputSpec(output_files=outputs, force=force)
 
     if verbose:
         print(inputs)
@@ -253,8 +253,8 @@ def file_gather(ctx, inputs, output, force, index):
     if not verbose:
         warnings.filterwarnings("ignore", category=UserWarning, module="ase.io.extxyz")
 
-    configset_in = ConfigSet_in(input_files=inputs, default_index=index)
-    configset_out = ConfigSet_out(output_files=output, force=force)
+    configset_in = ConfigSet(input_files=inputs, default_index=index)
+    configset_out = OutputSpec(output_files=output, force=force)
 
     if verbose:
         print(configset_in)
@@ -293,8 +293,8 @@ def strip(ctx, inputs, keep_info, keep_array, cell, output, force):
                 "at least")
         output = inputs
 
-    configset_in = ConfigSet_in(input_files=inputs)
-    configset_out = ConfigSet_out(output_files=output, force=force, all_or_none=True)
+    configset_in = ConfigSet(input_files=inputs)
+    configset_out = OutputSpec(output_files=output, force=force, all_or_none=True)
 
     # iterate, used for both progressbar and without the same way
     for at in configset_in:
@@ -343,8 +343,8 @@ def calc_ef_committee(ctx, inputs, prefix, gap_fn, stride, force):
     outputs = {fn: os.path.join(os.path.dirname(fn), f"{prefix}{os.path.basename(fn)}") for fn in
                inputs}
 
-    configset_in = ConfigSet_in(input_files=inputs, default_index=stride)
-    configset_out = ConfigSet_out(output_files=outputs, force=force)
+    configset_in = ConfigSet(input_files=inputs, default_index=stride)
+    configset_out = OutputSpec(output_files=outputs, force=force)
 
     if verbose:
         print(configset_in)
@@ -390,8 +390,8 @@ def calc_max_kernel_similarity(ctx, inputs, force, train_filename, cutoff_list, 
     outputs = {fn: os.path.join(os.path.dirname(fn), f"{prefix}{os.path.basename(fn)}") for fn in
                inputs}
 
-    configset_in = ConfigSet_in(input_files=inputs)
-    configset_out = ConfigSet_out(output_files=outputs, force=force)
+    configset_in = ConfigSet(input_files=inputs)
+    configset_out = OutputSpec(output_files=outputs, force=force)
     if verbose:
         print(configset_in)
         print(configset_out)
@@ -442,7 +442,7 @@ def select_cur_and_committee(ctx, inputs, output, cut_threshold, limit, descript
     """
     verbose = ctx.obj["verbose"]
 
-    configset_in = ConfigSet_in(input_files=inputs,
+    configset_in = ConfigSet(input_files=inputs,
                                 default_index=(f"::{stride}" if stride is not None else ":"))
     if cut_threshold is not None:
         # cutting by global SOAP metric -- simply recreating the configset with indices calculated
@@ -468,9 +468,9 @@ def select_cur_and_committee(ctx, inputs, output, cut_threshold, limit, descript
             new_inputs.append((current_fn, str_index))
 
         # recreate the configset to have the file indices in it
-        configset_in = ConfigSet_in(input_files=new_inputs)
+        configset_in = ConfigSet(input_files=new_inputs)
 
-    configset_out = ConfigSet_out(output_files=output, force=force)
+    configset_out = OutputSpec(output_files=output, force=force)
 
     if verbose:
         print(configset_in)
@@ -511,7 +511,7 @@ def plot_ef_thinpoints(ctx, inputs, plot_fn, gap_fn, colors, thin_kwargs, ref_en
                        ref_force_key, gap_force_key):
     """Plot energy and force correlation with thinpoints
     """
-    frames = ConfigSet_in(input_files=inputs)
+    frames = ConfigSet(input_files=inputs)
     print(frames)
     e0 = gap_xml_tools.extract_e0(gap_fn)
     if colors is not None:
@@ -700,7 +700,7 @@ def _repeat_buildcell(ctx, output_file, output_all_or_none, buildcell_input, bui
         buildcell_input_txt = bc_f.read()
 
     wfl.generate_configs.buildcell.run(
-        outputs=ConfigSet_out(output_files=output_file, all_or_none=output_all_or_none),
+        outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none),
         config_is=range(n_configs),
         buildcell_cmd=buildcell_exec,
         buildcell_input=buildcell_input_txt,
@@ -739,8 +739,8 @@ def _CUR_global(ctx, inputs, output_file, output_all_or_none, n_configs,
         clean_tmp_files = True
 
     wfl.select_configs.by_descriptor.CUR_conf_global(
-        inputs=ConfigSet_in(input_files=inputs),
-        outputs=ConfigSet_out(output_files=output_file, all_or_none=output_all_or_none),
+        inputs=ConfigSet(input_files=inputs),
+        outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none),
         num=n_configs,
         at_descs_info_key=descriptor_key, kernel_exp=kernel_exponent, stochastic=not deterministic,
         keep_descriptor_info=keep_descriptor)
@@ -766,8 +766,8 @@ def _calc_descriptor(ctx, inputs, output_file, output_all_or_none, descriptor, k
 
 def _do_calc_descriptor(inputs, output_file, output_all_or_none, descriptor, key, local, force):
     wfl.calc_descriptor.calc(
-        inputs=ConfigSet_in(input_files=inputs),
-        outputs=ConfigSet_out(output_files=output_file, all_or_none=output_all_or_none, force=force),
+        inputs=ConfigSet(input_files=inputs),
+        outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none, force=force),
         descs=descriptor,
         key=key,
         local=local,
@@ -798,8 +798,8 @@ def _vasp_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, direct
     vasp_kwargs['INCAR_file'] = incar
     vasp_kwargs['KPOINTS_file'] = kpoints
     evaluate_dft(
-        inputs=ConfigSet_in(input_files=inputs),
-        outputs=ConfigSet_out(output_files=output_file, all_or_none=output_all_or_none),
+        inputs=ConfigSet(input_files=inputs),
+        outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none),
         calculator_name="VASP",
         base_rundir=base_rundir,
         dir_prefix=directory_prefix,
@@ -829,8 +829,8 @@ def _castep_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, dire
         castep_kwargs = key_val_str_to_dict(castep_kwargs)
 
     evaluate_dft(
-        inputs=ConfigSet_in(input_files=inputs),
-        outputs=ConfigSet_out(output_files=output_file, all_or_none=output_all_or_none),
+        inputs=ConfigSet(input_files=inputs),
+        outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none),
         calculator_name="CASTEP",
         base_rundir=base_rundir,
         dir_prefix=directory_prefix,
@@ -900,8 +900,8 @@ def orca_eval(ctx, inputs, base_rundir, output_file, output_all_or_none, directo
         if val is not None:
             calc_kwargs[key] = val
 
-    configset_in = ConfigSet_in(input_files=inputs)
-    configset_out = ConfigSet_out(output_files=output_file, all_or_none=output_all_or_none)
+    configset_in = ConfigSet(input_files=inputs)
+    configset_out = OutputSpec(output_files=output_file, all_or_none=output_all_or_none)
 
     if verbose:
         print(configset_in)
@@ -962,8 +962,8 @@ def orca_eval(ctx, inputs, base_rundir, output_file, output_all_or_none, directo
         if val is not None:
             calc_kwargs[key] = val
 
-    configset_in = ConfigSet_in(input_files=inputs)
-    configset_out = ConfigSet_out(output_files=output_file, all_or_none=output_all_or_none)
+    configset_in = ConfigSet(input_files=inputs)
+    configset_out = OutputSpec(output_files=output_file, all_or_none=output_all_or_none)
 
     if verbose:
         print(configset_in)
@@ -1004,7 +1004,7 @@ def ref_error(ctx, inputs, pre_calc, calc, calc_args, calc_kwargs, ref_prefix, p
               category_keys, outfile, intermed_file):
     verbose = ctx.obj["verbose"]
 
-    cs_out = ConfigSet_out(output_files=intermed_file)
+    cs_out = OutputSpec(output_files=intermed_file)
 
     if pre_calc is not None:
         exec(pre_calc)
@@ -1013,13 +1013,13 @@ def ref_error(ctx, inputs, pre_calc, calc, calc_args, calc_kwargs, ref_prefix, p
         # copy from SinglePointCalculator to info/arrays so calculator results won't overwrite
         # will do this by keeping copy of configs in memory, maybe should have an optional way to do
         # this via a file instead.
-        inputs = list(ConfigSet_in(input_files=inputs))
+        inputs = list(ConfigSet(input_files=inputs))
         ref_property_keys = wfl.fit.utils.copy_properties(inputs, ref_property_keys=ref_prefix)
-        inputs = ConfigSet_in(input_configs=inputs)
+        inputs = ConfigSet(input_configs=inputs)
     else:
         ref_property_keys = {p: ref_prefix + p for p in
                              ['energy', 'forces', 'stress', 'virial']}
-        inputs = ConfigSet_in(input_files=inputs)
+        inputs = ConfigSet(input_files=inputs)
 
     errs = wfl.fit.ref_error.calc(inputs, cs_out,
                                   calculator=(
@@ -1061,9 +1061,9 @@ def multistage_gap(ctx, inputs, gap_name, params_file, property_prefix, database
         fit_params = json.load(fin)
 
     if testing_configs is not None:
-        testing_configs = ConfigSet_in(input_files=testing_configs.split())
+        testing_configs = ConfigSet(input_files=testing_configs.split())
 
-    GAP, fit_err, test_err = wfl.fit.gap_multistage.fit(ConfigSet_in(input_files=inputs),
+    GAP, fit_err, test_err = wfl.fit.gap_multistage.fit(ConfigSet(input_files=inputs),
                                                         GAP_name=gap_name, params=fit_params,
                                                         ref_property_prefix=property_prefix,
                                                         database_modify_mod=database_modify_mod,
@@ -1108,7 +1108,7 @@ def simple_gap_fit(ctx, gap_file, atoms_filename, param_file,
             raise RuntimeError('atoms_filename given in params file and as '
                                'command line input')
 
-    fitting_ci = ConfigSet_in(input_files=atoms_filename)
+    fitting_ci = ConfigSet(input_files=atoms_filename)
 
     if gap_file != 'GAP.xml':
         if params.get('gap_file', False):
