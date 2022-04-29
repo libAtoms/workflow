@@ -5,9 +5,9 @@ import os
 import warnings
 
 # must do this here to ensure that all ranks except 0 hang and just wait for mpipool tasks
-import wfl.mpipool_support
+import wfl.autoparallelize.mpipool_support
 
-wfl.mpipool_support.init()
+wfl.autoparallelize.mpipool_support.init()
 
 import os
 import sys

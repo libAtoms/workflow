@@ -6,7 +6,7 @@ import functools
 from multiprocessing.pool import Pool
 
 from wfl.configset import ConfigSet
-from wfl.mpipool_support import wfl_mpipool
+from wfl.autoparallelize.mpipool_support import wfl_mpipool
 
 from .utils import grouper
 

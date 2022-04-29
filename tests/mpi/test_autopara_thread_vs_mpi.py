@@ -10,7 +10,7 @@ from ase import Atoms
 from ase.build import molecule
 from ase.calculators.lj import LennardJones
 
-import wfl.mpipool_support
+import wfl.autoparallelize.mpipool_support
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 
