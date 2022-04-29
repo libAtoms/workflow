@@ -20,7 +20,7 @@ from wfl.calculators.orca import basinhopping
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.descriptor_heuristics import descriptors_from_length_scales
 from wfl.generate.vib import sample_normal_modes
-from wfl.select.simple_filters import by_energy
+from wfl.select.simple import by_energy
 from wfl.utils.logging import increment_active_iter, print_log, process_active_iter
 from wfl.utils.params import Params
 from wfl.utils.vol_composition_space import composition_space_Zs
