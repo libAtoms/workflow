@@ -36,7 +36,7 @@ ref_output = dict(energy=-2933.086022884649,
                   )
 
 
-def test_extended_orca_calculator():
+def test_orca_calculator():
     orca = ORCA()
     orca.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'assets', 'orca'))
 
