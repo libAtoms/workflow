@@ -6,7 +6,7 @@ Currently implemented codes:
 - VASP
 - Quantum Espresso
 """
-from wfl.pipeline import iterable_loop
+from wfl.autoparallelize import autoparallelize
 from wfl.calculators import castep, vasp, espresso
 
 
@@ -78,7 +78,7 @@ def evaluate_dft(
         raise ValueError(f"Calculator name `{calculator_name}` not understood")
 
     # run the calculation in parallel
-    return iterable_loop(
+    return autoparallelize(
         iterable=inputs,
         configset_out=outputs,
         op=op,

@@ -4,7 +4,7 @@ import warnings
 
 from ase.atoms import Atoms
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from .utils import grouper, RemoteInfo
 from .pool import do_in_pool
 
@@ -33,7 +33,7 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
     if remote_info.job_chunksize < 0:
         remote_info.job_chunksize = -remote_info.job_chunksize * chunksize
 
-    if isinstance(iterable, ConfigSet_in):
+    if isinstance(iterable, ConfigSet):
         items_inputs_generator = grouper(remote_info.job_chunksize, ((item, iterable.get_current_input_file()) for item in iterable))
     else:
         items_inputs_generator = grouper(remote_info.job_chunksize, ((item, None) for item in iterable))
@@ -60,11 +60,11 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
         if not quiet:
             sys.stderr.write(f'Creating job {job_name}\n')
 
-        if isinstance(iterable, ConfigSet_in):
-            job_iterable = ConfigSet_in(input_configs=items)
+        if isinstance(iterable, ConfigSet):
+            job_iterable = ConfigSet(input_configs=items)
         else:
             job_iterable = items
-        co = ConfigSet_out()
+        co = OutputSpec()
         # remote job will have to set npool appropriately for its node
         # ignore configset out for hashing of inputs, since that doesn't affect function
         # calls that have to happen (also it's not repeatable for some reason)
@@ -99,7 +99,7 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, configs
                 raise
             if len(all_items) > 0 and isinstance(all_items[chunk_i][0], Atoms):
                 # get ready to write input configs to output
-                ats_out = ConfigSet_in(input_configs=all_items[chunk_i])
+                ats_out = ConfigSet(input_configs=all_items[chunk_i])
                 for at in ats_out:
                     at.info['EXPYRE_REMOTE_JOB_FAILED'] = True
             else:

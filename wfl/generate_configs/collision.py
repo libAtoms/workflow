@@ -21,7 +21,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.optimize import BFGS
 
 from wfl.configset import ConfigSet_in, ConfigSet_out
-from wfl.pipeline import iloop, iloop_docstring_post
+from wfl.autoparallelize import iloop, iloop_docstring_post
 from wfl.reactions_processing import trajectory_processing
 from wfl.utils import vector_utils
 from wfl.utils.parallel import construct_calculator_picklesafe

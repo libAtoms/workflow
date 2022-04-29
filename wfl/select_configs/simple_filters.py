@@ -4,7 +4,7 @@ import numpy as np
 from ase import Atoms
 
 from wfl.configset import ConfigSet_in
-from wfl.pipeline import iterable_loop
+from wfl.autoparallelize import autoparallelize
 
 
 class InfoAllIn:
@@ -84,7 +84,7 @@ def apply(inputs, outputs, at_filter):
 
     """
     # disable parallelization by passing npool=0
-    return iterable_loop(npool=0, iterable=inputs, configset_out=outputs, op=at_filter)
+    return autoparallelize(npool=0, iterable=inputs, configset_out=outputs, op=at_filter)
 
 
 # NOTE this could probably be done with iterable_loop by returning a list with multiple

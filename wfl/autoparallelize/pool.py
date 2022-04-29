@@ -5,7 +5,7 @@ import warnings
 import functools
 from multiprocessing.pool import Pool
 
-from wfl.configset import ConfigSet_in
+from wfl.configset import ConfigSet
 from wfl.mpipool_support import wfl_mpipool
 
 from .utils import grouper
@@ -102,7 +102,7 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, configset_out=None, op=No
 
     did_no_work = True
 
-    if isinstance(iterable, ConfigSet_in):
+    if isinstance(iterable, ConfigSet):
         items_inputs_generator = grouper(chunksize, ((item, iterable.get_current_input_file()) for item in iterable))
     else:
         items_inputs_generator = grouper(chunksize, ((item, None) for item in iterable))
@@ -160,7 +160,7 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, configset_out=None, op=No
     if configset_out is not None:
         configset_out.end_write()
         if did_no_work:
-            return ConfigSet_in()
+            return ConfigSet()
         else:
             return configset_out.to_ConfigSet_in()
     else:

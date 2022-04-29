@@ -15,7 +15,7 @@ from scipy import stats
 
 from wfl.calculators import generic
 from wfl.configset import ConfigSet_in, ConfigSet_out
-from wfl.pipeline import iterable_loop
+from wfl.autoparallelize import autoparallelize
 from wfl.utils.misc import atoms_to_list
 
 # conversion factor from eV/Å^2/amu to eV^2
@@ -576,7 +576,7 @@ def generate_normal_modes_parallel_atoms(inputs, outputs, calculator,
     # displaced structures needed for numerical hessian
     parallel_hessian = False
 
-    return iterable_loop(iterable=inputs, configset_out=outputs,
+    return autoparallelize(iterable=inputs, configset_out=outputs,
                          op=generate_normal_modes_op, chunksize=chunksize,
                          calculator=calculator, prop_prefix=prop_prefix,
                          parallel_hessian=parallel_hessian)

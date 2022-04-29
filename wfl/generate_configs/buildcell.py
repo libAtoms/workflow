@@ -8,7 +8,7 @@ import spglib
 from ase.atoms import Atoms
 from ase.io.extxyz import key_val_str_to_dict
 
-from wfl.pipeline import iterable_loop
+from wfl.autoparallelize import autoparallelize
 from wfl.utils.round_sig_figs import round_sig_figs
 
 
@@ -158,7 +158,7 @@ def run(outputs, config_is, buildcell_cmd, buildcell_input, extra_info=None,
     """
     if extra_info is None:
         extra_info = {}
-    return iterable_loop(iterable=config_is, configset_out=outputs, op=run_op,
+    return autoparallelize(iterable=config_is, configset_out=outputs, op=run_op,
                          buildcell_cmd=buildcell_cmd, buildcell_input=buildcell_input,
                          extra_info=extra_info, perturbation=perturbation, skip_failures=skip_failures,
                          verbose=verbose, symprec=symprec)

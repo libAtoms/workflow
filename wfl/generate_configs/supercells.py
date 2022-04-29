@@ -6,24 +6,24 @@ import numpy as np
 import spglib
 from ase.atoms import Atoms
 
-from wfl.pipeline import iterable_loop
+from wfl.autoparallelize import autoparallelize
 from wfl.utils.find_voids import find_voids
 
 
 def largest_bulk(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, chunksize=10):
-    return iterable_loop(iterable=inputs, configset_out=outputs, op=largest_bulk_op,
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=largest_bulk_op,
                          chunksize=chunksize, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec)
 
 
 def vacancy(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, n_vac=1, cluster_r=0.0, chunksize=10):
-    return iterable_loop(iterable=inputs, configset_out=outputs, op=vacancy_op,
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=vacancy_op,
                          chunksize=chunksize, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec,
                          n_vac=n_vac, cluster_r=cluster_r)
 
 
 def interstitial(inputs, outputs, max_n_atoms, interstitial_probability_radius_exponent=3.0,
                  primitive=True, symprec=1.0e-3, chunksize=10):
-    return iterable_loop(iterable=inputs, configset_out=outputs, op=interstitial_op,
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=interstitial_op,
                          chunksize=chunksize, max_n_atoms=max_n_atoms,
                          interstitial_probability_radius_exponent=interstitial_probability_radius_exponent,
                          primitive=primitive, symprec=symprec)
@@ -32,7 +32,7 @@ def interstitial(inputs, outputs, max_n_atoms, interstitial_probability_radius_e
 def surface(inputs, outputs, max_n_atoms, min_thickness, vacuum,
             simple_cut=False, max_surface_cell_indices=1, duplicate_in_plane=True, pert=0.0,
             primitive=True, symprec=1.0e-3, chunksize=10):
-    return iterable_loop(iterable=inputs, configset_out=outputs, op=surface_op,
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=surface_op,
                          chunksize=chunksize, max_n_atoms=max_n_atoms,
                          min_thickness=min_thickness, vacuum=vacuum, simple_cut=simple_cut,
                          max_surface_cell_indices=max_surface_cell_indices,

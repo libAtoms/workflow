@@ -3,7 +3,7 @@ import warnings
 from ase import Atoms
 from ase.calculators.calculator import all_changes
 
-from wfl.pipeline import iterable_loop
+from wfl.autoparallelize import autoparallelize
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
 from .utils import save_results
@@ -13,7 +13,7 @@ from .utils import save_results
 def run(inputs, outputs, calculator, properties=None, output_prefix='_auto_', chunksize=10, verbose=False):
     if properties is None:
         properties = ['energy', 'forces', 'stress']
-    return iterable_loop(iterable=inputs, configset_out=outputs, op=run_op, chunksize=chunksize,
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=run_op, chunksize=chunksize,
                          calculator=calculator, properties=properties, output_prefix=output_prefix,
                          verbose=verbose)
 

@@ -15,7 +15,7 @@ from ase.calculators.calculator import CalculationFailed, Calculator, \
 from ase.calculators.orca import ORCA
 
 from .utils import clean_rundir, save_results
-from ..pipeline import iterable_loop
+from ..autoparallelize import autoparallelize
 from ..utils.misc import atoms_to_list, chunks
 
 __default_keep_files = ["*.inp", "*.out", "*.ase", "*.engrad", "*.xyz",
@@ -57,7 +57,7 @@ def evaluate(inputs, outputs,
     results : Configset_in
         outputs.to_ConfigSet_in()
     """
-    return iterable_loop(iterable=inputs, configset_out=outputs,
+    return autoparallelize(iterable=inputs, configset_out=outputs,
                          op=evaluate_op,
                          base_rundir=base_rundir, dir_prefix=dir_prefix,
                          keep_files=keep_files, orca_kwargs=orca_kwargs,
@@ -97,7 +97,7 @@ def evaluate_basin_hopping(inputs, outputs,
     results : Configset_in
         outputs.to_ConfigSet_in()
     """
-    return iterable_loop(iterable=inputs, configset_out=outputs,
+    return autoparallelize(iterable=inputs, configset_out=outputs,
                          op=evaluate_op,
                          base_rundir=base_rundir, dir_prefix=dir_prefix,
                          keep_files=keep_files, orca_kwargs=orca_kwargs,

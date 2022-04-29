@@ -1,7 +1,7 @@
 import numpy as np
 from ase.atoms import Atoms
 
-from wfl.pipeline import iterable_loop
+from wfl.autoparallelize import autoparallelize
 
 try:
     import phonopy
@@ -15,7 +15,7 @@ except:
 
 
 def run(inputs, outputs, displacements, strain_displs, ph2_supercell, ph3_supercell=None, pair_cutoff=None, chunksize=10):
-    return iterable_loop(iterable=inputs, configset_out=outputs, op=run_op, chunksize=chunksize, 
+    return autoparallelize(iterable=inputs, configset_out=outputs, op=run_op, chunksize=chunksize, 
                          displacements=displacements, strain_displs=strain_displs, ph2_supercell=ph2_supercell,
                          ph3_supercell=ph3_supercell, pair_cutoff=pair_cutoff)
 
