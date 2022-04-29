@@ -15,7 +15,8 @@ except ModuleNotFoundError:
     pass
 
 
-from wfl.calculators import committee, orca
+from wfl.calculators import committee
+from wfl.calculators.orca import basinhopping 
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.descriptor_heuristics import descriptors_from_length_scales
 from wfl.generate.vib import sample_normal_modes
@@ -335,11 +336,11 @@ def evaluate_dft(dft_in_configs, dft_evaluated_configs, params, run_dir):
             return dft_evaluated_configs.to_ConfigSet_in()
 
         # only non-periodic solution possible
-        return orca.evaluate_basin_hopping(inputs=dft_in_configs,
-                                           outputs=dft_evaluated_configs,
-                                           base_rundir=run_dir,
-                                           orca_kwargs=params.dft_params.get("kwargs", {}),
-                                           output_prefix='REF_')
+        return basinhopping.evaluate_basin_hopping(inputs=dft_in_configs,
+                                         outputs=dft_evaluated_configs,
+                                         base_rundir=run_dir,
+                                         orca_kwargs=params.dft_params.get("kwargs", {}),
+                                         output_prefix='REF_')
     else:
         raise NotImplementedError("DFT code not implemented for reactions:", params.dft_code)
 
