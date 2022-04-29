@@ -45,7 +45,7 @@ class RemoteInfo:
 
         self.sys_name = sys_name
         self.job_name = job_name
-        self.resources = copy.copy(resources)
+        self.resources = copy.deepcopy(resources)
         self.job_chunksize = job_chunksize
         self.pre_cmds = pre_cmds.copy()
         self.post_cmds = post_cmds.copy()
