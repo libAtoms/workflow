@@ -148,6 +148,12 @@ def save_results(atoms, properties, results_prefix=None):
         atoms_results['energies'] = atoms.get_potential_energies()
 
     if "extra_results" in dir(atoms.calc):
+        if results_prefix is None and (len(atoms.calc.extra_results.get("config", {})) > 0 or
+                                       len(atoms.calc.extra_results.get("atoms", {})) > 0):
+            raise ValueError('Refusing to save calculator results into info/arrays fields with no prefix,'
+                            ' too much chance of confusion with ASE extxyz reading/writing and conversion'
+                            ' to SinglePointCalculator') 
+
         for key, vals in atoms.calc.extra_results["config"].items():
             config_results[key] = vals
 
