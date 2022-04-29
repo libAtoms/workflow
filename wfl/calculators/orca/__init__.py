@@ -404,11 +404,13 @@ def parse_npa_output(fname):
     pattern_npa_block = re.compile(
         r"Final electron populations and NPA charges:\n\n"
         r"(?:.*\n)+\nAngular momentum contributions of the total atomic population:")
-    pattern_entry = re.compile(r"\s([a-zA-Z]+)(?:\d)\s+(?:[\d\.]+)\s+([\d\.]+)\s+(?:[\d\.]+)\s+([-\d\.]+)")
+    pattern_entry = re.compile(r"\s([a-zA-Z]+)(?:\d+)\s+(?:[\d\.]+)\s+([\d\.]+)\s+(?:[\d\.]+)\s+([-\d\.]+)")
 
     elements = []
     electron_pop = []
     npa_charge = [] 
+
+    # import pdb; pdb.set_trace()
     
     block = pattern_npa_block.findall(text)[0]
     for line in block.split('\n'):
