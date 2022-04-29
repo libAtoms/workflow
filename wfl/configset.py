@@ -455,6 +455,7 @@ class OutputSpec:
 
         if self.output_abcd:
             # if any configs have requested tags, it must be done
+            # NB: why?  this only seems guaranteed if ABCD writing is atomic - is it?
             return self.abcd.count(self.set_tags) > 0
 
         if self.output_files is not None:

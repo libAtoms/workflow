@@ -37,7 +37,7 @@ import wfl.generate.atoms_and_dimers
 import wfl.generate.buildcell
 import wfl.select.by_descriptor
 import wfl.select.convex_hull
-import wfl.select.simple_filters
+import wfl.select.simple
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate import md, minim, supercells
 from wfl.select.flat_histogram import biased_select_conf
@@ -678,7 +678,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
         n_minima = len([None for at in groups[grp_label]['cur_confs']])
 
         minima_inds = np.random.choice(range(n_minima), n_bulk_MD)
-        selected_minima = wfl.select.simple_filters.by_index(
+        selected_minima = wfl.select.simple.by_index(
             groups[grp_label]['cur_confs'],
             OutputSpec(file_root=run_dir, output_files=f'MD_minima.bulk.{grp_label}.xyz', all_or_none=True,
                           force=True),
@@ -707,7 +707,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                 label = base_label
                 if len(extra_label) > 0:
                     label += '.' + extra_label
-                selected_minima = wfl.select.simple_filters.by_index(
+                selected_minima = wfl.select.simple.by_index(
                     groups[grp_label]['cur_confs'],
                     OutputSpec(file_root=run_dir, output_files=f'MD_minima.{label}.{grp_label}.xyz',
                                   all_or_none=True, force=True),
@@ -746,12 +746,11 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                                                          all_or_none=True, force=True),
                                            calculator=(Potential, None, {'param_filename': prev_GAP}),
                                            precon='ID', keep_symmetry=True, **minim_kwargs)
-            defect_starting = wfl.select.simple_filters.apply(defect_minim_trajs,
-                                                                      OutputSpec(file_root=run_dir,
-                                                                                    output_files=f'defect_minima.{grp_label}.xyz',
-                                                                                    all_or_none=True, force=True),
-                                                                      wfl.select.simple_filters.InfoAllStartWith(
-                                                                          ('minim_config_type', 'minim_last')))
+            defect_starting = wfl.select.simple.select(defect_minim_trajs,
+                                                               OutputSpec(file_root=run_dir,
+                                                                          output_files=f'defect_minima.{grp_label}.xyz',
+                                                                          all_or_none=True, force=True),
+                                                               lambda at : at.info["minim_config_type"].startswith("minim_last"))
         else:
             defect_starting = groups[grp_label]['defect_confs']
 
@@ -873,11 +872,10 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
 
         print_log('selecting minima from trajectories')
         # select minima from trajs
-        minima = wfl.select.simple_filters.apply(trajs, OutputSpec(file_root=run_dir,
-                                                                              output_files=f'minima.{grp_label}.xyz',
-                                                                              all_or_none=True, force=True),
-                                                         wfl.select.simple_filters.InfoAllStartWith(
-                                                             ('minim_config_type', 'minim_last')))
+        minima = wfl.select.simple.select(trajs, OutputSpec(file_root=run_dir,
+                                                                    output_files=f'minima.{grp_label}.xyz',
+                                                                    all_or_none=True, force=True),
+                                                  lambda at : at.info["minim_config_type"].startswith("minim_last"))
 
         if select_convex_hull:
             print_log('selecting convex hull of minima')
@@ -916,11 +914,11 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
             selected_minima_config_i = set([at.info['buildcell_config_i'] for at in selected_minima])
 
             # select all configs for these indices from all trajs
-            selected_traj = wfl.select.simple_filters.apply(
+            selected_traj = wfl.select.simple.select(
                 trajs, OutputSpec(file_root=run_dir,
                                      output_files=f'selected_rss_traj.{grp_label}.xyz',
                                      all_or_none=True, force=True),
-                wfl.select.simple_filters.InfoAllIn(('buildcell_config_i', selected_minima_config_i)))
+                lambda at : at.info["buildcell_config_i"] in selected_minima_config_i)
 
             groups[grp_label]['cur_confs'] = selected_traj
 
@@ -1009,10 +1007,10 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
                                           verbose=verbose)
     else:
         # flat_histo_N < 0 means select at random (UGLY HACK)
-        # NOTE: the following should probably be refactored into a simple_filters routine
+        # NOTE: the following should probably be refactored into a simple routine
         n_configs = sum([1 for at in configs])
         selected_inds = np.random.choice(n_configs, size=-flat_histo_N, replace=False)
-        configs_init = wfl.select.simple_filters.by_index(configs,
+        configs_init = wfl.select.simple.by_index(configs,
             OutputSpec(file_root=run_dir, output_files=f'{file_label}_random_init.{grp_label}.xyz',
                           all_or_none=True, force=True),
             selected_inds)
@@ -1020,7 +1018,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
     if select_by_desc_method == 'random':
         n_configs = sum([1 for at in configs_init])
         selected_inds = np.random.choice(n_configs, size=by_desc_select_N, replace=False)
-        configs_selected = wfl.select.simple_filters.by_index(configs_init,
+        configs_selected = wfl.select.simple.by_index(configs_init,
             OutputSpec(file_root=run_dir, output_files=f'{file_label}_random_selected.{grp_label}.xyz',
                           all_or_none=True, force=True),
             selected_inds)
@@ -1028,7 +1026,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
             avail_inds = set(list(range(n_configs)))
             avail_inds -= set(selected_inds)
             selected_testing_inds = np.random.choice(list(avail_inds), size=testing_N, replace=False)
-            testing_configs = wfl.select.simple_filters.by_index(configs_init,
+            testing_configs = wfl.select.simple.by_index(configs_init,
                 OutputSpec(file_root=run_dir, output_files=f'{file_label}_testing.{grp_label}.xyz',
                               all_or_none=True, force=True),
                 selected_testing_inds)
