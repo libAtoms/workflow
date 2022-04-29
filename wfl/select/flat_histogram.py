@@ -128,7 +128,7 @@ def _select_indices_flat_boltzmann_biased(quantities, n, kT=-1.0, bins='auto', b
 
 
 def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', by_bin=True, replace=False, verbose=False):
-    """select configurations by Boltzmann biased flat histogram
+    """select configurations by Boltzmann biased flat histogram on some quantity in Atoms.info
 
     Parameters
     ----------
@@ -139,7 +139,7 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
     num: int
         number of configs to select
     info_field: string
-        quantity by which to select
+        Atoms.info key for quantity by which to do flat histogram and Boltzmann bias
     kT: float, default -1
         Boltzmann bias temperature, <= 0 to not bias
     bins: np.histogram bins argument, default 'auto'
