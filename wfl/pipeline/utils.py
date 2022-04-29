@@ -1,4 +1,5 @@
 import itertools
+import copy
 
 
 class RemoteInfo:
@@ -44,10 +45,7 @@ class RemoteInfo:
 
         self.sys_name = sys_name
         self.job_name = job_name
-        if isinstance(resources, dict):
-            self.resources = resources.copy()
-        else:
-            self.resources = resources 
+        self.resources = copy.copy(resources)
         self.job_chunksize = job_chunksize
         self.pre_cmds = pre_cmds.copy()
         self.post_cmds = post_cmds.copy()
