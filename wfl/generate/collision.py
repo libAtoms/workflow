@@ -280,7 +280,7 @@ def post_process_collision_autopara_wrappable(seed, calc,
         outputspec.end_write()
     elif do_neb:
         outputspec_neb = OutputSpec(output_files=f"{seed}.neb_frames.xyz", force=force)
-        trajectory_processing.trajectory_neb(configset=cfs_inter, outputspec=configset_out_neb, calculator=calc,
+        trajectory_processing.trajectory_neb(configset=cfs_inter, outputspec=outputspec_neb, calculator=calc,
                                              neb_kwargs=neb_kwargs)
     elif do_ts_irc:
         raise ValueError("TS+IRC cannot be performed without having done NEB as well")
