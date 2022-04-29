@@ -18,7 +18,7 @@ def run(inputs, outputs, calculator, properties=None, output_prefix='_auto_', ch
                          verbose=verbose, npool=npool, remote_info=remote_info)
 
 
-def run_op(atoms, calculator, properties=None, output_prefix='_auto_', verbose=False):
+def run_op(atoms, calculator, properties=None, output_prefix='_auto_', verbose=False, raise_calc_exceptions=False):
     """evaluates configs using an arbitrary calculator and store results in SinglePointCalculator
 
     Parameters
@@ -60,6 +60,8 @@ def run_op(atoms, calculator, properties=None, output_prefix='_auto_', verbose=F
             if f'{output_prefix}calculation_failed' in at.info:
                 del at.info[f'{output_prefix}calculation_failed']
         except Exception as exc:
+            if raise_calc_exceptions:
+                raise exc
             warnings.warn(f'calculation failed with exception {exc}')
             at.info[f'{output_prefix}calculation_failed'] = True
 
