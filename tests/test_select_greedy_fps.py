@@ -3,7 +3,7 @@ from ase.atoms import Atoms
 from pytest import raises
 
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.select_configs.by_descriptor import greedy_fps_conf_global, prep_descs_and_exclude, write_selected_and_clean
+from wfl.select.by_descriptor import greedy_fps_conf_global, prep_descs_and_exclude, write_selected_and_clean
 
 ref_array = np.array(
     [[8.76710127e-02, 1.16867105e-40, 1.06347842e-09, 2.85176889e-40, 9.83879615e-09, 1.57131721e-01, 1.05046539e-37,
@@ -114,7 +114,7 @@ def test_greedy_fps_fake_descriptor(tmp_path):
 
 def test_greedy_fps_quippy_descriptor(tmp_path, quippy):
 
-    from wfl.calc_descriptor import calc
+    from wfl.descriptors.calc import calc
     greedy_fps(calc, tmp_path)
     
 

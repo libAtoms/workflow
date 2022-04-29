@@ -1,6 +1,6 @@
 from ase.atoms import Atoms
 
-import wfl.select_configs.simple_filters as simple_filters
+import wfl.select.simple_filters as simple_filters
 from wfl.configset import ConfigSet, OutputSpec
 
 

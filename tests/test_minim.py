@@ -8,7 +8,7 @@ import ase.io
 from ase.build import bulk
 from ase.calculators.emt import EMT
 
-from wfl.generate_configs import minim
+from wfl.generate import minim
 from wfl.configset import ConfigSet, OutputSpec
 
 expected_relaxed_positions_constant_pressure = np.array(

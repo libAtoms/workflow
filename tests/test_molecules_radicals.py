@@ -5,8 +5,8 @@ from wfl.configset import OutputSpec, ConfigSet
 import pytest
 
 # tested modules
-from wfl.generate_configs import radicals
-from wfl.generate_configs import smiles
+from wfl.generate import radicals
+from wfl.generate import smiles
 
 # wfl.generate_configs.smiles depends on rdkit.Chem
 pytest.importorskip("rdkit.Chem")

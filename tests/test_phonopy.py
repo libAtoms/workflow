@@ -6,7 +6,7 @@ from ase.atoms import Atoms
 import ase.io
 
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate_configs.phonopy import run
+from wfl.generate.phonopy import run
 
 
 def test_phonopy(tmp_path):

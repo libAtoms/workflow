@@ -4,7 +4,7 @@ import numpy as np
 from ase import neighborlist
 from wfl.utils.misc import atoms_to_list
 
-from wfl.generate_configs.utils import config_type_append
+from wfl.generate.utils import config_type_append
 
 
 def abstract_sp3_hydrogen_atoms(input_mol, label_config_type=True,

@@ -8,7 +8,7 @@ import ase.io
 from ase.build import bulk
 from ase.calculators.emt import EMT
 
-from wfl.generate_configs import md
+from wfl.generate import md
 from wfl.configset import ConfigSet, OutputSpec
 
 

@@ -2,7 +2,7 @@ import numpy as np
 from ase.atoms import Atoms
 
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate_configs.supercells import vacancy
+from wfl.generate.supercells import vacancy
 
 def test_vacancy_mono():
     at = Atoms('Po', cell=np.eye(3), pbc=[True]*3)

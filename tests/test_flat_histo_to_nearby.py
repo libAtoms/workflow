@@ -2,8 +2,8 @@ import numpy as np
 from ase.atoms import Atoms
 
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.select_configs.flat_histogram import biased_select_conf
-from wfl.selection_space import val_relative_to_nearby_composition_volume_min
+from wfl.select.flat_histogram import biased_select_conf
+from wfl.select.selection_space import val_relative_to_nearby_composition_volume_min
 
 
 def c(at):

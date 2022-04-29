@@ -8,7 +8,7 @@ except ModuleNotFoundError:
 from tempfile import NamedTemporaryFile
 
 import wfl.utils.misc
-from wfl.generate_configs import minim
+from wfl.generate import minim
 from wfl.utils.parallel import construct_calculator_picklesafe
 
 

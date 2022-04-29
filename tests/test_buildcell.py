@@ -4,7 +4,7 @@ import json
 import pytest
 
 from wfl.configset import OutputSpec
-from wfl.generate_configs import buildcell
+from wfl.generate import buildcell
 
 
 def test_buildcell(tmp_path):

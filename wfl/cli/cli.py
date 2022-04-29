@@ -29,16 +29,16 @@ from matplotlib.backends.backend_pdf import PdfPages
 from wfl.plotting import reactions_plotting, plot_ef_correlation, plot_2b
 from wfl.plotting import normal_modes
 from wfl.configset import ConfigSet, OutputSpec
-import wfl.generate_configs.collision
-from wfl.generate_configs import vib
-import wfl.generate_configs.radicals
-import wfl.generate_configs.smiles
+import wfl.generate.collision
+from wfl.generate import vib
+import wfl.generate.radicals
+import wfl.generate.smiles
 import wfl.utils.misc
 from wfl.reactions_processing import trajectory_processing
-from wfl.select_configs import weighted_cur
-import wfl.generate_configs.buildcell
-import wfl.select_configs.by_descriptor
-import wfl.calc_descriptor
+from wfl.select import weighted_cur
+import wfl.generate.buildcell
+import wfl.select.by_descriptor
+import wfl.descriptors.calc
 
 from wfl.utils import gap_xml_tools
 
@@ -141,7 +141,7 @@ def configs_from_smiles(ctx, smiles, output, info, force):
         print(f'info: {info}')
         print(configset_out)
 
-    wfl.generate_configs.smiles.run(outputs=configset_out, smiles=smiles, extra_info=info)
+    wfl.generate.smiles.run(outputs=configset_out, smiles=smiles, extra_info=info)
 
 
 @subcli_generate_configs.command('remove-sp3-Hs')
@@ -161,7 +161,7 @@ def configs_from_smiles(ctx, inputs, outputs, force):
         print(inputs)
         print(outputs)
 
-    wfl.generate_configs.radicals.abstract_sp3_hydrogen_atoms(inputs=inputs, outputs=outputs)
+    wfl.generate.radicals.abstract_sp3_hydrogen_atoms(inputs=inputs, outputs=outputs)
 
 
 @subcli_generate_configs.command("collision")
@@ -195,7 +195,7 @@ def collision(ctx, fragments, gap_filename, md_dir, velo, nsteps, temp, distance
     if collision_kwargs is not None:
         collision_kw.update(key_val_str_to_dict(collision_kwargs))
 
-    wfl.generate_configs.collision.multi_run_all_with_all(
+    wfl.generate.collision.multi_run_all_with_all(
         fragments=fragment_list, param_filename=os.path.abspath(gap_filename), workdir=md_dir,
         **collision_kw)
 
@@ -230,7 +230,7 @@ def trajectory_neb_ts_irc(ctx, seeds, gap_filename, do_neb, do_ts_irc, minim_int
     if irc_kwargs is not None:
         irc_kwargs = key_val_str_to_dict(irc_kwargs)
 
-    wfl.generate_configs.collision.post_process_collision(
+    wfl.generate.collision.post_process_collision(
         seed=seeds, calc=calc, do_neb=do_neb, do_ts_irc=do_ts_irc, minim_kwargs=minim_kwargs,
         minim_interval=minim_interval, neb_kwargs=neb_kwargs,
         ts_kwargs=ts_kwargs, irc_kwargs=irc_kwargs, n_pool=n_pool,
@@ -699,7 +699,7 @@ def _repeat_buildcell(ctx, output_file, output_all_or_none, buildcell_input, bui
     with open(buildcell_input) as bc_f:
         buildcell_input_txt = bc_f.read()
 
-    wfl.generate_configs.buildcell.run(
+    wfl.generate.buildcell.run(
         outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none),
         config_is=range(n_configs),
         buildcell_cmd=buildcell_exec,
@@ -738,7 +738,7 @@ def _CUR_global(ctx, inputs, output_file, output_all_or_none, n_configs,
         inputs = ['_tmp_desc.xyz']
         clean_tmp_files = True
 
-    wfl.select_configs.by_descriptor.CUR_conf_global(
+    wfl.select.by_descriptor.CUR_conf_global(
         inputs=ConfigSet(input_files=inputs),
         outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none),
         num=n_configs,
@@ -765,7 +765,7 @@ def _calc_descriptor(ctx, inputs, output_file, output_all_or_none, descriptor, k
 
 
 def _do_calc_descriptor(inputs, output_file, output_all_or_none, descriptor, key, local, force):
-    wfl.calc_descriptor.calc(
+    wfl.descriptors.calc.calc(
         inputs=ConfigSet(input_files=inputs),
         outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none, force=force),
         descs=descriptor,

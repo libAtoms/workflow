@@ -29,19 +29,19 @@ except ModuleNotFoundError:
 
 
 import wfl
-import wfl.calc_descriptor
+import wfl.descriptors.calc
 import wfl.descriptor_heuristics
 import wfl.fit.ref_error
 import wfl.fit.gap_multistage
-import wfl.generate_configs.atoms_and_dimers
-import wfl.generate_configs.buildcell
-import wfl.select_configs.by_descriptor
-import wfl.select_configs.convex_hull
-import wfl.select_configs.simple_filters
+import wfl.generate.atoms_and_dimers
+import wfl.generate.buildcell
+import wfl.select.by_descriptor
+import wfl.select.convex_hull
+import wfl.select.simple_filters
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate_configs import md, minim, supercells
-from wfl.select_configs.flat_histogram import biased_select_conf
-from wfl.selection_space import val_relative_to_nearby_composition_volume_min
+from wfl.generate import md, minim, supercells
+from wfl.select.flat_histogram import biased_select_conf
+from wfl.select.selection_space import val_relative_to_nearby_composition_volume_min
 from wfl.descriptor_heuristics import descriptors_from_length_scales
 from wfl.utils.params import Params
 from wfl.utils.version import get_wfl_version
@@ -169,21 +169,21 @@ def prep(ctx, length_scales_file, verbose):
 
                 f = f'buildcell.narrow_vol_range_even.Z_{Z_elem}.{buildcell_step_type}.input'
                 buildcell_inputs[c_inds]['narrow_even'] = [f, 0.4]
-                wfl.generate_configs.buildcell.create_input(
+                wfl.generate.buildcell.create_input(
                     z=Z_elem, vol_per_atom=volume_factor * length_scales[Z_elem]['vol_per_atom'][0],
                     bond_lengths=length_factor * length_scales[Z_elem]['bond_len'][0],
                     natom=natom, filename=f, verbose=verbose)
 
                 f = f'buildcell.narrow_vol_range_odd.Z_{Z_elem}.{buildcell_step_type}.input'
                 buildcell_inputs[c_inds]['narrow_odd'] = [f, 0.1]
-                wfl.generate_configs.buildcell.create_input(
+                wfl.generate.buildcell.create_input(
                     z=Z_elem, vol_per_atom=volume_factor * length_scales[Z_elem]['vol_per_atom'][0],
                     bond_lengths=length_factor * length_scales[Z_elem]['bond_len'][0], odd='only',
                     natom=natom, filename=f, verbose=verbose)
 
                 f = f'buildcell.wide_vol_range_even.Z_{Z_elem}.{buildcell_step_type}.input'
                 buildcell_inputs[c_inds]['wide_even'] = [f, 0.5]
-                wfl.generate_configs.buildcell.create_input(
+                wfl.generate.buildcell.create_input(
                     z=Z_elem, vol_per_atom=volume_factor * length_scales[Z_elem]['vol_per_atom'][0],
                     bond_lengths=length_factor * length_scales[Z_elem]['bond_len'][0], vol_range=(0.75, 1.25),
                     natom=natom, filename=f, verbose=verbose)
@@ -195,7 +195,7 @@ def prep(ctx, length_scales_file, verbose):
 
                 f = f'buildcell.narrow_vol_range.{Z_label_str}.{buildcell_step_type}.input'
                 buildcell_inputs[c_inds]['narrow'] = [f, 0.5]
-                wfl.generate_configs.buildcell.create_input(
+                wfl.generate.buildcell.create_input(
                     z=used_Zs, composition=used_composition,
                     vol_per_atom=[volume_factor * length_scales[Z]['vol_per_atom'][0] for Z in used_Zs],
                     bond_lengths=[length_factor * length_scales[Z]['bond_len'][0] for Z in used_Zs], odd='also',
@@ -203,7 +203,7 @@ def prep(ctx, length_scales_file, verbose):
 
                 f = f'buildcell.wide_vol_range.{Z_label_str}.{buildcell_step_type}.input'
                 buildcell_inputs[c_inds]['wide'] = [f, 0.5]
-                wfl.generate_configs.buildcell.create_input(
+                wfl.generate.buildcell.create_input(
                     z=used_Zs, composition=used_composition,
                     vol_per_atom=[volume_factor * length_scales[Z]['vol_per_atom'][0] for Z in used_Zs],
                     bond_lengths=[length_factor * length_scales[Z]['bond_len'][0] for Z in used_Zs], vol_range=(0.75, 1.25), odd='also',
@@ -238,7 +238,7 @@ def prep(ctx, length_scales_file, verbose):
     if dimer_n_steps is not None:
         kwargs['dimer_n_steps'] = dimer_n_steps
     # should this really overwrite atoms_and_dimers.xyz?
-    wfl.generate_configs.atoms_and_dimers.prepare(OutputSpec(output_files='atoms_and_dimers.xyz', force=True),
+    wfl.generate.atoms_and_dimers.prepare(OutputSpec(output_files='atoms_and_dimers.xyz', force=True),
                                                   Zs, {Z: length_scales[Z]['min_bond_len'][0] for Z in Zs},
                                                   max_cutoff=wfl.fit.gap_multistage.max_cutoff(fit_params),
                                                   **kwargs)
@@ -283,7 +283,7 @@ def create_all_buildcell(cur_iter, run_dir, Zs, compositions, N_configs_tot,
             else:
                 extra_info['gap_rss_group'] = label_str
             extra_info['gap_rss_iter'] = cur_iter
-            structs = wfl.generate_configs.buildcell.run(c_out,
+            structs = wfl.generate.buildcell.run(c_out,
                                                          range(config_i_start, config_i_start + N_configs),
                                                          buildcell_cmd=buildcell_cmd, buildcell_input=buildcell_input,
                                                          extra_info=extra_info, perturbation=buildcell_pert,
@@ -678,7 +678,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
         n_minima = len([None for at in groups[grp_label]['cur_confs']])
 
         minima_inds = np.random.choice(range(n_minima), n_bulk_MD)
-        selected_minima = wfl.select_configs.simple_filters.by_index(
+        selected_minima = wfl.select.simple_filters.by_index(
             groups[grp_label]['cur_confs'],
             OutputSpec(file_root=run_dir, output_files=f'MD_minima.bulk.{grp_label}.xyz', all_or_none=True,
                           force=True),
@@ -707,7 +707,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                 label = base_label
                 if len(extra_label) > 0:
                     label += '.' + extra_label
-                selected_minima = wfl.select_configs.simple_filters.by_index(
+                selected_minima = wfl.select.simple_filters.by_index(
                     groups[grp_label]['cur_confs'],
                     OutputSpec(file_root=run_dir, output_files=f'MD_minima.{label}.{grp_label}.xyz',
                                   all_or_none=True, force=True),
@@ -746,11 +746,11 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                                                          all_or_none=True, force=True),
                                            calculator=(Potential, None, {'param_filename': prev_GAP}),
                                            precon='ID', keep_symmetry=True, **minim_kwargs)
-            defect_starting = wfl.select_configs.simple_filters.apply(defect_minim_trajs,
+            defect_starting = wfl.select.simple_filters.apply(defect_minim_trajs,
                                                                       OutputSpec(file_root=run_dir,
                                                                                     output_files=f'defect_minima.{grp_label}.xyz',
                                                                                     all_or_none=True, force=True),
-                                                                      wfl.select_configs.simple_filters.InfoAllStartWith(
+                                                                      wfl.select.simple_filters.InfoAllStartWith(
                                                                           ('minim_config_type', 'minim_last')))
         else:
             defect_starting = groups[grp_label]['defect_confs']
@@ -873,15 +873,15 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
 
         print_log('selecting minima from trajectories')
         # select minima from trajs
-        minima = wfl.select_configs.simple_filters.apply(trajs, OutputSpec(file_root=run_dir,
+        minima = wfl.select.simple_filters.apply(trajs, OutputSpec(file_root=run_dir,
                                                                               output_files=f'minima.{grp_label}.xyz',
                                                                               all_or_none=True, force=True),
-                                                         wfl.select_configs.simple_filters.InfoAllStartWith(
+                                                         wfl.select.simple_filters.InfoAllStartWith(
                                                              ('minim_config_type', 'minim_last')))
 
         if select_convex_hull:
             print_log('selecting convex hull of minima')
-            groups[grp_label]['convex_hull'] = wfl.select_configs.convex_hull.select(
+            groups[grp_label]['convex_hull'] = wfl.select.convex_hull.select(
                 minima,
                 OutputSpec(file_root=run_dir, output_files=f'minima_convex_hull.{grp_label}.xyz', all_or_none=True,
                               force=True),
@@ -916,11 +916,11 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
             selected_minima_config_i = set([at.info['buildcell_config_i'] for at in selected_minima])
 
             # select all configs for these indices from all trajs
-            selected_traj = wfl.select_configs.simple_filters.apply(
+            selected_traj = wfl.select.simple_filters.apply(
                 trajs, OutputSpec(file_root=run_dir,
                                      output_files=f'selected_rss_traj.{grp_label}.xyz',
                                      all_or_none=True, force=True),
-                wfl.select_configs.simple_filters.InfoAllIn(('buildcell_config_i', selected_minima_config_i)))
+                wfl.select.simple_filters.InfoAllIn(('buildcell_config_i', selected_minima_config_i)))
 
             groups[grp_label]['cur_confs'] = selected_traj
 
@@ -1012,7 +1012,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
         # NOTE: the following should probably be refactored into a simple_filters routine
         n_configs = sum([1 for at in configs])
         selected_inds = np.random.choice(n_configs, size=-flat_histo_N, replace=False)
-        configs_init = wfl.select_configs.simple_filters.by_index(configs,
+        configs_init = wfl.select.simple_filters.by_index(configs,
             OutputSpec(file_root=run_dir, output_files=f'{file_label}_random_init.{grp_label}.xyz',
                           all_or_none=True, force=True),
             selected_inds)
@@ -1020,7 +1020,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
     if select_by_desc_method == 'random':
         n_configs = sum([1 for at in configs_init])
         selected_inds = np.random.choice(n_configs, size=by_desc_select_N, replace=False)
-        configs_selected = wfl.select_configs.simple_filters.by_index(configs_init,
+        configs_selected = wfl.select.simple_filters.by_index(configs_init,
             OutputSpec(file_root=run_dir, output_files=f'{file_label}_random_selected.{grp_label}.xyz',
                           all_or_none=True, force=True),
             selected_inds)
@@ -1028,7 +1028,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
             avail_inds = set(list(range(n_configs)))
             avail_inds -= set(selected_inds)
             selected_testing_inds = np.random.choice(list(avail_inds), size=testing_N, replace=False)
-            testing_configs = wfl.select_configs.simple_filters.by_index(configs_init,
+            testing_configs = wfl.select.simple_filters.by_index(configs_init,
                 OutputSpec(file_root=run_dir, output_files=f'{file_label}_testing.{grp_label}.xyz',
                               all_or_none=True, force=True),
                 selected_testing_inds)
@@ -1038,7 +1038,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
             f'computing descriptors and selecting from (optionally) flat histogram by descriptor for {file_label} ' + str(
                 config_selection_descriptor_strs))
         # calc descriptors and by-desc select from flat histo selected
-        configs_flat_histo_with_desc = wfl.calc_descriptor.calc(
+        configs_flat_histo_with_desc = wfl.descriptors.calc.calc(
             configs_init, OutputSpec(file_root=run_dir,
                                         output_files=f'{file_label}_with_desc.{grp_label}.xyz',
                                         all_or_none=True, force=True),
@@ -1049,10 +1049,10 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
         # no kwargs as default
         extra_kwargs = {}
         if select_by_desc_method == 'CUR':
-            selector_func = wfl.select_configs.by_descriptor.CUR_conf_global
+            selector_func = wfl.select.by_descriptor.CUR_conf_global
             extra_kwargs = {'kernel_exp': 4}  # fixme parameter
         elif select_by_desc_method == 'greedy_fps' or select_by_desc_method == 'greedy_fps_all_iters':
-            selector_func = wfl.select_configs.by_descriptor.greedy_fps_conf_global
+            selector_func = wfl.select.by_descriptor.greedy_fps_conf_global
             if select_by_desc_method == 'greedy_fps_all_iters':
                 extra_kwargs = {'prev_selected_descs': prev_selected_descs}
         else:
@@ -1086,7 +1086,7 @@ def calc_descriptors_to_file(run_dir, basename, grp_label, configs, descriptor_s
     if os.path.exists(os.path.join(run_dir, f'{basename}.{grp_label}.average_desc.txt')):
         return
 
-    configs_with_descs = wfl.calc_descriptor.calc(configs, OutputSpec(),
+    configs_with_descs = wfl.descriptors.calc.calc(configs, OutputSpec(),
                                                   descriptor_strs, 'config_selection_desc', local=descriptor_local,
                                                   verbose=verbose)
 

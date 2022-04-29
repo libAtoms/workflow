@@ -8,7 +8,7 @@ from pytest import approx
 from wfl.configset import ConfigSet, OutputSpec
 
 try:
-    from wfl.calc_descriptor import calc
+    from wfl.descriptors.calc import calc
     from quippy.descriptors import Descriptor
 except ModuleNotFoundError:
     pytestmark = pytest.mark.skip(reason='no quippy')

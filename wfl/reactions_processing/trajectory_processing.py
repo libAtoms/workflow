@@ -12,9 +12,9 @@ except ModuleNotFoundError:
 from scipy import sparse
 
 from wfl import configset
-from wfl.generate_configs.minim import run_op
-from wfl.generate_configs.neb import neb_generic, neb_with_ts_and_irc
-from wfl.generate_configs.ts import calc_ts
+from wfl.generate.minim import run_op
+from wfl.generate.neb import neb_generic, neb_with_ts_and_irc
+from wfl.generate.ts import calc_ts
 
 
 def xyz_to_seed(filename):

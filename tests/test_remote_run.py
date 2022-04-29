@@ -17,7 +17,7 @@ pytestmark = pytest.mark.remote
 
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.calculators import generic
-from wfl.generate_configs import minim
+from wfl.generate import minim
 from wfl.calculators.dft import evaluate_dft
 
 

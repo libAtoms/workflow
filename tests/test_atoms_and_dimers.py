@@ -2,7 +2,7 @@ import numpy as np
 from pytest import approx, raises
 
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate_configs.atoms_and_dimers import prepare, isolated_atom_from_e0
+from wfl.generate.atoms_and_dimers import prepare, isolated_atom_from_e0
 
 
 def test_isolated_atom_from_e0(tmp_path):

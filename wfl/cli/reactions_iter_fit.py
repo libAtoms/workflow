@@ -18,15 +18,15 @@ except ModuleNotFoundError:
 from wfl.calculators import committee, orca
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.descriptor_heuristics import descriptors_from_length_scales
-from wfl.generate_configs.vib import sample_normal_modes
-from wfl.select_configs.simple_filters import by_energy
+from wfl.generate.vib import sample_normal_modes
+from wfl.select.simple_filters import by_energy
 from wfl.utils.logging import increment_active_iter, print_log, process_active_iter
 from wfl.utils.params import Params
 from wfl.utils.vol_composition_space import composition_space_Zs
 from ..fit import gap_multistage, glue_2b
-from ..generate_configs import atoms_and_dimers, collision
+from ..generate import atoms_and_dimers, collision
 from ..reactions_processing import trajectory_processing
-from ..select_configs import weighted_cur
+from ..select import weighted_cur
 from wfl.utils.version import get_wfl_version
 
 
