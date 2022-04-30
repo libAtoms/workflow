@@ -38,7 +38,7 @@ from wfl.reactions_processing import trajectory_processing
 from wfl.select import weighted_cur
 import wfl.generate.buildcell
 import wfl.select.by_descriptor
-import wfl.descriptors.calc
+import wfl.descriptors.quippy
 
 from wfl.utils import gap_xml_tools
 
@@ -767,7 +767,7 @@ def _calc_descriptor(ctx, inputs, output_file, output_all_or_none, descriptor, k
 
 
 def _do_calc_descriptor(inputs, output_file, output_all_or_none, descriptor, key, local, force):
-    wfl.descriptors.calc.calc(
+    wfl.descriptors.quippy.calc(
         inputs=ConfigSet(input_files=inputs),
         outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none, force=force),
         descs=descriptor,

@@ -29,7 +29,7 @@ except ModuleNotFoundError:
 
 
 import wfl
-import wfl.descriptors.calc
+import wfl.descriptors.quippy
 import wfl.descriptor_heuristics
 import wfl.fit.ref_error
 import wfl.fit.gap_multistage
@@ -1038,7 +1038,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
             f'computing descriptors and selecting from (optionally) flat histogram by descriptor for {file_label} ' + str(
                 config_selection_descriptor_strs))
         # calc descriptors and by-desc select from flat histo selected
-        configs_flat_histo_with_desc = wfl.descriptors.calc.calc(
+        configs_flat_histo_with_desc = wfl.descriptors.quippy.calc(
             configs_init, OutputSpec(file_root=run_dir,
                                         output_files=f'{file_label}_with_desc.{grp_label}.xyz',
                                         all_or_none=True, force=True),
@@ -1086,7 +1086,7 @@ def calc_descriptors_to_file(run_dir, basename, grp_label, configs, descriptor_s
     if os.path.exists(os.path.join(run_dir, f'{basename}.{grp_label}.average_desc.txt')):
         return
 
-    configs_with_descs = wfl.descriptors.calc.calc(configs, OutputSpec(),
+    configs_with_descs = wfl.descriptors.quippy.calc(configs, OutputSpec(),
                                                   descriptor_strs, 'config_selection_desc', local=descriptor_local,
                                                   verbose=verbose)
 
