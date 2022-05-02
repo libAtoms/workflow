@@ -361,7 +361,7 @@ def evaluate_ref(dft_in_configs, dft_evaluated_configs, params, run_dir, verbose
         inputs=dft_in_configs,
         outputs=dft_evaluated_configs,
         calculator_name=params.dft_code,
-        base_rundir=run_dir,
+        workdir_root=run_dir,
         calculator_kwargs=params.dft_params.get("kwargs", {}),
         output_prefix="REF_",
         keep_files=keep_files

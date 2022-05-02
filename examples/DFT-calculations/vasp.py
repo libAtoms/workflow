@@ -12,7 +12,7 @@ from wfl.utils.logging import print_log
 def main(verbose=True):
     # settings
     # replace this with your local configuration in productions
-    base_rundir = "VASP-calculations"
+    workdir_root = "VASP-calculations"
     vasp_kwargs = {
         "encut": 200.0,
         "kspacing": 0.3,
@@ -38,7 +38,7 @@ def main(verbose=True):
         print_log("VASP example calculation")
         print(configs_in)
         print(configs_out)
-        print(f"base_rundir: {base_rundir}")
+        print(f"workdir_root: {workdir_root}")
         print(f"vasp_command: {vasp_command}")
         pprint(vasp_kwargs)
 
@@ -47,7 +47,7 @@ def main(verbose=True):
         calculator_name="VASP",
         inputs=configs_in,
         outputs=configs_out,
-        base_rundir=base_rundir,  # directory where to put the calculation directories
+        workdir_root=workdir_root,  # directory where to put the calculation directories
         calculator_command=vasp_command,
         calculator_kwargs=vasp_kwargs,
         keep_files="default",  # keeps files minimum for NOMAD upload

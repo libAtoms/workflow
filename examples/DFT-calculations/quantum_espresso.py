@@ -66,7 +66,7 @@ def main(verbose=True):
     # replace this with your local configuration in productions
     pspot_dir = os.path.join(os.getcwd(), "QE-pseudo-potentials")
     pspot_map = download_pseudo_potentials(pspot_dir, verbose=verbose)
-    base_rundir = "QE-calculations"
+    workdir_root = "QE-calculations"
     qe_command = "mpirun -n 2 pw.x"  # local command for pw.x, with MPI if needed
 
     # IO
@@ -89,7 +89,7 @@ def main(verbose=True):
         print_log("Quantum Espresso example calculation")
         print(configs_in)
         print(configs_out)
-        print(f"base_rundir: {base_rundir}")
+        print(f"workdir_root: {workdir_root}")
         print(f"qe_command: {qe_command}")
         pprint(settings)
 
@@ -98,7 +98,7 @@ def main(verbose=True):
         calculator_name="QE",
         inputs=configs_in,
         outputs=configs_out,
-        base_rundir=base_rundir,  # directory where to put the calculation directories
+        workdir_root=workdir_root,  # directory where to put the calculation directories
         calculator_command=qe_command,  # local command for pw.x, with MPI if needed
         calculator_kwargs=settings,
         keep_files="default",  # keeps the .pwo file only

@@ -88,9 +88,9 @@ def test_full_orca(tmp_path):
     except CalculationFailed:
         pass
     assert not any(scratch_path.iterdir())
-    wdir_base = (home_dir / "ORCA_calc_files")
-    assert wdir_base.exists()
-    calc_dir = [d for d in wdir_base.iterdir()][0]
+    workdir_root = (home_dir / "ORCA_calc_files")
+    assert workdir_root.exists()
+    calc_dir = [d for d in workdir_root.iterdir()][0]
     for ext in [".ase", ".inp", ".out"]:
         assert (calc_dir / ("orca" + ext)).exists()
 

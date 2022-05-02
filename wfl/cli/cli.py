@@ -793,7 +793,7 @@ def _do_calc_descriptor(inputs, output_file, output_all_or_none, descriptor, key
                    '"pp", which is normallly XC-based dir to put between VASP_PP_PATH and POTCAR dirs defaults to ".". Key VASP_PP_PATH will be '
                    'used to set corresponding env var, which is used as dir above <chem_symbol>/POTCAR')
 @click.option("--vasp-command", type=click.STRING)
-def _vasp_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, directory_prefix,
+def _vasp_eval(ctx, inputs, output_file, output_all_or_none, workdir_root, directory_prefix,
                output_prefix, properties,
                incar, kpoints, vasp_kwargs, vasp_command):
     vasp_kwargs = key_val_str_to_dict(vasp_kwargs)
@@ -803,7 +803,7 @@ def _vasp_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, direct
         inputs=ConfigSet(input_files=inputs),
         outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none),
         calculator_name="VASP",
-        base_rundir=base_rundir,
+        workdir_root=workdir_root,
         dir_prefix=directory_prefix,
         output_prefix=output_prefix,
         properties=properties.split(','),
@@ -825,7 +825,7 @@ def _vasp_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, direct
 @click.option("--castep-kwargs", type=click.STRING, help="CASTEP keywords, passed as dict")
 @click.option("--keep-files", type=click.STRING, default="default",
               help="How much of files to keep, default is NOMAD compatible subset")
-def _castep_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, directory_prefix, properties,
+def _castep_eval(ctx, inputs, output_file, output_all_or_none, workdir_root, directory_prefix, properties,
                  castep_command, castep_kwargs, keep_files, output_prefix):
     if castep_kwargs is not None:
         castep_kwargs = key_val_str_to_dict(castep_kwargs)
@@ -834,7 +834,7 @@ def _castep_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, dire
         inputs=ConfigSet(input_files=inputs),
         outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none),
         calculator_name="CASTEP",
-        base_rundir=base_rundir,
+        workdir_root=workdir_root,
         dir_prefix=directory_prefix,
         properties=properties.split(),
         calculator_command=castep_command,
@@ -870,7 +870,7 @@ def _castep_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, dire
                    "is recPBE with settings tested for radicals")
 @click.option("--orca-additional-blocks", type=click.STRING,
               help="orca blocks to be added, default is None")
-def orca_eval(ctx, inputs, base_rundir, output_file, output_all_or_none, directory_prefix,
+def orca_eval(ctx, inputs, workdir_root, output_file, output_all_or_none, directory_prefix,
               orca_command, calc_kwargs, keep_files, output_prefix, scratch_path, n_run, n_hop,
               orca_simple_input, orca_additional_blocks):
     verbose = ctx.obj["verbose"]
@@ -911,7 +911,7 @@ def orca_eval(ctx, inputs, base_rundir, output_file, output_all_or_none, directo
         print("ORCA wfn-basin hopping calculation parameters: ", calc_kwargs)
 
     wfl.calculators.orca.basinhopping.evaluate_basin_hopping(
-        inputs=configset, outputs=outputspec, base_rundir=base_rundir, dir_prefix=directory_prefix,
+        inputs=configset, outputs=outputspec, workdir_root=workdir_root, dir_prefix=directory_prefix,
         keep_files=keep_files, output_prefix=output_prefix, orca_kwargs=calc_kwargs
     )
 
@@ -934,7 +934,7 @@ def orca_eval(ctx, inputs, base_rundir, output_file, output_all_or_none, directo
 @click.option("--orca-simple-input", type=click.STRING, help="orca simple input line, make sure it is correct, default "
                                                              "is recPBE with settings tested for radicals")
 @click.option("--orca-additional-blocks", type=click.STRING, help="orca blocks to be added, default is None")
-def orca_eval(ctx, inputs, base_rundir, output_file, output_all_or_none, directory_prefix,
+def orca_eval(ctx, inputs, workdir_root, output_file, output_all_or_none, directory_prefix,
               orca_command, calc_kwargs, keep_files, output_prefix, scratch_path,
               orca_simple_input, orca_additional_blocks):
     verbose = ctx.obj["verbose"]
@@ -973,7 +973,7 @@ def orca_eval(ctx, inputs, base_rundir, output_file, output_all_or_none, directo
         print("ORCA calculation parameters: ", calc_kwargs)
 
     wfl.calculators.orca.evaluate(
-        inputs=configset, outputs=outputspec, base_rundir=base_rundir,
+        inputs=configset, outputs=outputspec, workdir_root=workdir_root,
         dir_prefix=directory_prefix,
         keep_files=keep_files, output_prefix=output_prefix, orca_kwargs=calc_kwargs
     )

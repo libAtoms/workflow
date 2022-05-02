@@ -338,7 +338,7 @@ def evaluate_dft(dft_in_configs, dft_evaluated_configs, params, run_dir):
         # only non-periodic solution possible
         return basinhopping.evaluate_basin_hopping(inputs=dft_in_configs,
                                          outputs=dft_evaluated_configs,
-                                         base_rundir=run_dir,
+                                         workdir_root=run_dir,
                                          orca_kwargs=params.dft_params.get("kwargs", {}),
                                          output_prefix='REF_')
     else:

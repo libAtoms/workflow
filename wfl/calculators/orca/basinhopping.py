@@ -14,7 +14,7 @@ from wfl.autoparallelize import autoparallelize
 
 
 def evaluate_basin_hopping(inputs, outputs,
-                           base_rundir=None, dir_prefix="ORCA_",
+                           workdir_root=None, dir_prefix="ORCA_",
                            keep_files="default", orca_kwargs=None,
                            output_prefix=None):
     """Evaluate with BasinHoppingORCA calculator
@@ -25,7 +25,7 @@ def evaluate_basin_hopping(inputs, outputs,
         input atomic configs, needs to be iterable
     outputs: OutputSpec
         output atomic configs
-    base_rundir: path-like, default os.getcwd()
+    workdir_root: path-like, default os.getcwd()
         directory to put calculation directories into
     dir_prefix: str, default 'ORCA\_'
         directory name prefix for calculations
@@ -47,7 +47,7 @@ def evaluate_basin_hopping(inputs, outputs,
     """
     return autoparallelize(iterable=inputs, OutputSpec=outputs,
                          op=orca.evaluate_op,
-                         base_rundir=base_rundir, dir_prefix=dir_prefix,
+                         workdir_root=workdir_root, dir_prefix=dir_prefix,
                          keep_files=keep_files, orca_kwargs=orca_kwargs,
                          output_prefix=output_prefix, basin_hopping=True)
 

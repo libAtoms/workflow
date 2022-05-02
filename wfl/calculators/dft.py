@@ -14,7 +14,7 @@ def evaluate_dft(
     inputs,
     outputs,
     calculator_name,
-    base_rundir=None,
+    workdir_root=None,
     dir_prefix=None,
     calculator_command=None,
     calculator_kwargs=None,
@@ -33,7 +33,7 @@ def evaluate_dft(
         output atomic configs
     calculator_name: str {"CASTEP", "VASP", "QE"}
         name of Plane Wave DFT calculator, options are: "CASTEP", "VASP", "QE"
-    base_rundir: path-like, default os.getcwd()
+    workdir_root: path-like, default os.getcwd()
         directory to put calculation directories into
     dir_prefix: str, default 'DFT\_'
         directory name prefix for calculations
@@ -82,7 +82,7 @@ def evaluate_dft(
         iterable=inputs,
         outputspec=outputs,
         op=op,
-        base_rundir=base_rundir,
+        workdir_root=workdir_root,
         dir_prefix=dir_prefix,
         calculator_command=calculator_command,
         calculator_kwargs=calculator_kwargs,

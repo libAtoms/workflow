@@ -84,7 +84,7 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch):
 
     # jobs should fail because of bad executable
     results = evaluate_dft(inputs=ci, outputs=co, calculator_name='VASP',
-                           base_rundir='.', calculator_kwargs={'encut': 200, 'VASP_PP_PATH': 'POTCARs'},
+                           workdir_root='.', calculator_kwargs={'encut': 200, 'VASP_PP_PATH': 'POTCARs'},
                            output_prefix='TEST_')
 
     for at in ase.io.read(tmp_path / f'ats_o_{sys_name}.xyz', ':'):
