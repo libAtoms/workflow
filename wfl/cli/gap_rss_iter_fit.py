@@ -39,7 +39,7 @@ import wfl.select.by_descriptor
 import wfl.select.convex_hull
 import wfl.select.simple_filters
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate import md, minim, supercells
+from wfl.generate import md, optimize, supercells
 from wfl.select.flat_histogram import biased_select_conf
 from wfl.select.selection_space import val_relative_to_nearby_composition_volume_min
 from wfl.descriptor_heuristics import descriptors_from_length_scales
@@ -740,7 +740,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
 
         if params.get('MD_bulk_defect_step/minim_before_MD', default=True):
             # minim defects
-            defect_minim_trajs = minim.run(groups[grp_label]['defect_confs'],
+            defect_minim_trajs = optimize.run(groups[grp_label]['defect_confs'],
                                            OutputSpec(file_root=run_dir,
                                                          output_files=f'defect_minim_trajs.{grp_label}.xyz',
                                                          all_or_none=True, force=True),
@@ -864,7 +864,7 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
         # ID preconditioner needed to make it not hang with multiprocessing - need to investigate why default, 'auto',
         # which should always result in None, hangs.  Could be weird volume jumps related to symmetrization cause
         # preconditioner neighbor list to go crazy.
-        trajs = minim.run(groups[grp_label]['cur_confs'],
+        trajs = optimize.run(groups[grp_label]['cur_confs'],
                           OutputSpec(file_root=run_dir,
                                         output_files=f'minim_traj.{grp_label}.xyz',
                                         all_or_none=True, force=True),

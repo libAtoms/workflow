@@ -17,7 +17,7 @@ pytestmark = pytest.mark.remote
 
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.calculators import generic
-from wfl.generate import minim
+from wfl.generate import optimize
 from wfl.calculators.dft import evaluate_dft
 
 
@@ -203,14 +203,14 @@ def do_minim(tmp_path, sys_name, monkeypatch):
 
     # run locally
     co = OutputSpec(output_files={f: f.replace('_i_', '_o_local_') for f in infiles})
-    results = minim.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
+    results = optimize.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
 
     # run remotely
     monkeypatch.setenv('WFL_AUTOPARA_REMOTEINFO', json.dumps(ri))
 
     co = OutputSpec(output_files={f: f.replace('_i_', '_o_') for f in infiles})
     t0 = time.time()
-    results = minim.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
+    results = optimize.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
     dt = time.time() - t0
     print('remote parallel calc_time', dt)
 

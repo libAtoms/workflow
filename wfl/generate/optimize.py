@@ -35,7 +35,7 @@ PreconLBFGS.log = new_log
 # run that operates on ConfigSet, for multiprocessing
 def run(inputs, outputs, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
         keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
-        results_prefix='minim_', chunksize=10, verbose=False, update_config_type=True, **opt_kwargs):
+        results_prefix='optimize_', chunksize=10, verbose=False, update_config_type=True, **opt_kwargs):
     # Normally each thread needs to call np.random.seed so that it will generate a different
     # set of random numbers.  This env var overrides that to produce deterministic output,
     # for purposes like testing
@@ -53,8 +53,8 @@ def run(inputs, outputs, calculator, fmax=1.0e-3, smax=None, steps=1000, pressur
 
 def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
            keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
-           results_prefix='minim_', verbose=False, update_config_type=True, **opt_kwargs):
-    """runs a minimization
+           results_prefix='optimize_', verbose=False, update_config_type=True, **opt_kwargs):
+    """runs a structure optimization 
 
     Parameters
     ----------
@@ -78,12 +78,12 @@ def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000
         rule for sub-selecting configs from the full trajectory.
         Currently implemented: "last_converged", which takes the last config, if converged.
     skip_failures: bool, default True
-        just skip minimizations that raise an exception
+        just skip optimizations that raise an exception
     verbose: bool, default False
         verbose output
         optimisation logs are not printed unless this is True
     update_config_type: bool, default True
-        append at.info['minim_config_type'] at.info['config_type']
+        append at.info['optimize_config_type'] at.info['config_type']
     opt_kwargs
         keyword arguments for PreconLBFGS
 
@@ -122,7 +122,7 @@ def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000
         at.calc = calculator
         if pressure is not None:
             p = sample_pressure(pressure, at)
-            at.info['minim_pressure_GPa'] = p
+            at.info[f'optimize_pressure_GPa'] = p
             p *= ase.units.GPa
             wrapped_at = ExpCellFilter(at, scalar_pressure=p)
         else:
@@ -131,7 +131,7 @@ def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000
         opt = PreconLBFGS(wrapped_at, **opt_kwargs_to_use)
 
         # default status, will be overwritten for first and last configs in traj
-        at.info['minim_config_type'] = 'minim_mid'
+        at.info['optimize_config_type'] = 'optimize_mid'
         traj = []
 
         def process_step():
@@ -140,7 +140,7 @@ def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000
                                                                                     at.info['RSS_min_vol_per_atom']))
 
             if len(traj) > 0 and traj[-1] == at:
-                # Some minimization algorithms sometimes seem to repeat, perhaps
+                # Some optimization algorithms sometimes seem to repeat, perhaps
                 # only in weird circumstances, e.g. bad gradients near breakdown.
                 # Do not store those duplicate configs.
                 return
@@ -155,13 +155,13 @@ def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000
         try:
             opt.run(fmax=fmax, smax=smax, steps=steps)
         except Exception as exc:
-            # label actual failed minims
+            # label actual failed optimizations
             # when this happens, the atomic config somehow ends up with a 6-vector stress, which can't be
             # read by xyz reader.
             # that should probably never happen
             final_status = 'exception'
             if skip_failures:
-                sys.stderr.write(f'Minimization failed with exception \'{exc}\'\n')
+                sys.stderr.write(f'Structure optimization failed with exception \'{exc}\'\n')
                 sys.stderr.flush()
             else:
                 raise
@@ -170,13 +170,13 @@ def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000
             traj.append(at_copy_save_results(at, results_prefix=results_prefix))
 
         # set for first config, to be overwritten if it's also last config
-        traj[0].info['minim_config_type'] = 'minim_initial'
+        traj[0].info['optimize_config_type'] = 'optimize_initial'
 
         if opt.converged():
             final_status = 'converged'
 
-        traj[-1].info['minim_config_type'] = f'minim_last_{final_status}'
-        traj[-1].info['minim_n_steps'] = opt.get_number_of_steps()
+        traj[-1].info['optimize_config_type'] = f'optimize_last_{final_status}'
+        traj[-1].info['optimize_n_steps'] = opt.get_number_of_steps()
 
         if keep_symmetry:
             # should we check that initial is subgroup of final, i.e. no symmetry was lost?
@@ -193,7 +193,7 @@ def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000
         if update_config_type:
             # save config_type
             for at0 in traj:
-                config_type_append(at0, at0.info['minim_config_type'])
+                config_type_append(at0, at0.info['optimize_config_type'])
 
         # Note that if resampling doesn't include original last config, later
         # steps won't be able to identify those configs as the (perhaps unconverged) minima.
@@ -226,7 +226,7 @@ def subselect_from_traj(traj, subselect=None):
         return traj
 
     elif subselect == "last_converged":
-        converged_configs = [at for at in traj if at.info["minim_config_type"] == "minim_last_converged"]
+        converged_configs = [at for at in traj if at.info["optimize_config_type"] == "optimize_last_converged"]
         if len(converged_configs) == 0:
             return None
         else:
