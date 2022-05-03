@@ -438,7 +438,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-mpipool-support-module">
+  <a class="reference internal nav-link" href="#module-wfl.mpipool_support">
    wfl.mpipool_support module
   </a>
  </li>
@@ -502,7 +502,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-mpipool-support-module">
+  <a class="reference internal nav-link" href="#module-wfl.mpipool_support">
    wfl.mpipool_support module
   </a>
  </li>
@@ -594,9 +594,9 @@ title="Print to PDF"
 <li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-smiles-module">wfl.generate_configs.smiles module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-supercells-module">wfl.generate_configs.supercells module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-ts-module">wfl.generate_configs.ts module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-utils-module">wfl.generate_configs.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#module-wfl.generate_configs.utils">wfl.generate_configs.utils module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#wfl-generate-configs-vib-module">wfl.generate_configs.vib module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate_configs.html#module-wfl.generate_configs">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="wfl.pipeline.html">wfl.pipeline package</a><ul>
@@ -631,7 +631,7 @@ title="Print to PDF"
 <li class="toctree-l2"><a class="reference internal" href="wfl.select_configs.html#wfl-select-configs-flat-histogram-module">wfl.select_configs.flat_histogram module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.select_configs.html#wfl-select-configs-simple-filters-module">wfl.select_configs.simple_filters module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.select_configs.html#wfl-select-configs-weighted-cur-module">wfl.select_configs.weighted_cur module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.select_configs.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.select_configs.html#module-wfl.select_configs">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a><ul>
@@ -734,8 +734,30 @@ dicts with keys ‘cutoff’, ‘cutoff_transition_width’, and ‘atom_gaussia
 </dd></dl>
 
 </div>
-<div class="section" id="wfl-mpipool-support-module">
-<h2>wfl.mpipool_support module<a class="headerlink" href="#wfl-mpipool-support-module" title="Permalink to this headline">#</a></h2>
+<div class="section" id="module-wfl.mpipool_support">
+<span id="wfl-mpipool-support-module"></span><h2>wfl.mpipool_support module<a class="headerlink" href="#module-wfl.mpipool_support" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.mpipool_support.init">
+<span class="sig-prename descclassname"><span class="pre">wfl.mpipool_support.</span></span><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.mpipool_support.init" title="Permalink to this definition">#</a></dt>
+<dd><p>Startup code when mpipool will be used. Only master MPI task exists
+function, others wait to do mpipool stuff.  Initialises
+<cite>mpipool_support.wfl_mpipool</cite> with created <cite>MPIExecutor</cite> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>verbose</strong> (<em>int</em><em>, </em><em>default 1</em>) – <ul class="simple">
+<li><p>&gt;= 1 : minimal start/end messages</p></li>
+<li><p>&gt; 1  : print stack trace at startup, to tell where it was called from</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.mpipool_support.shutdown_and_barrier">
+<span class="sig-prename descclassname"><span class="pre">wfl.mpipool_support.</span></span><span class="sig-name descname"><span class="pre">shutdown_and_barrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.mpipool_support.shutdown_and_barrier" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="wfl-parallelization-module">
 <h2>wfl.parallelization module<a class="headerlink" href="#wfl-parallelization-module" title="Permalink to this headline">#</a></h2>
