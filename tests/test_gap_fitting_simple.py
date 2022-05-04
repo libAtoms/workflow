@@ -18,7 +18,7 @@ def test_dict_to_quip_str():
                        'delta': 1, 'covariance_type': 'dot_product',
                        'zeta': 4, 'n_sparse': 100,
                        'sparse_method': 'cur_points',
-                       'config_type_sigma': 'cfg1:1.0:2.0:0.3:4.0:cfg2:1:1:1:1',
+                       'config_type_sigma': { 'cfg1' : [1.0, 2.0, 0.3, 4.0], 'cfg2': [1, 1, 1, 1]},
                        'atom_gaussian_width': 0.3, 'add_species': False,
                        'n_species': 3, 'Z': 8, 'species_Z': [8, 1, 6]}
 
