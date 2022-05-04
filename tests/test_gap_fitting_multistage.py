@@ -12,7 +12,7 @@ import pytest
 import ase.io
 
 from wfl.configset import ConfigSet
-from wfl.fit.gap_multistage import prep_params, fit
+from wfl.fit.gap.multistage import prep_params, fit
 
 params_template = {
     "stages": [

@@ -8,7 +8,7 @@ from multiprocessing.pool import Pool
 from wfl.configset import ConfigSet
 from wfl.autoparallelize.mpipool_support import wfl_mpipool
 
-from .remoteinfo import grouper
+from .utils import grouper
 
 
 def _wrapped_autopara_wrappable(op, iterable_arg, args, kwargs, item_inputs):

@@ -24,7 +24,7 @@ from wfl.select.simple_filters import by_energy
 from wfl.utils.logging import increment_active_iter, print_log, process_active_iter
 from wfl.utils.params import Params
 from wfl.utils.vol_composition_space import composition_space_Zs
-from ..fit import gap_multistage, glue_2b
+from wfl.fit import gap
 from ..generate import atoms_and_dimers, collision
 from ..reactions_processing import trajectory_processing
 from ..select import weighted_cur
@@ -74,7 +74,7 @@ def prep(ctx):
         length_scales = yaml.safe_load(fin)
 
     # prep GAP fitting config using Zs, length scales
-    fit_json = gap_multistage.prep_input(atomic_numbers, length_scales,
+    fit_json = gap.multistage.prep_input(atomic_numbers, length_scales,
                                          params.get('fit/GAP_template_file'),
                                          sharpness=params.get('fit/universal_SOAP_sharpness', default=0.5))
     yaml.dump(fit_json, open('multistage_GAP_fit_settings.yaml', 'w'), indent=4)
@@ -120,9 +120,9 @@ def do_initial_step(ctx, active_iter, verbose):
 
     # create glue & e0
     print_log('write baseline GLUE model')
-    glue_param_str, e0_dict = glue_2b.construct_glue_2b(dft_dimers, "REF_energy",
-                                                        cutoff=params.get("initial_step/dimer/cutoff"),
-                                                        filename=fit_params.get('core_ip_file'))
+    glue_param_str, e0_dict = gap.glue_2b.construct_glue_2b(dft_dimers, "REF_energy",
+                                                            cutoff=params.get("initial_step/dimer/cutoff"),
+                                                            filename=fit_params.get('core_ip_file'))
 
     # write some of the dimers to file for training
     print_log('write dimers to file for training')
@@ -169,7 +169,7 @@ def do_initial_step(ctx, active_iter, verbose):
     database_configs = ConfigSet(input_configsets=[dimers_out.to_ConfigSet(), dft_normal_modes,
                                                       isolated_atoms.to_ConfigSet(), dft_fragments])
     # WARNING: OUTDATED CALL - NEED TO UPDATE TO DO DATABASE MODIFY BEFORE AND REF ERROR CALC AFTER
-    _ = gap_multistage.fit(database_configs, GAP_name='GAP_iter_0', params=fit_params,
+    _ = gap.multistage.fit(database_configs, GAP_name='GAP_iter_0', params=fit_params,
                            database_modify_mod=params.get('fit/database_modify_mod'),
                            run_dir=run_dir, skip_if_present=True, verbose=verbose, ref_property_prefix="REF_",
                            num_committee=params.get("fit/num_committee"),
@@ -291,7 +291,7 @@ def do_md_step(ctx, active_iter, verbose, skip_collision, do_neb, do_ts_irc):
         database_configs.merge(dft_out_neb.to_ConfigSet())
     print_log("fitting database is: " + str(database_configs) + "\n")
     # WARNING: OUTDATED CALL - NEED TO UPDATE TO DO DATABASE MODIFY BEFORE AND REF ERROR CALC AFTER
-    _ = gap_multistage.fit(database_configs, GAP_name='GAP_iter_{}'.format(active_iter),
+    _ = gap.multistage.fit(database_configs, GAP_name='GAP_iter_{}'.format(active_iter),
                            params=fit_params, database_modify_mod=params.get('fit/database_modify_mod'),
                            run_dir=run_dir, skip_if_present=True, verbose=verbose, ref_property_prefix="REF_",
                            num_committee=params.get("fit/num_committee"),

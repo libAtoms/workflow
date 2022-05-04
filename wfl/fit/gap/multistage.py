@@ -12,10 +12,10 @@ import yaml
 
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.descriptor_heuristics import descriptor_2brn_uniform_file, descriptors_from_length_scales
-from wfl.fit.gap_simple import run_gap_fit
+from wfl.fit.gap.simple import run_gap_fit
 from wfl.utils.quip_cli_strings import dict_to_quip_str
-from .utils import get_RemoteInfo
-from .modify_database.scale_orig import modify as modify_scale_orig
+from ..utils import get_RemoteInfo
+from ..modify_database.scale_orig import modify as modify_scale_orig
 
 try:
     from expyre import ExPyRe

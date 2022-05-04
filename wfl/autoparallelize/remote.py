@@ -5,7 +5,8 @@ import warnings
 from ase.atoms import Atoms
 
 from wfl.configset import ConfigSet, OutputSpec
-from .remoteinfo import grouper, RemoteInfo
+from .utils import grouper
+from .remoteinfo import RemoteInfo
 from .pool import do_in_pool
 
 from expyre import ExPyRe

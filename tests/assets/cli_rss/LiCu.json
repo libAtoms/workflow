@@ -40,7 +40,7 @@
     "fitting_by_desc_select_N": 30,
     "testing_by_desc_select_N": 10,
     "select_convex_hull": false,
-    "minim_kwargs": {
+    "optimize_kwargs": {
       "pressure" : [ "exponential", 0.2 ],
       "steps" : 20
     },
@@ -60,7 +60,7 @@
     "fitting_by_desc_select_N": 30,
     "testing_by_desc_select_N": 10,
     "flat_histo_kT": 0.1,
-    "minim_kwargs": {
+    "optimize_kwargs": {
       "pressure" : [ "exponential", 0.2 ],
       "steps" : 20
     },

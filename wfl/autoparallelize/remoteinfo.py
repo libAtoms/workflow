@@ -1,4 +1,3 @@
-import itertools
 import copy
 
 
@@ -64,12 +63,3 @@ class RemoteInfo:
 
     def __str__(self):
         return f'{self.sys_name} {self.job_name} {self.resources} {self.job_chunksize} {self.exact_fit} {self.partial_node} {self.timeout} {self.check_interval}'
-
-
-def grouper(n, iterable):
-    it = iter(iterable)
-    while True:
-        chunk = tuple(itertools.islice(it, n))
-        if not chunk:
-            return
-        yield chunk

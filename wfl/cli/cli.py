@@ -48,7 +48,7 @@ import wfl.calculators.orca
 import wfl.calculators.orca.basinhopping
 
 
-import wfl.fit.gap_multistage
+from wfl.fit import gap as fit_gap
 import wfl.fit.ref_error
 import wfl.fit.utils
 
@@ -1065,13 +1065,13 @@ def multistage_gap(ctx, inputs, gap_name, params_file, property_prefix, database
     if testing_configs is not None:
         testing_configs = ConfigSet(input_files=testing_configs.split())
 
-    GAP, fit_err, test_err = wfl.fit.gap_multistage.fit(ConfigSet(input_files=inputs),
-                                                        GAP_name=gap_name, params=fit_params,
-                                                        ref_property_prefix=property_prefix,
-                                                        database_modify_mod=database_modify_mod,
-                                                        calc_fitting_error=fitting_error,
-                                                        testing_configs=testing_configs,
-                                                        run_dir=run_dir, verbose=verbose)
+    GAP, fit_err, test_err = fit_gap.multistage.fit(ConfigSet(input_files=inputs),
+                                                    GAP_name=gap_name, params=fit_params,
+                                                    ref_property_prefix=property_prefix,
+                                                    database_modify_mod=database_modify_mod,
+                                                    calc_fitting_error=fitting_error,
+                                                    testing_configs=testing_configs,
+                                                    run_dir=run_dir, verbose=verbose)
 
 
 @subcli_fitting.command('simple-gap')
@@ -1124,10 +1124,10 @@ def simple_gap_fit(ctx, gap_file, atoms_filename, param_file,
     if output_file == 'default':
         output_file = os.path.splitext(params['gap_file'])[0] + '_output.txt'
 
-    wfl.fit.gap_simple.run_gap_fit(fitting_ci, fitting_dict=params,
-                                   stdout_file=output_file,
-                                   gap_fit_exec=gap_fit_exec,
-                                   do_fit=fit, verbose=verbose)
+    fit_gap.simple.run_gap_fit(fitting_ci, fitting_dict=params,
+                               stdout_file=output_file,
+                               gap_fit_exec=gap_fit_exec,
+                               do_fit=fit, verbose=verbose)
 
 
 if __name__ == '__main__':
