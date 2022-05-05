@@ -68,7 +68,7 @@ def test_orca_is_converged():
     assert orca.is_converged() is None
 
 
-@pytest.mark.skipif(shutil.which("orca") is None, reason="no ORCA executable in path")
+@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
 def test_full_orca(tmp_path):
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
 
@@ -88,9 +88,9 @@ def test_full_orca(tmp_path):
     except CalculationFailed:
         pass
     assert not any(scratch_path.iterdir())
-    wdir_base = (home_dir / "ORCA_calc_files")
-    assert wdir_base.exists()
-    calc_dir = [d for d in wdir_base.iterdir()][0]
+    workdir_root = (home_dir / "ORCA_calc_files")
+    assert workdir_root.exists()
+    calc_dir = [d for d in workdir_root.iterdir()][0]
     for ext in [".ase", ".inp", ".out"]:
         assert (calc_dir / ("orca" + ext)).exists()
 
@@ -104,7 +104,7 @@ def test_full_orca(tmp_path):
     atoms.get_potential_energy()
 
 
-@pytest.mark.skipif(shutil.which("orca") is None, reason="no ORCA executable in path")
+@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
 def test_orca_with_generic(tmp_path):
     
     home_dir = tmp_path / "home_dir"
@@ -122,7 +122,7 @@ def test_orca_with_generic(tmp_path):
     for at in outputs.to_ConfigSet():
         assert "orca_energy" in at.info or "orca_calculation_failed" in at.info
 
-@pytest.mark.skipif(shutil.which("orca") is None, reason="no ORCA executable in path")
+@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
 def test_orca_geometry_optimisation(tmp_path):
     
     home_dir = tmp_path / "home_dir"
@@ -144,7 +144,7 @@ def test_orca_geometry_optimisation(tmp_path):
     assert pytest.approx(out.get_distance(0, 1)) == 0.76812058465248
 
 
-@pytest.mark.skipif(shutil.which("orca") is None, reason="no ORCA executable in path")
+@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
 def test_post_processing(tmp_path):
        
     home_dir = tmp_path / "home_dir"
@@ -177,7 +177,7 @@ def simplest_orca_post(orca_calc):
             f.write("Dummy file generated after ORCA execution\n")
 
 
-@pytest.mark.skipif(shutil.which("orca") is None or "JANPA_HOME_DIR" not in os.environ, reason="no ORCA executable in path")
+@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ or "JANPA_HOME_DIR" not in os.environ, reason="no ORCA or JANPA executable in path")
 def test_run_npa(tmp_path):
 
     janpa_home_dir = os.environ["JANPA_HOME_DIR"]

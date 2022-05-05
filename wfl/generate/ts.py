@@ -3,7 +3,7 @@ from tempfile import NamedTemporaryFile
 import ase.io
 
 import wfl.utils.misc
-from wfl.generate import minim
+from wfl.generate import optimize
 from wfl.utils.parallel import construct_calculator_picklesafe
 
 try:
@@ -78,7 +78,7 @@ def calc_ts(atoms, calculator, fmax=1.0e-3, steps=200, traj_step_interval=1, tra
             else:
                 traj[-1].info['config_type'] = 'ts_last_unconverged'
 
-            traj = minim._resample_traj(traj, traj_equispaced_n)
+            traj = optimize._resample_traj(traj, traj_equispaced_n)
 
             all_trajs.append(traj)
 

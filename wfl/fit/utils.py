@@ -4,7 +4,7 @@ import numpy as np
 
 from ase.constraints import voigt_6_to_full_3x3_stress
 
-from wfl.autoparallelize.utils import RemoteInfo
+from wfl.autoparallelize.remoteinfo import RemoteInfo
 
 
 def fix_stress_virial(configs, ref_property_keys, stress_key):

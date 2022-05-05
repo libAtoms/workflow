@@ -8,7 +8,7 @@ import ase.io
 from ase.build import bulk
 from ase.calculators.emt import EMT
 
-from wfl.generate import minim
+from wfl.generate import optimize
 from wfl.configset import ConfigSet, OutputSpec
 
 expected_relaxed_positions_constant_pressure = np.array(
@@ -68,7 +68,7 @@ def test_mult_files(cu_slab, tmp_path):
 
     calc = EMT()
 
-    atoms_opt = minim.run(inputs, outputs, calc, fmax=1e-2, precon=None,
+    atoms_opt = optimize.run(inputs, outputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215)
 
     n1 = len(ase.io.read(tmp_path / infiles[0].replace('.xyz', '.out.xyz'), ':'))
@@ -84,7 +84,7 @@ def test_relax(cu_slab):
     inputs = ConfigSet(input_configs = cu_slab)
     outputs = OutputSpec()
 
-    atoms_opt = minim.run(inputs, outputs, calc, fmax=1e-2, precon=None,
+    atoms_opt = optimize.run(inputs, outputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215)
 
     atoms_opt = list(atoms_opt)[-1]
@@ -93,7 +93,7 @@ def test_relax(cu_slab):
 
     assert atoms_opt.positions == approx(expected_relaxed_positions_constant_pressure, abs=3e-3)
 
-    assert atoms_opt.info['config_type'] == 'cu_slab_minim_last_converged'
+    assert atoms_opt.info['config_type'] == 'cu_slab_optimize_last_converged'
 
 
 def test_relax_fixed_vol(cu_slab):
@@ -104,7 +104,7 @@ def test_relax_fixed_vol(cu_slab):
     outputs = OutputSpec()
 
 
-    atoms_opt = minim.run(inputs, outputs, calc, fmax=1e-2, precon=None,
+    atoms_opt = optimize.run(inputs, outputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True)
 
     atoms_opt = list(atoms_opt)[-1]
@@ -150,7 +150,7 @@ def test_relax_fixed_vol(cu_slab):
 
     assert atoms_opt.positions == approx(expected_positions, abs=3e-3)
 
-    assert atoms_opt.info['config_type'] == 'cu_slab_minim_last_converged'
+    assert atoms_opt.info['config_type'] == 'cu_slab_optimize_last_converged'
 
 
 def test_subselect_from_traj(cu_slab):
@@ -162,7 +162,7 @@ def test_subselect_from_traj(cu_slab):
 
     # returns full optimisation trajectories
     inputs = [cu_slab.copy(), cu_slab_optimised.copy()]
-    atoms_opt = minim.run_autopara_wrappable(inputs, calc, fmax=1e-2, precon=None,
+    atoms_opt = optimize.run_autopara_wrappable(inputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215, 
                           steps=2, traj_subselect=None)
 
@@ -173,7 +173,7 @@ def test_subselect_from_traj(cu_slab):
 
     # returns [None] for unconverged and last config for converged otpimisation
     inputs = [cu_slab.copy(), cu_slab_optimised.copy()]
-    atoms_opt = minim.run_autopara_wrappable(inputs, calc, fmax=1e-2, precon=None,
+    atoms_opt = optimize.run_autopara_wrappable(inputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215, 
                           steps=2, traj_subselect="last_converged")
 
@@ -184,7 +184,7 @@ def test_subselect_from_traj(cu_slab):
     # check that iterable_loop handles Nones as expected
     inputs = ConfigSet(input_configs = [cu_slab.copy(), cu_slab_optimised.copy()] )
     outputs = OutputSpec()
-    atoms_opt = minim.run(inputs, outputs, calc, fmax=1e-2, precon=None,
+    atoms_opt = optimize.run(inputs, outputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215, 
                           steps=2, traj_subselect="last_converged")
 

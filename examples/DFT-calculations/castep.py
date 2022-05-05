@@ -11,7 +11,7 @@ from wfl.calculators.dft import evaluate_dft
 def main(verbose=True):
     # settings
     # replace this with your local configuration in productions
-    base_rundir = "CASTEP-calculations"
+    workdir_root = "CASTEP-calculations"
     castep_kwargs = {
         "ecut": 400.0,
         "kpoint_mp_spacing": 0.1,
@@ -39,7 +39,7 @@ def main(verbose=True):
         print_log("Quantum Espresso example calculation")
         print(configs_in)
         print(configs_out)
-        print(f"base_rundir: {base_rundir}")
+        print(f"workdir_root: {workdir_root}")
         print(f"castep_command: {castep_command}")
         pprint(castep_kwargs)
 
@@ -48,7 +48,7 @@ def main(verbose=True):
         calculator_name="CASTEP",
         inputs=configs_in,
         outputs=configs_out,
-        base_rundir=base_rundir,  # directory where to put the calculation directories
+        workdir_root=workdir_root,  # directory where to put the calculation directories
         calculator_command=castep_command,
         calculator_kwargs=castep_kwargs,
         keep_files="default",  # keeps the .pwo file only

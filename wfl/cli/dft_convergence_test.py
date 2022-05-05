@@ -74,7 +74,7 @@ def cli(verbose, configuration, buildcell_inputs, buildcell_cmd, n_per_config, p
             dft_evaluated[key][param_val] = evaluate_dft(
                     inputs=structs, outputs=evaluated_structs,
                     calculator_name=params['calculator'],
-                    base_rundir=os.path.join(run_dir, 'vasp_run'),
+                    workdir_root=os.path.join(run_dir, 'vasp_run'),
                     calculator_kwargs=run_kwargs,
                     output_prefix=output_prefix,
                     keep_files='default' if verbose else False)

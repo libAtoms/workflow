@@ -164,7 +164,7 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
         calculator_name="QE",
         inputs=[at0, at],
         outputs=c_out,
-        base_rundir=tmp_path,
+        workdir_root=tmp_path,
         calculator_command=qe_cmd,
         calculator_kwargs=kw,
         output_prefix="QE_",
@@ -208,7 +208,7 @@ def test_qe_no_calculation(tmp_path, qe_cmd_and_pseudo):
     # call just to skip if pw.x is missing
     _, _ = qe_cmd_and_pseudo
 
-    results = evaluate_autopara_wrappable(bulk("Si"), calculator_kwargs=dict(), output_prefix="dummy_", base_rundir=tmp_path)
+    results = evaluate_autopara_wrappable(bulk("Si"), calculator_kwargs=dict(), output_prefix="dummy_", workdir_root=tmp_path)
 
     assert isinstance(results, Atoms)
     assert "dummy_energy" not in results.info
@@ -239,7 +239,7 @@ def test_qe_to_spc(tmp_path, qe_cmd_and_pseudo):
         inputs=ConfigSet(input_files=tmp_path /  "qe_in.xyz"),
         outputs=OutputSpec(file_root=tmp_path, output_files="qe_out.to_SPC.xyz"),
         calculator_name="QE",
-        base_rundir=tmp_path,
+        workdir_root=tmp_path,
         calculator_kwargs=kw,
         output_prefix=None,
     )

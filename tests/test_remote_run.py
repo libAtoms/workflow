@@ -17,7 +17,7 @@ pytestmark = pytest.mark.remote
 
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.calculators import generic
-from wfl.generate import minim
+from wfl.generate import optimize
 from wfl.calculators.dft import evaluate_dft
 
 
@@ -84,7 +84,7 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch):
 
     # jobs should fail because of bad executable
     results = evaluate_dft(inputs=ci, outputs=co, calculator_name='VASP',
-                           base_rundir='.', calculator_kwargs={'encut': 200, 'VASP_PP_PATH': 'POTCARs'},
+                           workdir_root='.', calculator_kwargs={'encut': 200, 'VASP_PP_PATH': 'POTCARs'},
                            output_prefix='TEST_')
 
     for at in ase.io.read(tmp_path / f'ats_o_{sys_name}.xyz', ':'):
@@ -203,14 +203,14 @@ def do_minim(tmp_path, sys_name, monkeypatch):
 
     # run locally
     co = OutputSpec(output_files={f: f.replace('_i_', '_o_local_') for f in infiles})
-    results = minim.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
+    results = optimize.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
 
     # run remotely
     monkeypatch.setenv('WFL_AUTOPARA_REMOTEINFO', json.dumps(ri))
 
     co = OutputSpec(output_files={f: f.replace('_i_', '_o_') for f in infiles})
     t0 = time.time()
-    results = minim.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
+    results = optimize.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
     dt = time.time() - t0
     print('remote parallel calc_time', dt)
 
@@ -218,8 +218,8 @@ def do_minim(tmp_path, sys_name, monkeypatch):
     for at_local, at in zip(ase.io.read(tmp_path / f'ats_o_local_{sys_name}_1.xyz', ':'), ase.io.read(tmp_path / f'ats_o_{sys_name}_1.xyz', ':')):
         assert at_local.info['orig_file'] == at.info['orig_file']
         assert at_local.info['orig_file_seq_no'] == at.info['orig_file_seq_no']
-        assert np.abs((at_local.info['minim_energy'] - at.info['minim_energy']) / at_local.info['minim_energy']) < 1.0e-8
+        assert np.abs((at_local.info['optimize_energy'] - at.info['optimize_energy']) / at_local.info['optimize_energy']) < 1.0e-8
     for at_local, at in zip(ase.io.read(tmp_path / f'ats_o_local_{sys_name}_2.xyz', ':'), ase.io.read(tmp_path / f'ats_o_{sys_name}_2.xyz', ':')):
         assert at_local.info['orig_file'] == at.info['orig_file']
         assert at_local.info['orig_file_seq_no'] == at.info['orig_file_seq_no']
-        assert np.abs((at_local.info['minim_energy'] - at.info['minim_energy']) / at_local.info['minim_energy']) < 1.0e-8
+        assert np.abs((at_local.info['optimize_energy'] - at.info['optimize_energy']) / at_local.info['optimize_energy']) < 1.0e-8

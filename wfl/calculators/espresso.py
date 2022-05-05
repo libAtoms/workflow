@@ -28,7 +28,7 @@ __default_properties = ["energy", "forces", "stress"]
 
 def evaluate_autopara_wrappable(
     atoms,
-    base_rundir=None,
+    workdir_root=None,
     dir_prefix="run_QE_",
     calculator_command=None,
     calculator_kwargs=None,
@@ -42,7 +42,7 @@ def evaluate_autopara_wrappable(
     ----------
     atoms: Atoms / list(Atoms)
         input atomic configs
-    base_rundir: path-like, default os.getcwd()
+    workdir_root: path-like, default os.getcwd()
         directory to put calculation directories into
     dir_prefix: str, default 'QE-run\_'
         directory name prefix for calculations
@@ -76,11 +76,11 @@ def evaluate_autopara_wrappable(
     if calculator_kwargs is None:
         raise ValueError("QE will not perform a calculation without settings given!")
 
-    if base_rundir is None:
+    if workdir_root is None:
         # using the current directory
-        base_rundir = os.getcwd()
+        workdir_root = os.getcwd()
     else:
-        pathlib.Path(base_rundir).mkdir(parents=True, exist_ok=True)
+        pathlib.Path(workdir_root).mkdir(parents=True, exist_ok=True)
 
     for at in at_list:
 
@@ -98,7 +98,7 @@ def evaluate_autopara_wrappable(
                 kwargs_this_calc['profile'] = EspressoProfile(argv=calculator_command.split())
 
         # create temp dir and calculator
-        rundir = tempfile.mkdtemp(dir=base_rundir, prefix=dir_prefix)
+        rundir = tempfile.mkdtemp(dir=workdir_root, prefix=dir_prefix)
         at.calc = Espresso(directory=rundir, **kwargs_this_calc)
 
         # calculate

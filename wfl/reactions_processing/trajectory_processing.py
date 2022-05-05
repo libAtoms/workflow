@@ -12,7 +12,7 @@ except ModuleNotFoundError:
 from scipy import sparse
 
 from wfl import configset
-from wfl.generate.minim import run_autopara_wrappable
+from wfl.generate.optimize import run_autopara_wrappable
 from wfl.generate.neb import neb_generic, neb_with_ts_and_irc
 from wfl.generate.ts import calc_ts
 

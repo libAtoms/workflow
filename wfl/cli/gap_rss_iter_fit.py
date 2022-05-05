@@ -29,17 +29,17 @@ except ModuleNotFoundError:
 
 
 import wfl
-import wfl.descriptors.calc
+import wfl.descriptors.quippy
 import wfl.descriptor_heuristics
 import wfl.fit.ref_error
-import wfl.fit.gap_multistage
+from wfl.fit.gap import multistage as gap_multistage
 import wfl.generate.atoms_and_dimers
 import wfl.generate.buildcell
 import wfl.select.by_descriptor
 import wfl.select.convex_hull
 import wfl.select.simple
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate import md, minim, supercells
+from wfl.generate import md, optimize, supercells
 from wfl.select.flat_histogram import biased_select_conf
 from wfl.select.selection_space import val_relative_to_nearby_composition_volume_min
 from wfl.descriptor_heuristics import descriptors_from_length_scales
@@ -217,8 +217,8 @@ def prep(ctx, length_scales_file, verbose):
             yaml.dump(buildcell_inputs, stream=fout, default_flow_style=False)
 
     # prep GAP fitting config using Zs, length scales
-    fit_params = wfl.fit.gap_multistage.prep_params(Zs, length_scales, params.get('fit/GAP_template_file'),
-                                                    sharpness=params.get('fit/universal_SOAP_sharpness', default=0.5))
+    fit_params = gap_multistage.prep_params(Zs, length_scales, params.get('fit/GAP_template_file'),
+                                            sharpness=params.get('fit/universal_SOAP_sharpness', default=0.5))
     yaml.dump(fit_params, open('multistage_GAP_fit_settings.yaml', 'w'), indent=4)
 
     # similarly prep config-selection descriptor using Zs, length scales
@@ -240,7 +240,7 @@ def prep(ctx, length_scales_file, verbose):
     # should this really overwrite atoms_and_dimers.xyz?
     wfl.generate.atoms_and_dimers.prepare(OutputSpec(output_files='atoms_and_dimers.xyz', force=True),
                                                   Zs, {Z: length_scales[Z]['min_bond_len'][0] for Z in Zs},
-                                                  max_cutoff=wfl.fit.gap_multistage.max_cutoff(fit_params),
+                                                  max_cutoff=gap_multistage.max_cutoff(fit_params),
                                                   **kwargs)
 
 
@@ -361,7 +361,7 @@ def evaluate_ref(dft_in_configs, dft_evaluated_configs, params, run_dir, verbose
         inputs=dft_in_configs,
         outputs=dft_evaluated_configs,
         calculator_name=params.dft_code,
-        base_rundir=run_dir,
+        workdir_root=run_dir,
         calculator_kwargs=params.dft_params.get("kwargs", {}),
         output_prefix="REF_",
         keep_files=keep_files
@@ -392,8 +392,8 @@ def do_fit_and_test(cur_iter, run_dir, params, fitting_configs, testing_configs=
     # fit
     with open('multistage_GAP_fit_settings.yaml') as fin:
         fit_params = yaml.safe_load(fin)
-    GAP_xml_file, GAP_name = wfl.fit.gap_multistage.fit(fitting_configs, GAP_name=f'GAP_iter_{cur_iter}', params=fit_params,
-                                                        seeds=seeds, skip_if_present=True, run_dir=run_dir, verbose=verbose)
+    GAP_xml_file, GAP_name = gap_multistage.fit(fitting_configs, GAP_name=f'GAP_iter_{cur_iter}', params=fit_params,
+                                                seeds=seeds, skip_if_present=True, run_dir=run_dir, verbose=verbose)
 
     calculator = (Potential, [], {'param_filename': GAP_xml_file, 'args_str': f'Potential xml_label={GAP_name}'})
 
@@ -580,11 +580,11 @@ def do_rss_step(ctx, cur_iter, verbose):
                        traj_select_by_desc_method, descriptor_strs,
                        params.get('global/config_selection_descriptor_local', default=False),
                        prev_GAP, select_convex_hull=params.get('rss_step/select_convex_hull'),
-                       get_entire_trajectories=True, minim_kwargs=params.get('rss_step/minim_kwargs', {}),
+                       get_entire_trajectories=True, optimize_kwargs=params.get('rss_step/optimize_kwargs', {}),
                        verbose=verbose)
 
     select_fitting_and_testing_for_groups(run_dir, cur_iter, groups, Params(params.get('rss_step'), cur_iter), Zs,
-                                          'minim_energy', select_by_desc_method, descriptor_strs,
+                                          'optimize_energy', select_by_desc_method, descriptor_strs,
                                           params.get('global/config_selection_descriptor_local', default=False),
                                           verbose=verbose)
 
@@ -621,7 +621,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
         descriptor_strs = yaml.safe_load(fin)
 
     prev_GAP = os.path.join('run_iter_{}'.format(cur_iter - 1), 'GAP_iter_{}.xml'.format(cur_iter - 1))
-    minim_kwargs = params.get('MD_bulk_defect_step/minim_kwargs', {})
+    optimize_kwargs = params.get('MD_bulk_defect_step/optimize_kwargs', {})
 
     if minima_file is None:
         # do another round of RSS for minima only
@@ -648,7 +648,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                            minima_select_by_desc_method, descriptor_strs,
                            params.get('global/config_selection_descriptor_local', default=False),
                            prev_GAP, select_convex_hull=False, get_entire_trajectories=False,
-                           minim_kwargs=minim_kwargs, verbose=verbose)
+                           optimize_kwargs=optimize_kwargs, verbose=verbose)
     else:
         # this will not try to preserve group structure
         groups = {'ALL': {'cur_confs': ConfigSet(input_files=[minima_file]), 'frac': 1.0}}
@@ -723,10 +723,10 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
         groups[grp_label]['defect_confs'] = ConfigSet(input_configs=defect_confs)
 
     # NOTE: perhaps the hard-wiring of specific md.sample parameters should be replaced with an
-    # 'md_kwargs' param, similar to 'minim_kwargs'
-    MD_pressure = params.get('MD_bulk_defect_step/MD_pressure', default=('info', 'minim_pressure_GPa'))
-    minim_kwargs['pressure'] = MD_pressure
-    print_log('doing minim + MD')
+    # 'md_kwargs' param, similar to 'optimize_kwargs'
+    MD_pressure = params.get('MD_bulk_defect_step/MD_pressure', default=('info', 'optimize_pressure_GPa'))
+    optimize_kwargs['pressure'] = MD_pressure
+    print_log('doing optimize + MD')
     for grp_label in groups:
         print_log('  group ' + grp_label)
         # MD for bulks
@@ -738,19 +738,19 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                               temperature=bulk_MD_T_range, temperature_tau=10.0 * MD_dt,
                               pressure=MD_pressure, traj_step_interval=25)
 
-        if params.get('MD_bulk_defect_step/minim_before_MD', default=True):
+        if params.get('MD_bulk_defect_step/optimize_before_MD', default=True):
             # minim defects
-            defect_minim_trajs = minim.run(groups[grp_label]['defect_confs'],
+            defect_optimize_trajs = optimize.run(groups[grp_label]['defect_confs'],
                                            OutputSpec(file_root=run_dir,
-                                                         output_files=f'defect_minim_trajs.{grp_label}.xyz',
+                                                         output_files=f'defect_optimize_trajs.{grp_label}.xyz',
                                                          all_or_none=True, force=True),
                                            calculator=(Potential, None, {'param_filename': prev_GAP}),
-                                           precon='ID', keep_symmetry=True, **minim_kwargs)
-            defect_starting = wfl.select.simple.select(defect_minim_trajs,
+                                           precon='ID', keep_symmetry=True, **optimize_kwargs)
+            defect_starting = wfl.select.simple.select(defect_optimize_trajs,
                                                                OutputSpec(file_root=run_dir,
                                                                           output_files=f'defect_minima.{grp_label}.xyz',
                                                                           all_or_none=True, force=True),
-                                                               lambda at : at.info["minim_config_type"].startswith("minim_last"))
+                                                               lambda at : at.info["optimize_config_type"].startswith("optimize_last"))
         else:
             defect_starting = groups[grp_label]['defect_confs']
 
@@ -821,7 +821,7 @@ def do_reevaluate_and_fit_step(ctx, cur_iter, verbose):
 
 def RSS_minima_diverse(run_dir, groups, step_params, Zs,
                        select_by_desc_method, config_selection_descriptor_strs, config_selection_descriptor_local,
-                       prev_GAP, select_convex_hull, get_entire_trajectories, minim_kwargs={}, verbose=False):
+                       prev_GAP, select_convex_hull, get_entire_trajectories, optimize_kwargs={}, verbose=False):
     """do RSS, select diverse minima using flat histogram + descriptor-based, optionally convex hull
 
     Parameters
@@ -846,8 +846,8 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
         always select minima on (x, V, E) convex hull
     get_entire_trajectories: bool
         return entire RSS trajectories leading up to minima
-    minim_kwargs: dict, default {}
-        optional kwargs for minim call
+    optimize_kwargs: dict, default {}
+        optional kwargs for optimize call
     verbose: bool
         verbose output
 
@@ -863,19 +863,19 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
         # ID preconditioner needed to make it not hang with multiprocessing - need to investigate why default, 'auto',
         # which should always result in None, hangs.  Could be weird volume jumps related to symmetrization cause
         # preconditioner neighbor list to go crazy.
-        trajs = minim.run(groups[grp_label]['cur_confs'],
+        trajs = optimize.run(groups[grp_label]['cur_confs'],
                           OutputSpec(file_root=run_dir,
-                                        output_files=f'minim_traj.{grp_label}.xyz',
+                                        output_files=f'optimize_traj.{grp_label}.xyz',
                                         all_or_none=True, force=True),
                           calculator=(Potential, None, {'param_filename': prev_GAP}),
-                          precon='ID', keep_symmetry=True, **minim_kwargs)
+                          precon='ID', keep_symmetry=True, **optimize_kwargs)
 
         print_log('selecting minima from trajectories')
         # select minima from trajs
         minima = wfl.select.simple.select(trajs, OutputSpec(file_root=run_dir,
                                                                     output_files=f'minima.{grp_label}.xyz',
                                                                     all_or_none=True, force=True),
-                                                  lambda at : at.info["minim_config_type"].startswith("minim_last"))
+                                                  lambda at : at.info["optimize_config_type"].startswith("optimize_last"))
 
         if select_convex_hull:
             print_log('selecting convex hull of minima')
@@ -883,7 +883,7 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
                 minima,
                 OutputSpec(file_root=run_dir, output_files=f'minima_convex_hull.{grp_label}.xyz', all_or_none=True,
                               force=True),
-                info_field='minim_energy')
+                info_field='optimize_energy')
         else:
             groups[grp_label]['convex_hull'] = None
 
@@ -892,7 +892,7 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
         grp_frac = groups[grp_label]['frac']
         minima_flat_histo_kT = step_params.get('minima_flat_histo_kT', step_params.get('flat_histo_kT'))
         minima_config_by_desc, _ = flat_histo_then_by_desc(
-            run_dir, minima, 'minima', grp_label, Zs, 'minim_energy', minima_flat_histo_kT,
+            run_dir, minima, 'minima', grp_label, Zs, 'optimize_energy', minima_flat_histo_kT,
             int(step_params.get('minima_flat_histo_N') * grp_frac), select_by_desc_method,
             config_selection_descriptor_strs, config_selection_descriptor_local,
             int(step_params.get('minima_by_desc_select_N') * grp_frac), testing_N=0,
@@ -1036,7 +1036,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
             f'computing descriptors and selecting from (optionally) flat histogram by descriptor for {file_label} ' + str(
                 config_selection_descriptor_strs))
         # calc descriptors and by-desc select from flat histo selected
-        configs_flat_histo_with_desc = wfl.descriptors.calc.calc(
+        configs_flat_histo_with_desc = wfl.descriptors.quippy.calc(
             configs_init, OutputSpec(file_root=run_dir,
                                         output_files=f'{file_label}_with_desc.{grp_label}.xyz',
                                         all_or_none=True, force=True),
@@ -1084,7 +1084,7 @@ def calc_descriptors_to_file(run_dir, basename, grp_label, configs, descriptor_s
     if os.path.exists(os.path.join(run_dir, f'{basename}.{grp_label}.average_desc.txt')):
         return
 
-    configs_with_descs = wfl.descriptors.calc.calc(configs, OutputSpec(),
+    configs_with_descs = wfl.descriptors.quippy.calc(configs, OutputSpec(),
                                                   descriptor_strs, 'config_selection_desc', local=descriptor_local,
                                                   verbose=verbose)
 

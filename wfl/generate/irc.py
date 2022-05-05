@@ -8,7 +8,7 @@ except ModuleNotFoundError:
 from tempfile import NamedTemporaryFile
 
 import wfl.utils.misc
-from wfl.generate import minim
+from wfl.generate import optimize
 from wfl.utils.parallel import construct_calculator_picklesafe
 
 
@@ -98,7 +98,7 @@ def calc_irc(atoms, calculator, fmax=0.1, steps=200, traj_step_interval=1, traj_
                 traj[0].info['config_type'] = 'irc_last_unconverged'
 
             # noinspection PyProtectedMember
-            traj = minim._resample_traj(traj, traj_equispaced_n)
+            traj = optimize._resample_traj(traj, traj_equispaced_n)
 
             all_trajs.append(traj)
 
