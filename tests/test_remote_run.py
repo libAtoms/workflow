@@ -218,8 +218,8 @@ def do_minim(tmp_path, sys_name, monkeypatch):
     for at_local, at in zip(ase.io.read(tmp_path / f'ats_o_local_{sys_name}_1.xyz', ':'), ase.io.read(tmp_path / f'ats_o_{sys_name}_1.xyz', ':')):
         assert at_local.info['orig_file'] == at.info['orig_file']
         assert at_local.info['orig_file_seq_no'] == at.info['orig_file_seq_no']
-        assert np.abs((at_local.info['minim_energy'] - at.info['minim_energy']) / at_local.info['minim_energy']) < 1.0e-8
+        assert np.abs((at_local.info['optimize_energy'] - at.info['optimize_energy']) / at_local.info['optimize_energy']) < 1.0e-8
     for at_local, at in zip(ase.io.read(tmp_path / f'ats_o_local_{sys_name}_2.xyz', ':'), ase.io.read(tmp_path / f'ats_o_{sys_name}_2.xyz', ':')):
         assert at_local.info['orig_file'] == at.info['orig_file']
         assert at_local.info['orig_file_seq_no'] == at.info['orig_file_seq_no']
-        assert np.abs((at_local.info['minim_energy'] - at.info['minim_energy']) / at_local.info['minim_energy']) < 1.0e-8
+        assert np.abs((at_local.info['optimize_energy'] - at.info['optimize_energy']) / at_local.info['optimize_energy']) < 1.0e-8
