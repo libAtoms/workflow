@@ -10,6 +10,8 @@ from ase.calculators.emt import EMT
 
 from wfl.generate_configs import minim
 from wfl.configset import ConfigSet_in, ConfigSet_out
+from ase.constraints import FixAtoms
+
 
 expected_relaxed_positions_constant_pressure = np.array(
     [[ 7.64860000e-04,  6.66750000e-04,  1.12750000e-04],
@@ -191,3 +193,44 @@ def test_subselect_from_traj(cu_slab):
     atoms_opt = list(atoms_opt)
     assert len(atoms_opt) == 1
     assert isinstance(atoms_opt[0], Atoms)
+
+def test_relax_with_constraints(cu_slab):
+    """
+    Test relaxation with FixAtoms constraint, when keep_symetry = True
+
+    Test 1) Wether Fixed atoms stay fixed 2) wether the constraints are the same
+    at the end of the relaxation eg. that the symetry constraint is removed
+
+    Args:
+        cu_slab (ase.Atoms): test configuration
+    """
+    calc = EMT()
+    ats = cu_slab
+
+    # Fix lowest 10 atoms
+    pos = ats.get_positions()
+    fix_indices = np.where(pos[:, 2] < np.sort(pos[:, 2])[min(10, len(ats))])[0]
+    c = FixAtoms(indices=fix_indices)
+    ats.set_constraint(c)
+
+    # Save copy of constraints to compre later
+    org_constraints = ats.constraints.copy()
+
+    # Rattle such that the relaxation takes a few steps
+    ats.rattle(0.1, seed=0)
+    inputs = ConfigSet_in(input_configs=ats)
+    outputs = ConfigSet_out()
+
+    atoms_opt = minim.run(
+        inputs, outputs, calc, fmax=1e-2, keep_symmetry=True, logfile="-", verbose=True
+    )
+    output = list(atoms_opt)
+
+    # Changes in position
+    diff_pos = output[0].get_positions() - output[-1].get_positions()
+    assert (
+        np.sum(diff_pos[fix_indices]) < 1e-10
+    ), "Fixed atoms should not move during relaxation"
+    assert (
+        output[-1].constraints == org_constraints
+    ), "Constraints on atoms should be the same before and after relaxation"

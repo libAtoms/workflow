@@ -91,7 +91,6 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
     -------
         list(Atoms) trajectories
     """
-
     opt_kwargs_to_use = dict(logfile=None, master=True)
     opt_kwargs_to_use.update(opt_kwargs)
 
@@ -110,9 +109,14 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
     all_trajs = []
 
     for at in atoms_to_list(atoms):
+        # original constraints
+        org_constraints = at.constraints
+
         if keep_symmetry:
             sym = FixSymmetry(at)
-            at.set_constraint(sym)
+            # Append rather than overwrite constraints
+            at.set_constraint([*at.constraints, sym])
+
             dataset = spglib.get_symmetry_dataset((at.cell, at.get_scaled_positions(), at.numbers), 0.01)
             if 'buildcell_config_i' in at.info:
                 print(at.info['buildcell_config_i'], end=' ')
@@ -145,7 +149,9 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
                 # Do not store those duplicate configs.
                 return
 
-            traj.append(at_copy_save_results(at, results_prefix=results_prefix))
+            new_config = at_copy_save_results(at, results_prefix=results_prefix)
+            new_config.set_constraint(org_constraints)
+            traj.append(new_config)
 
         opt.attach(process_step, interval=traj_step_interval)
 
@@ -167,7 +173,9 @@ def run_op(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
                 raise
 
         if len(traj) == 0 or traj[-1] != at:
-            traj.append(at_copy_save_results(at, results_prefix=results_prefix))
+            new_config = at_copy_save_results(at, results_prefix=results_prefix)
+            new_config.set_constraint(org_constraints)
+            traj.append(new_config)
 
         # set for first config, to be overwritten if it's also last config
         traj[0].info['minim_config_type'] = 'minim_initial'
