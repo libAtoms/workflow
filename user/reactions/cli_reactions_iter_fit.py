@@ -5,6 +5,7 @@ import pprint
 import subprocess
 import sys
 from glob import glob
+from ..generate.user.generate import collision
 
 import click
 import numpy as np
@@ -25,7 +26,7 @@ from wfl.utils.logging import increment_active_iter, print_log, process_active_i
 from wfl.utils.params import Params
 from wfl.utils.vol_composition_space import composition_space_Zs
 from wfl.fit import gap
-from ..generate import atoms_and_dimers, collision
+from ..generate import atoms_and_dimers
 from ..reactions_processing import trajectory_processing
 from ..select import weighted_cur
 from wfl.utils.version import get_wfl_version

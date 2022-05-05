@@ -13,8 +13,8 @@ from scipy import sparse
 
 from wfl import configset
 from wfl.generate.optimize import run_autopara_wrappable
-from wfl.generate.neb import neb_generic, neb_with_ts_and_irc
-from wfl.generate.ts import calc_ts
+from user.generate.neb import neb_generic, neb_with_ts_and_irc
+from user.generate.ts import calc_ts
 
 
 def xyz_to_seed(filename):
