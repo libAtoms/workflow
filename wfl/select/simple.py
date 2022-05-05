@@ -98,7 +98,7 @@ def by_index(inputs, outputs, indices):
     return outputs.to_ConfigSet()
 
 
-# DEPRECATE
+# DEPRECATE - messy, only used by wfl/cli/reactions_iter_fit.py, and can probably be done using select() above
 def by_energy(inputs, outputs, lower_limit, upper_limit, energy_parameter_name=None, e0=None):
     """Filter by binding energy
 
