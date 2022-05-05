@@ -6,7 +6,7 @@ Currently implemented codes:
 - VASP
 - Quantum Espresso
 """
-from wfl.pipeline import iterable_loop
+from wfl.autoparallelize import autoparallelize
 from wfl.calculators import castep, vasp, espresso
 
 
@@ -14,7 +14,7 @@ def evaluate_dft(
     inputs,
     outputs,
     calculator_name,
-    base_rundir=None,
+    workdir_root=None,
     dir_prefix=None,
     calculator_command=None,
     calculator_kwargs=None,
@@ -27,13 +27,13 @@ def evaluate_dft(
 
     Parameters
     ----------
-    inputs: list(Atoms) / Configset_in
+    inputs: list(Atoms) / Configset
         input atomic configs, needs to be iterable
     outputs: list(Atoms) / Configset_out
         output atomic configs
     calculator_name: str {"CASTEP", "VASP", "QE"}
         name of Plane Wave DFT calculator, options are: "CASTEP", "VASP", "QE"
-    base_rundir: path-like, default os.getcwd()
+    workdir_root: path-like, default os.getcwd()
         directory to put calculation directories into
     dir_prefix: str, default 'DFT\_'
         directory name prefix for calculations
@@ -61,7 +61,7 @@ def evaluate_dft(
 
     Returns
     -------
-    ConfigSet_in of configurations with calculated properties
+    ConfigSet of configurations with calculated properties
     """
     # defaults
     if dir_prefix is None:
@@ -69,20 +69,20 @@ def evaluate_dft(
 
     # choose the calculator
     if calculator_name == "CASTEP":
-        op = castep.evaluate_op
+        op = castep.evaluate_autopara_wrappable
     elif calculator_name == "VASP":
-        op = vasp.evaluate_op
+        op = vasp.evaluate_autopara_wrappable
     elif calculator_name == "QE":
-        op = espresso.evaluate_op
+        op = espresso.evaluate_autopara_wrappable
     else:
         raise ValueError(f"Calculator name `{calculator_name}` not understood")
 
     # run the calculation in parallel
-    return iterable_loop(
+    return autoparallelize(
         iterable=inputs,
-        configset_out=outputs,
+        outputspec=outputs,
         op=op,
-        base_rundir=base_rundir,
+        workdir_root=workdir_root,
         dir_prefix=dir_prefix,
         calculator_command=calculator_command,
         calculator_kwargs=calculator_kwargs,

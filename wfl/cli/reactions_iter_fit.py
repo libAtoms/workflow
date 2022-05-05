@@ -17,17 +17,17 @@ except ModuleNotFoundError:
 
 from wfl.calculators import committee
 from wfl.calculators.orca import basinhopping 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.descriptor_heuristics import descriptors_from_length_scales
-from wfl.generate_configs.vib import sample_normal_modes
-from wfl.select_configs.simple_filters import by_energy
+from wfl.generate.vib import sample_normal_modes
+from wfl.select.simple_filters import by_energy
 from wfl.utils.logging import increment_active_iter, print_log, process_active_iter
 from wfl.utils.params import Params
 from wfl.utils.vol_composition_space import composition_space_Zs
-from ..fit import gap_multistage, glue_2b
-from ..generate_configs import atoms_and_dimers, collision
+from wfl.fit import gap
+from ..generate import atoms_and_dimers, collision
 from ..reactions_processing import trajectory_processing
-from ..select_configs import weighted_cur
+from ..select import weighted_cur
 from wfl.utils.version import get_wfl_version
 
 
@@ -47,7 +47,7 @@ def cli(ctx, verbose, configuration, active_iter):
         config = json.load(file)
 
     fragments_file = config["global"]["fragments_file"]
-    config['global']['fragments'] = ConfigSet_in(input_files=fragments_file)
+    config['global']['fragments'] = ConfigSet(input_files=fragments_file)
 
     # gather all chemical species across fragments
     config['global']['atomic_numbers'] = composition_space_Zs(config['global']['fragments'])
@@ -74,7 +74,7 @@ def prep(ctx):
         length_scales = yaml.safe_load(fin)
 
     # prep GAP fitting config using Zs, length scales
-    fit_json = gap_multistage.prep_input(atomic_numbers, length_scales,
+    fit_json = gap.multistage.prep_input(atomic_numbers, length_scales,
                                          params.get('fit/GAP_template_file'),
                                          sharpness=params.get('fit/universal_SOAP_sharpness', default=0.5))
     yaml.dump(fit_json, open('multistage_GAP_fit_settings.yaml', 'w'), indent=4)
@@ -106,7 +106,7 @@ def do_initial_step(ctx, active_iter, verbose):
     run_dir = step_startup(params, active_iter)
 
     # prepare dimer XYZ
-    dimers = ConfigSet_out(output_files='dimers.xyz', file_root=run_dir, force=True)
+    dimers = OutputSpec(output_files='dimers.xyz', file_root=run_dir, force=True)
     atoms_and_dimers.prepare(
         dimers, atomic_numbers=atomic_numbers, dimer_n_steps=params.get("initial_step/dimer/n_steps"),
         dimer_factor_range=(params.get("initial_step/dimer/r_min"), params.get("initial_step/dimer/cutoff")),
@@ -114,33 +114,33 @@ def do_initial_step(ctx, active_iter, verbose):
 
     # DFT on dimers -- with masking the large forces if needed
     print_log('evaluating with DFT - dimers')
-    dimers_dft_intermediate = ConfigSet_out(file_root=run_dir, output_files='dimers_intermediate.xyz',
+    dimers_dft_intermediate = OutputSpec(file_root=run_dir, output_files='dimers_intermediate.xyz',
                                             all_or_none=True, force=True)
-    dft_dimers = evaluate_dft(dimers.to_ConfigSet_in(), dimers_dft_intermediate, params, run_dir)
+    dft_dimers = evaluate_dft(dimers.to_ConfigSet(), dimers_dft_intermediate, params, run_dir)
 
     # create glue & e0
     print_log('write baseline GLUE model')
-    glue_param_str, e0_dict = glue_2b.construct_glue_2b(dft_dimers, "REF_energy",
-                                                        cutoff=params.get("initial_step/dimer/cutoff"),
-                                                        filename=fit_params.get('core_ip_file'))
+    glue_param_str, e0_dict = gap.glue_2b.construct_glue_2b(dft_dimers, "REF_energy",
+                                                            cutoff=params.get("initial_step/dimer/cutoff"),
+                                                            filename=fit_params.get('core_ip_file'))
 
     # write some of the dimers to file for training
     print_log('write dimers to file for training')
-    dimers_out = ConfigSet_out(file_root=run_dir, output_files='DFT_evaluated.dimers.xyz',
+    dimers_out = OutputSpec(file_root=run_dir, output_files='DFT_evaluated.dimers.xyz',
                                all_or_none=True, force=True)
     _ = by_energy(dft_dimers, dimers_out, e0=e0_dict, lower_limit=None,
                   upper_limit=params.get("initial_step/dimer/inclusion_energy_upper_limit", 0.))
 
     # write e0 to file
     print_log('writing isolated atoms')
-    isolated_atoms = ConfigSet_out(file_root=run_dir, output_files='DFT_evaluated.isolated_atoms.xyz', all_or_none=True,
+    isolated_atoms = OutputSpec(file_root=run_dir, output_files='DFT_evaluated.isolated_atoms.xyz', all_or_none=True,
                                  force=True)
     atoms_and_dimers.isolated_atom_from_e0(isolated_atoms, e0_dict, cell_size=2 * params.get("initial_step/dimer/cutoff"),
                                            energy_key="REF_energy")
 
     # normal mode sampling with glue
     print_log('normal mode sampling started')
-    normal_modes_in = ConfigSet_out(file_root=run_dir, output_files="normal_modes.xyz",
+    normal_modes_in = OutputSpec(file_root=run_dir, output_files="normal_modes.xyz",
                                     all_or_none=True, force=True)
     sample_normal_modes(frames=params.get("global/fragments"),
                         output=normal_modes_in,
@@ -151,25 +151,25 @@ def do_initial_step(ctx, active_iter, verbose):
 
     # DFT on fragments
     print_log('evaluating with DFT - fragments')
-    fragments_dft_out = ConfigSet_out(file_root=run_dir, output_files='DFT_evaluated.fragments.xyz',
+    fragments_dft_out = OutputSpec(file_root=run_dir, output_files='DFT_evaluated.fragments.xyz',
                                       all_or_none=True, force=True)
     # fixme: add config_type here to the file directly somehow
     dft_fragments = evaluate_dft(
-        ConfigSet_in(input_configs=[at for at in params.get("global/fragments") if len(at) > 2]),
+        ConfigSet(input_configs=[at for at in params.get("global/fragments") if len(at) > 2]),
         fragments_dft_out, params, run_dir)
 
     # DFT on normal mode data
     print_log('evaluating with DFT - normal modes')
-    normal_modes_dft_out = ConfigSet_out(file_root=run_dir, output_files='DFT_evaluated.normal_modes.xyz',
+    normal_modes_dft_out = OutputSpec(file_root=run_dir, output_files='DFT_evaluated.normal_modes.xyz',
                                          all_or_none=True, force=True)
-    dft_normal_modes = evaluate_dft(normal_modes_in.to_ConfigSet_in(), normal_modes_dft_out, params, run_dir)
+    dft_normal_modes = evaluate_dft(normal_modes_in.to_ConfigSet(), normal_modes_dft_out, params, run_dir)
 
     # fit
     print_log('fitting')
-    database_configs = ConfigSet_in(input_configsets=[dimers_out.to_ConfigSet_in(), dft_normal_modes,
-                                                      isolated_atoms.to_ConfigSet_in(), dft_fragments])
+    database_configs = ConfigSet(input_configsets=[dimers_out.to_ConfigSet(), dft_normal_modes,
+                                                      isolated_atoms.to_ConfigSet(), dft_fragments])
     # WARNING: OUTDATED CALL - NEED TO UPDATE TO DO DATABASE MODIFY BEFORE AND REF ERROR CALC AFTER
-    _ = gap_multistage.fit(database_configs, GAP_name='GAP_iter_0', params=fit_params,
+    _ = gap.multistage.fit(database_configs, GAP_name='GAP_iter_0', params=fit_params,
                            database_modify_mod=params.get('fit/database_modify_mod'),
                            run_dir=run_dir, skip_if_present=True, verbose=verbose, ref_property_prefix="REF_",
                            num_committee=params.get("fit/num_committee"),
@@ -226,7 +226,7 @@ def do_md_step(ctx, active_iter, verbose, skip_collision, do_neb, do_ts_irc):
     # 3. selection with weighted-CUR from the MD data
     # wfl -v select-configs weighted-cur -f --limit=0.10 --cut-threshold 0.85 -o selected.xyz --stride=4
     # -n 1 50 -n 6 50 -n 8 50 md/collision_*/committee.collision.raw_md.xyz
-    selected_out = ConfigSet_out(output_files="selected.weighted_CUR.xyz", force=True, all_or_none=True,
+    selected_out = OutputSpec(output_files="selected.weighted_CUR.xyz", force=True, all_or_none=True,
                                  file_root=run_dir)
     num_select = {key: val for key, val in params.get("collision_step/selection/num_select")}
     weighted_cur.selection_full_desc(collision_with_committee_results, selected_out,
@@ -259,7 +259,7 @@ def do_md_step(ctx, active_iter, verbose, skip_collision, do_neb, do_ts_irc):
             neb_select_from.merge(ts_committee)
 
         # 4.2 selection from NEB + TS
-        selected_neb_out = ConfigSet_out(output_files="selected.weighted_CUR.neb_and_ts.xyz", force=True,
+        selected_neb_out = OutputSpec(output_files="selected.weighted_CUR.neb_and_ts.xyz", force=True,
                                          all_or_none=True,
                                          file_root=run_dir)
         num_select_neb = {key: val for key, val in params.get("neb_step/selection/num_select")}
@@ -269,29 +269,29 @@ def do_md_step(ctx, active_iter, verbose, skip_collision, do_neb, do_ts_irc):
 
         # 4.3 DFT on selected NEB frames
         print_log('evaluating with DFT - NEB/TS samples')
-        dft_out_neb = ConfigSet_out(file_root=run_dir, output_files='DFT_evaluated.NEB-selected.xyz',
+        dft_out_neb = OutputSpec(file_root=run_dir, output_files='DFT_evaluated.NEB-selected.xyz',
                                     all_or_none=True, force=True)
-        _ = evaluate_dft(selected_neb_out.to_ConfigSet_in(), dft_out_neb, params, run_dir)
+        _ = evaluate_dft(selected_neb_out.to_ConfigSet(), dft_out_neb, params, run_dir)
     else:
         dft_out_neb = None
 
     # 5. DFT calculation on selected frames
     print_log('evaluating with DFT - MD samples')
-    dft_out = ConfigSet_out(file_root=run_dir, output_files='DFT_evaluated.MD-selected.xyz',
+    dft_out = OutputSpec(file_root=run_dir, output_files='DFT_evaluated.MD-selected.xyz',
                             all_or_none=True, force=True)
     # fixme: add config_type here to the file directly somehow
-    _ = evaluate_dft(selected_out.to_ConfigSet_in(), dft_out, params, run_dir)
+    _ = evaluate_dft(selected_out.to_ConfigSet(), dft_out, params, run_dir)
 
     # fit
     print_log('fitting')
     old_configs = [os.path.join('run_iter_{}'.format(i), 'DFT_evaluated.*.xyz') for i in range(0, active_iter)]
-    old_dft_evaluated_configs = ConfigSet_in(input_files=old_configs)
-    database_configs = ConfigSet_in(input_configsets=[old_dft_evaluated_configs, dft_out.to_ConfigSet_in()])
+    old_dft_evaluated_configs = ConfigSet(input_files=old_configs)
+    database_configs = ConfigSet(input_configsets=[old_dft_evaluated_configs, dft_out.to_ConfigSet()])
     if dft_out_neb is not None:
-        database_configs.merge(dft_out_neb.to_ConfigSet_in())
+        database_configs.merge(dft_out_neb.to_ConfigSet())
     print_log("fitting database is: " + str(database_configs) + "\n")
     # WARNING: OUTDATED CALL - NEED TO UPDATE TO DO DATABASE MODIFY BEFORE AND REF ERROR CALC AFTER
-    _ = gap_multistage.fit(database_configs, GAP_name='GAP_iter_{}'.format(active_iter),
+    _ = gap.multistage.fit(database_configs, GAP_name='GAP_iter_{}'.format(active_iter),
                            params=fit_params, database_modify_mod=params.get('fit/database_modify_mod'),
                            run_dir=run_dir, skip_if_present=True, verbose=verbose, ref_property_prefix="REF_",
                            num_committee=params.get("fit/num_committee"),
@@ -314,14 +314,14 @@ def evaluate_dft(dft_in_configs, dft_evaluated_configs, params, run_dir):
 
     Parameters
     ----------
-    dft_in_configs : ConfigSet_in
-    dft_evaluated_configs : ConfigSet_out
+    dft_in_configs : ConfigSet
+    dft_evaluated_configs : OutputSpec
     params : Params
         run parameters
 
     Returns
     -------
-    evaluated_configs : ConfigSet_in
+    evaluated_configs : ConfigSet
         as got from iterable_loop of the evaluators
 
     """
@@ -333,12 +333,12 @@ def evaluate_dft(dft_in_configs, dft_evaluated_configs, params, run_dir):
             sys.stderr.write(
                 'Returning before ORCA calculation since output is done on configset:\n' + str(
                     dft_evaluated_configs))
-            return dft_evaluated_configs.to_ConfigSet_in()
+            return dft_evaluated_configs.to_ConfigSet()
 
         # only non-periodic solution possible
         return basinhopping.evaluate_basin_hopping(inputs=dft_in_configs,
                                          outputs=dft_evaluated_configs,
-                                         base_rundir=run_dir,
+                                         workdir_root=run_dir,
                                          orca_kwargs=params.dft_params.get("kwargs", {}),
                                          output_prefix='REF_')
     else:
@@ -410,24 +410,24 @@ def calc_gap_committee(input_glob, gap_fn_list, run_dir, prefix="gap."):
     outputs = {fn: os.path.join(os.path.dirname(fn), f"{prefix}{os.path.basename(fn)}") for fn in input_files}
 
     # configsets -- with input file specified in
-    configset_in = ConfigSet_in(input_files=input_files)
-    configset_out = ConfigSet_out(output_files=outputs, force=True, all_or_none=True)
+    configset = ConfigSet(input_files=input_files)
+    outputspec = OutputSpec(output_files=outputs, force=True, all_or_none=True)
 
     # skip if done
-    if configset_out.is_done():
+    if outputspec.is_done():
         sys.stderr.write(
-            'Returning before GAP-committee calculation since output is done on configset:\n' + str(configset_out))
-        return configset_out.to_ConfigSet_in()
+            'Returning before GAP-committee calculation since output is done on configset:\n' + str(outputspec))
+        return outputspec.to_ConfigSet()
 
     # the calculation with all models
-    configset_out.pre_write()
-    for chunk in configset_in.group_iter():
+    outputspec.pre_write()
+    for chunk in configset.group_iter():
         out_chunk = committee.calculate_committee(chunk, gap_model_list, output_prefix="gap_committee_{}_",
                                                   properties=['energy', 'forces'])
-        configset_out.write(out_chunk, from_input_file=configset_in.get_current_input_file())
-    configset_out.end_write()
+        outputspec.write(out_chunk, from_input_file=configset.get_current_input_file())
+    outputspec.end_write()
 
-    return configset_out.to_ConfigSet_in()
+    return outputspec.to_ConfigSet()
 
 
 if __name__ == '__main__':

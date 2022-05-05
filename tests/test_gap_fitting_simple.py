@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-from wfl.fit import gap_simple
+from wfl.fit.gap import simple as gap_simple
 from wfl.utils.quip_cli_strings import dict_to_quip_str
 
 from wfl.cli.cli import cli

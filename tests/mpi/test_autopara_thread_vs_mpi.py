@@ -10,9 +10,9 @@ from ase import Atoms
 from ase.build import molecule
 from ase.calculators.lj import LennardJones
 
-import wfl.mpipool_support
+import wfl.autoparallelize.mpipool_support
 from wfl.calculators import generic
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 
 
 def get_atoms():
@@ -39,11 +39,11 @@ def test_run(tmp_path):
 
     mol_in = get_atoms()
 
-    serial_mol_out = generic.run(mol_in, ConfigSet_out(output_files=str(tmp_path / "run_serial.xyz")),
+    serial_mol_out = generic.run(mol_in, OutputSpec(output_files=str(tmp_path / "run_serial.xyz")),
                                  LennardJones(),
                                  properties=["energy", "forces"], output_prefix="_auto_")
     # check that serial output is correct type of object
-    assert isinstance(serial_mol_out, ConfigSet_in)
+    assert isinstance(serial_mol_out, ConfigSet)
     for at in serial_mol_out:
         assert isinstance(at, Atoms)
 
@@ -52,10 +52,10 @@ def test_run(tmp_path):
 
     mol_in = get_atoms()
 
-    mpi_mol_out = generic.run(mol_in, ConfigSet_out(output_files=str(tmp_path / "run_mpi.xyz")), LennardJones(),
+    mpi_mol_out = generic.run(mol_in, OutputSpec(output_files=str(tmp_path / "run_mpi.xyz")), LennardJones(),
                               properties=["energy", "forces"], output_prefix="_auto_")
     # check that MPI parallel output is correct type of object
-    assert isinstance(mpi_mol_out, ConfigSet_in)
+    assert isinstance(mpi_mol_out, ConfigSet)
     for at in mpi_mol_out:
         assert isinstance(at, Atoms)
 

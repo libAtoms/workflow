@@ -22,9 +22,9 @@ __default_keep_files = ["POSCAR", "INCAR", "KPOINTS", "OUTCAR", "vasprun.xml", "
 __default_properties = ["energy", "forces", "stress"]
 
 
-def evaluate_op(
+def evaluate_autopara_wrappable(
     atoms,
-    base_rundir=None,
+    workdir_root=None,
     dir_prefix="run_VASP_",
     calculator_command=None,
     calculator_kwargs=None,
@@ -38,7 +38,7 @@ def evaluate_op(
     ----------
     atoms: Atoms / list(Atoms)
         input atomic configs
-    base_rundir: path-like, default os.getcwd()
+    workdir_root: path-like, default os.getcwd()
         directory to put calculation directories into
     dir_prefix: str, default 'VASP_run\_'
         directory name prefix for calculations
@@ -112,11 +112,11 @@ def evaluate_op(
                 env_kwargs = json.load(fin)
         calculator_kwargs.update(env_kwargs)
 
-    if base_rundir is None:
+    if workdir_root is None:
         # using the current directory
-        base_rundir = os.getcwd()
+        workdir_root = os.getcwd()
     else:
-        pathlib.Path(base_rundir).mkdir(parents=True, exist_ok=True)
+        pathlib.Path(workdir_root).mkdir(parents=True, exist_ok=True)
 
     for at in at_list:
         # VASP requires periodic cells with non-zero cell vectors
@@ -129,7 +129,7 @@ def evaluate_op(
         # VASP requires positive triple scalar product - maybe we should just fix this?
         assert at.get_volume() > 0.0
 
-        rundir = tempfile.mkdtemp(dir=base_rundir, prefix=dir_prefix)
+        rundir = tempfile.mkdtemp(dir=workdir_root, prefix=dir_prefix)
 
         # remove parameters that ase.calculators.vasp.Vasp doesn't know about
         incar_file = calculator_kwargs.pop("INCAR_file", None)

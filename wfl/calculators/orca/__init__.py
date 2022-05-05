@@ -15,7 +15,7 @@ from ase.calculators.calculator import CalculationFailed, Calculator, \
 import ase.calculators.orca
 
 from wfl.calculators.utils import clean_rundir, save_results
-from wfl.pipeline import iterable_loop
+from wfl.autoparallelize import autoparallelize
 from wfl.utils.misc import atoms_to_list, chunks
 from wfl.calculators.orca.basinhopping import BasinHoppingORCA
 
@@ -73,8 +73,8 @@ class ORCA(ase.calculators.orca.ORCA):
         self.scratch_path = scratch_path
         # self.directory is overwritten in self.calculate, so let's just keep track
         self.dir_prefix = dir_prefix
-        self.wdir_base = Path(self.directory) / (self.dir_prefix + "calc_files")
-        self.wdir_base.mkdir(parents=True, exist_ok=True)
+        self.workdir_root = Path(self.directory) / (self.dir_prefix + "calc_files")
+        self.workdir_root.mkdir(parents=True, exist_ok=True)
 
         self.post_process = post_process 
 
@@ -88,7 +88,7 @@ class ORCA(ase.calculators.orca.ORCA):
         if self.scratch_path is not None:
             self.directory = tempfile.mkdtemp(dir=self.scratch_path, prefix=self.dir_prefix)
         else:
-            self.directory = tempfile.mkdtemp(dir=self.wdir_base, prefix=self.dir_prefix)
+            self.directory = tempfile.mkdtemp(dir=self.workdir_root, prefix=self.dir_prefix)
 
         try:
             self.write_input(self.atoms, properties, system_changes)
@@ -105,17 +105,17 @@ class ORCA(ase.calculators.orca.ORCA):
             # the following code is executed and exception is re-raised. 
             clean_rundir(self.directory, self.keep_files, default_keep_files, calculation_succeeded)
             if self.scratch_path is not None and Path(self.directory).exists():
-                shutil.move(self.directory, self.wdir_base)
+                shutil.move(self.directory, self.workdir_root)
 
 
     def cleanup(self):
         """Clean all (empty) directories that could not have been removed
         immediately after the calculation, for example, because other parallel
         process might be using them."""
-        if any(self.wdir_base.iterdir()):
-            print(f'{self.wdir_base.name} is not empty, not removing')
+        if any(self.workdir_root.iterdir()):
+            print(f'{self.workdir_root.name} is not empty, not removing')
         else:
-            self.wdir_base.rmdir()
+            self.workdir_root.rmdir()
 
 
     def write_input(self, atoms, properties=None, system_changes=None):

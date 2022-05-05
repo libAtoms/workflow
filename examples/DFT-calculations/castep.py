@@ -3,7 +3,7 @@ This is a simple example of how to use Quantum Espresso
 """
 from pprint import pprint
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.utils.logging import print_log
 from wfl.calculators.dft import evaluate_dft
 
@@ -11,7 +11,7 @@ from wfl.calculators.dft import evaluate_dft
 def main(verbose=True):
     # settings
     # replace this with your local configuration in productions
-    base_rundir = "CASTEP-calculations"
+    workdir_root = "CASTEP-calculations"
     castep_kwargs = {
         "ecut": 400.0,
         "kpoint_mp_spacing": 0.1,
@@ -28,8 +28,8 @@ def main(verbose=True):
     castep_command = "mpirun -n 2 castep.mpi"
 
     # IO
-    configs_in = ConfigSet_in(input_files="periodic_structures.xyz")
-    configs_out = ConfigSet_out(
+    configs_in = ConfigSet(input_files="periodic_structures.xyz")
+    configs_out = OutputSpec(
         output_files="DFT_evaluated.CASTEP.periodic_structures.xyz",
         force=True,
         all_or_none=True,
@@ -39,7 +39,7 @@ def main(verbose=True):
         print_log("Quantum Espresso example calculation")
         print(configs_in)
         print(configs_out)
-        print(f"base_rundir: {base_rundir}")
+        print(f"workdir_root: {workdir_root}")
         print(f"castep_command: {castep_command}")
         pprint(castep_kwargs)
 
@@ -48,7 +48,7 @@ def main(verbose=True):
         calculator_name="CASTEP",
         inputs=configs_in,
         outputs=configs_out,
-        base_rundir=base_rundir,  # directory where to put the calculation directories
+        workdir_root=workdir_root,  # directory where to put the calculation directories
         calculator_command=castep_command,
         calculator_kwargs=castep_kwargs,
         keep_files="default",  # keeps the .pwo file only

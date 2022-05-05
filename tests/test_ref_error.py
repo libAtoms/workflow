@@ -5,7 +5,7 @@ from ase.calculators.lj import LennardJones
 from pytest import approx
 
 from wfl.calculators.generic import run as calc_run
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.fit.ref_error import calc as ref_err_calc, err_from_calculated_ats
 from wfl.utils.misc import dict_tuple_keys_to_str
 
@@ -40,15 +40,15 @@ def ref_atoms():
         if at_i < 6:
             at.info['category'] = at_i // 3
 
-    ci = ConfigSet_in(input_configs=ats)
+    ci = ConfigSet(input_configs=ats)
 
-    ats_eval = calc_run(ci, ConfigSet_out(), LennardJones(sigma=1.0), output_prefix='REF_')
+    ats_eval = calc_run(ci, OutputSpec(), LennardJones(sigma=1.0), output_prefix='REF_')
 
     return ats_eval
 
 
 def test_ref_error(tmp_path, ref_atoms):
-    co = ConfigSet_out(file_root=tmp_path, output_files='ref_err_eval.xyz')
+    co = OutputSpec(file_root=tmp_path, output_files='ref_err_eval.xyz')
     ref_err_dict = ref_err_calc(ref_atoms, co, LennardJones(sigma=0.75), ref_property_prefix='REF_',
                                 category_keys='category')
 
@@ -85,7 +85,7 @@ def test_ref_error(tmp_path, ref_atoms):
 
 
 def test_err_from_calc(ref_atoms):
-    _ = calc_run(ref_atoms, ConfigSet_out(), LennardJones(sigma=0.75), output_prefix='calc_')
+    _ = calc_run(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
     ref_err_dict = err_from_calculated_ats(ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_',
                                           properties=['energy_per_atom', 'forces', 'virial_per_atom'])
 
@@ -99,7 +99,7 @@ def test_err_from_calc(ref_atoms):
 
 
 def test_ref_error_properties(ref_atoms):
-    _ = calc_run(ref_atoms, ConfigSet_out(), LennardJones(sigma=0.75), output_prefix='calc_')
+    _ = calc_run(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     # both energy and per atom
     ref_err_dict = err_from_calculated_ats(
@@ -139,7 +139,7 @@ def test_ref_error_properties(ref_atoms):
 
 
 def test_ref_error_forces(ref_atoms):
-    _ = calc_run(ref_atoms, ConfigSet_out(), LennardJones(sigma=0.75), output_prefix='calc_')
+    _ = calc_run(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     # forces by element
     ref_err_dict = err_from_calculated_ats(
@@ -164,7 +164,7 @@ def test_ref_error_forces(ref_atoms):
 
 @pytest.mark.filterwarnings("ignore:missing reference:UserWarning")
 def test_ref_error_missing(ref_atoms):
-    _ = calc_run(ref_atoms, ConfigSet_out(), LennardJones(sigma=0.75), output_prefix='calc_')
+    _ = calc_run(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     ref_atoms_list = [at for at in ref_atoms]
 

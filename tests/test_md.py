@@ -8,8 +8,8 @@ import ase.io
 from ase.build import bulk
 from ase.calculators.emt import EMT
 
-from wfl.generate_configs import md
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.generate import md
+from wfl.configset import ConfigSet, OutputSpec
 
 
 @pytest.fixture
@@ -28,8 +28,8 @@ def cu_slab():
 def test_NVE(cu_slab):
     calc = EMT()
 
-    inputs = ConfigSet_in(input_configs = cu_slab)
-    outputs = ConfigSet_out()
+    inputs = ConfigSet(input_configs = cu_slab)
+    outputs = OutputSpec()
 
     atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
                            temperature = 500.0)
@@ -44,8 +44,8 @@ def test_NVT_const_T(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet_in(input_configs = cu_slab)
-    outputs = ConfigSet_out()
+    inputs = ConfigSet(input_configs = cu_slab)
+    outputs = OutputSpec()
 
     atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
                            temperature = 500.0, temperature_tau=30.0)
@@ -61,8 +61,8 @@ def test_NVT_simple_ramp(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet_in(input_configs = cu_slab)
-    outputs = ConfigSet_out()
+    inputs = ConfigSet(input_configs = cu_slab)
+    outputs = OutputSpec()
 
     atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
                            temperature = (500.0, 100.0), temperature_tau=30.0)
@@ -83,8 +83,8 @@ def test_NVT_complex_ramp(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet_in(input_configs = cu_slab)
-    outputs = ConfigSet_out()
+    inputs = ConfigSet(input_configs = cu_slab)
+    outputs = OutputSpec()
 
     atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
                            temperature = [{'T_i': 100.0, 'T_f': 500.0, 'traj_frac': 0.5},
