@@ -7,7 +7,7 @@ from pathlib import Path
 import tempfile
 
 import ase.io
-from ase import Atoms
+from ase import Atoms, Atom
 from ase.io.formats import filetype as ase_filetype
 
 try:
@@ -133,18 +133,35 @@ class ConfigSet_in:
                 raise RuntimeError('input glob(s) \'{}\' did not match any files'.format(input_files))
         elif self.input_configs is not None:
             # fix up configs
-            if isinstance(self.input_configs, Atoms):
-                self.input_configs = [[self.input_configs]]
-            else:
-                try:
-                    if isinstance(next(iter(self.input_configs)), Atoms):
-                        # iterable returning Atoms becomes a single group
-                        self.input_configs = [self.input_configs]
-                except TypeError as exc:
-                    raise RuntimeError('input_configs type {} not Atoms or iterable'.format(
-                        self.input_configs)) from exc
+            try:
+                check = "outer iterator"
+                first_config = next(iter(self.input_configs))
+                if isinstance(first_config, Atom):
+                    # Atoms, store as one group with one config
+                    self.input_configs = [[self.input_configs]]
+                elif isinstance(first_config, Atoms):
+                    # iterable(Atoms), store as 1 group
+                    self.input_configs = [self.input_configs]
+                else:
+                    # check for iterable(iterable(Atoms))
+                    for sub_iter in self.input_configs:
+                        check = "inner iterator is iterable"
+                        try:
+                            first_subconfig = next(iter(sub_iter))
+                        except StopIteration:
+                            # empty inner iterators are OK
+                            pass
+                        if not isinstance(first_subconfig, Atoms):
+                            check = "inner iterator contains Atoms"
+                            raise TypeError
+            except StopIteration:
+                # empty iterable
+                self.input_configs = [[]]
+            except TypeError as exc:
+                raise TypeError('input_configs check {}'.format(check)) from exc
+
             if self.verbose:
-                print('added queries #', [len(ats) for ats in self.input_configs])
+                print('added configs #s', [len(ats) for ats in self.input_configs])
         elif input_configsets is not None:
             if isinstance(input_configsets, ConfigSet_in):
                 input_configsets = [input_configsets]

@@ -671,7 +671,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
     # create supercells
     print_log('creating supercells')
     for grp_label in groups:
-        n_bulk_MD = int(params.get('MD_bulk_defect_step/N_bulk') * groups[grp_label]['frac'])
+        n_bulk_MD = int(params.get('MD_bulk_defect_step/N_bulk', 0) * groups[grp_label]['frac'])
 
         # go through configs, reading from file if necessary, to get number so that np.random.choice()
         # selection below doesn't have to do it repeatedly
@@ -689,9 +689,9 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                           force=True),
             max_n_atoms=max_n_atoms)
 
-        n_vacancy_MD = int(params.get('MD_bulk_defect_step/N_vacancy') * groups[grp_label]['frac'])
-        n_interstitial_MD = int(params.get('MD_bulk_defect_step/N_interstitial') * groups[grp_label]['frac'])
-        n_surface_MD = int(params.get('MD_bulk_defect_step/N_surface') * groups[grp_label]['frac'])
+        n_vacancy_MD = int(params.get('MD_bulk_defect_step/N_vacancy', 0) * groups[grp_label]['frac'])
+        n_interstitial_MD = int(params.get('MD_bulk_defect_step/N_interstitial', 0) * groups[grp_label]['frac'])
+        n_surface_MD = int(params.get('MD_bulk_defect_step/N_surface', 0) * groups[grp_label]['frac'])
 
         vacancy_type_args = params.get('MD_bulk_defect_step/vacancy_type_args', [('', {})])
 
@@ -812,6 +812,23 @@ def do_reevaluate_and_fit_step(ctx, cur_iter, verbose):
                                            all_or_none=True, force=True)
 
         fitting_configs.append(evaluate_ref(reeval_configs_in, reeval_configs_out, params, run_dir, verbose))
+
+    testing_configs = []
+    for glob_i, old_testing_glob in enumerate(params.get('reevaluate_and_fit_step/testing_files')):
+
+        old_testing_files = []
+        for old_file in glob.glob(old_testing_glob):
+            assert Path(old_file).is_file()
+            old_testing_files.append(old_file)
+
+        print_log(f'Reevaluating testing configs in existing files {old_testing_files}')
+
+        # no rundir, assuming that old_testing_files are all relative to directory from which top level script is started
+        reeval_configs_in = ConfigSet_in(input_files=old_testing_files)
+        reeval_configs_out = ConfigSet_out(file_root=run_dir, output_files=f'DFT_evaluated_testing.reevaluated_extra_glob_{glob_i}.xyz',
+                                           all_or_none=True, force=True)
+
+        testing_configs.append(evaluate_ref(reeval_configs_in, reeval_configs_out, params, run_dir, verbose))
 
     GAP_xml_file = do_fit_and_test(cur_iter, run_dir, params, fitting_configs, None,
                                    database_modify_mod=params.get('fit/database_modify_mod'),

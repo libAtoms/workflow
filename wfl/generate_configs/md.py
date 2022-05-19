@@ -6,7 +6,7 @@ from ase.md.nptberendsen import NPTBerendsen
 from ase.md.nvtberendsen import NVTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.md.verlet import VelocityVerlet
-from ase.units import GPa, fs, kB
+from ase.units import GPa, fs
 
 from wfl.pipeline import iterable_loop
 from wfl.utils.at_copy_save_results import at_copy_save_results
@@ -57,7 +57,7 @@ def sample_op(atoms, calculator, steps, dt, temperature=None, temperature_tau=No
     steps: int
         number of steps
     temperature: float or (float, float, [int]]), or list of dicts  default None
-        temperature control.  
+        temperature control (Kelvin)
         - float: constant T
         - tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp
         - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with duration
@@ -139,7 +139,7 @@ def sample_op(atoms, calculator, steps, dt, temperature=None, temperature_tau=No
 
         if temperature is not None:
             # set initial temperature
-            MaxwellBoltzmannDistribution(at, temperature[0]['T_i'] * kB, force_temp=True, communicator=None)
+            MaxwellBoltzmannDistribution(at, temperature_K=temperature[0]['T_i'], force_temp=True, communicator=None)
             Stationary(at, preserve_temperature=True)
 
         stage_kwargs = {'timestep': dt * fs, 'logfile': logfile}
