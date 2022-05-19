@@ -824,9 +824,9 @@ def do_reevaluate_and_fit_step(ctx, cur_iter, verbose):
         print_log(f'Reevaluating testing configs in existing files {old_testing_files}')
 
         # no rundir, assuming that old_testing_files are all relative to directory from which top level script is started
-        reeval_configs_in = ConfigSet_in(input_files=old_testing_files)
-        reeval_configs_out = ConfigSet_out(file_root=run_dir, output_files=f'DFT_evaluated_testing.reevaluated_extra_glob_{glob_i}.xyz',
-                                           all_or_none=True, force=True)
+        reeval_configs_in = ConfigSet(input_files=old_testing_files)
+        reeval_configs_out = OutputSpec(file_root=run_dir, output_files=f'DFT_evaluated_testing.reevaluated_extra_glob_{glob_i}.xyz',
+                                        all_or_none=True, force=True)
 
         testing_configs.append(evaluate_ref(reeval_configs_in, reeval_configs_out, params, run_dir, verbose))
 

@@ -72,7 +72,7 @@ def from_any_to_Descriptor(descriptor_src, verbose=False):
 
 
 def calc(inputs, outputs, descs, key, local=False, normalize=True, composition_weight=True, force=False, verbose=False):
-    """Calculates descriptors on a set of configs, I/O with ConfigSet_{in,out}
+    """Calculates descriptors on a set of configs, I/O with ConfigSet/OutputSpec
 
     Parameters
     ----------
