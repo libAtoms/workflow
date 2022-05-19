@@ -10,22 +10,22 @@ from ase.calculators.calculator import all_changes, CalculationFailed
 from ase.calculators.calculator import Calculator
 
 from wfl.calculators import orca
-from wfl.pipeline import iterable_loop
+from wfl.autoparallelize import autoparallelize
 
 
 def evaluate_basin_hopping(inputs, outputs,
-                           base_rundir=None, dir_prefix="ORCA_",
+                           workdir_root=None, dir_prefix="ORCA_",
                            keep_files="default", orca_kwargs=None,
                            output_prefix=None):
     """Evaluate with BasinHoppingORCA calculator
 
     Parameters
     ----------
-    inputs: list(Atoms) / Configset_in
+    inputs: list(Atoms) / ConfigSet
         input atomic configs, needs to be iterable
-    outputs: list(Atoms) / Configset_out
+    outputs: OutputSpec
         output atomic configs
-    base_rundir: path-like, default os.getcwd()
+    workdir_root: path-like, default os.getcwd()
         directory to put calculation directories into
     dir_prefix: str, default 'ORCA\_'
         directory name prefix for calculations
@@ -42,12 +42,12 @@ def evaluate_basin_hopping(inputs, outputs,
 
     Returns
     -------
-    results : Configset_in
-        outputs.to_ConfigSet_in()
+    results : ConfigSet
+        outputs.to_ConfigSet()
     """
-    return iterable_loop(iterable=inputs, configset_out=outputs,
+    return autoparallelize(iterable=inputs, OutputSpec=outputs,
                          op=orca.evaluate_op,
-                         base_rundir=base_rundir, dir_prefix=dir_prefix,
+                         workdir_root=workdir_root, dir_prefix=dir_prefix,
                          keep_files=keep_files, orca_kwargs=orca_kwargs,
                          output_prefix=output_prefix, basin_hopping=True)
 

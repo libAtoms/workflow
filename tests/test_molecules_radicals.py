@@ -1,12 +1,12 @@
 import numpy as np
 from ase.build import molecule
-from wfl.configset import ConfigSet_out, ConfigSet_in
+from wfl.configset import OutputSpec, ConfigSet
 
 import pytest
 
 # tested modules
-from wfl.generate_configs import radicals
-from wfl.generate_configs import smiles
+from wfl.generate import radicals
+from wfl.generate import smiles
 
 # wfl.generate_configs.smiles depends on rdkit.Chem
 pytest.importorskip("rdkit.Chem")
@@ -21,13 +21,13 @@ def test_smi_to_atoms():
     assert np.all(atoms.symbols == 'CH4')
 
 
-def test_smiles_run_op():
+def test_smiles_run_autopara_wrappable():
     """test for wfl.generate_configs.smiles"""
 
     input_smiles = ['C', 'C(C)C']
     extra_info = {'config_type': 'testing', 'info_int': 5}
 
-    atoms = smiles.run_op(input_smiles, extra_info=extra_info)
+    atoms = smiles.run_autopara_wrappable(input_smiles, extra_info=extra_info)
 
     for smi, at in zip(input_smiles, atoms):
 
@@ -39,7 +39,7 @@ def test_smiles_run_op():
     input_smiles = 'C'
     extra_info = None
 
-    atoms = smiles.run_op(input_smiles, extra_info)
+    atoms = smiles.run_autopara_wrappable(input_smiles, extra_info)
 
     assert len(atoms) == 1
     assert atoms[0].info['smiles'] == input_smiles
@@ -48,8 +48,8 @@ def test_smiles_run_op():
 def test_abstract_sp3_hydrogens():
     
     smiles_list = ['C', 'C=CCO']
-    ConfigSet_in(input_configs=[smiles.smi_to_atoms(smi) for smi in smiles_list])
-    cfs_out = ConfigSet_out()
+    ConfigSet(input_configs=[smiles.smi_to_atoms(smi) for smi in smiles_list])
+    cfs_out = OutputSpec()
 
     expected_formuli = [['CH3']*4,
                          ['C3OH5']*2]

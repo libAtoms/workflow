@@ -9,9 +9,9 @@ import shutil
 
 
 def do_init_mpipool():
-    import wfl.mpipool_support
+    import wfl.autoparallelize.mpipool_support
 
-    wfl.mpipool_support.init()
+    wfl.autoparallelize.mpipool_support.init()
 
 
 @pytest.mark.skipif(

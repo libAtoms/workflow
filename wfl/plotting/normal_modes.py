@@ -8,7 +8,7 @@ import pandas as pd
 
 from ase.units import invcm
 
-from wfl.generate_configs import vib
+from wfl.generate import vib
 
 def cmap_in_alpha(color, number_of_slices=256):
     """Constructs a matplotlib colormap from a single color,
