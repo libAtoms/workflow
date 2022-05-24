@@ -15,6 +15,8 @@ from wfl.utils.parallel import construct_calculator_picklesafe
 from wfl.utils.pressure import sample_pressure
 from .utils import config_type_append
 
+from util import configs
+
 bar = 1.0e-4 * GPa
 
 
@@ -23,7 +25,8 @@ def sample(inputs, outputs, calculator, steps, dt,
            temperature=None, temperature_tau=None, pressure=None, pressure_tau=None,
            compressibility_fd_displ=0.01,
            traj_step_interval=1, skip_failures=True, results_prefix='md_',
-           chunksize=1, verbose=False):
+           chunksize=1, verbose=False, npool=None,update_config_type=True,
+           selector_function=None, remote_info=None):
     # Normally each thread needs to call np.random.seed so that it will generate a different
     # set of random numbers.  This env var overrides that to produce deterministic output,
     # for purposes like testing
@@ -37,12 +40,13 @@ def sample(inputs, outputs, calculator, steps, dt,
                          pressure=pressure, pressure_tau=pressure_tau,
                          compressibility_fd_displ=compressibility_fd_displ,
                          traj_step_interval=traj_step_interval, skip_failures=skip_failures,
-                         results_prefix=results_prefix, verbose=verbose, initializer=initializer)
+                         results_prefix=results_prefix, verbose=verbose, initializer=initializer, npool=npool, update_config_type=update_config_type, selector_function=selector_function, remote_info=remote_info)
 
 
 def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
-              traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False):
+              traj_step_interval=1,  skip_failures=True, results_prefix='md_', verbose=False,
+              selector_function=None, update_config_type=True):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for
     sampling configs
 
@@ -79,6 +83,11 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
     verbose: bool, default False
         verbose output
         MD logs are not printed unless this is True
+    update_config_type: bool, default True
+        append "MD" to at.info['config_type']
+    selector_function: None
+        Function to sub-select configs from the first trajectory. 
+        Takes in list of configs and returns list of configs.
 
     Returns
     -------
@@ -186,13 +195,25 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
         traj = []
         cur_step = 1
         first_step_of_later_stage = False
+        bad_geometry_counter = 0
+        previous_step_geometry_is_ok = True
 
         def process_step(interval):
             nonlocal cur_step, first_step_of_later_stage
+            nonlocal bad_geometry_counter, previous_step_geometry_is_ok
 
             if not first_step_of_later_stage and cur_step % interval == 0:
                 at.info['MD_time_fs'] = cur_step * dt
                 traj.append(at_copy_save_results(at, results_prefix=results_prefix))
+                geometry_ok = configs.check_geometry(at)
+                if not geometry_ok:
+                    bad_geometry_counter += 1
+                    if bad_geometry_counter == 10 and not previous_step_geometry_is_ok:
+                        raise RuntimeError("Had 10 bad geometry configs in a row")
+                    previous_step_geometry_is_ok = False 
+                else:
+                    previous_step_geometry_is_ok = True
+                    bad_geometry_counter = 0
 
             first_step_of_later_stage = False
             cur_step += 1
@@ -201,7 +222,7 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
             if verbose:
                 print('run stage', stage_kwargs, run_kwargs)
 
-            # avoid double counbing of steps and end of each stage and beginning of next
+            # avoid double counting of steps and end of each stage and beginning of next
             cur_step -= 1
 
             if temperature_tau is not None:
@@ -227,10 +248,14 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
             at.info['MD_time_fs'] = cur_step * dt
             traj.append(at_copy_save_results(at, results_prefix=results_prefix))
 
-        # save config_type
-        for at in traj:
-            config_type_append(at, 'MD')
+        if update_config_type:
+            # save config_type
+            for at in traj:
+                config_type_append(at, 'MD')
+
+        if selector_function is not None:
+            traj = selector_function(traj)
 
         all_trajs.append(traj)
-
+        
     return all_trajs
