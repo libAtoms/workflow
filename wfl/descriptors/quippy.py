@@ -90,7 +90,7 @@ def calc(inputs, outputs, descs, key, local=False, normalize=True, composition_w
     local: bool, default False
         calculate descriptors for each atom
     normalize: bool, default True
-        normalize final vector (e.g. if contributions from multiple species for a global were concatenated)
+        normalize final vector (e.g. if contributions from multiple descriptors were concatenated)
     composition_weight: bool, default True
         when concatenating contributions from different species for a global, weight each by composition fraction
     force: bool, default False
@@ -124,7 +124,7 @@ def calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, comp
     local: bool, default False
         calculate a local (per-atom) descriptor, as opposed to global (per-config)
     normalize: bool, default True
-        normalize final vector (e.g. if contributions from multiple species for a global were concatenated)
+        normalize final vector (e.g. if contributions from multiple descriptors were concatenated)
     composition_weight: bool, default True
         when concatenating contributions from different species for a global, weight each by composition fraction
     force: bool, default False
@@ -191,6 +191,10 @@ def calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, comp
                     combined_descs = np.concatenate((combined_descs, use_desc_vec), axis=1)
 
                 if combined_descs.shape[1] > 0:
+                    if normalize:
+                        magnitudes = np.linalg.norm(combined_descs, axis=1)
+                        non_zero = np.where(magnitudes > 1.0e-8)
+                        combined_descs[non_zero] = (combined_descs[non_zero].T / magnitudes[non_zero]).T
                     if Zcenter is None:
                         use_key = key
                     else:
@@ -220,7 +224,7 @@ def calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, comp
                             'Requested global descriptor but data.shape[0] == {} != 1'.format(desc_vec.shape[0]))
                     combined_vec.extend(desc_vec[0, :] * Zcenter_weight)
 
-            if normalize:
+            if normalize and np.linalg.norm(combined_vec) > 1.0e-8:
                 combined_vec /= np.linalg.norm(combined_vec)
             at.info[key] = combined_vec
 
