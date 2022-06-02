@@ -690,16 +690,19 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
             max_n_atoms=max_n_atoms)
 
         n_vacancy_MD = int(params.get('MD_bulk_defect_step/N_vacancy', 0) * groups[grp_label]['frac'])
+        n_antisite_MD = int(params.get('MD_bulk_defect_step/N_antisite', 0) * groups[grp_label]['frac'])
         n_interstitial_MD = int(params.get('MD_bulk_defect_step/N_interstitial', 0) * groups[grp_label]['frac'])
         n_surface_MD = int(params.get('MD_bulk_defect_step/N_surface', 0) * groups[grp_label]['frac'])
 
         vacancy_type_args = params.get('MD_bulk_defect_step/vacancy_type_args', [('', {})])
+        antisite_type_args = params.get('MD_bulk_defect_step/antisite_type_args', [('', {})])
 
         defect_confs = []
         for base_label, sc_func, n_configs, sc_extra_args in [('vacancy', supercells.vacancy, n_vacancy_MD, vacancy_type_args),
-                                                         ('interstitial', supercells.interstitial, n_interstitial_MD, [('', {})]),
-                                                         ('surface', supercells.surface, n_surface_MD,
-                                                          [('', {'min_thickness': surf_min_thickness, 'vacuum': surf_vacuum})])]:
+                                                              ('antisite', supercells.antisite, n_antisite_MD, antisite_type_args),
+                                                              ('interstitial', supercells.interstitial, n_interstitial_MD, [('', {})]),
+                                                              ('surface', supercells.surface, n_surface_MD,
+                                                               [('', {'min_thickness': surf_min_thickness, 'vacuum': surf_vacuum})])]:
             if n_configs <= 0:
                 continue
             for extra_label, extra_kwargs in sc_extra_args:
@@ -1120,9 +1123,17 @@ def load_old_descriptors_arrays(run_dirs, basename, grp_label):
 
     descriptors_array = []
     for run_dir in run_dirs:
-        descriptors_array.append(np.loadtxt(os.path.join(run_dir, f'{basename}.{grp_label}.average_desc.txt')))
+        try:
+            descriptors_array.append(np.loadtxt(os.path.join(run_dir, f'{basename}.{grp_label}.average_desc.txt')))
+        except OSError:
+            # Ignore missing files. Various innocuous causes, e.g. changing of groups between
+            # iterations.
+            pass
 
-    return np.vstack(descriptors_array)
+    if len(descriptors_array) > 0:
+        return np.vstack(descriptors_array)
+    else:
+        return np.asarray([])
 
 
 def select_fitting_and_testing_for_groups(run_dir, cur_iter, groups, step_params, Zs, E_info_field, select_by_desc_method,
@@ -1172,7 +1183,7 @@ def select_fitting_and_testing_for_groups(run_dir, cur_iter, groups, step_params
         # params for optional initial filter by flat histo
         if flat_histo:
             flat_histo_kT = step_params.get('flat_histo_kT')
-            flat_histo_N = step_params.get('final_flat_histo_N')
+            flat_histo_N = int(step_params.get('final_flat_histo_N') * grp_frac)
         else:
             flat_histo_kT = None
             flat_histo_N = None
