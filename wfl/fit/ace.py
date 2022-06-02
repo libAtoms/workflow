@@ -242,7 +242,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
     _write_fitting_configs(fitting_configs, ace_fit_params, ace_file_base)
 
-    ace_fit_params_filename = ace_file_base + "_fit_params.json"
+    ace_fit_params_filename = "fit_params_ " + ace_file_base + ".json"
     with open(ace_fit_params_filename, "w") as f:
         f.write(json.dumps(ace_fit_params, indent=4))
 
