@@ -164,7 +164,9 @@ def autoparallelize(npool=None, chunksize=1, iterable=None, outputspec=None, op=
             match = False
             for ri_k in remote_info:
                 ksplit = [sl.strip() for sl in ri_k.split(',')]
-                if (remote_label is not None and remote_label == ri_k) or all([re.search(kk + '$', sl) for sl, kk in zip(stack_remote_label[-len(ksplit):], ksplit)]):
+                # match dict key to remote_label if present, otherwise end of stack
+                if ((remote_label is None and all([re.search(kk + '$', sl) for sl, kk in zip(stack_remote_label[-len(ksplit):], ksplit)])) or
+                    (remote_label == ri_k)):
                     sys.stderr.write(f'WFL_AUTOPARA_REMOTEINFO matched key {ri_k} for remote_label {remote_label}\n')
                     remote_info = remote_info[ri_k]
                     match = True
