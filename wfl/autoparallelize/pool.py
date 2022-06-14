@@ -133,7 +133,7 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, outputspec=None, op=None,
         results = map_f(functools.partial(_wrapped_autopara_wrappable, op, iterable_arg, args, kwargs), items_inputs_generator)
 
         if not wfl_mpipool:
-            # only close pool if its from multiprocessing.pool
+            # only close pool if it's from multiprocessing.pool
             pool.close()
 
         # always loop over results to trigger lazy imap()
@@ -144,6 +144,11 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, outputspec=None, op=None,
                         continue
                     did_no_work = False
                     outputspec.write(at, from_input_file=from_input_file)
+
+        if not wfl_mpipool:
+            # call join pool (prevent pytest-cov deadlock as per https://pytest-cov.readthedocs.io/en/latest/subprocess-support.html)
+            # but only if it's from multiprocessing.pool
+            pool.join()
 
     else:
         # do directly, still not trivial because of chunksize
