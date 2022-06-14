@@ -748,7 +748,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                                                          output_files=f'defect_optimize_trajs.{grp_label}.xyz',
                                                          all_or_none=True, force=True),
                                            calculator=(Potential, None, {'param_filename': prev_GAP}),
-                                           precon='ID', keep_symmetry=True, **minim_kwargs)
+                                           precon='ID', keep_symmetry=True, **optimize_kwargs)
             defect_starting = wfl.select.simple.select(defect_optimize_trajs,
                                                                OutputSpec(file_root=run_dir,
                                                                           output_files=f'defect_minima.{grp_label}.xyz',
