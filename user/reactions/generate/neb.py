@@ -1,8 +1,8 @@
 from ase.neb import NEB
 from ase.optimize import BFGS
 
-from wfl.generate import ts
-from wfl.generate.irc import calc_irc
+from user.generate import ts
+from user.generate.irc import calc_irc
 
 
 def neb_generic(start, end, calculator, nimages=17, interpolation_method="idpp", fmax=None, steps=None, k=None,
