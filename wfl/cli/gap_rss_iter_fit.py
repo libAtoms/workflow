@@ -671,7 +671,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
     # create supercells
     print_log('creating supercells')
     for grp_label in groups:
-        n_bulk_MD = int(params.get('MD_bulk_defect_step/N_bulk') * groups[grp_label]['frac'])
+        n_bulk_MD = int(params.get('MD_bulk_defect_step/N_bulk', 0) * groups[grp_label]['frac'])
 
         # go through configs, reading from file if necessary, to get number so that np.random.choice()
         # selection below doesn't have to do it repeatedly
@@ -689,17 +689,20 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                           force=True),
             max_n_atoms=max_n_atoms)
 
-        n_vacancy_MD = int(params.get('MD_bulk_defect_step/N_vacancy') * groups[grp_label]['frac'])
-        n_interstitial_MD = int(params.get('MD_bulk_defect_step/N_interstitial') * groups[grp_label]['frac'])
-        n_surface_MD = int(params.get('MD_bulk_defect_step/N_surface') * groups[grp_label]['frac'])
+        n_vacancy_MD = int(params.get('MD_bulk_defect_step/N_vacancy', 0) * groups[grp_label]['frac'])
+        n_antisite_MD = int(params.get('MD_bulk_defect_step/N_antisite', 0) * groups[grp_label]['frac'])
+        n_interstitial_MD = int(params.get('MD_bulk_defect_step/N_interstitial', 0) * groups[grp_label]['frac'])
+        n_surface_MD = int(params.get('MD_bulk_defect_step/N_surface', 0) * groups[grp_label]['frac'])
 
         vacancy_type_args = params.get('MD_bulk_defect_step/vacancy_type_args', [('', {})])
+        antisite_type_args = params.get('MD_bulk_defect_step/antisite_type_args', [('', {})])
 
         defect_confs = []
         for base_label, sc_func, n_configs, sc_extra_args in [('vacancy', supercells.vacancy, n_vacancy_MD, vacancy_type_args),
-                                                         ('interstitial', supercells.interstitial, n_interstitial_MD, [('', {})]),
-                                                         ('surface', supercells.surface, n_surface_MD,
-                                                          [('', {'min_thickness': surf_min_thickness, 'vacuum': surf_vacuum})])]:
+                                                              ('antisite', supercells.antisite, n_antisite_MD, antisite_type_args),
+                                                              ('interstitial', supercells.interstitial, n_interstitial_MD, [('', {})]),
+                                                              ('surface', supercells.surface, n_surface_MD,
+                                                               [('', {'min_thickness': surf_min_thickness, 'vacuum': surf_vacuum})])]:
             if n_configs <= 0:
                 continue
             for extra_label, extra_kwargs in sc_extra_args:
@@ -812,6 +815,23 @@ def do_reevaluate_and_fit_step(ctx, cur_iter, verbose):
                                            all_or_none=True, force=True)
 
         fitting_configs.append(evaluate_ref(reeval_configs_in, reeval_configs_out, params, run_dir, verbose))
+
+    testing_configs = []
+    for glob_i, old_testing_glob in enumerate(params.get('reevaluate_and_fit_step/testing_files')):
+
+        old_testing_files = []
+        for old_file in glob.glob(old_testing_glob):
+            assert Path(old_file).is_file()
+            old_testing_files.append(old_file)
+
+        print_log(f'Reevaluating testing configs in existing files {old_testing_files}')
+
+        # no rundir, assuming that old_testing_files are all relative to directory from which top level script is started
+        reeval_configs_in = ConfigSet(input_files=old_testing_files)
+        reeval_configs_out = OutputSpec(file_root=run_dir, output_files=f'DFT_evaluated_testing.reevaluated_extra_glob_{glob_i}.xyz',
+                                        all_or_none=True, force=True)
+
+        testing_configs.append(evaluate_ref(reeval_configs_in, reeval_configs_out, params, run_dir, verbose))
 
     GAP_xml_file = do_fit_and_test(cur_iter, run_dir, params, fitting_configs, None,
                                    database_modify_mod=params.get('fit/database_modify_mod'),
@@ -1103,9 +1123,17 @@ def load_old_descriptors_arrays(run_dirs, basename, grp_label):
 
     descriptors_array = []
     for run_dir in run_dirs:
-        descriptors_array.append(np.loadtxt(os.path.join(run_dir, f'{basename}.{grp_label}.average_desc.txt')))
+        try:
+            descriptors_array.append(np.loadtxt(os.path.join(run_dir, f'{basename}.{grp_label}.average_desc.txt')))
+        except OSError:
+            # Ignore missing files. Various innocuous causes, e.g. changing of groups between
+            # iterations.
+            pass
 
-    return np.vstack(descriptors_array)
+    if len(descriptors_array) > 0:
+        return np.vstack(descriptors_array)
+    else:
+        return np.asarray([])
 
 
 def select_fitting_and_testing_for_groups(run_dir, cur_iter, groups, step_params, Zs, E_info_field, select_by_desc_method,
@@ -1155,7 +1183,7 @@ def select_fitting_and_testing_for_groups(run_dir, cur_iter, groups, step_params
         # params for optional initial filter by flat histo
         if flat_histo:
             flat_histo_kT = step_params.get('flat_histo_kT')
-            flat_histo_N = step_params.get('final_flat_histo_N')
+            flat_histo_N = int(step_params.get('final_flat_histo_N') * grp_frac)
         else:
             flat_histo_kT = None
             flat_histo_N = None
