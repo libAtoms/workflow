@@ -749,11 +749,11 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                                                          all_or_none=True, force=True),
                                            calculator=(Potential, None, {'param_filename': prev_GAP}),
                                            precon='ID', keep_symmetry=True, **optimize_kwargs)
-            defect_starting = wfl.select.simple.select(defect_optimize_trajs,
-                                                               OutputSpec(file_root=run_dir,
-                                                                          output_files=f'defect_minima.{grp_label}.xyz',
-                                                                          all_or_none=True, force=True),
-                                                               lambda at : at.info["optimize_config_type"].startswith("optimize_last"))
+            defect_starting = wfl.select.simple.by_bool_func(defect_optimize_trajs,
+                                                             OutputSpec(file_root=run_dir,
+                                                                        output_files=f'defect_minima.{grp_label}.xyz',
+                                                                        all_or_none=True, force=True),
+                                                             lambda at : at.info["optimize_config_type"].startswith("optimize_last"))
         else:
             defect_starting = groups[grp_label]['defect_confs']
 
@@ -892,10 +892,10 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
 
         print_log('selecting minima from trajectories')
         # select minima from trajs
-        minima = wfl.select.simple.select(trajs, OutputSpec(file_root=run_dir,
-                                                                    output_files=f'minima.{grp_label}.xyz',
-                                                                    all_or_none=True, force=True),
-                                                  lambda at : at.info["optimize_config_type"].startswith("optimize_last"))
+        minima = wfl.select.simple.by_bool_func(trajs, OutputSpec(file_root=run_dir,
+                                                                  output_files=f'minima.{grp_label}.xyz',
+                                                                  all_or_none=True, force=True),
+                                                lambda at : at.info["optimize_config_type"].startswith("optimize_last"))
 
         if select_convex_hull:
             print_log('selecting convex hull of minima')
@@ -934,10 +934,10 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
             selected_minima_config_i = set([at.info['buildcell_config_i'] for at in selected_minima])
 
             # select all configs for these indices from all trajs
-            selected_traj = wfl.select.simple.select(
+            selected_traj = wfl.select.simple.by_bool_func(
                 trajs, OutputSpec(file_root=run_dir,
-                                     output_files=f'selected_rss_traj.{grp_label}.xyz',
-                                     all_or_none=True, force=True),
+                                  output_files=f'selected_rss_traj.{grp_label}.xyz',
+                                  all_or_none=True, force=True),
                 lambda at : at.info["buildcell_config_i"] in selected_minima_config_i)
 
             groups[grp_label]['cur_confs'] = selected_traj

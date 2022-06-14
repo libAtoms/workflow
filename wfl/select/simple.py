@@ -8,7 +8,7 @@ from wfl.configset import ConfigSet
 from wfl.autoparallelize import autoparallelize
 
 
-def select(inputs, outputs, at_filter):
+def by_bool_func(inputs, outputs, at_filter):
     """apply a filter to a sequence of configs
 
     Parameters

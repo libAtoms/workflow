@@ -11,7 +11,7 @@ def test_select_lambda(tmp_path):
 
     ci = ConfigSet(input_configs=ats)
     co = OutputSpec(file_root=tmp_path, output_files='test_simple.info_in.xyz')
-    selected_ats = simple.select(ci, co, lambda at : at.info['index'] in list(range(10, 20)))
+    selected_ats = simple.by_bool_func(ci, co, lambda at : at.info['index'] in list(range(10, 20)))
 
     assert len(list(selected_ats)) == 20 - 10
     for at in selected_ats:
@@ -29,7 +29,7 @@ def test_select_real_func(tmp_path):
 
     ci = ConfigSet(input_configs=ats)
     co = OutputSpec(file_root=tmp_path, output_files='test_simple.info_in.xyz')
-    selected_ats = simple.select(ci, co, _pytest_select)
+    selected_ats = simple.by_bool_func(ci, co, _pytest_select)
 
     assert len(list(selected_ats)) == 20 - 10
     for at in selected_ats:
