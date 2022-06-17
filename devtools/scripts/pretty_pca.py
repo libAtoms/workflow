@@ -9,8 +9,8 @@ import ase.io
 import numpy as np
 from ase.atoms import Atoms
 
-from wfl.calc_descriptor import calc as calc_desc
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.descriptors.quippy import calc as calc_desc
+from wfl.configset import ConfigSet, OutputSpec
 
 parser = ArgumentParser()
 desc_grp = parser.add_mutually_exclusive_group(required=True)
@@ -43,15 +43,15 @@ if args.desc_str is not None:
         except:
             pass
     local_desc = not 'average' in args.desc_str
-    ats = calc_desc(ConfigSet_in(input_files=args.files),
-                    ConfigSet_out(output_files='t_w_desc.xyz', force=True, all_or_none=True),
+    ats = calc_desc(ConfigSet(input_files=args.files),
+                    OutputSpec(output_files='t_w_desc.xyz', force=True, all_or_none=True),
                     descs=args.desc_str, key='CUR_desc', local=local_desc)
     if local_desc:
         args.desc_arrays_field = 'CUR_desc'
     else:
         args.desc_info_field = 'CUR_desc'
 else:
-    ats = ConfigSet_in(input_files=args.files)
+    ats = ConfigSet(input_files=args.files)
 
 descs = []
 config_types = []

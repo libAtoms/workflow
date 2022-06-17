@@ -7,7 +7,7 @@ from pathlib import Path
 import tempfile
 
 import ase.io
-from ase import Atoms
+from ase import Atoms, Atom
 from ase.io.formats import filetype as ase_filetype
 
 try:
@@ -35,7 +35,7 @@ def _parse_abcd(abcd_conn):
         raise RuntimeError('Got abcd_conn type {}, not None or ABCD or URL string'.format(type(abcd_conn)))
 
 
-class ConfigSet_in:
+class ConfigSet:
     """Thin input layer for Set of atomic configurations, files or ABCD queries or list of Atoms.
 
     Notes
@@ -59,8 +59,8 @@ class ConfigSet_in:
         ABCD queries, iterated over to form list of input configs
     input_configs: ase.Atoms / iterable(Atoms) / iterable(iterable(Atoms))
         Atoms structures given directly
-    input_configsets: iterable(ConfigSet_in)
-        ConfigSet_in objects to be merged
+    input_configsets: iterable(ConfigSet)
+        ConfigSet objects to be merged
     parallel_io: bool, default False
         parallel ASE atomic config input
     verbose: bool, default False
@@ -133,20 +133,37 @@ class ConfigSet_in:
                 raise RuntimeError('input glob(s) \'{}\' did not match any files'.format(input_files))
         elif self.input_configs is not None:
             # fix up configs
-            if isinstance(self.input_configs, Atoms):
-                self.input_configs = [[self.input_configs]]
-            else:
-                try:
-                    if isinstance(next(iter(self.input_configs)), Atoms):
-                        # iterable returning Atoms becomes a single group
-                        self.input_configs = [self.input_configs]
-                except TypeError as exc:
-                    raise RuntimeError('input_configs type {} not Atoms or iterable'.format(
-                        self.input_configs)) from exc
+            try:
+                check = "outer iterator"
+                first_config = next(iter(self.input_configs))
+                if isinstance(first_config, Atom):
+                    # Atoms, store as one group with one config
+                    self.input_configs = [[self.input_configs]]
+                elif isinstance(first_config, Atoms):
+                    # iterable(Atoms), store as 1 group
+                    self.input_configs = [self.input_configs]
+                else:
+                    # check for iterable(iterable(Atoms))
+                    for sub_iter in self.input_configs:
+                        check = "inner iterator is iterable"
+                        try:
+                            first_subconfig = next(iter(sub_iter))
+                        except StopIteration:
+                            # empty inner iterators are OK
+                            pass
+                        if not isinstance(first_subconfig, Atoms):
+                            check = "inner iterator contains Atoms"
+                            raise TypeError
+            except StopIteration:
+                # empty iterable
+                self.input_configs = [[]]
+            except TypeError as exc:
+                raise TypeError('input_configs check {}'.format(check)) from exc
+
             if self.verbose:
-                print('added queries #', [len(ats) for ats in self.input_configs])
+                print('added configs #s', [len(ats) for ats in self.input_configs])
         elif input_configsets is not None:
-            if isinstance(input_configsets, ConfigSet_in):
+            if isinstance(input_configsets, ConfigSet):
                 input_configsets = [input_configsets]
             for configset in input_configsets:
                 if configset is None:
@@ -168,11 +185,11 @@ class ConfigSet_in:
         
         Parameters
         ----------
-        configset: ConfigSet_in
+        configset: ConfigSet
             Where to add configurations from. 
 
         """ 
-        assert isinstance(configset, ConfigSet_in)
+        assert isinstance(configset, ConfigSet)
 
         if not any(configset.get_input_type()):
             # empty
@@ -254,18 +271,18 @@ class ConfigSet_in:
 
 
     def in_memory(self):
-        """Create a ConfigSet_in containing the same configs, but in memory (i.e. as ``self.input_configs``)
+        """Create a ConfigSet containing the same configs, but in memory (i.e. as ``self.input_configs``)
 
         Returns
         -------
-        ConfigSet_in
+        ConfigSet
         """
 
         if self.input_configs is not None:
             # keep nesting in case the configs are stored as list of lists of Atoms
-            return ConfigSet_in(input_configs=self.input_configs)
+            return ConfigSet(input_configs=self.input_configs)
         else:
-            return ConfigSet_in(input_configs=list(self))
+            return ConfigSet(input_configs=list(self))
 
 
     def is_one_file(self):
@@ -284,7 +301,7 @@ class ConfigSet_in:
 
 
     def to_file(self, filename, scratch=False):
-        """Create a ConfigSet_in containing the same configs, but in one file, optionally with a unique temporary name
+        """Create a ConfigSet containing the same configs, but in one file, optionally with a unique temporary name
 
         Parameters
         ----------
@@ -311,7 +328,7 @@ class ConfigSet_in:
 
 
     def __str__(self):
-        s = 'ConfigSet_in:'
+        s = 'ConfigSet:'
         if self.input_configs is not None and len(self.input_configs) > 0:
             s += _fmt("input configs #", [str(len(at_group)) for at_group in self.input_configs])
         if self.input_files is not None and len(self.input_files) > 0:
@@ -324,7 +341,7 @@ class ConfigSet_in:
         return s
 
 
-class ConfigSet_out:
+class OutputSpec:
     """Thin output layer for configurations into files, ABCD, or atomic configs
 
     Notes
@@ -455,6 +472,7 @@ class ConfigSet_out:
 
         if self.output_abcd:
             # if any configs have requested tags, it must be done
+            # NB: why?  this only seems guaranteed if ABCD writing is atomic - is it?
             return self.abcd.count(self.set_tags) > 0
 
         if self.output_files is not None:
@@ -498,7 +516,7 @@ class ConfigSet_out:
             ats: Atoms / list(Atoms)
                 Atoms to write
             from_input_file: str or Path, default None
-                If ConfigSet_out was initialised with dict(input_file=output_file, ...):
+                If OutputSpec was initialised with dict(input_file=output_file, ...):
                 input file based on which the corresponding output file is selected.  
             flush_interval: int, default 10
                 Interval (s) for writing to files. 
@@ -557,7 +575,7 @@ class ConfigSet_out:
                 self.last_flush = cur_time
 
             if self.verbose:
-                print('ConfigSet_out.write wrote {} to {}'.format(len(ats), self.current_output_file.name))
+                print('OutputSpec.write wrote {} to {}'.format(len(ats), self.current_output_file.name))
 
 
     def end_write(self):
@@ -582,28 +600,28 @@ class ConfigSet_out:
 
 
     # get list(Atoms) or ConfigSet reference to output
-    def to_ConfigSet_in(self):
-        """ Re-package configs held in this class to a ConfigSet_in to be used later in the workflow.
+    def to_ConfigSet(self):
+        """ Re-package configs held in this class to a ConfigSet to be used later in the workflow.
         
         Returns 
         -------
-        ConfigSet_in
+        ConfigSet
         
         """
         if self.output_configs is not None and len(self.output_configs) > 0:
-            return ConfigSet_in(input_configs=self.output_configs)
+            return ConfigSet(input_configs=self.output_configs)
         elif self.output_abcd:
             if self.set_tags is None:
                 # no way to find written configs without (unique) tags
                 return None
             else:
-                return ConfigSet_in(input_queries=self.set_tags, abcd_conn=self.abcd)
+                return ConfigSet(input_queries=self.set_tags, abcd_conn=self.abcd)
         else:
-            return ConfigSet_in(input_files=self.output_files)
+            return ConfigSet(input_files=self.output_files)
 
 
     def __str__(self):
-        s = 'ConfigSet_out:'
+        s = 'OutputSpec:'
         if self.set_tags is not None:
             s += _fmt('output tags', str(self.set_tags))
 

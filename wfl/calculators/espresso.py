@@ -26,9 +26,9 @@ __default_keep_files = ["*.pwo"]
 __default_properties = ["energy", "forces", "stress"]
 
 
-def evaluate_op(
+def evaluate_autopara_wrappable(
     atoms,
-    base_rundir=None,
+    workdir_root=None,
     dir_prefix="run_QE_",
     calculator_command=None,
     calculator_kwargs=None,
@@ -42,7 +42,7 @@ def evaluate_op(
     ----------
     atoms: Atoms / list(Atoms)
         input atomic configs
-    base_rundir: path-like, default os.getcwd()
+    workdir_root: path-like, default os.getcwd()
         directory to put calculation directories into
     dir_prefix: str, default 'QE-run\_'
         directory name prefix for calculations
@@ -76,11 +76,11 @@ def evaluate_op(
     if calculator_kwargs is None:
         raise ValueError("QE will not perform a calculation without settings given!")
 
-    if base_rundir is None:
+    if workdir_root is None:
         # using the current directory
-        base_rundir = os.getcwd()
+        workdir_root = os.getcwd()
     else:
-        pathlib.Path(base_rundir).mkdir(parents=True, exist_ok=True)
+        pathlib.Path(workdir_root).mkdir(parents=True, exist_ok=True)
 
     for at in at_list:
 
@@ -98,7 +98,7 @@ def evaluate_op(
                 kwargs_this_calc['profile'] = EspressoProfile(argv=calculator_command.split())
 
         # create temp dir and calculator
-        rundir = tempfile.mkdtemp(dir=base_rundir, prefix=dir_prefix)
+        rundir = tempfile.mkdtemp(dir=workdir_root, prefix=dir_prefix)
         at.calc = Espresso(directory=rundir, **kwargs_this_calc)
 
         # calculate
@@ -106,12 +106,14 @@ def evaluate_op(
         try:
             at.calc.calculate(at, properties=properties_use, system_changes=all_changes)
             calculation_succeeded = True
-        except (CalculationFailed, subprocess.CalledProcessError) as exc:
+            if 'DFT_FAILED_ESPRESSO' in at.info:
+                del at.info['DFT_FAILED_ESPRESSO']
+        except Exception as exc:
             # CalculationFailed is probably what's supposed to be returned
             # for failed convergence, Espresso currently returns subprocess.CalledProcessError
             #     since pw.x returns a non-zero status
             warnings.warn(f'Calculation failed with exc {exc}')
-            pass
+            at.info['DFT_FAILED_ESPRESSO'] = True
 
         # save results
         if calculation_succeeded:

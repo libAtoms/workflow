@@ -12,9 +12,9 @@ from ase import Atoms
 from ase.build import bulk
 from pytest import approx, fixture, raises, skip
 
-from wfl.calculators.espresso import evaluate_op, qe_kpoints_and_kwargs
+from wfl.calculators.espresso import evaluate_autopara_wrappable, qe_kpoints_and_kwargs
 from wfl.calculators.dft import evaluate_dft
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 
 
 @fixture(scope="session")
@@ -36,24 +36,26 @@ def qe_cmd_and_pseudo(tmp_path_factory):
     """
 
     if not which("pw.x"):
-        return skip()
+        skip("no pw.x executable")
     else:
         cmd = which("pw.x")
 
     # broken due to need for account/license click
     # url = "https://www.quantum-espresso.org/upf_files/Si.pbe-n-kjpaw_psl.1.0.0.UPF"
     url = "http://nninc.cnf.cornell.edu/psp_files/Si.pz-vbc.UPF"
+    # alternative
+    # url = "https://web.mit.edu/espresso_v6.1/amd64_linux26/qe-6.1/pseudo/Si.pz-vbc.UPF"
 
     # get the pseudo potential file, ~1.2MB
     try:
         r = requests.get(url)
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
         # no internet!
-        return skip()
+        skip(f"failed to make URL connection {url}")
 
     if r.status_code != requests.codes.ok:
         # the download has not worked
-        return skip()
+        skip(f"failed to download from URL {url}")
 
     # write to a temporary file
     pspot_file = tmp_path_factory.getbasetemp() / "Si.UPF"
@@ -151,7 +153,7 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
     )
 
     # output container
-    c_out = ConfigSet_out(
+    c_out = OutputSpec(
         file_root=tmp_path,
         output_files="qe_results.xyz",
         force=True,
@@ -162,7 +164,7 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
         calculator_name="QE",
         inputs=[at0, at],
         outputs=c_out,
-        base_rundir=tmp_path,
+        workdir_root=tmp_path,
         calculator_command=qe_cmd,
         calculator_kwargs=kw,
         output_prefix="QE_",
@@ -199,14 +201,14 @@ def test_qe_errors():
     with raises(
         ValueError, match="QE will not perform a calculation without settings given!"
     ):
-        evaluate_op(Atoms(), calculator_kwargs=None)
+        evaluate_autopara_wrappable(Atoms(), calculator_kwargs=None)
 
 
 def test_qe_no_calculation(tmp_path, qe_cmd_and_pseudo):
     # call just to skip if pw.x is missing
     _, _ = qe_cmd_and_pseudo
 
-    results = evaluate_op(bulk("Si"), calculator_kwargs=dict(), output_prefix="dummy_", base_rundir=tmp_path)
+    results = evaluate_autopara_wrappable(bulk("Si"), calculator_kwargs=dict(), output_prefix="dummy_", workdir_root=tmp_path)
 
     assert isinstance(results, Atoms)
     assert "dummy_energy" not in results.info
@@ -234,10 +236,10 @@ def test_qe_to_spc(tmp_path, qe_cmd_and_pseudo):
     )
 
     configs_eval = evaluate_dft(
-        inputs=ConfigSet_in(input_files=tmp_path /  "qe_in.xyz"),
-        outputs=ConfigSet_out(file_root=tmp_path, output_files="qe_out.to_SPC.xyz"),
+        inputs=ConfigSet(input_files=tmp_path /  "qe_in.xyz"),
+        outputs=OutputSpec(file_root=tmp_path, output_files="qe_out.to_SPC.xyz"),
         calculator_name="QE",
-        base_rundir=tmp_path,
+        workdir_root=tmp_path,
         calculator_kwargs=kw,
         output_prefix=None,
     )

@@ -5,15 +5,15 @@ import pytest
 from ase.atoms import Atoms
 import ase.io
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
-from wfl.generate_configs.phonopy import run
+from wfl.configset import ConfigSet, OutputSpec
+from wfl.generate.phonopy import run
 
 
 def test_phonopy(tmp_path):
     at = Atoms(numbers=[29], cell = [[0, 2, 2], [2, 0, 2], [2, 2, 0]], positions = [[0, 0, 0]], pbc = [True]*3)
 
-    ci = ConfigSet_in(input_configs=[at])
-    co = ConfigSet_out(output_files=str(tmp_path / "phonopy_2.xyz"))
+    ci = ConfigSet(input_configs=[at])
+    co = OutputSpec(output_files=str(tmp_path / "phonopy_2.xyz"))
 
     sc = at * [3, 3, 3]
     displs = [0.1, 0.2]
@@ -37,8 +37,8 @@ def test_phono3py(tmp_path):
     at0 = Atoms(numbers=[29], cell = [[0, 2, 2], [2, 0, 2], [2, 2, 0]], positions = [[0, 0, 0]], pbc = [True]*3)
     at1 = Atoms(numbers=[29], cell = [[0, 1.9, 1.9], [1.9, 0, 1.9], [1.9, 1.9, 0]], positions = [[0, 0, 0]], pbc = [True]*3)
 
-    ci = ConfigSet_in(input_configs=[at0, at1])
-    co = ConfigSet_out(output_files=str(tmp_path / "phonopy_3.xyz"))
+    ci = ConfigSet(input_configs=[at0, at1])
+    co = OutputSpec(output_files=str(tmp_path / "phonopy_3.xyz"))
 
     displs = [0.1, 0.2]
     strain_displs = [0.05, 0.1]
@@ -66,8 +66,8 @@ def test_phono3py_same_supercell(tmp_path):
     at0 = Atoms(numbers=[29], cell = [[0, 2, 2], [2, 0, 2], [2, 2, 0]], positions = [[0, 0, 0]], pbc = [True]*3)
     at1 = Atoms(numbers=[29], cell = [[0, 1.9, 1.9], [1.9, 0, 1.9], [1.9, 1.9, 0]], positions = [[0, 0, 0]], pbc = [True]*3)
 
-    ci = ConfigSet_in(input_configs=[at0, at1])
-    co = ConfigSet_out(output_files=str(tmp_path / "phonopy_3.xyz"))
+    ci = ConfigSet(input_configs=[at0, at1])
+    co = OutputSpec(output_files=str(tmp_path / "phonopy_3.xyz"))
 
     displs = [0.1, 0.2]
     strain_displs = [0.05, 0.1]

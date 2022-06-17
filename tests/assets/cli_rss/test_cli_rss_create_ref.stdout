@@ -1,0 +1,1146 @@
+/home/cluster2/bernstei/src/work/workflow_devel
+============================= test session starts ==============================
+platform linux -- Python 3.8.12, pytest-6.2.4, py-1.10.0, pluggy-0.13.1
+rootdir: /home/cluster2/bernstei/src/work/workflow_devel, configfile: pytest.ini
+plugins: mpi-0.5, cov-3.0.0, anyio-3.4.0
+collected 1 item
+
+tests/test_cli_rss.py 
+LOG 2022-04-12 15:53:26: GAP_RSS_ITER_FIT STARTING, code version git 32cb355-dirty
+
+
+LOG 2022-04-12 15:53:26: GAP_RSS_ITER_FIT DOING STEP prep
+
+LOG 2022-04-12 15:53:26: Zs array([ 3, 29])
+
+LOG 2022-04-12 15:53:26: GAP_RSS_ITER_FIT STARTING, code version git 32cb355-dirty
+
+
+LOG 2022-04-12 15:53:26: GAP_RSS_ITER_FIT DOING STEP initial_step 0
+
+LOG 2022-04-12 15:53:30: selecting config by descriptor
+LOG 2022-04-12 15:53:30: computing descriptors and selecting from (optionally) flat histogram by descriptor for selected_fitting {3: [{'Z': 3, 'add_species': False, 'atom_sigma': 0.3, 'average': True, 'central_weight': 1.0, 'cutoff': 6.0, 'cutoff_transition_width': 0.75, 'l_max': 4, 'n_max': 10, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}], 29: [{'Z': 29, 'add_species': False, 'atom_sigma': 0.28, 'average': True, 'central_weight': 1.0, 'cutoff': 5.6, 'cutoff_transition_width': 0.7, 'l_max': 4, 'n_max': 10, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}]}
+LOG 2022-04-12 15:53:34: evaluating with DFT
+LOG 2022-04-12 16:08:11: fitting
+WARNING(FoX)
+Fortran made FoX insert a newline. If whitespace might be significant, check your output.
+WARNING(FoX)
+Fortran made FoX insert a newline. If whitespace might be significant, check your output.
+LOG 2022-04-12 16:09:43: done
+STDOUT
+Using buildcell to create random initial configs for composition (1, 1) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5adb6a0>, <wfl.configset.ConfigSet_in object at 0x2b8af5ac5370>]
+Using buildcell to create random initial configs for composition (1, 0) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5a9d400>, <wfl.configset.ConfigSet_in object at 0x2b8af5ac5af0>, <wfl.configset.ConfigSet_in object at 0x2b8af5a9df10>]
+Using buildcell to create random initial configs for composition (1, 3) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5a9d820>, <wfl.configset.ConfigSet_in object at 0x2b8af5ab3e20>]
+Using buildcell to create random initial configs for composition (3, 1) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5ab3f10>, <wfl.configset.ConfigSet_in object at 0x2b8af5aeb430>]
+Using buildcell to create random initial configs for composition (0, 1) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5ab3340>, <wfl.configset.ConfigSet_in object at 0x2b8af5ac5610>, <wfl.configset.ConfigSet_in object at 0x2b8af5ac53d0>]
+merging composition groups dict_values([{'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5ab3c10>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8afb9e7220>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5ab3160>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5a9d250>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5a9dfd0>, 'frac': 0.2}])
+Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
+Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
+Running <function evaluate_op at 0x2b8afb9a9e50> with npool=16, chunksize=1
+Running <function evaluate_op at 0x2b8afb9a9e50> with npool=16, chunksize=1
+doing stage 0 {'descriptors': [{'add_species': False, 'count_cutoff': 4.2, 'descriptor': {'Z': [3, 3], 'compact_clusters': True, 'cutoff': 4.5, 'cutoff_transition_width': 0.9, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.9}}, {'add_species': False, 'count_cutoff': 3.9, 'descriptor': {'Z': [3, 29], 'compact_clusters': True, 'cutoff': 4.2, 'cutoff_transition_width': 0.84, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.84}}, {'add_species': False, 'count_cutoff': 3.6, 'descriptor': {'Z': [29, 29], 'compact_clusters': True, 'cutoff': 3.9, 'cutoff_transition_width': 0.78, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.78}}], 'error_scale_factor': 10.0}
+energy error MAE per atom 1.7333824912427747 per descriptor 0.1866636607438531
+Got delta 0.1866636607438531
+
+doing stage 1 {'descriptors': [{'add_species': False, 'descriptor': {'Z': 3, 'atom_sigma': 0.75, 'central_weight': 1.0, 'cutoff': 6.0, 'cutoff_transition_width': 0.5, 'l_max': 3, 'n_max': 12, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}, 'fit': {'covariance_type': 'dot_product', 'f0': 0.0, 'n_sparse': 1000, 'print_sparse_index': True, 'sparse_method': 'cur_points', 'zeta': 4}}, {'add_species': False, 'descriptor': {'Z': 29, 'atom_sigma': 0.65, 'central_weight': 1.0, 'cutoff': 5.6, 'cutoff_transition_width': 0.47, 'l_max': 3, 'n_max': 12, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}, 'fit': {'covariance_type': 'dot_product', 'f0': 0.0, 'n_sparse': 1000, 'print_sparse_index': True, 'sparse_method': 'cur_points', 'zeta': 4}}], 'error_scale_factor': 1.0}
+energy error MAE per atom 0.3524536935752551 per descriptor 0.3524536935752551
+Got delta 0.3524536935752551
+
+final GAPs in '['run_iter_0/GAP_iter_0.xml']'
+Running <function run_op at 0x2b8afaebff70> with npool=16, chunksize=10
+FITTING ERROR
+{'_ALL_': {'energy_per_atom': (152, 0.053775667571026),
+           'forces': (690, 3.0129318484954744),
+           'virial_per_atom': (180, 0.27886598061775325)},
+ ('buildcell', None): {'energy_per_atom': (30, 0.005645654332244326),
+                       'forces': (450, 3.5760056236739604),
+                       'virial_per_atom': (180, 0.27886598061775325)},
+ ('dimer', None): {'energy_per_atom': (120, 0.06045665154032969),
+                   'forces': (240, 1.4565025805154523)},
+ ('isolated_atom', None): {'energy_per_atom': (2, 2.2810155690079497e-06)}}
+Running <function run_op at 0x2b8afaebff70> with npool=16, chunksize=10
+TESTING ERROR
+{'_ALL_': {'energy_per_atom': (10, 1.1720694503463849),
+           'forces': (193, 7.539039183717774),
+           'virial_per_atom': (60, 1.6096034213545551)},
+ ('buildcell', 0): {'energy_per_atom': (10, 1.1720694503463849),
+                    'forces': (193, 7.539039183717774),
+                    'virial_per_atom': (60, 1.6096034213545551)}}
+
+
+LOG 2022-04-12 16:09:48: GAP_RSS_ITER_FIT STARTING, code version git 32cb355-dirty
+
+
+LOG 2022-04-12 16:09:48: GAP_RSS_ITER_FIT DOING STEP rss_step 1
+
+LOG 2022-04-12 16:09:53: minimizing with run_iter_0/GAP_iter_0.xml
+LOG 2022-04-12 16:10:44: selecting minima from trajectories
+LOG 2022-04-12 16:10:45: computing energy relative to nearby configs for group ALL file minima
+LOG 2022-04-12 16:10:45: selecting from configs with flat histogram, kT 0.3, for minima
+LOG 2022-04-12 16:10:45: computing descriptors and selecting from (optionally) flat histogram by descriptor for minima {3: [{'Z': 3, 'add_species': False, 'atom_sigma': 0.3, 'average': True, 'central_weight': 1.0, 'cutoff': 6.0, 'cutoff_transition_width': 0.75, 'l_max': 4, 'n_max': 10, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}], 29: [{'Z': 29, 'add_species': False, 'atom_sigma': 0.28, 'average': True, 'central_weight': 1.0, 'cutoff': 5.6, 'cutoff_transition_width': 0.7, 'l_max': 4, 'n_max': 10, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}]}
+LOG 2022-04-12 16:10:47: selecting entire trajectories of selected minima
+LOG 2022-04-12 16:10:48: computing energy relative to nearby configs for group ALL file selected_fitting
+LOG 2022-04-12 16:10:49: selecting from configs with flat histogram, kT 0.3, for selected_fitting
+LOG 2022-04-12 16:10:49: computing descriptors and selecting from (optionally) flat histogram by descriptor for selected_fitting {3: [{'Z': 3, 'add_species': False, 'atom_sigma': 0.3, 'average': True, 'central_weight': 1.0, 'cutoff': 6.0, 'cutoff_transition_width': 0.75, 'l_max': 4, 'n_max': 10, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}], 29: [{'Z': 29, 'add_species': False, 'atom_sigma': 0.28, 'average': True, 'central_weight': 1.0, 'cutoff': 5.6, 'cutoff_transition_width': 0.7, 'l_max': 4, 'n_max': 10, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}]}
+LOG 2022-04-12 16:10:51: evaluating with DFT
+LOG 2022-04-12 16:17:26: fitting
+WARNING(FoX)
+Fortran made FoX insert a newline. If whitespace might be significant, check your output.
+WARNING(FoX)
+Fortran made FoX insert a newline. If whitespace might be significant, check your output.
+LOG 2022-04-12 16:22:22: done
+STDOUT
+Using buildcell to create random initial configs for composition (1, 1) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5afc400>, <wfl.configset.ConfigSet_in object at 0x2b8af5afca30>]
+Using buildcell to create random initial configs for composition (1, 0) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5a9d880>, <wfl.configset.ConfigSet_in object at 0x2b8af5adb7f0>, <wfl.configset.ConfigSet_in object at 0x2b8af31aa8b0>]
+Using buildcell to create random initial configs for composition (1, 3) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5ac5bb0>, <wfl.configset.ConfigSet_in object at 0x2b8af5b6abb0>]
+Using buildcell to create random initial configs for composition (3, 1) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5afe2e0>, <wfl.configset.ConfigSet_in object at 0x2b8af5ac5670>]
+Using buildcell to create random initial configs for composition (0, 1) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8afb8f0fd0>, <wfl.configset.ConfigSet_in object at 0x2b8af5b3d550>, <wfl.configset.ConfigSet_in object at 0x2b8af5afc730>]
+merging composition groups dict_values([{'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5afce50>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5b3d820>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5ab3100>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5ab3520>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8afb9e7a30>, 'frac': 0.2}])
+Running <function run_op at 0x2b8afb900ca0> with npool=16, chunksize=10
+Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
+Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
+Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
+Running <function evaluate_op at 0x2b8afb9a9e50> with npool=16, chunksize=1
+Running <function evaluate_op at 0x2b8afb9a9e50> with npool=16, chunksize=1
+doing stage 0 {'descriptors': [{'add_species': False, 'count_cutoff': 4.2, 'descriptor': {'Z': [3, 3], 'compact_clusters': True, 'cutoff': 4.5, 'cutoff_transition_width': 0.9, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.9}}, {'add_species': False, 'count_cutoff': 3.9, 'descriptor': {'Z': [3, 29], 'compact_clusters': True, 'cutoff': 4.2, 'cutoff_transition_width': 0.84, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.84}}, {'add_species': False, 'count_cutoff': 3.6, 'descriptor': {'Z': [29, 29], 'compact_clusters': True, 'cutoff': 3.9, 'cutoff_transition_width': 0.78, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.78}}], 'error_scale_factor': 10.0}
+energy error MAE per atom 1.8983846508017241 per descriptor 0.16612297789152083
+Got delta 0.16612297789152083
+
+doing stage 1 {'descriptors': [{'add_species': False, 'descriptor': {'Z': 3, 'atom_sigma': 0.75, 'central_weight': 1.0, 'cutoff': 6.0, 'cutoff_transition_width': 0.5, 'l_max': 3, 'n_max': 12, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}, 'fit': {'covariance_type': 'dot_product', 'f0': 0.0, 'n_sparse': 1000, 'print_sparse_index': True, 'sparse_method': 'cur_points', 'zeta': 4}}, {'add_species': False, 'descriptor': {'Z': 29, 'atom_sigma': 0.65, 'central_weight': 1.0, 'cutoff': 5.6, 'cutoff_transition_width': 0.47, 'l_max': 3, 'n_max': 12, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}, 'fit': {'covariance_type': 'dot_product', 'f0': 0.0, 'n_sparse': 1000, 'print_sparse_index': True, 'sparse_method': 'cur_points', 'zeta': 4}}], 'error_scale_factor': 1.0}
+energy error MAE per atom 0.29321360439697175 per descriptor 0.29321360439697175
+Got delta 0.29321360439697175
+
+final GAPs in '['run_iter_1/GAP_iter_1.xml']'
+Running <function run_op at 0x2b8afaebff70> with npool=16, chunksize=10
+FITTING ERROR
+{'_ALL_': {'energy_per_atom': (182, 0.12821368719909962),
+           'forces': (1158, 4.053345095929747),
+           'virial_per_atom': (360, 0.5700253628222204)},
+ ('buildcell', None): {'energy_per_atom': (30, 0.08500440884211623),
+                       'forces': (450, 4.9864703908038),
+                       'virial_per_atom': (180, 0.6254879946142264)},
+ ('buildcell_minim_last_unconverged', None): {'energy_per_atom': (1,
+                                                                  0.6870193760306298),
+                                              'forces': (8, 4.363983151496635),
+                                              'virial_per_atom': (6,
+                                                                  0.8868231960503206)},
+ ('buildcell_minim_mid', None): {'energy_per_atom': (29, 0.05699504668242089),
+                                 'forces': (460, 3.2761037385194784),
+                                 'virial_per_atom': (174, 0.490327917453262)},
+ ('dimer', None): {'energy_per_atom': (120, 0.13567361849686066),
+                   'forces': (240, 3.383056274196485)},
+ ('isolated_atom', None): {'energy_per_atom': (2, 2.95476192762183e-06)}}
+Running <function run_op at 0x2b8afaebff70> with npool=16, chunksize=10
+TESTING ERROR
+{'_ALL_': {'energy_per_atom': (20, 0.948803183848881),
+           'forces': (327, 5.99958196226955),
+           'virial_per_atom': (120, 3.00313990107971)},
+ ('buildcell', 0): {'energy_per_atom': (10, 1.2757041140418846),
+                    'forces': (193, 7.187584060604819),
+                    'virial_per_atom': (60, 3.3162382635601446)},
+ ('buildcell_minim_mid', 1): {'energy_per_atom': (10, 0.415973528941635),
+                              'forces': (134, 3.6647944942857413),
+                              'virial_per_atom': (60, 2.6533492627646478)}}
+
+
+LOG 2022-04-12 16:22:31: GAP_RSS_ITER_FIT STARTING, code version git 32cb355-dirty
+
+
+LOG 2022-04-12 16:22:31: GAP_RSS_ITER_FIT DOING STEP MD_bulk_defect_step 2
+
+LOG 2022-04-12 16:22:34: minimizing with run_iter_1/GAP_iter_1.xml
+LOG 2022-04-12 16:22:58: selecting minima from trajectories
+LOG 2022-04-12 16:22:59: computing energy relative to nearby configs for group ALL file minima
+LOG 2022-04-12 16:22:59: selecting from configs with flat histogram, kT 0.1, for minima
+LOG 2022-04-12 16:22:59: computing descriptors and selecting from (optionally) flat histogram by descriptor for minima {3: [{'Z': 3, 'add_species': False, 'atom_sigma': 0.3, 'average': True, 'central_weight': 1.0, 'cutoff': 6.0, 'cutoff_transition_width': 0.75, 'l_max': 4, 'n_max': 10, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}], 29: [{'Z': 29, 'add_species': False, 'atom_sigma': 0.28, 'average': True, 'central_weight': 1.0, 'cutoff': 5.6, 'cutoff_transition_width': 0.7, 'l_max': 4, 'n_max': 10, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}]}
+LOG 2022-04-12 16:23:00: creating supercells
+LOG 2022-04-12 16:23:01: doing minim + MD
+LOG 2022-04-12 16:23:01:   group ALL
+LOG 2022-04-12 16:24:10: selecting by flat histogram + by-descriptor from MD trajectories
+LOG 2022-04-12 16:24:11: computing energy relative to nearby configs for group ALL file selected_fitting
+LOG 2022-04-12 16:24:11: selecting from configs with flat histogram, kT 0.1, for selected_fitting
+LOG 2022-04-12 16:24:11: computing descriptors and selecting from (optionally) flat histogram by descriptor for selected_fitting {3: [{'Z': 3, 'add_species': False, 'atom_sigma': 0.3, 'average': True, 'central_weight': 1.0, 'cutoff': 6.0, 'cutoff_transition_width': 0.75, 'l_max': 4, 'n_max': 10, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}], 29: [{'Z': 29, 'add_species': False, 'atom_sigma': 0.28, 'average': True, 'central_weight': 1.0, 'cutoff': 5.6, 'cutoff_transition_width': 0.7, 'l_max': 4, 'n_max': 10, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}]}
+LOG 2022-04-12 16:24:13: evaluating with DFT
+LOG 2022-04-12 16:27:30: fitting
+WARNING(FoX)
+Fortran made FoX insert a newline. If whitespace might be significant, check your output.
+WARNING(FoX)
+Fortran made FoX insert a newline. If whitespace might be significant, check your output.
+LOG 2022-04-12 16:34:15: done
+STDOUT
+Using buildcell to create random initial configs for composition (1, 1) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8afb9bcfd0>, <wfl.configset.ConfigSet_in object at 0x2b8afb9667f0>]
+Using buildcell to create random initial configs for composition (1, 0) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5afe970>, <wfl.configset.ConfigSet_in object at 0x2b8af5afe820>, <wfl.configset.ConfigSet_in object at 0x2b8afb9bcd30>]
+Using buildcell to create random initial configs for composition (1, 3) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5afe880>, <wfl.configset.ConfigSet_in object at 0x2b8afbe7f0a0>]
+Using buildcell to create random initial configs for composition (3, 1) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8afbe7f550>, <wfl.configset.ConfigSet_in object at 0x2b8af5afe850>]
+Using buildcell to create random initial configs for composition (0, 1) fraction 0.2 N_configs_compos 20.0
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5af8af0>, <wfl.configset.ConfigSet_in object at 0x2b8af5af8940>, <wfl.configset.ConfigSet_in object at 0x2b8af5afe280>]
+merging composition groups dict_values([{'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5b6a6d0>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8afb9bc7f0>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8afbe7fbb0>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5af8ac0>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5afc4c0>, 'frac': 0.2}])
+Running <function run_op at 0x2b8afb900ca0> with npool=16, chunksize=10
+Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
+Running <function largest_bulk_op at 0x2b8afb9053a0> with npool=16, chunksize=10
+Running <function vacancy_op at 0x2b8afb905430> with npool=16, chunksize=10
+Running <function interstitial_op at 0x2b8afb9054c0> with npool=16, chunksize=10
+Running <function surface_op at 0x2b8afb9055e0> with npool=16, chunksize=10
+Running <function sample_op at 0x2b8afb64b940> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afb900ca0> with npool=16, chunksize=10
+Running <function sample_op at 0x2b8afb64b940> with npool=16, chunksize=1
+Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
+Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
+Running <function evaluate_op at 0x2b8afb9a9e50> with npool=16, chunksize=1
+Running <function evaluate_op at 0x2b8afb9a9e50> with npool=16, chunksize=1
+doing stage 0 {'descriptors': [{'add_species': False, 'count_cutoff': 4.2, 'descriptor': {'Z': [3, 3], 'compact_clusters': True, 'cutoff': 4.5, 'cutoff_transition_width': 0.9, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.9}}, {'add_species': False, 'count_cutoff': 3.9, 'descriptor': {'Z': [3, 29], 'compact_clusters': True, 'cutoff': 4.2, 'cutoff_transition_width': 0.84, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.84}}, {'add_species': False, 'count_cutoff': 3.6, 'descriptor': {'Z': [29, 29], 'compact_clusters': True, 'cutoff': 3.9, 'cutoff_transition_width': 0.78, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.78}}], 'error_scale_factor': 10.0}
+energy error MAE per atom 2.9366490287029925 per descriptor 0.253878296470276
+Got delta 0.253878296470276
+
+doing stage 1 {'descriptors': [{'add_species': False, 'descriptor': {'Z': 3, 'atom_sigma': 0.75, 'central_weight': 1.0, 'cutoff': 6.0, 'cutoff_transition_width': 0.5, 'l_max': 3, 'n_max': 12, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}, 'fit': {'covariance_type': 'dot_product', 'f0': 0.0, 'n_sparse': 1000, 'print_sparse_index': True, 'sparse_method': 'cur_points', 'zeta': 4}}, {'add_species': False, 'descriptor': {'Z': 29, 'atom_sigma': 0.65, 'central_weight': 1.0, 'cutoff': 5.6, 'cutoff_transition_width': 0.47, 'l_max': 3, 'n_max': 12, 'n_species': 2, 'soap': True, 'species_Z': [3, 29]}, 'fit': {'covariance_type': 'dot_product', 'f0': 0.0, 'n_sparse': 1000, 'print_sparse_index': True, 'sparse_method': 'cur_points', 'zeta': 4}}], 'error_scale_factor': 1.0}
+energy error MAE per atom 0.3028418887571953 per descriptor 0.3028418887571953
+Got delta 0.3028418887571953
+
+final GAPs in '['run_iter_2/GAP_iter_2.xml']'
+Running <function run_op at 0x2b8afaebff70> with npool=16, chunksize=10
+FITTING ERROR
+{'_ALL_': {'energy_per_atom': (200, 2.8022272026221144),
+           'forces': (1315, 38.98376475980112),
+           'virial_per_atom': (480, 2.4895256482254795)},
+ ('buildcell', None): {'energy_per_atom': (30, 0.09635170775721645),
+                       'forces': (450, 11.857677845301417),
+                       'virial_per_atom': (180, 1.1110844606730723)},
+ ('buildcell_minim_last_unconverged', None): {'energy_per_atom': (1,
+                                                                  0.8113195958945176),
+                                              'forces': (8, 18.570863841321902),
+                                              'virial_per_atom': (6,
+                                                                  1.7460177530519378)},
+ ('buildcell_minim_mid', None): {'energy_per_atom': (29, 0.05944271901605217),
+                                 'forces': (460, 6.954662866113751),
+                                 'virial_per_atom': (174, 0.7768686350459875)},
+ ('dimer', None): {'energy_per_atom': (120, 3.6144297449207836),
+                   'forces': (240, 86.08254595260814)},
+ ('isolated_atom', None): {'energy_per_atom': (2, 0.0002069985045179479)},
+ ('supercell_bulk_MD', None): {'energy_per_atom': (11, 0.39981038104366784),
+                               'forces': (66, 13.409127998282324),
+                               'virial_per_atom': (66, 3.530513508996365)},
+ ('supercell_interstitial_minim_last_unconverged_MD', None): {'energy_per_atom': (1,
+                                                                                  0.0008407005106205487),
+                                                              'forces': (9,
+                                                                         1.9828831389947548),
+                                                              'virial_per_atom': (6,
+                                                                                  0.0359588659599364)},
+ ('supercell_surface_minim_last_unconverged_MD', None): {'energy_per_atom': (6,
+                                                                             0.030610627074546155),
+                                                         'forces': (68,
+                                                                    36.781514479698885),
+                                                         'virial_per_atom': (36,
+                                                                             3.0844680483465363)},
+ ('supercell_vacancy_minim_last_unconverged_MD', None): {'forces': (14,
+                                                                    44.57947586564699),
+                                                         'virial_per_atom': (12,
+                                                                             11.046226563695729)}}
+Running <function run_op at 0x2b8afaebff70> with npool=16, chunksize=10
+TESTING ERROR
+{'_ALL_': {'energy_per_atom': (30, 148.2894571741439),
+           'forces': (392, 217.2731312125803),
+           'virial_per_atom': (180, 8.203711167914062)},
+ ('buildcell', 0): {'energy_per_atom': (10, 1.9428183429021875),
+                    'forces': (193, 22.131800993417112),
+                    'virial_per_atom': (60, 7.2707580274763375)},
+ ('buildcell_minim_mid', 1): {'energy_per_atom': (10, 0.32456671283851174),
+                              'forces': (134, 7.657107407281965),
+                              'virial_per_atom': (60, 2.8966187792399674)},
+ ('supercell_bulk_MD', 2): {'energy_per_atom': (7, 0.2790219998736308),
+                            'forces': (42, 10.996107229440538),
+                            'virial_per_atom': (42, 4.767693816933866)},
+ ('supercell_interstitial_minim_last_unconverged_MD', 2): {'energy_per_atom': (1,
+                                                                               27.821289615130993),
+                                                           'forces': (9,
+                                                                      1424.018947607861),
+                                                           'virial_per_atom': (6,
+                                                                               26.615869798607303)},
+ ('supercell_vacancy_minim_last_unconverged_MD', 2): {'energy_per_atom': (2,
+                                                                          573.968433485082),
+                                                      'forces': (14,
+                                                                 102.62457177520861),
+                                                      'virial_per_atom': (12,
+                                                                          16.41587990137206)}}
+
+.
+
+=============================== warnings summary ===============================
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/tests/test_cli_rss.py:120: UserWarning: gap_fit is not stable, and test does not actually use exact reference GAP potential, so CPU-dependent math may make this test fail.
+    warnings.warn("gap_fit is not stable, and test does not actually use exact "
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/cli/gap_rss_iter_fit.py:67: UserWarning: Setting initial seeds to 42,43,44.  If autoparallelization is on (WFL_AUTOPARA_NPOOL, etc), this will not affect runs on other threads.
+    warnings.warn(f'Setting initial seeds to {ctx.obj["seeds"]}.  If autoparallelization '
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/cli/gap_rss_iter_fit.py:67: UserWarning: Setting initial seeds to 45,46,47.  If autoparallelization is on (WFL_AUTOPARA_NPOOL, etc), this will not affect runs on other threads.
+    warnings.warn(f'Setting initial seeds to {ctx.obj["seeds"]}.  If autoparallelization '
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 30 type isolated_atom
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 30 type isolated_atom
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 31 type isolated_atom
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 31 type isolated_atom
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 32 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 33 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 34 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 35 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 36 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 37 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 38 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 39 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 40 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 41 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 42 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 43 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 44 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 45 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 46 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 47 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 48 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 49 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 50 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 51 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 52 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 53 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 54 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 55 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 56 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 57 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 58 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 59 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 60 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 61 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 62 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 63 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 64 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 65 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 66 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 67 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 68 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 69 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 70 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 71 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 72 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 73 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 74 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 75 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 76 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 77 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 78 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 79 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 80 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 81 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 82 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 83 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 84 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 85 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 86 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 87 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 88 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 89 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 90 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 91 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 92 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 93 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 94 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 95 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 96 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 97 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 98 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 99 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 100 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 101 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 102 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 103 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 104 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 105 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 106 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 107 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 108 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 109 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 110 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 111 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 112 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 113 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 114 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 115 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 116 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 117 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 118 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 119 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 120 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 121 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 122 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 123 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 124 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 125 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 126 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 127 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 128 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 129 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 130 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 131 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 132 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 133 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 134 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 135 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 136 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 137 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 138 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 139 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 140 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 141 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 142 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 143 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 144 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 145 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 146 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 147 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 148 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 149 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 150 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 151 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/cli/gap_rss_iter_fit.py:67: UserWarning: Setting initial seeds to 48,49,50.  If autoparallelization is on (WFL_AUTOPARA_NPOOL, etc), this will not affect runs on other threads.
+    warnings.warn(f'Setting initial seeds to {ctx.obj["seeds"]}.  If autoparallelization '
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 60 type isolated_atom
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 60 type isolated_atom
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 61 type isolated_atom
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 61 type isolated_atom
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 152 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 153 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 154 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 155 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 156 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 157 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 158 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 159 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 160 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 161 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 162 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 163 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 164 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 165 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 166 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 167 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 168 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 169 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 170 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 171 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 172 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 173 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 174 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 175 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 176 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 177 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 178 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 179 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 180 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 181 type dimer
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/cli/gap_rss_iter_fit.py:67: UserWarning: Setting initial seeds to 51,52,53.  If autoparallelization is on (WFL_AUTOPARA_NPOOL, etc), this will not affect runs on other threads.
+    warnings.warn(f'Setting initial seeds to {ctx.obj["seeds"]}.  If autoparallelization '
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/modify_database/gap_rss_set_config_sigmas_from_convex_hull.py:54: UserWarning: While modifying sigma, skipping configuration # 11 that does not have "REF__energy" field
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/modify_database/gap_rss_set_config_sigmas_from_convex_hull.py:54: UserWarning: While modifying sigma, skipping configuration # 12 that does not have "REF__energy" field
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/modify_database/gap_rss_set_config_sigmas_from_convex_hull.py:54: UserWarning: While modifying sigma, skipping configuration # 13 that does not have "REF__energy" field
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/modify_database/gap_rss_set_config_sigmas_from_convex_hull.py:54: UserWarning: While modifying sigma, skipping configuration # 14 that does not have "REF__energy" field
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/modify_database/gap_rss_set_config_sigmas_from_convex_hull.py:54: UserWarning: While modifying sigma, skipping configuration # 17 that does not have "REF__energy" field
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/modify_database/gap_rss_set_config_sigmas_from_convex_hull.py:54: UserWarning: While modifying sigma, skipping configuration # 18 that does not have "REF__energy" field
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/modify_database/gap_rss_set_config_sigmas_from_convex_hull.py:54: UserWarning: While modifying sigma, skipping configuration # 19 that does not have "REF__energy" field
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/modify_database/gap_rss_set_config_sigmas_from_convex_hull.py:54: UserWarning: While modifying sigma, skipping configuration # 21 that does not have "REF__energy" field
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/modify_database/gap_rss_set_config_sigmas_from_convex_hull.py:54: UserWarning: While modifying sigma, skipping configuration # 22 that does not have "REF__energy" field
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/modify_database/gap_rss_set_config_sigmas_from_convex_hull.py:54: UserWarning: While modifying sigma, skipping configuration # 23 that does not have "REF__energy" field
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference energy property from config 11 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 11 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 11 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference energy property from config 12 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 12 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 12 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference energy property from config 13 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 13 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 13 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference energy property from config 14 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 14 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 14 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference energy property from config 15 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference energy property from config 16 type supercell_vacancy_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference energy property from config 17 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 17 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 17 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference energy property from config 18 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 18 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 18 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference energy property from config 19 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 19 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 19 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference energy property from config 21 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 21 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 21 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference energy property from config 22 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 22 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 22 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference energy property from config 23 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference forces property from config 23 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+tests/test_cli_rss.py::test_cli_rss_full
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/fit/ref_error.py:125: UserWarning: missing reference stress property from config 23 type supercell_interstitial_minim_last_unconverged_MD
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+================= 1 passed, 205 warnings in 2462.24s (0:41:02) =================
+WARNING: Potential_initialise using default init_args "Potential xml_label=GAP_2022_4_12_-240_16_8_13_293"
+WARNING: Potential_calc: cutoff of Atoms object (-1.0000000000000000) < Potential cutoff (4.5000000000000000) - increasing it now
+WARNING: Potential_initialise using default init_args "Potential xml_label=GAP_iter_0"
+WARNING: Potential_initialise using default init_args "Potential xml_label=GAP_2022_4_12_-240_16_17_27_985"
+WARNING: Potential_initialise using default init_args "Potential xml_label=GAP_iter_1"
+WARNING: Potential_initialise using default init_args "Potential xml_label=GAP_2022_4_12_-240_16_27_31_841"
+WARNING: Potential_initialise using default init_args "Potential xml_label=GAP_iter_2"

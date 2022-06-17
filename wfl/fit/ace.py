@@ -13,7 +13,7 @@ import numpy as np
 import ase.io
 from ase.stress import voigt_6_to_full_3x3_stress
 
-from wfl.configset import ConfigSet_in
+from wfl.configset import ConfigSet
 from .utils import get_RemoteInfo
 
 from expyre import ExPyRe
@@ -27,7 +27,7 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
 
     Parameters
     ----------
-    fitting_configs: ConfigSet_in
+    fitting_configs: ConfigSet
         set of configurations to fit
     ACE_name: str
         name of ACE potential (i.e. stem for resulting .json file). Overwrites any filename given in `ace_fit_params`.
@@ -48,7 +48,7 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
         do a dry run, which returns the matrix size, rather than the potential name
     verbose: bool, default True
         print verbose output
-    remote_info: dict or wfl.pipeline.utils.RemoteInfo, or '_IGNORE' or None
+    remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
         will try to use env var WFL_ACE_FIT_REMOTEINFO used (see below). '_IGNORE' is for
@@ -88,7 +88,7 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
     ACE_name: str
         name of ACE model, used as initial part of final potential JSON file, as well as other scratch files.
         Overrides any previous 'ACE_fname' in ace_fit_params
-    fitting_configs: ConfigSet_in
+    fitting_configs: ConfigSet
         set of configurations to fit
     ace_fit_params: dict
         dict with all fitting parameters for ACE1pack,
@@ -129,7 +129,7 @@ def prepare_configs(fitting_configs, ref_property_prefix='REF_'):
     """Prepare configs before fitting. Currently only converts stress to virial."""
 
     # configs need to be in memory so they can be modified with stress -> virial, and safest to
-    # have them as a list (rather than using ConfigSet_in.to_memory()) when passing to ase.io.write below
+    # have them as a list (rather than using ConfigSet.to_memory()) when passing to ase.io.write below
     fitting_configs = list(fitting_configs)
 
     # calculate virial from stress, since ASE uses stress but ace_fit.jl only knows about virial
@@ -145,7 +145,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
     Parameters
     ----------
-    fitting_configs: ConfigSet_in
+    fitting_configs: list(Atoms)
         set of configurations to fit
     ace_fit_params: dict
         dict with all fitting parameters for ACE1pack.
@@ -160,7 +160,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
         do a dry run, which returns the matrix size, rather than the potential file path
     verbose: bool, default True
         print verbose output
-    remote_info: dict or wfl.pipeline.utils.RemoteInfo, or '_IGNORE' or None
+    remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
         will try to use env var WFL_ACE_FIT_REMOTEINFO used (see below). '_IGNORE' is for
@@ -185,6 +185,10 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
     """
     run_dir = Path(run_dir)
 
+    # make sure that it's a list, so it's easy to pickle for remote jobs, and safe
+    # to pass to _write_fitting_configs which will pass it to ase.io.write
+    assert isinstance(fitting_configs, list)
+
     ace_fit_params = deepcopy(ace_fit_params)
     # base path, without any suffix, as string (including run_dir, which is only known at runtime)
     ace_filename = Path(ace_fit_params["ACE_fname"])
@@ -207,9 +211,6 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.input_files.copy()
         output_files = remote_info.output_files.copy()
-
-        # put configs in memory so they can be staged out easily
-        fitting_configs = fitting_configs.in_memory()
 
         # run dir will contain only things created by fitting, so it's safe to copy the
         # entire thing back as output
@@ -241,7 +242,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
     _write_fitting_configs(fitting_configs, ace_fit_params, ace_file_base)
 
-    ace_fit_params_filename = ace_file_base + "_fit_params.json"
+    ace_fit_params_filename = "fit_params_ " + ace_file_base + ".json"
     with open(ace_fit_params_filename, "w") as f:
         f.write(json.dumps(ace_fit_params, indent=4))
 
@@ -261,6 +262,15 @@ def _write_fitting_configs(fitting_configs, use_params, ace_file_base):
     Writes fitting configs to file and updates ace fitting parameters.
     Configurations and filename handled by Workflow overwrite any filename
     specified in parameters.
+
+    Parameters:
+    -----------
+    fitting_configs: list(Atoms)
+        configurations to fit to
+    use_params: dict
+        ACE fit parameters, will have input filename set based on where configs were written to
+    ace_file_base: str
+        base to all ACE-related files, used for saving fitting configs
     """
 
     if "data" not in use_params:
