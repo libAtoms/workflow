@@ -1,4 +1,4 @@
-# All parallelisation options (ORCA)
+# ORCA: all parallelisation options 
 
 ## 1. Evaluate atomic configurations sequentially on a single core
 
@@ -125,6 +125,7 @@ wfl -v ref-method orca-eval -tmp ${tmp_dir} --base-rundir $base_rundir --output-
                             --orca-command "${orca_command}" --output-file $output --keep-files default $input
 ```
 
+## config.json example
 
 Below is an example of corresponding `config.json`
 

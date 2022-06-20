@@ -13,27 +13,40 @@ Documentation in progress!
 
 The main functions of Workflow is to efficiently parallelise operations over a set of atomic configurations. Given an operation that is defined to act a single configuration (e.g. evaluate energy of a structure with CASTEP ASE calculator), Workflow may apply the operation to multiple configurations in parallel. 
 
-The Workflow-specific code structures (e.g. how configurations are handled, mechanism to parallelise operations) are covered in :ref:`Code structure <code_structure>`. Currently implemented self-contained per-configuration operations are sketched out in :ref:`Operations <operations>`. Descriptions of Workflows, built out of these modular operations are described in :ref:`Workflows <workflows>`. There are also descriptions :ref:`command line interface <command_line>`, :ref:`examples <examples>` of common tasks to get started with, some :ref:`guidelines on contributing <contributing>` and a :ref:`Python API <api>`. 
+The Workflow-specific code structures (e.g. how configurations are handled, mechanism to parallelise operations) are covered in :ref:`Code structure <code_structure>`. Currently implemented self-contained per-configuration operations are sketched out in :ref:`Operations <operations>`. Descriptions of Workflows, built out of these modular operations are described in :ref:`Workflows <workflows>`. There are also descriptions :ref:`command line interface <command_line>`, :ref:`examples <examples>` of common tasks to get started with and a :ref:`Python API <api>`. 
 
+***************************************
+Installation
+***************************************
 
-For now the documentation must be build from source. 
+Quick start that installs all of the mandatory dependencies:
+
+.. code-block:: sh
+
+	pip install git+https://github.com/libAtoms/workflow
+
+***************************************
+Building docs from source
+***************************************
+
+To build from source:
 
 1. ``sphinx-apidoc -o source ../wfl``  (only whenever source code changes)
 2. ``make html``
 3. ``open build/html/index.html``
+
+A Sphinx style guide: https://documentation-style-guide-sphinx.readthedocs.io/en/latest/style-guide.html 
 
 
 .. toctree::
     :maxdepth: 2
     :caption: Contents:
 
-    Install <install.rst>
     Code structure <code_structure.rst>
     Operations <operations.rst>
     Workflows <workflows.rst>
     Command Line Interface <command_line.rst>
     Examples <examples.rst>
-    Contriubting <contributing.rst>
     Modules <modules.rst>
 
 * :ref:`genindex`
