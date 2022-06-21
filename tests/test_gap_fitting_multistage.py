@@ -123,14 +123,14 @@ def test_gap_multistage_fit_remote(request, tmp_path, quippy, expyre_systems, mo
         ri['sys_name'] = sys_name
         ri['job_name'] = 'pytest_gap_fit_'+sys_name
 
-        if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-            ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
+        if 'WFL_PYTEST_EXPYRE_INFO' in os.environ:
+            ri_extra = json.loads(os.environ['WFL_PYTEST_EXPYRE_INFO'])
             if 'resources' in ri_extra:
                 ri['resources'].update(ri_extra['resources'])
                 del ri_extra['resources']
             ri.update(ri_extra)
 
-        monkeypatch.setenv('WFL_GAP_MULTISTAGE_FIT_REMOTEINFO', json.dumps(ri))
+        monkeypatch.setenv('WFL_GAP_MULTISTAGE_FIT_EXPYRE_INFO', json.dumps(ri))
         test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir=f'run_dir_{sys_name}')
 
 

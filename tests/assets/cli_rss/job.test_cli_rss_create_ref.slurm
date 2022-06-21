@@ -24,7 +24,7 @@ export VASP_COMMAND_GAMMA=vasp.gamma_serial
 export VASP_PP_PATH=$VASP_PATH/pot/rev_54/PBE
 export GRIF_BUILDCELL_CMD=$HOME/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
 
-export WFL_AUTOPARA_NPOOL=16
+export WFL_NUM_PYTHON_SUBPROCESSES=16
 
 pytest --runslow -rxXs -s tests/test_cli_rss.py 
 

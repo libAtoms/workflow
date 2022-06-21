@@ -113,7 +113,7 @@ def do_full_test(runner, assets_dir, monkeypatch):
 
     # make sure nothing is parallel so things are as deterministic as possible
     monkeypatch.setenv("WFL_DETERMINISTIC_HACK", "1")
-    # monkeypatch.setenv("WFL_AUTOPARA_NPOOL", "0")
+    # monkeypatch.setenv("WFL_NUM_PYTHON_SUBPROCESSES", "0")
     monkeypatch.setenv("OMP_NUM_THREADS", "1")
     monkeypatch.setenv("GAP_FIT_OMP_NUM_THREADS", "1")
 

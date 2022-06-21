@@ -189,7 +189,7 @@ will run on every system defined in `$HOME/.expyre/config.json`.  The
 Optional env vars:
  - `EXPYRE_PYTEST_SYSTEMS`: regexp to filter systems in `$HOME/.expyre/config.json` that will
    be used for testing.
- - `WFL_PYTEST_REMOTE_INFO`: dict of fields to _add_ to `RemoteInfo` object when doing high
+ - `WFL_PYTEST_EXPYRE_INFO`: dict of fields to _add_ to `RemoteInfo` object when doing high
    level (`iterable_loop`, `gap_fit`) remote run tests.
 
 #### pytest with remote run example

@@ -24,10 +24,10 @@ def test_buildcell_remote(tmp_path, expyre_systems, monkeypatch):
 def do_buildcell_remote(tmp_path, sys_name, monkeypatch):
     ri = {'sys_name': sys_name, 'job_name': 'test_'+sys_name,
           'resources': {'max_time': '1h', 'n': (1, 'nodes')},
-          'job_chunksize': -36, 'check_interval': 10}
+          'num_inputs_per_queued_job': -36, 'check_interval': 10}
 
-    if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-        ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
+    if 'WFL_PYTEST_EXPYRE_INFO' in os.environ:
+        ri_extra = json.loads(os.environ['WFL_PYTEST_EXPYRE_INFO'])
         if 'resources' in ri_extra:
             ri['resources'].update(ri_extra['resources'])
             del ri_extra['resources']

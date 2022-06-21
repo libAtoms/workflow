@@ -29,32 +29,32 @@ Fortran made FoX insert a newline. If whitespace might be significant, check you
 LOG 2022-04-12 16:09:43: done
 STDOUT
 Using buildcell to create random initial configs for composition (1, 1) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5adb6a0>, <wfl.configset.ConfigSet_in object at 0x2b8af5ac5370>]
 Using buildcell to create random initial configs for composition (1, 0) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5a9d400>, <wfl.configset.ConfigSet_in object at 0x2b8af5ac5af0>, <wfl.configset.ConfigSet_in object at 0x2b8af5a9df10>]
 Using buildcell to create random initial configs for composition (1, 3) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5a9d820>, <wfl.configset.ConfigSet_in object at 0x2b8af5ab3e20>]
 Using buildcell to create random initial configs for composition (3, 1) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5ab3f10>, <wfl.configset.ConfigSet_in object at 0x2b8af5aeb430>]
 Using buildcell to create random initial configs for composition (0, 1) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5ab3340>, <wfl.configset.ConfigSet_in object at 0x2b8af5ac5610>, <wfl.configset.ConfigSet_in object at 0x2b8af5ac53d0>]
 merging composition groups dict_values([{'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5ab3c10>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8afb9e7220>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5ab3160>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5a9d250>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5a9dfd0>, 'frac': 0.2}])
-Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
-Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
-Running <function evaluate_op at 0x2b8afb9a9e50> with npool=16, chunksize=1
-Running <function evaluate_op at 0x2b8afb9a9e50> with npool=16, chunksize=1
+Running <function calc_op at 0x2b8afaeb8dc0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function calc_op at 0x2b8afaeb8dc0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function evaluate_op at 0x2b8afb9a9e50> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function evaluate_op at 0x2b8afb9a9e50> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 doing stage 0 {'descriptors': [{'add_species': False, 'count_cutoff': 4.2, 'descriptor': {'Z': [3, 3], 'compact_clusters': True, 'cutoff': 4.5, 'cutoff_transition_width': 0.9, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.9}}, {'add_species': False, 'count_cutoff': 3.9, 'descriptor': {'Z': [3, 29], 'compact_clusters': True, 'cutoff': 4.2, 'cutoff_transition_width': 0.84, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.84}}, {'add_species': False, 'count_cutoff': 3.6, 'descriptor': {'Z': [29, 29], 'compact_clusters': True, 'cutoff': 3.9, 'cutoff_transition_width': 0.78, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.78}}], 'error_scale_factor': 10.0}
 energy error MAE per atom 1.7333824912427747 per descriptor 0.1866636607438531
 Got delta 0.1866636607438531
@@ -64,7 +64,7 @@ energy error MAE per atom 0.3524536935752551 per descriptor 0.3524536935752551
 Got delta 0.3524536935752551
 
 final GAPs in '['run_iter_0/GAP_iter_0.xml']'
-Running <function run_op at 0x2b8afaebff70> with npool=16, chunksize=10
+Running <function run_op at 0x2b8afaebff70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=10
 FITTING ERROR
 {'_ALL_': {'energy_per_atom': (152, 0.053775667571026),
            'forces': (690, 3.0129318484954744),
@@ -75,7 +75,7 @@ FITTING ERROR
  ('dimer', None): {'energy_per_atom': (120, 0.06045665154032969),
                    'forces': (240, 1.4565025805154523)},
  ('isolated_atom', None): {'energy_per_atom': (2, 2.2810155690079497e-06)}}
-Running <function run_op at 0x2b8afaebff70> with npool=16, chunksize=10
+Running <function run_op at 0x2b8afaebff70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=10
 TESTING ERROR
 {'_ALL_': {'energy_per_atom': (10, 1.1720694503463849),
            'forces': (193, 7.539039183717774),
@@ -108,34 +108,34 @@ Fortran made FoX insert a newline. If whitespace might be significant, check you
 LOG 2022-04-12 16:22:22: done
 STDOUT
 Using buildcell to create random initial configs for composition (1, 1) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5afc400>, <wfl.configset.ConfigSet_in object at 0x2b8af5afca30>]
 Using buildcell to create random initial configs for composition (1, 0) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5a9d880>, <wfl.configset.ConfigSet_in object at 0x2b8af5adb7f0>, <wfl.configset.ConfigSet_in object at 0x2b8af31aa8b0>]
 Using buildcell to create random initial configs for composition (1, 3) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5ac5bb0>, <wfl.configset.ConfigSet_in object at 0x2b8af5b6abb0>]
 Using buildcell to create random initial configs for composition (3, 1) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5afe2e0>, <wfl.configset.ConfigSet_in object at 0x2b8af5ac5670>]
 Using buildcell to create random initial configs for composition (0, 1) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8afb8f0fd0>, <wfl.configset.ConfigSet_in object at 0x2b8af5b3d550>, <wfl.configset.ConfigSet_in object at 0x2b8af5afc730>]
 merging composition groups dict_values([{'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5afce50>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5b3d820>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5ab3100>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5ab3520>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8afb9e7a30>, 'frac': 0.2}])
-Running <function run_op at 0x2b8afb900ca0> with npool=16, chunksize=10
-Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
-Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
-Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
-Running <function evaluate_op at 0x2b8afb9a9e50> with npool=16, chunksize=1
-Running <function evaluate_op at 0x2b8afb9a9e50> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afb900ca0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=10
+Running <function calc_op at 0x2b8afaeb8dc0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function calc_op at 0x2b8afaeb8dc0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function calc_op at 0x2b8afaeb8dc0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function evaluate_op at 0x2b8afb9a9e50> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function evaluate_op at 0x2b8afb9a9e50> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 doing stage 0 {'descriptors': [{'add_species': False, 'count_cutoff': 4.2, 'descriptor': {'Z': [3, 3], 'compact_clusters': True, 'cutoff': 4.5, 'cutoff_transition_width': 0.9, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.9}}, {'add_species': False, 'count_cutoff': 3.9, 'descriptor': {'Z': [3, 29], 'compact_clusters': True, 'cutoff': 4.2, 'cutoff_transition_width': 0.84, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.84}}, {'add_species': False, 'count_cutoff': 3.6, 'descriptor': {'Z': [29, 29], 'compact_clusters': True, 'cutoff': 3.9, 'cutoff_transition_width': 0.78, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.78}}], 'error_scale_factor': 10.0}
 energy error MAE per atom 1.8983846508017241 per descriptor 0.16612297789152083
 Got delta 0.16612297789152083
@@ -145,7 +145,7 @@ energy error MAE per atom 0.29321360439697175 per descriptor 0.29321360439697175
 Got delta 0.29321360439697175
 
 final GAPs in '['run_iter_1/GAP_iter_1.xml']'
-Running <function run_op at 0x2b8afaebff70> with npool=16, chunksize=10
+Running <function run_op at 0x2b8afaebff70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=10
 FITTING ERROR
 {'_ALL_': {'energy_per_atom': (182, 0.12821368719909962),
            'forces': (1158, 4.053345095929747),
@@ -164,7 +164,7 @@ FITTING ERROR
  ('dimer', None): {'energy_per_atom': (120, 0.13567361849686066),
                    'forces': (240, 3.383056274196485)},
  ('isolated_atom', None): {'energy_per_atom': (2, 2.95476192762183e-06)}}
-Running <function run_op at 0x2b8afaebff70> with npool=16, chunksize=10
+Running <function run_op at 0x2b8afaebff70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=10
 TESTING ERROR
 {'_ALL_': {'energy_per_atom': (20, 0.948803183848881),
            'forces': (327, 5.99958196226955),
@@ -203,41 +203,41 @@ Fortran made FoX insert a newline. If whitespace might be significant, check you
 LOG 2022-04-12 16:34:15: done
 STDOUT
 Using buildcell to create random initial configs for composition (1, 1) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8afb9bcfd0>, <wfl.configset.ConfigSet_in object at 0x2b8afb9667f0>]
 Using buildcell to create random initial configs for composition (1, 0) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5afe970>, <wfl.configset.ConfigSet_in object at 0x2b8af5afe820>, <wfl.configset.ConfigSet_in object at 0x2b8afb9bcd30>]
 Using buildcell to create random initial configs for composition (1, 3) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5afe880>, <wfl.configset.ConfigSet_in object at 0x2b8afbe7f0a0>]
 Using buildcell to create random initial configs for composition (3, 1) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8afbe7f550>, <wfl.configset.ConfigSet_in object at 0x2b8af5afe850>]
 Using buildcell to create random initial configs for composition (0, 1) fraction 0.2 N_configs_compos 20.0
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afaee0f70> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afaee0f70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 merging buildcell types for this composition [<wfl.configset.ConfigSet_in object at 0x2b8af5af8af0>, <wfl.configset.ConfigSet_in object at 0x2b8af5af8940>, <wfl.configset.ConfigSet_in object at 0x2b8af5afe280>]
 merging composition groups dict_values([{'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5b6a6d0>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8afb9bc7f0>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8afbe7fbb0>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5af8ac0>, 'frac': 0.2}, {'cur_confs': <wfl.configset.ConfigSet_in object at 0x2b8af5afc4c0>, 'frac': 0.2}])
-Running <function run_op at 0x2b8afb900ca0> with npool=16, chunksize=10
-Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
-Running <function largest_bulk_op at 0x2b8afb9053a0> with npool=16, chunksize=10
-Running <function vacancy_op at 0x2b8afb905430> with npool=16, chunksize=10
-Running <function interstitial_op at 0x2b8afb9054c0> with npool=16, chunksize=10
-Running <function surface_op at 0x2b8afb9055e0> with npool=16, chunksize=10
-Running <function sample_op at 0x2b8afb64b940> with npool=16, chunksize=1
-Running <function run_op at 0x2b8afb900ca0> with npool=16, chunksize=10
-Running <function sample_op at 0x2b8afb64b940> with npool=16, chunksize=1
-Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
-Running <function calc_op at 0x2b8afaeb8dc0> with npool=16, chunksize=1
-Running <function evaluate_op at 0x2b8afb9a9e50> with npool=16, chunksize=1
-Running <function evaluate_op at 0x2b8afb9a9e50> with npool=16, chunksize=1
+Running <function run_op at 0x2b8afb900ca0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=10
+Running <function calc_op at 0x2b8afaeb8dc0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function largest_bulk_op at 0x2b8afb9053a0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=10
+Running <function vacancy_op at 0x2b8afb905430> with num_python_subprocesses=16, num_inputs_per_python_subprocess=10
+Running <function interstitial_op at 0x2b8afb9054c0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=10
+Running <function surface_op at 0x2b8afb9055e0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=10
+Running <function sample_op at 0x2b8afb64b940> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function run_op at 0x2b8afb900ca0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=10
+Running <function sample_op at 0x2b8afb64b940> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function calc_op at 0x2b8afaeb8dc0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function calc_op at 0x2b8afaeb8dc0> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function evaluate_op at 0x2b8afb9a9e50> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
+Running <function evaluate_op at 0x2b8afb9a9e50> with num_python_subprocesses=16, num_inputs_per_python_subprocess=1
 doing stage 0 {'descriptors': [{'add_species': False, 'count_cutoff': 4.2, 'descriptor': {'Z': [3, 3], 'compact_clusters': True, 'cutoff': 4.5, 'cutoff_transition_width': 0.9, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.9}}, {'add_species': False, 'count_cutoff': 3.9, 'descriptor': {'Z': [3, 29], 'compact_clusters': True, 'cutoff': 4.2, 'cutoff_transition_width': 0.84, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.84}}, {'add_species': False, 'count_cutoff': 3.6, 'descriptor': {'Z': [29, 29], 'compact_clusters': True, 'cutoff': 3.9, 'cutoff_transition_width': 0.78, 'distance_Nb': True, 'order': 2}, 'fit': {'covariance_type': 'ard_se', 'f0': 0.0, 'n_sparse': 15, 'sparse_method': 'uniform', 'theta_uniform': 0.78}}], 'error_scale_factor': 10.0}
 energy error MAE per atom 2.9366490287029925 per descriptor 0.253878296470276
 Got delta 0.253878296470276
@@ -247,7 +247,7 @@ energy error MAE per atom 0.3028418887571953 per descriptor 0.3028418887571953
 Got delta 0.3028418887571953
 
 final GAPs in '['run_iter_2/GAP_iter_2.xml']'
-Running <function run_op at 0x2b8afaebff70> with npool=16, chunksize=10
+Running <function run_op at 0x2b8afaebff70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=10
 FITTING ERROR
 {'_ALL_': {'energy_per_atom': (200, 2.8022272026221144),
            'forces': (1315, 38.98376475980112),
@@ -285,7 +285,7 @@ FITTING ERROR
                                                                     44.57947586564699),
                                                          'virial_per_atom': (12,
                                                                              11.046226563695729)}}
-Running <function run_op at 0x2b8afaebff70> with npool=16, chunksize=10
+Running <function run_op at 0x2b8afaebff70> with num_python_subprocesses=16, num_inputs_per_python_subprocess=10
 TESTING ERROR
 {'_ALL_': {'energy_per_atom': (30, 148.2894571741439),
            'forces': (392, 217.2731312125803),
@@ -320,11 +320,11 @@ tests/test_cli_rss.py::test_cli_rss_full
     warnings.warn("gap_fit is not stable, and test does not actually use exact "
 
 tests/test_cli_rss.py::test_cli_rss_full
-  /home/cluster2/bernstei/src/work/workflow_devel/wfl/cli/gap_rss_iter_fit.py:67: UserWarning: Setting initial seeds to 42,43,44.  If autoparallelization is on (WFL_AUTOPARA_NPOOL, etc), this will not affect runs on other threads.
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/cli/gap_rss_iter_fit.py:67: UserWarning: Setting initial seeds to 42,43,44.  If autoparallelization is on (WFL_NUM_PYTHON_SUBPROCESSES, etc), this will not affect runs on other threads.
     warnings.warn(f'Setting initial seeds to {ctx.obj["seeds"]}.  If autoparallelization '
 
 tests/test_cli_rss.py::test_cli_rss_full
-  /home/cluster2/bernstei/src/work/workflow_devel/wfl/cli/gap_rss_iter_fit.py:67: UserWarning: Setting initial seeds to 45,46,47.  If autoparallelization is on (WFL_AUTOPARA_NPOOL, etc), this will not affect runs on other threads.
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/cli/gap_rss_iter_fit.py:67: UserWarning: Setting initial seeds to 45,46,47.  If autoparallelization is on (WFL_NUM_PYTHON_SUBPROCESSES, etc), this will not affect runs on other threads.
     warnings.warn(f'Setting initial seeds to {ctx.obj["seeds"]}.  If autoparallelization '
 
 tests/test_cli_rss.py::test_cli_rss_full
@@ -824,7 +824,7 @@ tests/test_cli_rss.py::test_cli_rss_full
     warnings.warn(
 
 tests/test_cli_rss.py::test_cli_rss_full
-  /home/cluster2/bernstei/src/work/workflow_devel/wfl/cli/gap_rss_iter_fit.py:67: UserWarning: Setting initial seeds to 48,49,50.  If autoparallelization is on (WFL_AUTOPARA_NPOOL, etc), this will not affect runs on other threads.
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/cli/gap_rss_iter_fit.py:67: UserWarning: Setting initial seeds to 48,49,50.  If autoparallelization is on (WFL_NUM_PYTHON_SUBPROCESSES, etc), this will not affect runs on other threads.
     warnings.warn(f'Setting initial seeds to {ctx.obj["seeds"]}.  If autoparallelization '
 
 tests/test_cli_rss.py::test_cli_rss_full
@@ -964,7 +964,7 @@ tests/test_cli_rss.py::test_cli_rss_full
     warnings.warn(
 
 tests/test_cli_rss.py::test_cli_rss_full
-  /home/cluster2/bernstei/src/work/workflow_devel/wfl/cli/gap_rss_iter_fit.py:67: UserWarning: Setting initial seeds to 51,52,53.  If autoparallelization is on (WFL_AUTOPARA_NPOOL, etc), this will not affect runs on other threads.
+  /home/cluster2/bernstei/src/work/workflow_devel/wfl/cli/gap_rss_iter_fit.py:67: UserWarning: Setting initial seeds to 51,52,53.  If autoparallelization is on (WFL_NUM_PYTHON_SUBPROCESSES, etc), this will not affect runs on other threads.
     warnings.warn(f'Setting initial seeds to {ctx.obj["seeds"]}.  If autoparallelization '
 
 tests/test_cli_rss.py::test_cli_rss_full

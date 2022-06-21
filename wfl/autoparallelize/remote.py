@@ -12,14 +12,14 @@ from .pool import do_in_pool
 from expyre import ExPyRe
 
 
-def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, outputspec=None, op=None, iterable_arg=0,
+def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1, iterable=None, outputspec=None, op=None, iterable_arg=0,
                 skip_failed=True, initializer=None, initargs=None, args=[], kwargs={}, quiet=False):
     """run tasks as series of remote jobs
 
     Parameters
     ----------
     remote_info: RemoteInfo or dict
-        object with all information on remote job, including system, resources, job chunksize, etc, or dict of kwargs for its constructor
+        object with all information on remote job, including system, resources, job num_inputs_per_python_subprocess, etc, or dict of kwargs for its constructor
     quiet: bool, default False
         do not output (to stderr) progress info
 
@@ -31,13 +31,13 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, outputs
     if not isinstance(remote_info, RemoteInfo):
         remote_info = RemoteInfo(**remote_info)
 
-    if remote_info.job_chunksize < 0:
-        remote_info.job_chunksize = -remote_info.job_chunksize * chunksize
+    if remote_info.num_inputs_per_queued_job < 0:
+        remote_info.num_inputs_per_queued_job = -remote_info.num_inputs_per_queued_job * num_inputs_per_python_subprocess
 
     if isinstance(iterable, ConfigSet):
-        items_inputs_generator = grouper(remote_info.job_chunksize, ((item, iterable.get_current_input_file()) for item in iterable))
+        items_inputs_generator = grouper(remote_info.num_inputs_per_queued_job, ((item, iterable.get_current_input_file()) for item in iterable))
     else:
-        items_inputs_generator = grouper(remote_info.job_chunksize, ((item, None) for item in iterable))
+        items_inputs_generator = grouper(remote_info.num_inputs_per_queued_job, ((item, None) for item in iterable))
 
     # create all jobs (count on expyre detection of identical jobs to avoid rerunning things unnecessarily)
     xprs = []
@@ -66,14 +66,14 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, outputs
         else:
             job_iterable = items
         co = OutputSpec()
-        # remote job will have to set npool appropriately for its node
+        # remote job will have to set num_python_subprocesses appropriately for its node
         # ignore configset out for hashing of inputs, since that doesn't affect function
         # calls that have to happen (also it's not repeatable for some reason)
         xprs.append(ExPyRe(name=job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                             hash_ignore=hash_ignore + ['outputspec'],
                             env_vars=remote_info.env_vars, input_files=remote_info.input_files,
                             output_files=remote_info.output_files, function=do_in_pool,
-                            kwargs={'npool': None, 'chunksize': chunksize, 'iterable': job_iterable,
+                            kwargs={'num_python_subprocesses': None, 'num_inputs_per_python_subprocess': num_inputs_per_python_subprocess, 'iterable': job_iterable,
                                     'outputspec': co, 'op': op, 'iterable_arg': iterable_arg,
                                     'skip_failed': skip_failed, 'initializer': initializer,
                                     'initargs': initargs, 'args': args, 'kwargs': kwargs}))
@@ -122,7 +122,7 @@ def do_remotely(remote_info, hash_ignore=[], chunksize=1, iterable=None, outputs
 
     outputspec.end_write()
 
-    if 'WFL_AUTOPARA_REMOTE_NO_MARK_PROCESSED' not in os.environ:
+    if 'WFL_EXPYRE_NUM_O_MARK_PROCESSED' not in os.environ:
         # mark as processed only after outputspec has been finished
         for xpr in xprs:
             xpr.mark_processed()

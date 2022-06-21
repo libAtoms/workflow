@@ -16,14 +16,14 @@ iloop_docstring_pre = """inputs: iterable
         where to write output atomic configs, or None for no output (i.e. only side-effects)"""
 
 iloop_docstring_post = """iterable_loop_related:
-        npool: int, default os.environ['WFL_AUTOPARA_NPOOL']
+        num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
             number of processes to parallelize over, 0 for running in serial
-        chunksize: int, default 1 (kwargs only)
+        num_inputs_per_python_subprocess: int, default 1 (kwargs only)
             number of items from iterable to pass to each invocation of operation (pass to iterable_loop())
         skip_failed: bool, default True
             skip function calls that return None
-        remote_info: RemoteInfo, default content of env var WFL_AUTOPARA_REMOTEINFO
-            information for running on remote machine.  If None, use WFL_AUTOPARA_REMOTEINFO env var, as
+        remote_info: RemoteInfo, default content of env var WFL_EXPYRE_INFO
+            information for running on remote machine.  If None, use WFL_EXPYRE_INFO env var, as
             json file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
             RemoteInfo kwrgs with keys that match end of stack trace with function names separated by '.'.
         remote_label: str, default None
@@ -31,7 +31,7 @@ iloop_docstring_post = """iterable_loop_related:
             filename '::' calling function (pass to iterable_loop())"""
 
 
-def iloop(func, *args, def_npool=None, def_chunksize=1, iterable_arg=0, def_skip_failed=True,
+def iloop(func, *args, def_num_python_subprocesses=None, def_num_inputs_per_python_subprocess=1, iterable_arg=0, def_skip_failed=True,
           initializer=None, initargs=None, def_remote_info=None, def_remote_label=None, hash_ignore=[], **kwargs):
     """functools.partial-based decorator (using ideas in topic 4 of 
     https://pythonicthoughtssnippets.github.io/2020/08/09/PTS13-rethinking-python-decorators.html).
@@ -48,9 +48,9 @@ def iloop(func, *args, def_npool=None, def_chunksize=1, iterable_arg=0, def_skip
     ----------
     func: function
         function to wrap in iterable_loop()
-    def_npool: int, default os.environ['WFL_AUTOPARA_NPOOL']
+    def_num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
         number of processes to parallelize over, 0 for running in serial
-    def_chunksize: int, default 1
+    def_num_inputs_per_python_subprocess: int, default 1
         default number of items from iterable to pass to each invocation of operation (pass to iterable_loop())
     iterable_arg: int or str, default 0
         positional argument or keyword argument to place iterable items in when calling op (pass to iterable_loop())
@@ -60,8 +60,8 @@ def iloop(func, *args, def_npool=None, def_chunksize=1, iterable_arg=0, def_skip
         function to call at beginning of each thread (pass to iterable_loop())
     initargs: list, default None
         positional arguments for initializer (pass to iterable_loop())
-    def_remote_info: RemoteInfo, default content of env var WFL_AUTOPARA_REMOTEINFO
-        information for running on remote machine.  If None, use WFL_AUTOPARA_REMOTEINFO env var, as
+    def_remote_info: RemoteInfo, default content of env var WFL_EXPYRE_INFO
+        information for running on remote machine.  If None, use WFL_EXPYRE_INFO env var, as
         json file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
         RemoteInfo kwrgs with keys that match end of stack trace with function names separated by '.'.
     def_remote_label: str, default None
@@ -80,28 +80,28 @@ def iloop(func, *args, def_npool=None, def_chunksize=1, iterable_arg=0, def_skip
     inputs = kwargs.get('inputs', args[0])
     outputs = kwargs.get('outputs', args[1])
 
-    npool = kwargs.pop('npool', def_npool)
-    chunksize = kwargs.pop('chunksize', def_chunksize)
+    num_python_subprocesses = kwargs.pop('num_python_subprocesses', def_num_python_subprocesses)
+    num_inputs_per_python_subprocess = kwargs.pop('num_inputs_per_python_subprocess', def_num_inputs_per_python_subprocess)
     skip_failed = kwargs.pop('skip_failed', def_skip_failed)
     remote_info = kwargs.pop('remote_info', def_remote_info)
     remote_label = kwargs.pop('remote_label', def_remote_label)
 
-    return autoparallelize(npool, chunksize, inputs, outputs, func, iterable_arg, skip_failed,
+    return autoparallelize(num_python_subprocesses, num_inputs_per_python_subprocess, inputs, outputs, func, iterable_arg, skip_failed,
                          initializer, initargs, remote_info, remote_label, hash_ignore, *args[2:], **kwargs)
 
-# do we want to allow for ops that only take singletons, not iterables, as input, maybe with chunksize=0?
+# do we want to allow for ops that only take singletons, not iterables, as input, maybe with num_inputs_per_python_subprocess=0?
 # that info would have to be passed down to _wrapped_autopara_wrappable so it passes a singleton rather than a list into op
 #
 # some ifs (int positional vs. str keyword) could be removed if we required that the iterable be passed into a kwarg.
-def autoparallelize(npool=None, chunksize=1, iterable=None, outputspec=None, op=None, iterable_arg=0, skip_failed=True,
+def autoparallelize(num_python_subprocesses=None, num_inputs_per_python_subprocess=1, iterable=None, outputspec=None, op=None, iterable_arg=0, skip_failed=True,
                   initializer=None, initargs=None, remote_info=None, remote_label=None, hash_ignore=[], *args, **kwargs):
     """parallelize some operation over an iterable
 
     Parameters
     ----------
-    npool: int, default os.environ['WFL_AUTOPARA_NPOOL']
+    num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
         number of processes to parallelize over, 0 for running in serial
-    chunksize: int, default 1
+    num_inputs_per_python_subprocess: int, default 1
         number of items from iterable to pass to kach invocation of operation
     iterable: iterable, default None
         iterable to loop over, often ConfigSet but could also be other things like range()
@@ -117,8 +117,8 @@ def autoparallelize(npool=None, chunksize=1, iterable=None, outputspec=None, op=
         function to call at beginning of each thread
     initargs: list, default None
         positional arguments for initializer
-    remote_info: RemoteInfo, default content of env var WFL_AUTOPARA_REMOTEINFO
-        information for running on remote machine.  If None, use WFL_AUTOPARA_REMOTEINFO env var, as
+    remote_info: RemoteInfo, default content of env var WFL_EXPYRE_INFO
+        information for running on remote machine.  If None, use WFL_EXPYRE_INFO env var, as
         json file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
         RemoteInfo kwrgs with keys that match end of stack trace with function names separated by '.'.
     remote_label: str, default None
@@ -138,21 +138,21 @@ def autoparallelize(npool=None, chunksize=1, iterable=None, outputspec=None, op=
     if initargs is None:
         initargs = []
 
-    if remote_info is None and 'WFL_AUTOPARA_REMOTEINFO' in os.environ:
+    if remote_info is None and 'WFL_EXPYRE_INFO' in os.environ:
         try:
-            remote_info = json.loads(os.environ['WFL_AUTOPARA_REMOTEINFO'])
+            remote_info = json.loads(os.environ['WFL_EXPYRE_INFO'])
         except Exception as exc:
-            remote_info = os.environ['WFL_AUTOPARA_REMOTEINFO']
+            remote_info = os.environ['WFL_EXPYRE_INFO']
             if ' ' in remote_info:
                 # if it's not JSON, it must be a filename, so presence of space is suspicious
-                warnings.warn(f'remote_info from WFL_AUTOPARA_REMOTEINFO has whitespace, but not parseable as JSON with error {exc}')
+                warnings.warn(f'remote_info from WFL_EXPYRE_INFO has whitespace, but not parseable as JSON with error {exc}')
         if isinstance(remote_info, str):
             # filename
             with open(remote_info) as fin:
                 remote_info = json.load(fin)
         if 'sys_name' in remote_info:
             # remote_info directly in top level dict
-            warnings.warn('WFL_AUTOPARA_REMOTEINFO appears to be a RemoteInfo kwargs, using directly')
+            warnings.warn('WFL_EXPYRE_INFO appears to be a RemoteInfo kwargs, using directly')
         else:
             if remote_label is None:
                 # no explicit remote_label for the remote run was passed into function, so
@@ -167,7 +167,7 @@ def autoparallelize(npool=None, chunksize=1, iterable=None, outputspec=None, op=
                 # match dict key to remote_label if present, otherwise end of stack
                 if ((remote_label is None and all([re.search(kk + '$', sl) for sl, kk in zip(stack_remote_label[-len(ksplit):], ksplit)])) or
                     (remote_label == ri_k)):
-                    sys.stderr.write(f'WFL_AUTOPARA_REMOTEINFO matched key {ri_k} for remote_label {remote_label}\n')
+                    sys.stderr.write(f'WFL_EXPYRE_INFO matched key {ri_k} for remote_label {remote_label}\n')
                     remote_info = remote_info[ri_k]
                     match = True
                     break
@@ -186,10 +186,10 @@ def autoparallelize(npool=None, chunksize=1, iterable=None, outputspec=None, op=
             return outputspec.to_ConfigSet()
 
     if remote_info is not None:
-        out = do_remotely(remote_info, hash_ignore, chunksize, iterable, outputspec,
+        out = do_remotely(remote_info, hash_ignore, num_inputs_per_python_subprocess, iterable, outputspec,
                           op, iterable_arg, skip_failed, initializer, initargs, args, kwargs)
     else:
-        out = do_in_pool(npool, chunksize, iterable, outputspec, op, iterable_arg,
+        out = do_in_pool(num_python_subprocesses, num_inputs_per_python_subprocess, iterable, outputspec, op, iterable_arg,
                          skip_failed, initializer, initargs, args, kwargs)
 
     return out

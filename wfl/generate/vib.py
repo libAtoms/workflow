@@ -387,7 +387,7 @@ class Vibrations:
             generic.run(inputs=displaced_in_configset,
                         outputs=displaced_out_configset,
                         calculator=calculator, output_prefix=self.prop_prefix,
-                        properties=properties, chunksize=1)
+                        properties=properties, num_inputs_per_python_subprocess=1)
 
             self._write_nm_to_atoms(
                 displaced_ats=displaced_out_configset.output_configs)
@@ -571,13 +571,13 @@ def generate_normal_modes_autopara_wrappable(inputs, calculator, prop_prefix,
 
 
 def generate_normal_modes_parallel_atoms(inputs, outputs, calculator,
-                                         prop_prefix, chunksize=10):
+                                         prop_prefix, num_inputs_per_python_subprocess=10):
     # iterable loop parallelizes over input structures, not over 6xN
     # displaced structures needed for numerical hessian
     parallel_hessian = False
 
     return autoparallelize(iterable=inputs, outputspec=outputs,
-                         op=generate_normal_modes_autopara_wrappable, chunksize=chunksize,
+                         op=generate_normal_modes_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
                          calculator=calculator, prop_prefix=prop_prefix,
                          parallel_hessian=parallel_hessian)
 

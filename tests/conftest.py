@@ -15,7 +15,7 @@ def do_init_mpipool():
 
 
 @pytest.mark.skipif(
-    "WFL_AUTOPARA_MPIPOOL" not in os.environ, reason="only init mpipool if WFL_AUTOPARA_MPIPOOL is in env"
+    "WFL_MPIPOOL" not in os.environ, reason="only init mpipool if WFL_MPIPOOL is in env"
 )
 @pytest.mark.mpi(minsize=2)
 @pytest.fixture(scope="session", autouse=True)

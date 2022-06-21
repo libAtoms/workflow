@@ -53,19 +53,19 @@ def _wrapped_autopara_wrappable(op, iterable_arg, args, kwargs, item_inputs):
     return zip(outputs, [item_input[1] for item_input in item_inputs])
 
 
-# do we want to allow for ops that only take singletons, not iterables, as input, maybe with chunksize=0?
+# do we want to allow for ops that only take singletons, not iterables, as input, maybe with num_inputs_per_python_subprocess=0?
 # that info would have to be passed down to _wrapped_autopara_wrappable so it passes a singleton rather than a list into op
 #
 # some ifs (int positional vs. str keyword) could be removed if we required that the iterable be passed into a kwarg.
-def do_in_pool(npool=None, chunksize=1, iterable=None, outputspec=None, op=None, iterable_arg=0,
+def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1, iterable=None, outputspec=None, op=None, iterable_arg=0,
                skip_failed=True, initializer=None, initargs=None, args=[], kwargs={}):
     """parallelize some operation over an iterable
     
     Parameters
     ----------
-    npool: int, default os.environ['WFL_AUTOPARA_NPOOL']
+    num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
         number of processes to parallelize over, 0 for running in serial
-    chunksize: int, default 1
+    num_inputs_per_python_subprocess: int, default 1
         number of items from iterable to pass to kach invocation of operation
     iterable: iterable, default None
         iterable to loop over, often ConfigSet but could also be other things like range()
@@ -93,8 +93,8 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, outputspec=None, op=None,
     if initargs is None:
         initargs = []
 
-    if npool is None:
-        npool = int(os.environ.get('WFL_AUTOPARA_NPOOL', 0))
+    if num_python_subprocesses is None:
+        num_python_subprocesses = int(os.environ.get('WFL_NUM_PYTHON_SUBPROCESSES', 0))
 
     # actually do the work locally
     if outputspec is not None:
@@ -103,16 +103,16 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, outputspec=None, op=None,
     did_no_work = True
 
     if isinstance(iterable, ConfigSet):
-        items_inputs_generator = grouper(chunksize, ((item, iterable.get_current_input_file()) for item in iterable))
+        items_inputs_generator = grouper(num_inputs_per_python_subprocess, ((item, iterable.get_current_input_file()) for item in iterable))
     else:
-        items_inputs_generator = grouper(chunksize, ((item, None) for item in iterable))
+        items_inputs_generator = grouper(num_inputs_per_python_subprocess, ((item, None) for item in iterable))
 
-    if npool > 0:
+    if num_python_subprocesses > 0:
         # use multiprocessing
-        sys.stderr.write(f'Running {op} with npool={npool}, chunksize={chunksize}\n')
+        sys.stderr.write(f'Running {op} with num_python_subprocesses={num_python_subprocesses}, num_inputs_per_python_subprocess={num_inputs_per_python_subprocess}\n')
         if wfl_mpipool:
             # MPI pool is global and unique, created at script start, so do not create one here
-            warnings.warn(f'mpipool ignores > 0 value of npool={npool}, '
+            warnings.warn(f'mpipool ignores > 0 value of num_python_subprocesses={num_python_subprocesses}, '
                           f'always uses all MPI processes {wfl_mpipool.size}')
             if initializer is not None:
                 # generate a task for each mpi process that will call initializer with positional initargs
@@ -124,7 +124,7 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, outputspec=None, op=None,
                 initializer_args = {'initializer': initializer, 'initargs': initargs}
             else:
                 initializer_args = {}
-            pool = Pool(npool, **initializer_args)
+            pool = Pool(num_python_subprocesses, **initializer_args)
 
         if wfl_mpipool:
             map_f = pool.map
@@ -151,7 +151,7 @@ def do_in_pool(npool=None, chunksize=1, iterable=None, outputspec=None, op=None,
             pool.join()
 
     else:
-        # do directly, still not trivial because of chunksize
+        # do directly, still not trivial because of num_inputs_per_python_subprocess
         for items_inputs_group in items_inputs_generator:
             result_group = _wrapped_autopara_wrappable(op, iterable_arg, args, kwargs, items_inputs_group)
 

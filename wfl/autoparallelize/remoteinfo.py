@@ -12,8 +12,8 @@ class RemoteInfo:
         name for job (unique within this project)
     resources: dict or Resources
         expyre.resources.Resources or kwargs for its constructor
-    job_chunksize: int, default -100
-        chunksize for each job. If negative will be multiplied by iterable_autopara_wrappable chunksize
+    num_inputs_per_queued_job: int, default -100
+        num_inputs_per_python_subprocess for each job. If negative will be multiplied by iterable_autopara_wrappable num_inputs_per_python_subprocess
     pre_cmds: list(str)
         commands to run before starting job
     post_cmds: list(str)
@@ -37,7 +37,7 @@ class RemoteInfo:
     skip_failures: bool, default False
         skip failures in remote jobs
     """
-    def __init__(self, sys_name, job_name, resources, job_chunksize=-100, pre_cmds=[], post_cmds=[],
+    def __init__(self, sys_name, job_name, resources, num_inputs_per_queued_job=-100, pre_cmds=[], post_cmds=[],
                  env_vars=[], input_files=[], output_files=[], header_extra=[],
                  exact_fit=True, partial_node=False, timeout=3600, check_interval=30,
                  skip_failures=False):
@@ -45,11 +45,11 @@ class RemoteInfo:
         self.sys_name = sys_name
         self.job_name = job_name
         self.resources = copy.deepcopy(resources)
-        self.job_chunksize = job_chunksize
+        self.num_inputs_per_queued_job = num_inputs_per_queued_job
         self.pre_cmds = pre_cmds.copy()
         self.post_cmds = post_cmds.copy()
-        self.env_vars = ["WFL_AUTOPARA_NPOOL=${EXPYRE_NTASKS_PER_NODE}",
-                         "OMP_NUM_THREADS=${EXPYRE_NCORES_PER_TASK}"] + env_vars
+        if all(not var.startswith("WFL_NUM_PYTHON_SUBPROCESSES=") for var in env_vars):
+            self.env_vars = ["WFL_NUM_PYTHON_SUBPROCESSES=${EXPYRE_NUM_CORES_PER_NODE}"] + env_vars
         self.input_files = input_files.copy()
         self.output_files = output_files.copy()
         self.header_extra = header_extra.copy()
@@ -62,4 +62,4 @@ class RemoteInfo:
 
 
     def __str__(self):
-        return f'{self.sys_name} {self.job_name} {self.resources} {self.job_chunksize} {self.exact_fit} {self.partial_node} {self.timeout} {self.check_interval}'
+        return f'{self.sys_name} {self.job_name} {self.resources} {self.num_inputs_per_queued_job} {self.exact_fit} {self.partial_node} {self.timeout} {self.check_interval}'

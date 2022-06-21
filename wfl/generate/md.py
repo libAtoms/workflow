@@ -23,7 +23,7 @@ def sample(inputs, outputs, calculator, steps, dt,
            temperature=None, temperature_tau=None, pressure=None, pressure_tau=None,
            compressibility_fd_displ=0.01,
            traj_step_interval=1, skip_failures=True, results_prefix='md_',
-           chunksize=1, verbose=False):
+           num_inputs_per_python_subprocess=1, verbose=False):
     # Normally each thread needs to call np.random.seed so that it will generate a different
     # set of random numbers.  This env var overrides that to produce deterministic output,
     # for purposes like testing
@@ -31,7 +31,7 @@ def sample(inputs, outputs, calculator, steps, dt,
         initializer = None
     else:
         initializer = np.random.seed
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=sample_autopara_wrappable, chunksize=chunksize,
+    return autoparallelize(iterable=inputs, outputspec=outputs, op=sample_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
                          calculator=calculator, steps=steps, dt=dt,
                          temperature=temperature, temperature_tau=temperature_tau,
                          pressure=pressure, pressure_tau=pressure_tau,

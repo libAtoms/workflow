@@ -31,7 +31,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
     remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
-        will try to use env var WFL_GAP_SIMPLE_FIT_REMOTEINFO used (see below). '_IGNORE' is for
+        will try to use env var WFL_GAP_SIMPLE_FIT_EXPYRE_INFO used (see below). '_IGNORE' is for
         internal use, to ensure that remotely running job does not itself attempt to spawn another
         remotely running job.
     kwargs
@@ -39,13 +39,13 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
 
     Environment Variables
     ---------------------
-    WFL_GAP_SIMPLE_FIT_REMOTEINFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
+    WFL_GAP_SIMPLE_FIT_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
         contructor to be used to run fitting in separate queued job
     GAP_FIT_OMP_NUM_THREADS: number of threads to set for OpenMP of gap_fit
     """
     assert 'atoms_filename' not in fitting_dict and 'at_file' not in fitting_dict
 
-    remote_info = get_RemoteInfo(remote_info, 'WFL_GAP_SIMPLE_FIT_REMOTEINFO')
+    remote_info = get_RemoteInfo(remote_info, 'WFL_GAP_SIMPLE_FIT_EXPYRE_INFO')
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.input_files.copy()
         output_files = remote_info.output_files.copy()
@@ -74,7 +74,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
 
         # set number of threads in queued job, if user didn't already request a specific number
         if not any([var.split('=')[0] == 'GAP_FIT_OMP_NUM_THREADS' for var in remote_info.env_vars]):
-            remote_info.env_vars.append('GAP_FIT_OMP_NUM_THREADS=$EXPYRE_NCORES_PER_NODE')
+            remote_info.env_vars.append('GAP_FIT_OMP_NUM_THREADS=$EXPYRE_NUM_CORES_PER_NODE')
 
         remote_func_kwargs = {'fitting_configs': fitting_configs, 'fitting_dict': fitting_dict,
                               'stdout_file': use_stdout_file,
