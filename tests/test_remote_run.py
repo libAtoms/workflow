@@ -130,14 +130,14 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     co = OutputSpec(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
 
     # do not mark as processed so next call can reuse
-    monkeypatch.setenv('WFL_EXPYRE_NUM_O_MARK_PROCESSED', '1')
+    monkeypatch.setenv('WFL_EXPYRE_NO_MARK_PROCESSED', '1')
 
     t0 = time.time()
     results = generic.run(inputs=ci, outputs=co, calculator=calc)
     dt = time.time() - t0
     print('remote parallel calc_time', dt)
 
-    monkeypatch.delenv('WFL_EXPYRE_NUM_O_MARK_PROCESSED')
+    monkeypatch.delenv('WFL_EXPYRE_NO_MARK_PROCESSED')
 
     dev = [ (np.abs(at.info['EMT_energy'] - ref_E)) / np.maximum(np.abs(ref_E), 1.0e-3) for at, ref_E in zip(results, ref_Es) ]
     print('max deviation', max(dev))

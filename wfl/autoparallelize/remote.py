@@ -122,7 +122,7 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
 
     outputspec.end_write()
 
-    if 'WFL_EXPYRE_NUM_O_MARK_PROCESSED' not in os.environ:
+    if 'WFL_EXPYRE_NO_MARK_PROCESSED' not in os.environ:
         # mark as processed only after outputspec has been finished
         for xpr in xprs:
             xpr.mark_processed()
