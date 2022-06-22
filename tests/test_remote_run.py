@@ -20,42 +20,39 @@ from wfl.calculators import generic
 from wfl.generate import optimize
 from wfl.calculators.dft import evaluate_dft
 
-
-def test_generic_calc(tmp_path, expyre_systems, monkeypatch):
+def test_generic_calc(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
-        do_generic_calc(tmp_path, sys_name, monkeypatch)
+        do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env)
 
 
 # do we need this tested remotely as well?
-def test_minim_local(tmp_path, expyre_systems, monkeypatch):
+def test_minim_local(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
-        do_minim(tmp_path, sys_name, monkeypatch)
+        do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env)
 
 
-def test_vasp_fail(tmp_path, expyre_systems, monkeypatch):
+def test_vasp_fail(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
-        do_vasp_fail(tmp_path, sys_name, monkeypatch)
+        do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env)
 
 
-def do_vasp_fail(tmp_path, sys_name, monkeypatch):
+def do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri = {'sys_name': sys_name, 'job_name': 'test_vasp_'+sys_name,
           'env_vars' : ['VASP_COMMAND=NONE', 'VASP_COMMAND_GAMMA=NONE'],
           'input_files' : ['POTCARs'],
           'resources': {'max_time': '5m', 'n': (1, 'nodes')},
           'num_inputs_per_queued_job': 1, 'check_interval': 10}
 
-    if 'WFL_PYTEST_EXPYRE_INFO' in os.environ:
-        ri_extra = json.loads(os.environ['WFL_PYTEST_EXPYRE_INFO'])
-        ri.update(ri_extra)
+    remoteinfo_env(ri)
 
     ri = {'test_remote_run.py::do_vasp_fail,calculators/dft.py::evaluate_dft': ri}
     print('RemoteInfo', ri)
@@ -93,17 +90,12 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch):
             assert not k.startswith('TEST_')
 
 
-def do_generic_calc(tmp_path, sys_name, monkeypatch):
+def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri = {'sys_name': sys_name, 'job_name': 'test_'+sys_name,
           'resources': {'max_time': '1h', 'n': (1, 'nodes')},
           'num_inputs_per_queued_job': -36, 'check_interval': 10}
 
-    if 'WFL_PYTEST_EXPYRE_INFO' in os.environ:
-        ri_extra = json.loads(os.environ['WFL_PYTEST_EXPYRE_INFO'])
-        if 'resources' in ri_extra:
-            ri['resources'].update(ri_extra['resources'])
-            del ri_extra['resources']
-        ri.update(ri_extra)
+    remoteinfo_env(ri)
 
     ri = {'test_remote_run.py::do_generic_calc,calculators/generic.py::run': ri}
     print('RemoteInfo', ri)
@@ -169,13 +161,12 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch):
     assert dt < 20
 
 
-def do_minim(tmp_path, sys_name, monkeypatch):
+def do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri = {'sys_name': sys_name, 'job_name': 'test_'+sys_name,
           'resources': {'max_time': '1h', 'n': (1, 'nodes')},
           'num_inputs_per_queued_job': -36, 'check_interval': 10}
-    if 'WFL_PYTEST_EXPYRE_INFO' in os.environ:
-        ri_extra = json.loads(os.environ['WFL_PYTEST_EXPYRE_INFO'])
-        ri.update(ri_extra)
+
+    remoteinfo_env(ri)
 
     ri = {'test_remote_run.py::do_minim,generate_configs/minim.py::run': ri}
     print('RemoteInfo', ri)

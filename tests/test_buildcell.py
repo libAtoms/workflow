@@ -6,32 +6,26 @@ import pytest
 from wfl.configset import OutputSpec
 from wfl.generate import buildcell
 
-
 def test_buildcell(tmp_path):
 
     do_buildcell(tmp_path, 'dummy.xyz')
 
 
 @pytest.mark.remote
-def test_buildcell_remote(tmp_path, expyre_systems, monkeypatch):
+def test_buildcell_remote(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
-        do_buildcell_remote(tmp_path, sys_name, monkeypatch)
+        do_buildcell_remote(tmp_path, sys_name, monkeypatch, remoteinfo_env)
 
 
-def do_buildcell_remote(tmp_path, sys_name, monkeypatch):
+def do_buildcell_remote(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri = {'sys_name': sys_name, 'job_name': 'test_'+sys_name,
           'resources': {'max_time': '1h', 'n': (1, 'nodes')},
           'num_inputs_per_queued_job': -36, 'check_interval': 10}
 
-    if 'WFL_PYTEST_EXPYRE_INFO' in os.environ:
-        ri_extra = json.loads(os.environ['WFL_PYTEST_EXPYRE_INFO'])
-        if 'resources' in ri_extra:
-            ri['resources'].update(ri_extra['resources'])
-            del ri_extra['resources']
-        ri.update(ri_extra)
+    remoteinfo_env(ri)
 
     do_buildcell(tmp_path, f'dummy_{sys_name}.xyz')
 
