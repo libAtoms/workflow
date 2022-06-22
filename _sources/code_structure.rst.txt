@@ -10,7 +10,7 @@ Given a ``ConfigSet_in`` and an operation acting on (or returning) a single ``At
 
 Some parts of Workflow (e.g. how many parallel processes to run) are controlled via environment variables. Off the top of my head: 
 
-* WFL_NUM_PYTHON_SUBPROCESSES
+* WFL_AUTOPARA_NPOOL
 * WFL_MPIPOOL
 * GAP_FIT_OMP_NUM_THREADS 
 * OMP_NUM_THREADS might have to be set to 1  

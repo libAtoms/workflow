@@ -87,11 +87,6 @@
  </span>
 </p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="install.html">
-   Installation
-  </a>
- </li>
  <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="code_structure.html">
    Code structure
@@ -130,18 +125,33 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.generating_configs.html">
+    <a class="reference internal" href="operations.generate.html">
      Generating Configs
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.selecting_configs.html">
+    <a class="reference internal" href="operations.select.html">
      Selecting Configs
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="operations.descriptors.html">
+     Descriptors
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="operations.gap_fitting.html">
+     Fitting GAP
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.multistage_gap_fitting.html">
      Multistage GAP fitting
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.ace_fitting.html">
+     ACE fitting
     </a>
    </li>
    <li class="toctree-l2">
@@ -150,8 +160,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.misc.html">
-     Miscellaneous
+    <a class="reference internal" href="operations.utils.html">
+     Utility functions
     </a>
    </li>
   </ul>
@@ -180,7 +190,7 @@
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="command_line.html">
-   Command line interface
+   Command Line Interface
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
   <label for="toctree-checkbox-4">
@@ -190,22 +200,49 @@
   <ul class="simple">
   </ul>
  </li>
- <li class="toctree-l1">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="examples.html">
    Examples
   </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="contributing.html">
-   How to contribute
-  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca.html">
+     ORCA: all parallelisation options
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.normal_modes.html">
+     Normal Modes (non-periodic)
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.smiles.html">
+     SMILES to .xyz
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.autopara.html">
+     Customise Auto-parallelized Functions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.md.html">
+     MD
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
-   API
+   Modules
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-  <label for="toctree-checkbox-5">
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -214,32 +251,59 @@
     <a class="reference internal" href="wfl.html">
      wfl package
     </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
-    <label for="toctree-checkbox-6">
+    <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+    <label for="toctree-checkbox-7">
      <i class="fas fa-chevron-down">
      </i>
     </label>
     <ul>
      <li class="toctree-l3">
+      <a class="reference internal" href="wfl.autoparallelize.html">
+       wfl.autoparallelize package
+      </a>
+     </li>
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.calculators.html">
        wfl.calculators package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+      <label for="toctree-checkbox-8">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.calculators.orca.html">
+         wfl.calculators.orca package
+        </a>
+       </li>
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.cli.html">
        wfl.cli package
       </a>
      </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.descriptors.html">
+       wfl.descriptors package
+      </a>
+     </li>
      <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.fit.html">
        wfl.fit package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
-      <label for="toctree-checkbox-7">
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
        <i class="fas fa-chevron-down">
        </i>
       </label>
       <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.fit.gap.html">
+         wfl.fit.gap package
+        </a>
+       </li>
        <li class="toctree-l4">
         <a class="reference internal" href="wfl.fit.modify_database.html">
          wfl.fit.modify_database package
@@ -248,28 +312,18 @@
       </ul>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.generate_configs.html">
-       wfl.generate_configs package
+      <a class="reference internal" href="wfl.generate.html">
+       wfl.generate package
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.pipeline.html">
-       wfl.pipeline package
+      <a class="reference internal" href="wfl.scripts.html">
+       wfl.scripts package
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.plotting.html">
-       wfl.plotting package
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.reactions_processing.html">
-       wfl.reactions_processing package
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.select_configs.html">
-       wfl.select_configs package
+      <a class="reference internal" href="wfl.select.html">
+       wfl.select package
       </a>
      </li>
      <li class="toctree-l3">
@@ -488,7 +542,7 @@ title="Print to PDF"
                 
   <div class="section" id="automatic-parallelization-of-tasks">
 <span id="parallelisation"></span><h1>Automatic parallelization of tasks<a class="headerlink" href="#automatic-parallelization-of-tasks" title="Permalink to this heading">#</a></h1>
-<p>Much of the pipeline, including the input/output facilitated by <code class="docutils literal notranslate"><span class="pre">ConfigSet_in</span></code>/<code class="docutils literal notranslate"><span class="pre">ConfigSet_out</span></code>, was designed that so that simple operations that need to be done to many configurations could easily be parallelized.  The mechanism for that is wrapping the fundamental operations in a call to <code class="docutils literal notranslate"><span class="pre">wfl.pipeline.iterable_loop</span></code>.</p>
+<p>Much of the pipeline, including the input/output facilitated by <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code>/<code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>, was designed that so that simple operations that need to be done to many configurations could easily be parallelized.  The mechanism for that is wrapping the fundamental operations in a call to <code class="docutils literal notranslate"><span class="pre">wfl.autoparallelize.base.iterable_loop</span></code>.</p>
 <div class="section" id="runtime-view">
 <h2>Runtime view<a class="headerlink" href="#runtime-view" title="Permalink to this heading">#</a></h2>
 <p>Once a function that operates on individual configs has been wrapped, the user can get parallelization to happen in one of two different ways.  The first is the use of the env var <code class="docutils literal notranslate"><span class="pre">WFL_AUTOPARA_NPOOL</span></code>.  This variable should be set to a number, and that many python threads will be created (using <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool">multiprocessing.pool.Pool</a>).  The script should be run as usual.</p>
@@ -507,11 +561,11 @@ title="Print to PDF"
 </div>
 <p>An auto-parallelized wrapper function can then be defined as</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">wrapped_op</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">iterable_loop</span><span class="p">(</span><span class="n">iterable</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">configset_out</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span> <span class="n">num_inputs_per_python_subprocess</span><span class="p">,</span>
+  <span class="k">return</span> <span class="n">iterable_loop</span><span class="p">(</span><span class="n">iterable</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputspec</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=&lt;</span><span class="n">N</span><span class="o">&gt;</span><span class="p">,</span>
           <span class="n">arg1</span><span class="o">=</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="o">=</span><span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="o">=</span><span class="n">arg3</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">num_inputs_per_python_subprocess</span></code> controls how many items from the input iterable are passed to each call of <code class="docutils literal notranslate"><span class="pre">op()</span></code> (to reduce startup overhead).  All arguments <em>must be</em> pickleable.  If something that cannot be pickled must be passed (e.g. a QUIP <code class="docutils literal notranslate"><span class="pre">Potential</span></code>), it must be passed in some way, e.g. a constructor function and its arguments, that _can_ be pickled.  For things that need to happen once per thread, e.g. random number initialization, there is an <code class="docutils literal notranslate"><span class="pre">initializer</span></code> argument to <code class="docutils literal notranslate"><span class="pre">iterable_loop()</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">chunksize</span></code> controls how many items from the input iterable are passed to each call of <code class="docutils literal notranslate"><span class="pre">op()</span></code> (to reduce startup overhead).  All arguments <em>must be</em> pickleable.  If something that cannot be pickled must be passed (e.g. a QUIP <code class="docutils literal notranslate"><span class="pre">Potential</span></code>), it must be passed in some way, e.g. a constructor function and its arguments, that _can_ be pickled.  For things that need to happen once per thread, e.g. random number initialization, there is an <code class="docutils literal notranslate"><span class="pre">initializer</span></code> argument to <code class="docutils literal notranslate"><span class="pre">iterable_loop()</span></code>.</p>
 <p>There are many examples of this, including the descriptor calculator, and (with initializers) md and minim.</p>
 <div class="section" id="mpi-with-wfl-mpipool">
 <h3>MPI with <code class="docutils literal notranslate"><span class="pre">WFL_MPIPOOL</span></code><a class="headerlink" href="#mpi-with-wfl-mpipool" title="Permalink to this heading">#</a></h3>
