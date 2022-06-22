@@ -33,7 +33,7 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="ORCA: all parallelisation options" href="examples.orca.html" />
+    <link rel="next" title="How to contribute" href="contributing.html" />
     <link rel="prev" title="&lt;no title&gt;" href="command_line.automatic_docs.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -87,6 +87,11 @@
  </span>
 </p>
 <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="install.html">
+   Installation
+  </a>
+ </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="code_structure.html">
    Code structure
@@ -125,33 +130,18 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.generate.html">
+    <a class="reference internal" href="operations.generating_configs.html">
      Generating Configs
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
+    <a class="reference internal" href="operations.selecting_configs.html">
      Selecting Configs
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.descriptors.html">
-     Descriptors
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
      Multistage GAP fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
     </a>
    </li>
    <li class="toctree-l2">
@@ -160,8 +150,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
+    <a class="reference internal" href="operations.misc.html">
+     Miscellaneous
     </a>
    </li>
   </ul>
@@ -190,7 +180,7 @@
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="command_line.html">
-   Command Line Interface
+   Command line interface
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
   <label for="toctree-checkbox-4">
@@ -200,49 +190,22 @@
   <ul class="simple">
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    Examples
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-  <label for="toctree-checkbox-5">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.md.html">
-     MD
-    </a>
-   </li>
-  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributing.html">
+   How to contribute
+  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
-   Modules
+   API
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
-  <label for="toctree-checkbox-6">
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -251,59 +214,32 @@
     <a class="reference internal" href="wfl.html">
      wfl package
     </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
-    <label for="toctree-checkbox-7">
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
      <i class="fas fa-chevron-down">
      </i>
     </label>
     <ul>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.autoparallelize.html">
-       wfl.autoparallelize package
-      </a>
-     </li>
-     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.calculators.html">
        wfl.calculators package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
-      <label for="toctree-checkbox-8">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.calculators.orca.html">
-         wfl.calculators.orca package
-        </a>
-       </li>
-      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.cli.html">
        wfl.cli package
       </a>
      </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.descriptors.html">
-       wfl.descriptors package
-      </a>
-     </li>
      <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.fit.html">
        wfl.fit package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
-      <label for="toctree-checkbox-9">
+      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+      <label for="toctree-checkbox-7">
        <i class="fas fa-chevron-down">
        </i>
       </label>
       <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.fit.gap.html">
-         wfl.fit.gap package
-        </a>
-       </li>
        <li class="toctree-l4">
         <a class="reference internal" href="wfl.fit.modify_database.html">
          wfl.fit.modify_database package
@@ -312,18 +248,28 @@
       </ul>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.generate.html">
-       wfl.generate package
+      <a class="reference internal" href="wfl.generate_configs.html">
+       wfl.generate_configs package
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.scripts.html">
-       wfl.scripts package
+      <a class="reference internal" href="wfl.pipeline.html">
+       wfl.pipeline package
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.select.html">
-       wfl.select package
+      <a class="reference internal" href="wfl.plotting.html">
+       wfl.plotting package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.reactions_processing.html">
+       wfl.reactions_processing package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.select_configs.html">
+       wfl.select_configs package
       </a>
      </li>
      <li class="toctree-l3">
@@ -472,34 +418,6 @@ title="Print to PDF"
   <div class="section" id="examples">
 <span id="id1"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">#</a></h1>
 <p>Self-contained code snippets of common things that can be done with Workflow.</p>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="examples.orca.html">ORCA: all parallelisation options</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca.html#evaluate-atomic-configurations-sequentially-on-a-single-core">1. Evaluate atomic configurations sequentially on a single core</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca.html#parallelise-with-orca">2.1 Parallelise with ORCA</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca.html#parallelise-with-workflow">2.2 Parallelise with Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca.html#parallelise-with-orca-and-workflow">2.3 Parallelise with ORCA and Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca.html#evaluate-structures-in-multiple-queued-jobs">3. Evaluate structures in multiple queued jobs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca.html#complete-script">4. Complete script</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca.html#config-json-example">config.json example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca.html#another-complete-example">Another complete example</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.normal_modes.html">Normal Modes (non-periodic)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html#generate">Generate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html#sample">Sample</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.smiles.html">SMILES to .xyz</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.smiles.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.smiles.html#python-script">Python script</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.autopara.html">Customise Auto-parallelized Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.md.html">MD</a></li>
-</ul>
-</div>
 </div>
 
 
@@ -517,10 +435,10 @@ title="Print to PDF"
             <p class="prev-next-title">&lt;no title&gt;</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="examples.orca.html" title="next page">
+    <a class='right-next' id="next-link" href="contributing.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">ORCA: all parallelisation options</p>
+        <p class="prev-next-title">How to contribute</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

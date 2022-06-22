@@ -33,8 +33,8 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="wfl.descriptors package" href="wfl.descriptors.html" />
-    <link rel="prev" title="wfl.calculators.orca package" href="wfl.calculators.orca.html" />
+    <link rel="next" title="wfl.fit package" href="wfl.fit.html" />
+    <link rel="prev" title="wfl.calculators package" href="wfl.calculators.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -87,6 +87,11 @@
  </span>
 </p>
 <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="install.html">
+   Installation
+  </a>
+ </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="code_structure.html">
    Code structure
@@ -125,33 +130,18 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.generate.html">
+    <a class="reference internal" href="operations.generating_configs.html">
      Generating Configs
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
+    <a class="reference internal" href="operations.selecting_configs.html">
      Selecting Configs
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.descriptors.html">
-     Descriptors
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
      Multistage GAP fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
     </a>
    </li>
    <li class="toctree-l2">
@@ -160,8 +150,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
+    <a class="reference internal" href="operations.misc.html">
+     Miscellaneous
     </a>
    </li>
   </ul>
@@ -190,7 +180,7 @@
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="command_line.html">
-   Command Line Interface
+   Command line interface
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
   <label for="toctree-checkbox-4">
@@ -200,49 +190,22 @@
   <ul class="simple">
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1">
   <a class="reference internal" href="examples.html">
    Examples
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-  <label for="toctree-checkbox-5">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.md.html">
-     MD
-    </a>
-   </li>
-  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributing.html">
+   How to contribute
+  </a>
  </li>
  <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="modules.html">
-   Modules
+   API
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
-  <label for="toctree-checkbox-6">
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -251,59 +214,32 @@
     <a class="reference internal" href="wfl.html">
      wfl package
     </a>
-    <input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
-    <label for="toctree-checkbox-7">
+    <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
      <i class="fas fa-chevron-down">
      </i>
     </label>
     <ul class="current">
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.autoparallelize.html">
-       wfl.autoparallelize package
-      </a>
-     </li>
-     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.calculators.html">
        wfl.calculators package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
-      <label for="toctree-checkbox-8">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.calculators.orca.html">
-         wfl.calculators.orca package
-        </a>
-       </li>
-      </ul>
      </li>
      <li class="toctree-l3 current active">
       <a class="current reference internal" href="#">
        wfl.cli package
       </a>
      </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.descriptors.html">
-       wfl.descriptors package
-      </a>
-     </li>
      <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.fit.html">
        wfl.fit package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
-      <label for="toctree-checkbox-9">
+      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+      <label for="toctree-checkbox-7">
        <i class="fas fa-chevron-down">
        </i>
       </label>
       <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.fit.gap.html">
-         wfl.fit.gap package
-        </a>
-       </li>
        <li class="toctree-l4">
         <a class="reference internal" href="wfl.fit.modify_database.html">
          wfl.fit.modify_database package
@@ -312,18 +248,28 @@
       </ul>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.generate.html">
-       wfl.generate package
+      <a class="reference internal" href="wfl.generate_configs.html">
+       wfl.generate_configs package
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.scripts.html">
-       wfl.scripts package
+      <a class="reference internal" href="wfl.pipeline.html">
+       wfl.pipeline package
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.select.html">
-       wfl.select package
+      <a class="reference internal" href="wfl.plotting.html">
+       wfl.plotting package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.reactions_processing.html">
+       wfl.reactions_processing package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.select_configs.html">
+       wfl.select_configs package
       </a>
      </li>
      <li class="toctree-l3">
@@ -493,6 +439,11 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-cli-reactions-iter-fit-module">
+   wfl.cli.reactions_iter_fit module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.cli">
    Module contents
   </a>
@@ -542,6 +493,11 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wfl-cli-reactions-iter-fit-module">
+   wfl.cli.reactions_iter_fit module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.cli">
    Module contents
   </a>
@@ -579,6 +535,9 @@ title="Print to PDF"
 <div class="section" id="wfl-cli-gap-rss-iter-fit-module">
 <h2>wfl.cli.gap_rss_iter_fit module<a class="headerlink" href="#wfl-cli-gap-rss-iter-fit-module" title="Permalink to this heading">#</a></h2>
 </div>
+<div class="section" id="wfl-cli-reactions-iter-fit-module">
+<h2>wfl.cli.reactions_iter_fit module<a class="headerlink" href="#wfl-cli-reactions-iter-fit-module" title="Permalink to this heading">#</a></h2>
+</div>
 <div class="section" id="module-wfl.cli">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.cli" title="Permalink to this heading">#</a></h2>
 </div>
@@ -592,17 +551,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="wfl.calculators.orca.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="wfl.calculators.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">wfl.calculators.orca package</p>
+            <p class="prev-next-title">wfl.calculators package</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="wfl.descriptors.html" title="next page">
+    <a class='right-next' id="next-link" href="wfl.fit.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">wfl.descriptors package</p>
+        <p class="prev-next-title">wfl.fit package</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

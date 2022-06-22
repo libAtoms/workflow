@@ -33,7 +33,7 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Code structure" href="code_structure.html" />
+    <link rel="next" title="Installation" href="install.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -86,6 +86,11 @@
  </span>
 </p>
 <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="install.html">
+   Installation
+  </a>
+ </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="code_structure.html">
    Code structure
@@ -124,33 +129,18 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.generate.html">
+    <a class="reference internal" href="operations.generating_configs.html">
      Generating Configs
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
+    <a class="reference internal" href="operations.selecting_configs.html">
      Selecting Configs
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.descriptors.html">
-     Descriptors
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
      Multistage GAP fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
     </a>
    </li>
    <li class="toctree-l2">
@@ -159,8 +149,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
+    <a class="reference internal" href="operations.misc.html">
+     Miscellaneous
     </a>
    </li>
   </ul>
@@ -189,7 +179,7 @@
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="command_line.html">
-   Command Line Interface
+   Command line interface
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
   <label for="toctree-checkbox-4">
@@ -199,49 +189,22 @@
   <ul class="simple">
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1">
   <a class="reference internal" href="examples.html">
    Examples
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-  <label for="toctree-checkbox-5">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.md.html">
-     MD
-    </a>
-   </li>
-  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributing.html">
+   How to contribute
+  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
-   Modules
+   API
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
-  <label for="toctree-checkbox-6">
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -250,59 +213,32 @@
     <a class="reference internal" href="wfl.html">
      wfl package
     </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
-    <label for="toctree-checkbox-7">
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
      <i class="fas fa-chevron-down">
      </i>
     </label>
     <ul>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.autoparallelize.html">
-       wfl.autoparallelize package
-      </a>
-     </li>
-     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.calculators.html">
        wfl.calculators package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
-      <label for="toctree-checkbox-8">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.calculators.orca.html">
-         wfl.calculators.orca package
-        </a>
-       </li>
-      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.cli.html">
        wfl.cli package
       </a>
      </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.descriptors.html">
-       wfl.descriptors package
-      </a>
-     </li>
      <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.fit.html">
        wfl.fit package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
-      <label for="toctree-checkbox-9">
+      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+      <label for="toctree-checkbox-7">
        <i class="fas fa-chevron-down">
        </i>
       </label>
       <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.fit.gap.html">
-         wfl.fit.gap package
-        </a>
-       </li>
        <li class="toctree-l4">
         <a class="reference internal" href="wfl.fit.modify_database.html">
          wfl.fit.modify_database package
@@ -311,18 +247,28 @@
       </ul>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.generate.html">
-       wfl.generate package
+      <a class="reference internal" href="wfl.generate_configs.html">
+       wfl.generate_configs package
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.scripts.html">
-       wfl.scripts package
+      <a class="reference internal" href="wfl.pipeline.html">
+       wfl.pipeline package
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.select.html">
-       wfl.select package
+      <a class="reference internal" href="wfl.plotting.html">
+       wfl.plotting package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.reactions_processing.html">
+       wfl.reactions_processing package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.select_configs.html">
+       wfl.select_configs package
       </a>
      </li>
      <li class="toctree-l3">
@@ -444,41 +390,12 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
-</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#installation">
-   Installation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#building-docs-from-source">
-   Building docs from source
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
     </div>
     <div class="article row">
@@ -490,24 +407,6 @@ title="Print to PDF"
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#installation">
-   Installation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#building-docs-from-source">
-   Building docs from source
-  </a>
- </li>
-</ul>
-
-                        </nav>
                     </div>
                 </div>
             </div>
@@ -520,62 +419,85 @@ title="Print to PDF"
 <p>A Python toolkit for building interatomic potential creation and atomistic simulation workflows.</p>
 <p>Documentation in progress!</p>
 <p>The main functions of Workflow is to efficiently parallelise operations over a set of atomic configurations. Given an operation that is defined to act a single configuration (e.g. evaluate energy of a structure with CASTEP ASE calculator), Workflow may apply the operation to multiple configurations in parallel.</p>
-<p>The Workflow-specific code structures (e.g. how configurations are handled, mechanism to parallelise operations) are covered in <a class="reference internal" href="code_structure.html#code-structure"><span class="std std-ref">Code structure</span></a>. Currently implemented self-contained per-configuration operations are sketched out in <a class="reference internal" href="operations.html#operations"><span class="std std-ref">Operations</span></a>. Descriptions of Workflows, built out of these modular operations are described in <a class="reference internal" href="workflows.html#workflows"><span class="std std-ref">Workflows</span></a>. There are also descriptions <a class="reference internal" href="command_line.html#command-line"><span class="std std-ref">command line interface</span></a>, <a class="reference internal" href="examples.html#examples"><span class="std std-ref">examples</span></a> of common tasks to get started with and a <span class="xref std std-ref">Python API</span>.</p>
-<div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h2>
-<p>Quick start that installs all of the mandatory dependencies:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip install git+https://github.com/libAtoms/workflow
-</pre></div>
-</div>
-</div>
-<div class="section" id="building-docs-from-source">
-<h2>Building docs from source<a class="headerlink" href="#building-docs-from-source" title="Permalink to this heading">#</a></h2>
-<p>To build from source:</p>
+<p>The Workflow-specific code structures (e.g. how configurations are handled, mechanism to parallelise operations) are covered in <a class="reference internal" href="code_structure.html#code-structure"><span class="std std-ref">Code structure</span></a>. Currently implemented self-contained per-configuration operations are sketched out in <a class="reference internal" href="operations.html#operations"><span class="std std-ref">Operations</span></a>. Descriptions of Workflows, built out of these modular operations are described in <a class="reference internal" href="workflows.html#workflows"><span class="std std-ref">Workflows</span></a>. There are also descriptions <a class="reference internal" href="command_line.html#command-line"><span class="std std-ref">command line interface</span></a>, <a class="reference internal" href="examples.html#examples"><span class="std std-ref">examples</span></a> of common tasks to get started with, some <a class="reference internal" href="contributing.html#contributing"><span class="std std-ref">guidelines on contributing</span></a> and a <a class="reference internal" href="modules.html#api"><span class="std std-ref">Python API</span></a>.</p>
+<p>For now the documentation must be build from source.</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">sphinx-apidoc</span> <span class="pre">-o</span> <span class="pre">source</span> <span class="pre">../wfl</span></code>  (only whenever source code changes)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">open</span> <span class="pre">build/html/index.html</span></code></p></li>
 </ol>
-<p>A Sphinx style guide: <a class="reference external" href="https://documentation-style-guide-sphinx.readthedocs.io/en/latest/style-guide.html">https://documentation-style-guide-sphinx.readthedocs.io/en/latest/style-guide.html</a></p>
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_structure.html">Code structure</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="code_structure.configset.html">Input and output of atomic structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="code_structure.parallelisation.html">Automatic parallelization of tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_structure.parallelisation.html">Automatic parallelization of tasks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="code_structure.parallelisation.html#runtime-view">Runtime view</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code_structure.parallelisation.html#programming-time-view">Programming-time view</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="operations.html">Operations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="operations.calculators.html">Calculators in workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="operations.generate.html">Generating Configs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="operations.select.html">Selecting Configs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="operations.descriptors.html">Descriptors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="operations.gap_fitting.html">Fitting GAP</a></li>
-<li class="toctree-l2"><a class="reference internal" href="operations.multistage_gap_fitting.html">Multistage GAP fitting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="operations.ace_fitting.html">ACE fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.calculators.html">Calculators in workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="operations.calculators.html#general-overview">General overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.calculators.html#regular-calculators">Regular calculators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.calculators.html#special-calculators">Special calculators</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="operations.generating_configs.html">Generating Configs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.selecting_configs.html">Selecting Configs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.gap_fitting.html">Multistage GAP fitting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="operations.gap_fitting.html#procedure">Procedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.gap_fitting.html#configuration-file">Configuration file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.gap_fitting.html#creating-configuration-file">Creating configuration file</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="operations.plots.html">Plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="operations.utils.html">Utility functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.misc.html">Miscellaneous</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="workflows.html">Workflows</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="workflows.rss.html">How to do GAP-RSS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.rss.html">How to do GAP-RSS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#before-you-start">Before you start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#steps-of-gap-rss">Steps of GAP-RSS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#preparation-step">Preparation step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#dft-settings">DFT settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#config-selection">Config selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#initial-step">Initial step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#rss-step">RSS step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#md-step">MD step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.rss.html#job-script-and-runtime-settings">Job script and runtime settings</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="workflows.collisions.html">Collisions</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="command_line.html">Command Line Interface</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="command_line.html#calculators">Calculators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line.html">Command line interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="command_line.html#calculators">Calculators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="command_line.html#orca-outdated">ORCA (outdated)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command_line.html#castep">CASTEP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command_line.html#vasp">VASP</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca.html">ORCA: all parallelisation options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html">Normal Modes (non-periodic)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.smiles.html">SMILES to .xyz</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.autopara.html">Customise Auto-parallelized Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.md.html">MD</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="wfl.html">wfl package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="wfl.html">wfl package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#wfl-calc-descriptor-module">wfl.calc_descriptor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#wfl-configset-module">wfl.configset module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#module-wfl.descriptor_heuristics">wfl.descriptor_heuristics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#wfl-mpipool-support-module">wfl.mpipool_support module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#wfl-parallelization-module">wfl.parallelization module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#wfl-selection-space-module">wfl.selection_space module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.html#module-wfl">Module contents</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -586,7 +508,6 @@ title="Print to PDF"
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
-</div>
 
 
               </div>
@@ -596,10 +517,10 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='right-next' id="next-link" href="code_structure.html" title="next page">
+    <a class='right-next' id="next-link" href="install.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Code structure</p>
+        <p class="prev-next-title">Installation</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
