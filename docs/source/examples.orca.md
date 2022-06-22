@@ -143,6 +143,70 @@ Below is an example of corresponding `config.json`
     }}
 ```
 
+## Another complete example
+
+```
+from pathlib import Path
+from wfl.configset import ConfigSet, OutputSpec
+from wfl.calculators.orca import ORCA, natural_population_analysis
+import util
+from util.util_config import Config
+from functools import partial
+from wfl.calculators import generic
+import wfl.autoparallelize.remoteinfo
+from expyre.resources import Resources
+
+input_fname = "validation.rdkit.xtb2_md.dft.both.xyz"
+output_fname = "validation.rdkit.xtb2_md.dft.both.dft.xyz"
+job_chunksize = 20
+n_tasks = 4
+max_time = "48h"
+
+# structures
+ci = ConfigSet(input_files=input_fname)
+co = OutputSpec(output_files=output_fname, force=True, all_or_none=True)
+
+expyre_dir = Path("_expyre")
+expyre_dir.mkdir(exist_ok=True)
+
+# remote info
+resources = Resources(
+    max_time = max_time,
+    n = (n_tasks, "tasks"),
+    partitions = "any$")
+
+remote_info = wfl.autoparallelize.remoteinfo.RemoteInfo(
+    sys_name = "local", 
+    job_name = "npa", 
+    resources = resources, 
+    partial_node = True, 
+    job_chunksize=job_chunksize, 
+    output_files=["ORCA_calc_files"])
+
+# orca params
+orca_kwargs = {"orcablocks": "%scf Convergence Tight SmearTemp 5000 end",
+               "orcasimpleinput": "UKS B3LYP def2-SV(P) def2/J D3BJ"}
+print(f'orca_kwargs: {orca_kwargs}')
+
+# calculator
+keep_files = False 
+janpa_home_dir = "/home/eg475/programs/janpa" 
+post_func = partial(natural_population_analysis, janpa_home_dir)
+calculator = (ORCA, [], {**{"keep_files":keep_files, "post_process":post_func}, **orca_kwargs})
+
+# run calculation
+generic.run(
+    inputs=ci, 
+    outputs=co,
+    calculator=calculator,
+    properties=["energy", "forces"],
+    output_prefix='dft_',
+    remote_info=remote_info,
+	chunksize=1)
+
+
+
+```
 
 
 
