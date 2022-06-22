@@ -178,12 +178,12 @@ Take a node / workstation that has enough memory for the ``gap_fit`` steps with 
 
 The code is parallelised with python's ``multiprocessing.Pool`` at many steps, for example minimisation, DFT evaluations and descriptor calculations.
 
-The number of workers to use in the pool is controlled by the ``AUTOPARA_NPOOL`` env variable. Set this to the number of physical cores, hyperthreading is not expected to be beneficial.
+The number of workers to use in the pool is controlled by the ``WFL_NUM_PYTHON_SUBPROCESSES`` env variable. Set this to the number of physical cores, hyperthreading is not expected to be beneficial.
 
 .. code-block:: console
 
   # usable logical threads are given in NSLOTS
-  export AUTOPARA_NPOOL=${NSLOTS}
+  export WFL_NUM_PYTHON_SUBPROCESSES=${NSLOTS}
 
 Export the DFT calculator's executable, as ASE can understand it:
 
