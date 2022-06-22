@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>wfl.cli package &#8212; workflow  documentation</title>
+    <title>Multistage GAP fitting &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -33,8 +33,8 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="wfl.descriptors package" href="wfl.descriptors.html" />
-    <link rel="prev" title="wfl.calculators.orca package" href="wfl.calculators.orca.html" />
+    <link rel="next" title="ACE fitting" href="operations.ace_fitting.html" />
+    <link rel="prev" title="Fitting GAP" href="operations.gap_fitting.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -109,16 +109,16 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="operations.html">
    Operations
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
      Calculators in workflow
@@ -144,8 +144,8 @@
      Fitting GAP
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      Multistage GAP fitting
     </a>
    </li>
@@ -237,26 +237,26 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
    Modules
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
   <label for="toctree-checkbox-6">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
-   <li class="toctree-l2 current active has-children">
+  <ul>
+   <li class="toctree-l2 has-children">
     <a class="reference internal" href="wfl.html">
      wfl package
     </a>
-    <input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+    <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
     <label for="toctree-checkbox-7">
      <i class="fas fa-chevron-down">
      </i>
     </label>
-    <ul class="current">
+    <ul>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.autoparallelize.html">
        wfl.autoparallelize package
@@ -279,8 +279,8 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3 current active">
-      <a class="current reference internal" href="#">
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.cli.html">
        wfl.cli package
       </a>
      </li>
@@ -408,7 +408,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/wfl.cli.rst.txt"
+        <a href="_sources/operations.multistage_gap_fitting.rst.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -468,33 +468,18 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
+  <a class="reference internal nav-link" href="#procedure">
+   Procedure
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-cli-cli-module">
-   wfl.cli.cli module
+  <a class="reference internal nav-link" href="#configuration-file">
+   Configuration file
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.cli.cli_options">
-   wfl.cli.cli_options module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-cli-dft-convergence-test-module">
-   wfl.cli.dft_convergence_test module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-cli-gap-rss-iter-fit-module">
-   wfl.cli.gap_rss_iter_fit module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.cli">
-   Module contents
+  <a class="reference internal nav-link" href="#creating-configuration-file">
+   Creating configuration file
   </a>
  </li>
 </ul>
@@ -506,7 +491,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>wfl.cli package</h1>
+                <h1>Multistage GAP fitting</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -517,33 +502,18 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
+  <a class="reference internal nav-link" href="#procedure">
+   Procedure
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-cli-cli-module">
-   wfl.cli.cli module
+  <a class="reference internal nav-link" href="#configuration-file">
+   Configuration file
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.cli.cli_options">
-   wfl.cli.cli_options module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-cli-dft-convergence-test-module">
-   wfl.cli.dft_convergence_test module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-cli-gap-rss-iter-fit-module">
-   wfl.cli.gap_rss_iter_fit module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.cli">
-   Module contents
+  <a class="reference internal nav-link" href="#creating-configuration-file">
+   Creating configuration file
   </a>
  </li>
 </ul>
@@ -556,31 +526,78 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="wfl-cli-package">
-<h1>wfl.cli package<a class="headerlink" href="#wfl-cli-package" title="Permalink to this heading">#</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+  <div class="section" id="multistage-gap-fitting">
+<span id="gap-fitting"></span><h1>Multistage GAP fitting<a class="headerlink" href="#multistage-gap-fitting" title="Permalink to this heading">#</a></h1>
+<p>Fit a GAP with multiple descriptor in multiple stages, to calculate the appropriate delta (energy scale) at each stage</p>
+<div class="section" id="procedure">
+<h2>Procedure<a class="headerlink" href="#procedure" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>calculate spread of energy in reference data, use for delta in stage 0</p>
+<ul>
+<li><p>delta =~ energy spread / n_descriptors_per_atom</p></li>
+</ul>
+</li>
+<li><p>modify each config in fitting database, e.g. setting per-config <code class="docutils literal notranslate"><span class="pre">energy_sigma</span></code>, <code class="docutils literal notranslate"><span class="pre">force_sigma</span></code>, using a callback in a python module</p></li>
+<li><p>fit GAP(stage=0), naming it with <code class="docutils literal notranslate"><span class="pre">{label}.stage_{stage}.xml</span></code></p></li>
+<li><p>repeat for stage=1..</p>
+<ul>
+<li><p>calculate fitting error for GAP(stage-1)</p></li>
+<li><p>use fitting error (residual) to estimate delta for this stage’s descriptors</p>
+<ul>
+<li><p>delta =~ fitting error / n_descriptors_per_atom</p></li>
+</ul>
+</li>
+<li><p>modify each config in fitting database as in stage 0</p></li>
+<li><p>fit GAP(stage)</p></li>
+</ul>
+</li>
+<li><p>rename final GAP file to <code class="docutils literal notranslate"><span class="pre">{label}.xml</span></code></p></li>
+</ul>
 </div>
-<div class="section" id="wfl-cli-cli-module">
-<h2>wfl.cli.cli module<a class="headerlink" href="#wfl-cli-cli-module" title="Permalink to this heading">#</a></h2>
+<div class="section" id="configuration-file">
+<h2>Configuration file<a class="headerlink" href="#configuration-file" title="Permalink to this heading">#</a></h2>
+<p>The iterative fitting procedure is controlled by a JSON file that describes the descriptors and fitting params for each stage, and some global fitting params.</p>
+<ul class="simple">
+<li><p>The top level dict contains two keys, <code class="docutils literal notranslate"><span class="pre">stages</span></code> and <code class="docutils literal notranslate"><span class="pre">gap_params</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">stages</span></code> : list of dicts, one for each stage.</p>
+<ul>
+<li><p>Each stage contains a dict with keys <code class="docutils literal notranslate"><span class="pre">error_scale_factor</span></code> and <code class="docutils literal notranslate"><span class="pre">descriptors</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">error_scale_factor</span></code>: factor to apply to all fitting sigmas when doing the fit for that stage (e.g. to reduce desired accuracy of stage 0 2-body only fit), defaults to 1.0 if missing.  Passed to database modifying module callback mentioned above.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">descriptors</span></code>: list of dicts describing each descriptor and its fitting params.</p>
+<ul>
+<li><p>Each list item contains a dict with <code class="docutils literal notranslate"><span class="pre">desc_str</span></code>, <code class="docutils literal notranslate"><span class="pre">fit_str</span></code>, and <code class="docutils literal notranslate"><span class="pre">count_cutoff</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">desc_str</span></code>: string used to create QUIP <code class="docutils literal notranslate"><span class="pre">Descriptor</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fit_str</span></code>: string used to create the rest of the <code class="docutils literal notranslate"><span class="pre">gap_fit</span></code> input arguments, e.g. <code class="docutils literal notranslate"><span class="pre">n_sparse</span></code>, <code class="docutils literal notranslate"><span class="pre">covariance_type</span></code>, etc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">count_cutoff</span></code>, optional: cutoff to be used when counting descriptors per atom, used for counting only close neighbors for 2-body descriptors, even if they are actually much longer ranged.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gap_params</span></code> : global <code class="docutils literal notranslate"><span class="pre">gap_fit</span></code> params, e.g. <code class="docutils literal notranslate"><span class="pre">default_sigma</span></code>, <code class="docutils literal notranslate"><span class="pre">sparse_jitter</span></code>, <code class="docutils literal notranslate"><span class="pre">output_separate_file</span></code></p></li>
+</ul>
+</li>
+</ul>
 </div>
-<div class="section" id="module-wfl.cli.cli_options">
-<span id="wfl-cli-cli-options-module"></span><h2>wfl.cli.cli_options module<a class="headerlink" href="#module-wfl.cli.cli_options" title="Permalink to this heading">#</a></h2>
-<p>These are generalised cli options, merged decorators for repeated operations</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.cli.cli_options.file_input_options">
-<span class="sig-prename descclassname"><span class="pre">wfl.cli.cli_options.</span></span><span class="sig-name descname"><span class="pre">file_input_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.cli.cli_options.file_input_options" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="wfl-cli-dft-convergence-test-module">
-<h2>wfl.cli.dft_convergence_test module<a class="headerlink" href="#wfl-cli-dft-convergence-test-module" title="Permalink to this heading">#</a></h2>
-</div>
-<div class="section" id="wfl-cli-gap-rss-iter-fit-module">
-<h2>wfl.cli.gap_rss_iter_fit module<a class="headerlink" href="#wfl-cli-gap-rss-iter-fit-module" title="Permalink to this heading">#</a></h2>
-</div>
-<div class="section" id="module-wfl.cli">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.cli" title="Permalink to this heading">#</a></h2>
+<div class="section" id="creating-configuration-file">
+<h2>Creating configuration file<a class="headerlink" href="#creating-configuration-file" title="Permalink to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">wfl.fit.gap_multistage</span></code> has a function <code class="docutils literal notranslate"><span class="pre">prep_input</span></code> which takes a _template_ configuration file and creates descriptors for each species using universal SOAP hyperparameters.  The template file format is similar to the configuration file described above.  The main exceptions are</p>
+<ul class="simple">
+<li><p>in addition to the <code class="docutils literal notranslate"><span class="pre">error_scale_factor</span></code> and <code class="docutils literal notranslate"><span class="pre">descriptors</span></code> keys there is another, <code class="docutils literal notranslate"><span class="pre">add_species</span></code></p></li>
+<li><p>All strings (mainly intended for <code class="docutils literal notranslate"><span class="pre">desc_str</span></code>) have length scales specified in terms of <code class="docutils literal notranslate"><span class="pre">${REPL_EXPR}</span></code>, which will be replaced by the mathematical expression, substituting particular strings (e.g. <code class="docutils literal notranslate"><span class="pre">R_CUT</span></code>, <code class="docutils literal notranslate"><span class="pre">BOND_LEN_Z</span></code>) as described in the docstring for <code class="docutils literal notranslate"><span class="pre">wfl.descriptor_heuristics.dup_descs_for_species()</span></code>.  Replacements will remain strings, except strings that begin
+with <code class="docutils literal notranslate"><span class="pre">_F_</span></code>, which will be replaced with the evaluate floating point value.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">add_species</span></code> can be any value understood by <code class="docutils literal notranslate"><span class="pre">wfl.descriptor_heuristics.dup_descs_for_species()</span></code>, in particular</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">manual_Z1_Z2</span></code> for 2-body descriptors with length scale set differently for each Z1-Z2 pair</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">manual_universal_SOAP</span></code> for universal SOAPs that will be created, 2 or more, for each center Z, using heuristics</p></li>
+</ul>
 </div>
 </div>
 
@@ -592,17 +609,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="wfl.calculators.orca.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="operations.gap_fitting.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">wfl.calculators.orca package</p>
+            <p class="prev-next-title">Fitting GAP</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="wfl.descriptors.html" title="next page">
+    <a class='right-next' id="next-link" href="operations.ace_fitting.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">wfl.descriptors package</p>
+        <p class="prev-next-title">ACE fitting</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

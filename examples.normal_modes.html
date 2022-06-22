@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>wfl.cli package &#8212; workflow  documentation</title>
+    <title>Normal Modes (non-periodic) &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -33,8 +33,8 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="wfl.descriptors package" href="wfl.descriptors.html" />
-    <link rel="prev" title="wfl.calculators.orca package" href="wfl.calculators.orca.html" />
+    <link rel="next" title="SMILES to .xyz" href="examples.smiles.html" />
+    <link rel="prev" title="ORCA: all parallelisation options" href="examples.orca.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -200,23 +200,23 @@
   <ul class="simple">
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="examples.html">
    Examples
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
   <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="examples.orca.html">
      ORCA: all parallelisation options
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.normal_modes.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      Normal Modes (non-periodic)
     </a>
    </li>
@@ -237,26 +237,26 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
    Modules
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
   <label for="toctree-checkbox-6">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
-   <li class="toctree-l2 current active has-children">
+  <ul>
+   <li class="toctree-l2 has-children">
     <a class="reference internal" href="wfl.html">
      wfl package
     </a>
-    <input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+    <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
     <label for="toctree-checkbox-7">
      <i class="fas fa-chevron-down">
      </i>
     </label>
-    <ul class="current">
+    <ul>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.autoparallelize.html">
        wfl.autoparallelize package
@@ -279,8 +279,8 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3 current active">
-      <a class="current reference internal" href="#">
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.cli.html">
        wfl.cli package
       </a>
      </li>
@@ -408,7 +408,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/wfl.cli.rst.txt"
+        <a href="_sources/examples.normal_modes.md.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -419,7 +419,7 @@ title="Download source file"
 <span class="headerbtn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.rst</span>
+<span class="headerbtn__text-container">.md</span>
 </a>
 
       </li>
@@ -468,33 +468,13 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
+  <a class="reference internal nav-link" href="#generate">
+   Generate
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-cli-cli-module">
-   wfl.cli.cli module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.cli.cli_options">
-   wfl.cli.cli_options module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-cli-dft-convergence-test-module">
-   wfl.cli.dft_convergence_test module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-cli-gap-rss-iter-fit-module">
-   wfl.cli.gap_rss_iter_fit module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.cli">
-   Module contents
+  <a class="reference internal nav-link" href="#sample">
+   Sample
   </a>
  </li>
 </ul>
@@ -506,7 +486,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>wfl.cli package</h1>
+                <h1>Normal Modes (non-periodic)</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -517,33 +497,13 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
+  <a class="reference internal nav-link" href="#generate">
+   Generate
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-cli-cli-module">
-   wfl.cli.cli module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.cli.cli_options">
-   wfl.cli.cli_options module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-cli-dft-convergence-test-module">
-   wfl.cli.dft_convergence_test module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-cli-gap-rss-iter-fit-module">
-   wfl.cli.gap_rss_iter_fit module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.cli">
-   Module contents
+  <a class="reference internal nav-link" href="#sample">
+   Sample
   </a>
  </li>
 </ul>
@@ -556,31 +516,85 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="wfl-cli-package">
-<h1>wfl.cli package<a class="headerlink" href="#wfl-cli-package" title="Permalink to this heading">#</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
-</div>
-<div class="section" id="wfl-cli-cli-module">
-<h2>wfl.cli.cli module<a class="headerlink" href="#wfl-cli-cli-module" title="Permalink to this heading">#</a></h2>
-</div>
-<div class="section" id="module-wfl.cli.cli_options">
-<span id="wfl-cli-cli-options-module"></span><h2>wfl.cli.cli_options module<a class="headerlink" href="#module-wfl.cli.cli_options" title="Permalink to this heading">#</a></h2>
-<p>These are generalised cli options, merged decorators for repeated operations</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.cli.cli_options.file_input_options">
-<span class="sig-prename descclassname"><span class="pre">wfl.cli.cli_options.</span></span><span class="sig-name descname"><span class="pre">file_input_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.cli.cli_options.file_input_options" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+  <div class="section" id="normal-modes-non-periodic">
+<h1>Normal Modes (non-periodic)<a class="headerlink" href="#normal-modes-non-periodic" title="Permalink to this heading">#</a></h1>
+<div class="section" id="generate">
+<h2>Generate<a class="headerlink" href="#generate" title="Permalink to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;xtb-normal-modes&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;input-fname&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output-fname&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--parallel-hessian&#39;</span><span class="p">,</span> <span class="s2">&quot;parallel_hessian&quot;</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--parallel-atoms&#39;</span><span class="p">,</span> <span class="s2">&quot;parallel_hessian&quot;</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">xtb_normal_modes</span><span class="p">(</span><span class="n">input_fname</span><span class="p">,</span> <span class="n">output_fname</span><span class="p">,</span> <span class="n">parallel_hessian</span><span class="p">):</span>
 
+    <span class="kn">from</span> <span class="nn">xtb.ase.calculator</span> <span class="k">import</span> <span class="n">XTB</span>
+
+    <span class="n">ConfigSet</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_files</span><span class="o">=</span><span class="n">input_fname</span><span class="p">)</span>
+    <span class="n">OutputSpec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_files</span><span class="o">=</span><span class="n">output_fname</span><span class="p">)</span>
+
+    <span class="n">calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">XTB</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span><span class="s1">&#39;GFN2-xTB&#39;</span><span class="p">})</span>
+
+    <span class="n">prop_prefix</span> <span class="o">=</span> <span class="s1">&#39;xtb2_&#39;</span>
+
+    <span class="k">if</span> <span class="n">parallel_hessian</span><span class="p">:</span>
+        <span class="n">vib</span><span class="o">.</span><span class="n">generate_normal_modes_parallel_hessian</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">ConfigSet</span><span class="p">,</span>
+                                          <span class="n">outputs</span><span class="o">=</span><span class="n">OutputSpec</span><span class="p">,</span>
+                                          <span class="n">calculator</span><span class="o">=</span><span class="n">calc</span><span class="p">,</span>
+                                          <span class="n">prop_prefix</span><span class="o">=</span><span class="n">prop_prefix</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">vib</span><span class="o">.</span><span class="n">generate_normal_modes_parallel_atoms</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">ConfigSet</span><span class="p">,</span>
+                                                 <span class="n">outputs</span><span class="o">=</span><span class="n">OutputSpec</span><span class="p">,</span>
+                                                 <span class="n">calculator</span><span class="o">=</span><span class="n">calc</span><span class="p">,</span>
+                                                 <span class="n">prop_prefix</span><span class="o">=</span><span class="n">prop_prefix</span><span class="p">,</span>
+                                                 <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
 </div>
-<div class="section" id="wfl-cli-dft-convergence-test-module">
-<h2>wfl.cli.dft_convergence_test module<a class="headerlink" href="#wfl-cli-dft-convergence-test-module" title="Permalink to this heading">#</a></h2>
 </div>
-<div class="section" id="wfl-cli-gap-rss-iter-fit-module">
-<h2>wfl.cli.gap_rss_iter_fit module<a class="headerlink" href="#wfl-cli-gap-rss-iter-fit-module" title="Permalink to this heading">#</a></h2>
+<div class="section" id="sample">
+<h2>Sample<a class="headerlink" href="#sample" title="Permalink to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">,</span> <span class="n">prop_prefix</span><span class="p">,</span>
+                        <span class="n">info_to_keep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arrays_to_keep</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Multiple times displace along normal modes for all atoms in input</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    inputs: Atoms / list(Atoms) / ConfigSet</span>
+<span class="sd">        Structures with normal mode information (eigenvalues &amp;</span>
+<span class="sd">        eigenvectors)</span>
+<span class="sd">    outputs: OutputSpec</span>
+<span class="sd">    temp: float</span>
+<span class="sd">        Temperature for normal mode displacements</span>
+<span class="sd">    sample_size: int</span>
+<span class="sd">        How many perturbed structures per input structure to return</span>
+<span class="sd">    prop_prefix: str / None</span>
+<span class="sd">        prefix for normal_mode_frequencies and normal_mode_displacements</span>
+<span class="sd">        stored in atoms.info/arrays</span>
+<span class="sd">    info_to_keep: str, default &quot;config_type&quot;</span>
+<span class="sd">        string of Atoms.info.keys() to keep</span>
+<span class="sd">    arrays_to_keep: str, default None</span>
+<span class="sd">        string of Atoms.arrays.keys() entries to keep</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
+        <span class="n">at_vib</span> <span class="o">=</span> <span class="n">Vibrations</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">prop_prefix</span><span class="p">)</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">at_vib</span><span class="o">.</span><span class="n">sample_normal_modes</span><span class="p">(</span><span class="n">sample_size</span><span class="o">=</span><span class="n">sample_size</span><span class="p">,</span>
+                                            <span class="n">temp</span><span class="o">=</span><span class="n">temp</span><span class="p">,</span> 
+                                            <span class="n">info_to_keep</span><span class="o">=</span><span class="n">info_to_keep</span><span class="p">,</span>
+                                            <span class="n">arrays_to_keep</span><span class="o">=</span><span class="n">arrays_to_keep</span><span class="p">)</span>
+
+    <span class="n">outputs</span><span class="o">.</span><span class="n">end_write</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">outputs</span><span class="o">.</span><span class="n">to_ConfigSet</span><span class="p">()</span>
+</pre></div>
 </div>
-<div class="section" id="module-wfl.cli">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.cli" title="Permalink to this heading">#</a></h2>
+<p>Elena: I have <a class="reference external" href="https://github.com/gelzinyte/scripties/blob/main/util/normal_modes.py">this script</a> that randomly displaces atoms along different normal modes and down-weights the very shallow noisy ones. Is it worth merging into workflow and/or describing here?</p>
 </div>
 </div>
 
@@ -592,17 +606,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="wfl.calculators.orca.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="examples.orca.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">wfl.calculators.orca package</p>
+            <p class="prev-next-title">ORCA: all parallelisation options</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="wfl.descriptors.html" title="next page">
+    <a class='right-next' id="next-link" href="examples.smiles.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">wfl.descriptors package</p>
+        <p class="prev-next-title">SMILES to .xyz</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

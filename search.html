@@ -91,11 +91,6 @@
  </span>
 </p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="install.html">
-   Installation
-  </a>
- </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="code_structure.html">
    Code structure
@@ -134,18 +129,33 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.generating_configs.html">
+    <a class="reference internal" href="operations.generate.html">
      Generating Configs
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.selecting_configs.html">
+    <a class="reference internal" href="operations.select.html">
      Selecting Configs
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="operations.descriptors.html">
+     Descriptors
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="operations.gap_fitting.html">
+     Fitting GAP
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.multistage_gap_fitting.html">
      Multistage GAP fitting
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.ace_fitting.html">
+     ACE fitting
     </a>
    </li>
    <li class="toctree-l2">
@@ -154,8 +164,8 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.misc.html">
-     Miscellaneous
+    <a class="reference internal" href="operations.utils.html">
+     Utility functions
     </a>
    </li>
   </ul>
@@ -184,7 +194,7 @@
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="command_line.html">
-   Command line interface
+   Command Line Interface
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
   <label for="toctree-checkbox-4">
@@ -194,22 +204,49 @@
   <ul class="simple">
   </ul>
  </li>
- <li class="toctree-l1">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="examples.html">
    Examples
   </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="contributing.html">
-   How to contribute
-  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca.html">
+     ORCA: all parallelisation options
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.normal_modes.html">
+     Normal Modes (non-periodic)
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.smiles.html">
+     SMILES to .xyz
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.autopara.html">
+     Customise Auto-parallelized Functions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.md.html">
+     MD
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
-   API
+   Modules
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-  <label for="toctree-checkbox-5">
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -218,32 +255,59 @@
     <a class="reference internal" href="wfl.html">
      wfl package
     </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
-    <label for="toctree-checkbox-6">
+    <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+    <label for="toctree-checkbox-7">
      <i class="fas fa-chevron-down">
      </i>
     </label>
     <ul>
      <li class="toctree-l3">
+      <a class="reference internal" href="wfl.autoparallelize.html">
+       wfl.autoparallelize package
+      </a>
+     </li>
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.calculators.html">
        wfl.calculators package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+      <label for="toctree-checkbox-8">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.calculators.orca.html">
+         wfl.calculators.orca package
+        </a>
+       </li>
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.cli.html">
        wfl.cli package
       </a>
      </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.descriptors.html">
+       wfl.descriptors package
+      </a>
+     </li>
      <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.fit.html">
        wfl.fit package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
-      <label for="toctree-checkbox-7">
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
        <i class="fas fa-chevron-down">
        </i>
       </label>
       <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.fit.gap.html">
+         wfl.fit.gap package
+        </a>
+       </li>
        <li class="toctree-l4">
         <a class="reference internal" href="wfl.fit.modify_database.html">
          wfl.fit.modify_database package
@@ -252,28 +316,18 @@
       </ul>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.generate_configs.html">
-       wfl.generate_configs package
+      <a class="reference internal" href="wfl.generate.html">
+       wfl.generate package
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.pipeline.html">
-       wfl.pipeline package
+      <a class="reference internal" href="wfl.scripts.html">
+       wfl.scripts package
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="wfl.plotting.html">
-       wfl.plotting package
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.reactions_processing.html">
-       wfl.reactions_processing package
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.select_configs.html">
-       wfl.select_configs package
+      <a class="reference internal" href="wfl.select.html">
+       wfl.select package
       </a>
      </li>
      <li class="toctree-l3">
