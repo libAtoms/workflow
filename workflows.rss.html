@@ -582,7 +582,7 @@ title="Print to PDF"
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>This is a file containing <code class="docutils literal notranslate"><span class="pre">stages</span></code> of GAP_FIT, which are descriptors laid out for fitting hierarchically. From first to last, a model will be created for each and the energy scale (<code class="docutils literal notranslate"><span class="pre">delta</span></code>, typical variance of GP) for the next one defined from the energy variance per descriptor.
+<p>This is a file containing <code class="docutils literal notranslate"><span class="pre">stages</span></code> of GAP fitting, which are descriptors laid out for fitting hierarchically. From first to last, a model will be created for each and the energy scale (<code class="docutils literal notranslate"><span class="pre">delta</span></code>, typical variance of GP) for the next one defined from the energy variance per descriptor.
 Additionally, general settings can be given in <code class="docutils literal notranslate"><span class="pre">gap_params</span></code> for the fit.</p>
 <p>The filename of this file goes into the main config’s <code class="docutils literal notranslate"><span class="pre">fit/GAP_template_file</span></code> field.</p>
 <div class="section" id="main-config">
@@ -677,7 +677,7 @@ Then the trajectories of the minima are used for a new flat histogram and descri
 </div>
 <p>Set the number of OMP threads to 1 in general and to the maximum for gap_fit</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">export OMP_NUM_THREADS=1</span>
-<span class="go">export GAP_FIT_OMP_NUM_THREADS=${NSLOTS}</span>
+<span class="go">export WFL_GAP_FIT_OMP_NUM_THREADS=${NSLOTS}</span>
 </pre></div>
 </div>
 <p>The active iteration’s number is written in the file <code class="docutils literal notranslate"><span class="pre">ACTIVE_ITER</span></code>, which if you keep then the iteration number will be increased. Directories will be created with names <code class="docutils literal notranslate"><span class="pre">run_iter_&lt;number&gt;</span></code> and all work of a given iteration self contained in them.</p>
