@@ -1,6 +1,7 @@
 import sys
 import os
 import warnings
+import inspect
 
 import functools
 from multiprocessing.pool import Pool
@@ -109,7 +110,9 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
 
     if num_python_subprocesses > 0:
         # use multiprocessing
-        sys.stderr.write(f'Running {op} with num_python_subprocesses={num_python_subprocesses}, num_inputs_per_python_subprocess={num_inputs_per_python_subprocess}\n')
+        op_full_name = inspect.getmodule(op).__name__ + "." + op.__name__
+        sys.stderr.write(f'Running {op_full_name} with num_python_subprocesses={num_python_subprocesses}, '
+                         f'num_inputs_per_python_subprocess={num_inputs_per_python_subprocess}\n')
         if wfl_mpipool:
             # MPI pool is global and unique, created at script start, so do not create one here
             warnings.warn(f'mpipool ignores > 0 value of num_python_subprocesses={num_python_subprocesses}, '

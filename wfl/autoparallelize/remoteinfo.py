@@ -48,8 +48,12 @@ class RemoteInfo:
         self.num_inputs_per_queued_job = num_inputs_per_queued_job
         self.pre_cmds = pre_cmds.copy()
         self.post_cmds = post_cmds.copy()
-        if all(not var.startswith("WFL_NUM_PYTHON_SUBPROCESSES=") for var in env_vars):
-            self.env_vars = ["WFL_NUM_PYTHON_SUBPROCESSES=${EXPYRE_NUM_CORES_PER_NODE}"] + env_vars
+        self.env_vars = []
+        if all([not var.startswith("WFL_NUM_PYTHON_SUBPROCESSES=") for var in env_vars]):
+            # user didn't explicitly set WFL_NUM_PYTHON_SUBPROCESSES, so set it to default
+            # equal to number of cores per node
+            self.env_vars += ["WFL_NUM_PYTHON_SUBPROCESSES=${EXPYRE_NUM_CORES_PER_NODE}"]
+        self.env_vars += env_vars
         self.input_files = input_files.copy()
         self.output_files = output_files.copy()
         self.header_extra = header_extra.copy()

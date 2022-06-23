@@ -120,7 +120,7 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
 
 @pytest.mark.remote
 def test_ace_fit_remote(request, tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
-    ri = {'resources' : {'max_time': '10m', 'n': [1, 'nodes']},
+    ri = {'resources' : {'max_time': '10m', 'num_nodes': 1},
           'pre_cmds': [ f'export PYTHONPATH={Path(__file__).parent.parent}:$PYTHONPATH'],
           'env_vars' : ['ACE_FIT_JULIA_THREADS=$( [ $EXPYRE_NUM_CORES_PER_NODE -gt 2 ] && echo 2 || echo $(( $EXPYRE_NUM_CORES_PER_NODE )) )', 'ACE_FIT_BLAS_THREADS=$EXPYRE_NUM_CORES_PER_NODE' ]}
 

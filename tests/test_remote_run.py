@@ -49,7 +49,7 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri = {'sys_name': sys_name, 'job_name': 'test_vasp_'+sys_name,
           'env_vars' : ['VASP_COMMAND=NONE', 'VASP_COMMAND_GAMMA=NONE'],
           'input_files' : ['POTCARs'],
-          'resources': {'max_time': '5m', 'n': (1, 'nodes')},
+          'resources': {'max_time': '5m', 'num_nodes': 1},
           'num_inputs_per_queued_job': 1, 'check_interval': 10}
 
     remoteinfo_env(ri)
@@ -92,7 +92,7 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env):
 
 def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri = {'sys_name': sys_name, 'job_name': 'test_'+sys_name,
-          'resources': {'max_time': '1h', 'n': (1, 'nodes')},
+          'resources': {'max_time': '1h', 'num_nodes': 1},
           'num_inputs_per_queued_job': -36, 'check_interval': 10}
 
     remoteinfo_env(ri)
@@ -163,7 +163,7 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
 
 def do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri = {'sys_name': sys_name, 'job_name': 'test_'+sys_name,
-          'resources': {'max_time': '1h', 'n': (1, 'nodes')},
+          'resources': {'max_time': '1h', 'num_nodes': 1},
           'num_inputs_per_queued_job': -36, 'check_interval': 10}
 
     remoteinfo_env(ri)

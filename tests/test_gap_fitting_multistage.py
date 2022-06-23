@@ -113,7 +113,7 @@ def test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir='run
 @pytest.mark.skipif(not shutil.which("gap_fit"), reason="gap_fit not in PATH")  # skips it if gap_fit not in path
 @pytest.mark.remote
 def test_gap_multistage_fit_remote(request, tmp_path, quippy, expyre_systems, monkeypatch, remoteinfo_env):
-    ri = {'resources' : {'max_time': '10m', 'n': [1, 'nodes']},
+    ri = {'resources' : {'max_time': '10m', 'num_nodes': 1},
           'pre_cmds': [ f'export PYTHONPATH={Path(__file__).parent.parent}:$PYTHONPATH']}
 
     for sys_name in expyre_systems:

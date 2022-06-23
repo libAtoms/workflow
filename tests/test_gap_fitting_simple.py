@@ -109,7 +109,7 @@ def test_fitting_gap_cli(quippy, tmp_path):
 @pytest.mark.remote
 def test_fitting_gap_cli_remote(quippy, tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     mypath = Path(__file__).parent.parent
-    ri = {'resources' : {'max_time': '10m', 'n': [1, 'nodes']}}
+    ri = {'resources' : {'max_time': '10m', 'num_nodes': 1}}
 
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
