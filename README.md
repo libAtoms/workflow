@@ -88,7 +88,7 @@ vasp_kwargs = { 'encut': 400.0, 'ismear': 0, 'sigma': 0.1, 'ediff': 1.0d-7, 'ksp
 # set path to POTCARs
 # override non-trivial default setups, just use file in POTCARs/<symbol>/POTCAR
 vasp_kwargs['pp'] = '.' # override ASE Vasp's unneeded "potpaw*" addition
-vasp_kwargs['setups'] = { chemsym: '' for chemsym in ase.data.atomic_numbers.keys() } 
+vasp_kwargs['setups'] = { chemsym: '' for chemsym in ase.data.atomic_numbers.keys() }
 
 #   do relaxation
 ci_relaxed = minim_run(ci, co, calculator=(Vasp, [], vasp_kwargs), pressure=0.0)
@@ -158,7 +158,7 @@ For example, to parallelize only the call to `minin.run(...)` from `gap_rss_iter
 
 Each value consists of a dict that will be passed to the `RemoteInfo` constructor as its `kwargs`.
 
-### Dividing items into and parallelising within jobs 
+### Dividing items into and parallelising within jobs
 
 When using the iterable loop remote job functionality, the number
 of items from the iterable assigned to each job is set by the
@@ -166,7 +166,7 @@ of items from the iterable assigned to each job is set by the
 `WFL_AUTOPARA_REMOTEINFO`).  If positive, it directly specifies the
 number, but if negative, `-1 * job_chunksize * chunksize` items will be
 packaged, where `chunksize` is the value for the underlying pool-based
-(`WFL_AUTOPARA_NPOOL`) parallelization. 
+(`WFL_AUTOPARA_NPOOL`) parallelization.
 
 Note that by default the remote job will set
 - `WFL_AUTOPARA_NPOOL=${EXPYRE_NTASKS_PER_NODE}`
@@ -189,18 +189,16 @@ will run on every system defined in `$HOME/.expyre/config.json`.  The
 Optional env vars:
  - `EXPYRE_PYTEST_SYSTEMS`: regexp to filter systems in `$HOME/.expyre/config.json` that will
    be used for testing.
- - `WFL_PYTEST_REMOTE_INFO`: dict of fields to _add_ to `RemoteInfo` object when doing high
+ - `WFL_PYTEST_EXPYRE_INFO`: dict of fields to _add_ to `RemoteInfo` object when doing high
    level (`iterable_loop`, `gap_fit`) remote run tests.
 
 #### pytest with remote run example
-Running a maximally complete set of tests with somehwat verbose output:
+Running a maximally complete set of tests with somehwat verbose output (also need `pw.x`
+in path):
 ```
-> env EXPYRE_PYTEST_SYSTEMS='(local_sys|remote_sys)' pytest -s --basetemp $HOME/pytest \
-      --runremote --runslow -rxXs
+> env EXPYRE_PYTEST_SYSTEMS='(local_sys|remote_sys)' \
+      WFL_PYTEST_BUILDCELL=path_to_buildcell  \
+      VASP_COMMAND=path_to_vasp VASP_COMMAND_GAMMA=path_to_vasp_gamma PYTEST_VASP_POTCAR_DIR=path_to_potcars \
+      ASE_ORCA_COMMAND=path_to_orca \
+      pytest -s --basetemp $HOME/pytest --runremote --runslow -rxXs
 ```
-
-## TODO
-
-* Syntax to be able to pass ConfigSet arguments, rather than already constructed ConfigSet, to routines that do operations, for cleaner calls?
-* Wrap routines that do operations in something like `click`
-* Consider doing file/ABCD abstraction with an abstract parent class and separate implementation classes

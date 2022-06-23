@@ -119,10 +119,10 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
 
 
 @pytest.mark.remote
-def test_ace_fit_remote(request, tmp_path, expyre_systems, monkeypatch):
-    ri = {'resources' : {'max_time': '10m', 'n': [1, 'nodes']},
+def test_ace_fit_remote(request, tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
+    ri = {'resources' : {'max_time': '10m', 'num_nodes': 1},
           'pre_cmds': [ f'export PYTHONPATH={Path(__file__).parent.parent}:$PYTHONPATH'],
-          'env_vars' : ['ACE_FIT_JULIA_THREADS=$( [ $EXPYRE_NCORES_PER_NODE -gt 2 ] && echo 2 || echo $(( $EXPYRE_NCORES_PER_NODE )) )', 'ACE_FIT_BLAS_THREADS=$EXPYRE_NCORES_PER_NODE' ]}
+          'env_vars' : ['WFL_ACE_FIT_JULIA_THREADS=$( [ $EXPYRE_NUM_CORES_PER_NODE -gt 2 ] && echo 2 || echo $(( $EXPYRE_NUM_CORES_PER_NODE )) )', 'ACE_FIT_BLAS_THREADS=$EXPYRE_NUM_CORES_PER_NODE' ]}
 
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
@@ -131,12 +131,7 @@ def test_ace_fit_remote(request, tmp_path, expyre_systems, monkeypatch):
         ri['sys_name'] = sys_name
         ri['job_name'] = 'pytest_ace_fit_'+sys_name
 
-        if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-            ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
-            if 'resources' in ri_extra:
-                ri['resources'].update(ri_extra['resources'])
-                del ri_extra['resources']
-            ri.update(ri_extra)
+        remoteinfo_env(ri)
 
-        monkeypatch.setenv('WFL_ACE_FIT_REMOTEINFO', json.dumps(ri))
+        monkeypatch.setenv('WFL_ACE_FIT_EXPYRE_INFO', json.dumps(ri))
         test_ace_fit(request, tmp_path, monkeypatch, run_dir=f'run_dir_{sys_name}')

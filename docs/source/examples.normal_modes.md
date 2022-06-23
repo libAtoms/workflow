@@ -30,7 +30,7 @@ def xtb_normal_modes(input_fname, output_fname, parallel_hessian):
                                                  outputs=OutputSpec,
                                                  calculator=calc,
                                                  prop_prefix=prop_prefix,
-                                                 chunksize=1)
+                                                 num_inputs_per_python_subprocess=1)
 ```
 
 

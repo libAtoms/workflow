@@ -11,12 +11,12 @@ from .utils import save_results
 
 # run that operates on ConfigSet, for multiprocessing
 def run(inputs, outputs, calculator, properties=None, output_prefix='_auto_', raise_calc_exceptions=False, 
-    chunksize=10, verbose=False, npool=None, remote_info=None):
+    num_inputs_per_python_subprocess=10, verbose=False, num_python_subprocesses=None, remote_info=None):
     if properties is None:
         properties = ['energy', 'forces', 'stress']
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, chunksize=chunksize,
+    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
                          calculator=calculator, properties=properties, output_prefix=output_prefix,
-                         verbose=verbose, npool=npool, remote_info=remote_info,
+                         verbose=verbose, num_python_subprocesses=num_python_subprocesses, remote_info=remote_info,
                          raise_calc_exceptions=raise_calc_exceptions)
 
 

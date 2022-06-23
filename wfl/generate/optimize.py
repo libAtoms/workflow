@@ -35,7 +35,7 @@ PreconLBFGS.log = new_log
 # run that operates on ConfigSet, for multiprocessing
 def run(inputs, outputs, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
         keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
-        results_prefix='optimize_', chunksize=10, verbose=False, update_config_type=True, **opt_kwargs):
+        results_prefix='optimize_', num_inputs_per_python_subprocess=10, verbose=False, update_config_type=True, **opt_kwargs):
     # Normally each thread needs to call np.random.seed so that it will generate a different
     # set of random numbers.  This env var overrides that to produce deterministic output,
     # for purposes like testing
@@ -43,7 +43,7 @@ def run(inputs, outputs, calculator, fmax=1.0e-3, smax=None, steps=1000, pressur
         initializer = None
     else:
         initializer = np.random.seed
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, chunksize=chunksize,
+    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
                          calculator=calculator, fmax=fmax, smax=smax, steps=steps,
                          pressure=pressure, keep_symmetry=keep_symmetry, traj_step_interval=traj_step_interval,
                          traj_subselect=traj_subselect, skip_failures=skip_failures, results_prefix=results_prefix,

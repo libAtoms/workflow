@@ -21,7 +21,7 @@ ace_fname="/work/e89/e89/eg475/work/md_tests/ace_cut4.5_N3D16_ard/2_wdir/ace_cut
 input_fname = "mega_md_test_in.xyz"
 wdir = "md_outputs"
 
-job_chunksize = nnodes * 128
+num_inputs_per_queued_job = nnodes * 128
 max_time = '24h'
 n = (nnodes, "nodes")
 partitions="standard"
@@ -41,7 +41,7 @@ remote_info = wfl.pipeline.utils.RemoteInfo(
     job_name = "md-test",
     resources = resources,
     partial_node = partial_node,
-    job_chunksize=job_chunksize,
+    num_inputs_per_queued_job=num_inputs_per_queued_job,
     )
 
 
@@ -121,7 +121,7 @@ def prepare_inputs(ats, info_label, workdir_root, tags):
         write(fname_in, at)
 
     ci = ConfigSet_in(input_files=input_files)
-    co = ConfigSet_out(
+    co = OutputSpec(
         output_files=output_files,
         all_or_none=True, 
         set_tags=tags)

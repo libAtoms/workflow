@@ -65,7 +65,7 @@ def cli(ctx, verbose, configuration, buildcell_cmd, cur_iter, seeds):
     ctx.obj['seeds'] = seeds
     if ctx.obj['seeds'] is not None:
         warnings.warn(f'Setting initial seeds to {ctx.obj["seeds"]}.  If autoparallelization '
-                       'is on (WFL_AUTOPARA_NPOOL, etc), this will not affect runs on other threads.')
+                       'is on (WFL_NUM_PYTHON_SUBPROCESSES, etc), this will not affect runs on other threads.')
         ctx.obj['seeds'] = [int(s) for s in ctx.obj['seeds'].split(',')]
         np.random.seed(ctx.obj['seeds'][0])
         del ctx.obj['seeds'][0]
