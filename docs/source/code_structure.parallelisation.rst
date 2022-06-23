@@ -13,7 +13,7 @@ Runtime view
 ****************************************
 
 
-Once a function that operates on individual configs has been wrapped, the user can get parallelization to happen in one of two different ways.  The first is the use of the env var ``WFL_AUTOPARA_NPOOL``.  This variable should be set to a number, and that many python threads will be created (using `multiprocessing.pool.Pool <https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool>`_).  The script should be run as usual.
+Once a function that operates on individual configs has been wrapped, the user can get parallelization to happen in one of two different ways.  The first is the use of the env var ``WFL_NUM_PYTHON_SUBPROCESSES``.  This variable should be set to a number, and that many python threads will be created (using `multiprocessing.pool.Pool <https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool>`_).  The script should be run as usual.
 
 The other is to set the env var ``WFL_MPIPOOL`` to any value, and to run the script with ``mpirun`` (or whatever is appropriate for the installed MPI implementation).  All MPI tasks will be used to parallelize using `mpi4py <https://mpi4py.readthedocs.io/en/stable/>`_ and `mpipool <https://github.com/mpipool/mpipool>`_.
 

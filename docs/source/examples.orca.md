@@ -42,7 +42,7 @@ Changing the simple input to `orca_simple_input="UKS B3LYP def2-SV(P) def2/J D3B
 
 ## 2.2 Parallelise with Workflow
 
-Alternatively, it might be more useful to run ORCA itself sequentially (`orca_simple_input="UKS B3LYP def2-SV(P) def2/J D3BJ"`), but use Workflow to evaluate multiple structures at the same time in parallel. For that, `WFL_AUTOPARA_NPOOL` should be set to the number of processes to use (e.g. `export WFL_AUTOPARA_NPOOL=8`). (N.B. as a rule of thumb, `OMP_NUM_THREADS` must be set to `1`).
+Alternatively, it might be more useful to run ORCA itself sequentially (`orca_simple_input="UKS B3LYP def2-SV(P) def2/J D3BJ"`), but use Workflow to evaluate multiple structures at the same time in parallel. For that, `WFL_NUM_PYTHON_SUBPROCESSES` should be set to the number of processes to use (e.g. `export WFL_NUM_PYTHON_SUBPROCESSES=8`). (N.B. as a rule of thumb, `OMP_NUM_THREADS` must be set to `1`).
 
 ## 2.3 Parallelise with ORCA and Workflow
 
@@ -77,7 +77,7 @@ remote_ifno = {
         "job_name": "dft",
         "resources": {"n" : [4, "tasks"], "partitions":"any$", "max_time": "4h"},
         "partial_node":true,
-        "job_chunksize": 20}}
+        "num_inputs_per_queued_job": 20}}
 ```
 
 * `orca.py::evaluate` - the signature of the function which should be parallelised by submitting multiple queued jobs. Scripts might have multiple functions that can be parallelised like this and it might make sense to only do that to some of them.
@@ -88,14 +88,14 @@ remote_ifno = {
     * `partitions` - name of the queue, converted to `#$ -q any` in this example that uses SGE. ExPyRe uses RegEx to find matching partition names, so `any$` will only pick the first of the two partitions specified in `config.json`. 
     * `max_time` - time requirement for the job, converted to `#$ -l h_rt=4:00:00` in this example.
 * `partial_node` - assumes that the que works in "node non-exclusive" way, multiple jobs may be run on a given node and allows picking a partition (`any` in this case) even if it has more cores available (32 here) than the number of cores needed for the job (4 in this case). 
-* `job_chunksize` - how many structures to assign to a single queued job. 
+* `num_inputs_per_queued_job` - how many structures to assign to a single queued job. 
 
 ## 4. Complete script
 
-Let us assume 100 structures in the `configs.xyz` file. Put together, this script will create 5 separate 4-core jobs (`100/job_chunksize`) with 20 atomic structures assigned to each. Within a given job, the configs will be evaluated 4 at a time (i.e. `WFL_AUTOPARA_NPOOL` will be _automatically_ set to `4`), each ORCA comman running in serial. 
+Let us assume 100 structures in the `configs.xyz` file. Put together, this script will create 5 separate 4-core jobs (`100/num_inputs_per_queued_job`) with 20 atomic structures assigned to each. Within a given job, the configs will be evaluated 4 at a time (i.e. `WFL_NUM_PYTHON_SUBPROCESSES` will be _automatically_ set to `4`), each ORCA comman running in serial. 
 
 ```
-export WFL_AUTOPARA_REMOTEINFO=$PWD/remoteinfo.json
+export WFL_EXPYRE_INFO=$PWD/remoteinfo.json
 cat <<EOF > remoteinfo.json
 {
 "orca.py::evaluate" : {
@@ -103,7 +103,7 @@ cat <<EOF > remoteinfo.json
     "job_name": "dft",
     "resources": {"n" : [4, "tasks"], "partitions":"any$", "max_time": "4h"},
     "partial_node":true,
-    "job_chunksize": 20}
+    "num_inputs_per_queued_job": 20}
 }
 EOF
 
@@ -158,7 +158,7 @@ from expyre.resources import Resources
 
 input_fname = "validation.rdkit.xtb2_md.dft.both.xyz"
 output_fname = "validation.rdkit.xtb2_md.dft.both.dft.xyz"
-job_chunksize = 20
+num_inputs_per_queued_job = 20
 n_tasks = 4
 max_time = "48h"
 
@@ -180,7 +180,7 @@ remote_info = wfl.autoparallelize.remoteinfo.RemoteInfo(
     job_name = "npa", 
     resources = resources, 
     partial_node = True, 
-    job_chunksize=job_chunksize, 
+    num_inputs_per_queued_job=num_inputs_per_queued_job, 
     output_files=["ORCA_calc_files"])
 
 # orca params
@@ -202,7 +202,7 @@ generic.run(
     properties=["energy", "forces"],
     output_prefix='dft_',
     remote_info=remote_info,
-	chunksize=1)
+	num_inputs_per_python_subprocess=1)
 
 
 
