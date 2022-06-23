@@ -202,10 +202,3 @@ in path):
       ASE_ORCA_COMMAND=path_to_orca \
       pytest -s --basetemp $HOME/pytest --runremote --runslow -rxXs
 ```
-
-## TODO
-
-* Make setting of command for various DFT calculators more consistent
-* Syntax to be able to pass ConfigSet arguments, rather than already constructed ConfigSet, to routines that do operations, for cleaner calls?
-* Wrap routines that do operations in something like `click`
-* Consider doing file/ABCD abstraction with an abstract parent class and separate implementation classes
