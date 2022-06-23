@@ -12,7 +12,7 @@ Some parts of Workflow (e.g. how many parallel processes to run) are controlled 
 
 * WFL_NUM_PYTHON_SUBPROCESSES
 * WFL_MPIPOOL
-* GAP_FIT_OMP_NUM_THREADS 
+* WFL_GAP_FIT_OMP_NUM_THREADS
 * OMP_NUM_THREADS might have to be set to 1  
 
 .. toctree::

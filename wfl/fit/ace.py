@@ -67,8 +67,8 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
     ---------------------
     WFL_ACE_FIT_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
         contructor to be used to run fitting in separate queued job
-    ACE_FIT_JULIA_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will use julia multithreading (LSQ assembly)
-    ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
+    WFL_ACE_FIT_JULIA_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will use julia multithreading (LSQ assembly)
+    WFL_ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
     """
 
     ace_fit_params = prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir, ref_property_prefix)
@@ -179,8 +179,8 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
     ---------------------
     WFL_ACE_FIT_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
         contructor to be used to run fitting in separate queued job
-    ACE_FIT_JULIA_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will use julia multithreading (LSQ assembly)
-    ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
+    WFL_ACE_FIT_JULIA_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will use julia multithreading (LSQ assembly)
+    WFL_ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
 
     """
     run_dir = Path(run_dir)
@@ -320,8 +320,8 @@ def _execute_fit_command(cmd, ace_file_base, ACE_fname, dry_run):
     """
 
     orig_julia_num_threads = (os.environ.get('JULIA_NUM_THREADS', None))
-    if 'ACE_FIT_JULIA_THREADS' in os.environ:
-        os.environ['JULIA_NUM_THREADS'] = os.environ['ACE_FIT_JULIA_THREADS']
+    if 'WFL_ACE_FIT_JULIA_THREADS' in os.environ:
+        os.environ['JULIA_NUM_THREADS'] = os.environ['WFL_ACE_FIT_JULIA_THREADS']
 
     # this will raise an error if return status is not 0
     # we could also capture stdout and stderr here, but right now that's done by shell
