@@ -14,9 +14,12 @@ This page is for the functions/modules/code operations that are somewhat more mo
    :caption: Contents:
 
    operations.calculators.rst
-   operations.generating_configs.rst
-   operations.selecting_configs.rst
-   operations.gap_fitting.rst 
+   operations.generate.md
+   operations.select.rst
+   operations.descriptors.md
+   operations.gap_fitting.md
+   operations.multistage_gap_fitting.rst 
+   operations.ace_fitting.md
    operations.plots.rst
-   operations.misc.rst
+   operations.utils.md
   

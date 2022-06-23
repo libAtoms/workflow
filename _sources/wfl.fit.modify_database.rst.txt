@@ -12,6 +12,14 @@ wfl.fit.modify\_database.gap\_rss\_set\_config\_sigmas\_from\_convex\_hull modul
    :undoc-members:
    :show-inheritance:
 
+wfl.fit.modify\_database.scale\_orig module
+-------------------------------------------
+
+.. automodule:: wfl.fit.modify_database.scale_orig
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 wfl.fit.modify\_database.simple\_factor\_nonperiodic module
 -----------------------------------------------------------
 

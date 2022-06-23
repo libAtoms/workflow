@@ -212,7 +212,7 @@ Set the number of OMP threads to 1 in general and to the maximum for gap_fit
 
 The active iteration's number is written in the file ``ACTIVE_ITER``, which if you keep then the iteration number will be increased. Directories will be created with names ``run_iter_<number>`` and all work of a given iteration self contained in them.
 
-Anything that is done already can be skipped, the ``Configset_out`` implementation is taking care of this, which lets you not repeat work in a lot of cases when restarting the calculations.
+Anything that is done already can be skipped, the ``OutputSpec`` implementation is taking care of this, which lets you not repeat work in a lot of cases when restarting the calculations.
 
 An efficient and handy way to run multiple iterations is as follows:
 
