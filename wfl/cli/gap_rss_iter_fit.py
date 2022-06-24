@@ -746,7 +746,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
         # NOTE: grouping all the defect configurations this way makes for better potential parallelism
         # since all the MDs can run side by side, but possibly worse restart for interrupted jobs, since the
         # results are all-or-none on the entire set.
-        groups[grp_label]['defect_confs'] = ConfigSet(input_configs=defect_confs)
+        groups[grp_label]['defect_confs'] = ConfigSet(input_configsets=defect_confs)
 
     # NOTE: perhaps the hard-wiring of specific md.sample parameters should be replaced with an
     # 'md_kwargs' param, similar to 'optimize_kwargs'

@@ -141,10 +141,12 @@ class ConfigSet:
                     self.input_configs = [[self.input_configs]]
                 elif isinstance(first_config, Atoms):
                     # iterable(Atoms), store as 1 group
-                    self.input_configs = [self.input_configs]
+                    self.input_configs = [list(self.input_configs)]
                 else:
+                    input_configs_orig = self.input_configs
+                    self.input_configs = []
                     # check for iterable(iterable(Atoms))
-                    for sub_iter in self.input_configs:
+                    for sub_iter in input_configs_orig:
                         check = "inner iterator is iterable"
                         try:
                             first_subconfig = next(iter(sub_iter))
@@ -154,6 +156,7 @@ class ConfigSet:
                         if not isinstance(first_subconfig, Atoms):
                             check = "inner iterator contains Atoms"
                             raise TypeError
+                        self.input_configs.append(list(sub_iter))
             except StopIteration:
                 # empty iterable
                 self.input_configs = [[]]
