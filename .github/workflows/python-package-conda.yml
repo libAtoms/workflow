@@ -50,10 +50,23 @@ jobs:
       - name: Install wfl (expyre and universalSOAP are dependencies)
         run: pip install .
 
-      - name: Install Quantum Espresso
+      - name: Update apt-get for various later package instralls
         run: |
           sudo apt-get update
+
+      - name: Install Quantum Espresso
+        run: |
           sudo apt-get install --no-install-recommends quantum-espresso
+
+      - name: Install buildcell
+        run: |
+          sudo apt-get install gfortran
+          wget https://www.mtg.msm.cam.ac.uk/system/files/documents/airss-0.9.1.tgz
+          tar xzf airss-0.9.1.tgz
+          cd airss-0.9.1
+          make buildcell
+          mkdir -p $HOME/bin
+          cp src/buildcell/src/buildcell $HOME/bin/
 
       - name: Install MPI dependencies
         if: env.use-mpi
@@ -61,6 +74,25 @@ jobs:
           # this can eaily be turned off if needed
           conda install -c conda-forge mpi4py openmpi pytest-mpi
           pip install mpipool
+
+      - name: Install and configure slurm and ExPyRe
+        run: |
+          sudo apt-get install -u slurm-wlm mailutils
+          host_s=$( hostname -s )
+          sudo cp .github/workflows_assets/slurm.conf /etc/slurm-llnl/
+          sudo sed -i -e "s/_HOST_/$host_s/g" /etc/slurm-llnl/slurm.conf
+          sudo mkdir /var/log/slurm
+          sudo mkdir /var/spool/slurmd
+          sudo service slurmd start
+          sudo service slurmctld start
+          sleep 5
+          echo "sinfo -s --long"
+          sinfo -s --long
+          mkdir $HOME/.expyre
+          cp .github/workflows_assets/config.json $HOME/.expyre
+          echo "which pw.x"
+          which pw.x
+          ls -l /usr/bin/pw.x
 
       - name: Lint with flake8
         run: |
@@ -72,12 +104,22 @@ jobs:
       - name: Test with pytest - plain
         if: env.coverage-on-version != matrix.python-version
         run: |
-          pytest
+          rm -rf $HOME/pytest_plain
+          mkdir $HOME/pytest_plain
+          #
+          export EXPYRE_PYTEST_SYSTEMS=github
+          export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
+          pytest --runremote --basetemp $HOME/pytest_plain -rxXs
 
       - name: Test with pytest - coverage
         if: env.coverage-on-version == matrix.python-version
         run: |
-          pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered
+          rm -rf $HOME/pytest_cov
+          mkdir $HOME/pytest_cov
+          #
+          export EXPYRE_PYTEST_SYSTEMS=github
+          export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
+          pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs
 
       - name: MPI tests -- plain
         if: ${{ env.use-mpi && env.coverage-on-version != matrix.python-version}}
@@ -102,11 +144,11 @@ jobs:
           retention-days: 7
 
 
-  build-docs: 
+  build-docs:
     runs-on: ubuntu-latest
-    needs: build-and-test  
+    needs: build-and-test
 
-    steps: 
+    steps:
       - uses: actions/checkout@v2
 
       - name: Build documentation
@@ -119,4 +161,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/build/html 
+          publish_dir: docs/build/html
