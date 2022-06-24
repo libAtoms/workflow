@@ -77,6 +77,9 @@ jobs:
           sinfo -s --long
           mkdir $HOME/.expyre
           cp .github/workflows_assets/config.json $HOME/.expyre
+          echo "which pw.x"
+          which pw.x
+          ls -l /usr/bin/pw.x
 
       - name: Lint with flake8
         run: |
@@ -88,13 +91,16 @@ jobs:
       - name: Test with pytest - plain
         if: env.coverage-on-version != matrix.python-version
         run: |
-          pytest
+          rm -rf $HOME/pytest_plain
+          mkdir $HOME/pytest_plain
+          pytest --runremote --basetemp $HOME/pytest_plain -rxXs
 
       - name: Test with pytest - coverage
         if: env.coverage-on-version == matrix.python-version
         run: |
-          mkdir $HOME/pytest
-          env EXPYRE_PYTEST_SYSTEMS=github pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest
+          rm -rf $HOME/pytest_cov
+          mkdir $HOME/pytest_cov
+          env EXPYRE_PYTEST_SYSTEMS=github pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs
 
       - name: MPI tests -- plain
         if: ${{ env.use-mpi && env.coverage-on-version != matrix.python-version}}
