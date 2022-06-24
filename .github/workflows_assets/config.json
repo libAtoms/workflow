@@ -1,0 +1,10 @@
+{ "systems": {
+    "github": { "host": null,
+        "scheduler": "slurm",
+        "header": ["#SBATCH --nodes={nnodes}",
+                   "#SBATCH --ntasks={ncores}",
+                   "#SBATCH --ntasks-per-node={ncores_per_node}"],
+        "partitions": { "standard":  { "ncores" : 2, "max_time" : null, "max_mem" : "10GB" } }
+    }
+  }
+}
