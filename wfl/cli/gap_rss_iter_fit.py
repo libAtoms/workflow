@@ -17,6 +17,7 @@ import pathlib
 import pprint
 from datetime import datetime
 from pathlib import Path
+import re
 
 import ase.atoms
 import click
@@ -475,6 +476,50 @@ def evaluate_iter_and_fit_all(cur_iter, run_dir, params, step_params, cur_fittin
     return GAP_xml_file
 
 
+def get_buildcell_input_files(step_label, cur_iter):
+    files = (glob.glob(f"gap_rss_iter_fit.prep.buildcell_inputs.{step_label}.iter_*.yaml") +
+             glob.glob(f"gap_rss_iter_fit.prep.buildcell_inputs.{step_label}.yaml") +
+             glob.glob("gap_rss_iter_fit.prep.buildcell_inputs.default.iter_*.yaml") +
+             glob.glob("gap_rss_iter_fit.prep.buildcell_inputs.default.yaml"))
+    if len(files) == 0:
+        raise RuntimeError(f"No buildcell inputs yaml file for step {step_label}")
+
+    use_filename = None
+
+    # look for iter specific file
+    for filename in files:
+        m = re.search(r"\.iter_([0-9:]+)\.yaml$", filename)
+        if not m:
+            # not iter specific, skip for now
+            continue
+        file_iter_range = m.group(1).split(":")
+        if len(file_iter_range) == 1:
+            if cur_iter != int(file_iter_range[0]):
+                continue
+        elif len(file_iter_range) == 2:
+            if ((len(file_iter_range[0]) != 0 and cur_iter < int(file_iter_range[0])) or
+                (len(file_iter_range[1]) != 0 and cur_iter >= int(file_iter_range[1]))):
+                continue
+        else:
+            raise RuntimeError("buildcell inputs yaml filename range expression {m.group(1)} not valid")
+
+        use_filename = filename
+        break
+
+    if use_filename is None:
+        # look for non-iter-specific file
+        for filename in files:
+            if filename.endswith(f".{step_label}.yaml") or filename.endswith(f".default.yaml"):
+                use_filename = filename
+                break
+
+    with open(use_filename) as fin:
+        # must use full load because dict keys are tuples
+        buildcell_input_files = yaml.full_load(fin)
+
+    return buildcell_input_files
+
+
 @cli.command('initial_step')
 @click.option('--cur_iter', '-i', type=click.INT, default=None)
 @click.option('--verbose', '-v', is_flag=True)
@@ -495,14 +540,7 @@ def do_initial_step(ctx, cur_iter, verbose):
     select_by_desc_method = params.get('global/select_by_desc_method', default='CUR')
 
     buildcell_cmd = ctx.obj['buildcell_cmd']
-    try:
-        with open('gap_rss_iter_fit.prep.buildcell_inputs.initial.yaml') as fin:
-            # must use full load because dict keys are tuples
-            buildcell_input_files = yaml.full_load(fin)
-    except FileNotFoundError:
-        with open('gap_rss_iter_fit.prep.buildcell_inputs.default.yaml') as fin:
-            # must use full load because dict keys are tuples
-            buildcell_input_files = yaml.full_load(fin)
+    buildcell_input_files = get_buildcell_input_files("initial", cur_iter)
 
     # SAVE gap_rss_group in Atoms.info for later steps like doing convex hull
     #     based sigma setting separately for each group's convex hull
@@ -555,12 +593,7 @@ def do_rss_step(ctx, cur_iter, verbose):
     select_by_desc_method = params.get('global/select_by_desc_method', default='CUR')
 
     buildcell_cmd = ctx.obj['buildcell_cmd']
-    try:
-        with open('gap_rss_iter_fit.prep.buildcell_inputs.rss.yaml') as fin:
-            buildcell_input_files = yaml.full_load(fin)
-    except FileNotFoundError:
-        with open('gap_rss_iter_fit.prep.buildcell_inputs.default.yaml') as fin:
-            buildcell_input_files = yaml.full_load(fin)
+    buildcell_input_files = get_buildcell_input_files("rss", cur_iter)
     with open('gap_rss_iter_fit.prep.config_selection_descriptors.yaml') as fin:
         descriptor_strs = yaml.safe_load(fin)
 
@@ -627,12 +660,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
         single_composition_group = params.get('global/single_composition_group', default=True)
 
         buildcell_cmd = ctx.obj['buildcell_cmd']
-        try:
-            with open('gap_rss_iter_fit.prep.buildcell_inputs.MD_bulk_defect.yaml') as fin:
-                buildcell_input_files = yaml.full_load(fin)
-        except FileNotFoundError:
-            with open('gap_rss_iter_fit.prep.buildcell_inputs.default.yaml') as fin:
-                buildcell_input_files = yaml.full_load(fin)
+        buildcell_input_files = get_buildcell_input_files("MD_bulk_defect", cur_iter)
 
         # store info for each group: fraction of total, and configs
         # NEED TO SAVE gap_rss_group in Atoms.info for later steps like fitting convex hull
