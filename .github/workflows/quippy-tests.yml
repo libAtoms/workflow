@@ -29,22 +29,6 @@ jobs:
           # install wfl (expyre and universalSOAP are dependencies)
           pip install .
 
-      - name: Install and configure slurm and ExPyRe
-        run: |
-          sudo apt-get install -u slurm-wlm mailutils
-          host_s=$( hostname -s )
-          sudo cp .github/workflows_assets/slurm.conf /etc/slurm-llnl/
-          sudo sed -i -e "s/_HOST_/$host_s/g" /etc/slurm-llnl/slurm.conf
-          sudo mkdir /var/log/slurm
-          sudo mkdir /var/spool/slurmd
-          sudo service slurmd start
-          sudo service slurmctld start
-          sleep 5
-          echo "sinfo -s --long"
-          sinfo -s --long
-          mkdir $HOME/.expyre
-          cp .github/workflows_assets/config.json $HOME/.expyre
-
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
@@ -54,8 +38,7 @@ jobs:
 
       - name: Test with pytest - coverage
         run: |
-          mkdir $HOME/pytest
-          env EXPYRE_PYTEST_SYSTEMS=github pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest
+          pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered
 
 #      - name: MPI tests -- coverage
 #        run: |
