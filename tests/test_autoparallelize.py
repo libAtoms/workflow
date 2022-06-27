@@ -16,7 +16,8 @@ def test_empty_iterator(tmp_path):
     assert len([at for at in co]) == 0
 
 
-def test_speedup():
+@pytest.mark.perf
+def test_pool_speedup():
     np.random.seed(5)
 
     ats = []

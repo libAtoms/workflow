@@ -111,8 +111,16 @@ def iloop(func, *args, def_num_python_subprocesses=None, def_num_inputs_per_pyth
     output of func, having been executable by iterable_loop
     """
 
-    inputs = kwargs.get('inputs', args[0])
-    outputs = kwargs.get('outputs', args[1])
+    if 'inputs' in kwargs:
+        inputs = kwargs['inputs']
+    else:
+        # not as a keyword, must be first positional arg
+        inputs = args[0]
+    if 'outputs' in kargs:
+        outputs = kwargs['outputs']
+    else:
+        # not as a keyword, must be second positions arg
+        outputs = args[1]
 
     num_python_subprocesses = kwargs.pop('num_python_subprocesses', def_num_python_subprocesses)
     num_inputs_per_python_subprocess = kwargs.pop('num_inputs_per_python_subprocess', def_num_inputs_per_python_subprocess)
