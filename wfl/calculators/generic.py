@@ -3,21 +3,10 @@ import warnings
 from ase import Atoms
 from ase.calculators.calculator import all_changes
 
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import iloop, iloop_docstring
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
 from .utils import save_results
-
-
-# run that operates on ConfigSet, for multiprocessing
-def run(inputs, outputs, calculator, properties=None, output_prefix='_auto_', raise_calc_exceptions=False, 
-    num_inputs_per_python_subprocess=10, verbose=False, num_python_subprocesses=None, remote_info=None):
-    if properties is None:
-        properties = ['energy', 'forces', 'stress']
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
-                         calculator=calculator, properties=properties, output_prefix=output_prefix,
-                         verbose=verbose, num_python_subprocesses=num_python_subprocesses, remote_info=remote_info,
-                         raise_calc_exceptions=raise_calc_exceptions)
 
 
 def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_auto_', verbose=False, raise_calc_exceptions=False):
@@ -25,22 +14,15 @@ def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_a
 
     Parameters
     ----------
-    atoms: list(Atoms)
-        input configs
     calculator: Calculator / (initializer, args, kwargs)
         ASE calculator or routine to call to create calculator
-    properties: list(str), default ['energy']
+    properties: list(str), default ['energy', 'forces', stress']
         properties to request from calculator
     output_prefix: str, default _auto_
         string to prefix info/arrays key names where results will be stored.
         '_auto_' for automatically determining name of calculator constructor, and
         None for SinglePointCalculator instead of info/arrays
     verbose : bool
-
-    Returns
-    -------
-    list(Atoms) 
-        Evaluated configurations
     """
 
     if properties is None:
@@ -83,3 +65,8 @@ def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_a
         return at_out[0]
     else:
         return at_out
+
+
+import functools
+run = functools.partial(iloop, run_autopara_wrappable, def_num_inputs_per_python_subprocess=10)
+run.__doc__ = iloop_docstring(run_autopara_wrappable.__doc__, "Atoms")

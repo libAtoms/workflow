@@ -9,13 +9,15 @@ from wfl.configset import OutputSpec
 from .pool import do_in_pool
 from .remote import do_remotely
 
-
-iloop_docstring_pre = """inputs: iterable
-        input quantities (atoms, numbers, or anything else)
+iloop_docstring_params_pre = (
+"""    inputs: iterable({iterable_type})
+        input quantities of type {iterable_type}
     outputs: OutputSpec or None
-        where to write output atomic configs, or None for no output (i.e. only side-effects)"""
+        where to write output atomic configs, or None for no output (i.e. only side-effects)
+""")
 
-iloop_docstring_post = """iterable_loop_related:
+iloop_docstring_params_post = (
+"""    iterable_loop_related:
         num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
             number of processes to parallelize over, 0 for running in serial
         num_inputs_per_python_subprocess: int, default 1 (kwargs only)
@@ -27,13 +29,45 @@ iloop_docstring_post = """iterable_loop_related:
             json file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
             RemoteInfo kwrgs with keys that match end of stack trace with function names separated by '.'.
         remote_label: str, default None
-            remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine 
-            filename '::' calling function (pass to iterable_loop())"""
+            remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine
+            filename '::' calling function (pass to iterable_loop())
+""")
+
+iloop_docstring_returns = (
+"""    Returns
+    -------
+    co: ConfigSet with output configs
+""")
+
+def iloop_docstring(orig_docstring, input_iterable_type):
+    output_docstring = ""
+    got_pre = False
+    lines = orig_docstring.splitlines(True)
+    for li in range(len(lines)):
+        if (li >= 1 and re.match(r'^\s*[-]*\s*$', lines[li]) and
+                        re.match(r'^\s*Parameters\s*[:]?\s*$', lines[li-1])):
+            output_docstring += lines[li]
+            output_docstring += iloop_docstring_params_pre.format(iterable_type=input_iterable_type)
+            got_pre = True
+        elif got_pre and re.match(r'^\s*$', lines[li]):
+            output_docstring += iloop_docstring_params_post + lines[li]
+        else:
+            output_docstring += lines[li]
+
+    lines = orig_docstring.splitlines(True)
+    if not re.match(r'^\s*$', lines[-1]):
+        output_docstring += "\n"
+    if output_docstring[-1] != "\n":
+        output_docstring += "\n"
+
+    output_docstring += iloop_docstring_returns
+
+    return output_docstring
 
 
 def iloop(func, *args, def_num_python_subprocesses=None, def_num_inputs_per_python_subprocess=1, iterable_arg=0, def_skip_failed=True,
           initializer=None, initargs=None, def_remote_info=None, def_remote_label=None, hash_ignore=[], **kwargs):
-    """functools.partial-based decorator (using ideas in topic 4 of 
+    """functools.partial-based decorator (using ideas in topic 4 of
     https://pythonicthoughtssnippets.github.io/2020/08/09/PTS13-rethinking-python-decorators.html).
     Works OK and can be pickled, but ugly handling of docstring, and no handling of function signature.
 
@@ -42,7 +76,7 @@ def iloop(func, *args, def_num_python_subprocesses=None, def_num_inputs_per_pyth
 
     Fix final docstring by inserting `{iloop_docstring_pre}` before all other parameters in op docstring, similarly
     for `iloop_docstring_post`, and mangling final docstring with
-        `desired_func_name.__doc__ = op.__doc__.format(iloop_docstring_pre=iloop_docstring_pre,  iloop_docstring_post=iloop_docstring_post)`  
+        `desired_func_name.__doc__ = op.__doc__.format(iloop_docstring_pre=iloop_docstring_pre,  iloop_docstring_post=iloop_docstring_post)`
 
     Parameters
     ----------
