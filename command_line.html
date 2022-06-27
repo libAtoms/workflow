@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,15 +28,14 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="command_line.automatic_docs.html" />
+    <link rel="next" title="wfl" href="command_line.automatic_docs.html" />
     <link rel="prev" title="Collisions" href="workflows.collisions.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
+    <meta name="docsearch:language" content="None">
     
 
     <!-- Google Analytics -->
@@ -197,7 +196,12 @@
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="simple">
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="command_line.automatic_docs.html">
+     wfl
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1 has-children">
@@ -541,14 +545,14 @@ title="Print to PDF"
               <div>
                 
   <div class="section" id="command-line-interface">
-<span id="command-line"></span><h1>Command line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this heading">#</a></h1>
+<span id="command-line"></span><h1>Command line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this headline">#</a></h1>
 <p>Description of all the CLI tools</p>
-<p>Automatically generated docummentation of all command line functions: <span class="xref std std-ref">auto_command_line</span></p>
+<p>Automatically generated docummentation of all command line functions: <a class="reference internal" href="command_line.automatic_docs.html#auto-command-line"><span class="std std-ref">wfl</span></a></p>
 <div class="section" id="calculators">
-<h2>Calculators<a class="headerlink" href="#calculators" title="Permalink to this heading">#</a></h2>
+<h2>Calculators<a class="headerlink" href="#calculators" title="Permalink to this headline">#</a></h2>
 <p>You can perform DFT calculations on large sets of configurations with little effort within this workflow package. Currently ORCA, CASTEP and VASP are implemented. There are examples for these in the document, a few thoughts about the parallelism involved, and about how to contribute interfaces of other codes.</p>
 <div class="section" id="orca-outdated">
-<h3>ORCA (outdated)<a class="headerlink" href="#orca-outdated" title="Permalink to this heading">#</a></h3>
+<h3>ORCA (outdated)<a class="headerlink" href="#orca-outdated" title="Permalink to this headline">#</a></h3>
 <p>Use with <code class="docutils literal notranslate"><span class="pre">wfl</span> <span class="pre">ref-method</span> <span class="pre">orca-eval</span> <span class="pre">[...]</span></code></p>
 <p>This is an advanced ORCA evaluator for radicals, using basin hopping in wavefunction space. However with appropriate settings, it behaves as a simple calculator doing one calculation per structure.</p>
 <p>Note, that the calculations can benefit from having access to fast storage, for example SSD scratch drives. Specifying a fast scratch path in the <code class="docutils literal notranslate"><span class="pre">-tmp,</span> <span class="pre">--scratch-path</span></code> argument lets you use this, where temporary directories will be created and only saved (to cwd) if the calculations fail.</p>
@@ -564,7 +568,7 @@ title="Print to PDF"
 </div>
 <p>This calculator needs you to explicitly set the number of processes to use, serial ORCA calculations are used, unless you specify in the appropriate block.</p>
 <p>full help:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> wfl ref-method orca-eval --help
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wfl ref-method orca-eval --help
 <span class="go">Usage: wfl ref-method orca-eval [OPTIONS] [INPUTS]...</span>
 
 <span class="go">Options:</span>
@@ -601,7 +605,7 @@ title="Print to PDF"
 </div>
 </div>
 <div class="section" id="castep">
-<h3>CASTEP<a class="headerlink" href="#castep" title="Permalink to this heading">#</a></h3>
+<h3>CASTEP<a class="headerlink" href="#castep" title="Permalink to this headline">#</a></h3>
 <p>The CASTEP calculator wrapper can perform simple energy, force and stress calculations.</p>
 <p>The default settings can be simply used with:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wfl ref-method castep-eval --output-file structures_dft.xyz properties=&quot;energy forces stress&quot; structures_in.xyz</span>
@@ -613,7 +617,7 @@ title="Print to PDF"
 </pre></div>
 </div>
 <p>Full help</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> wfl ref-method castep-eval --help
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wfl ref-method castep-eval --help
 <span class="go">Usage: wfl ref-method castep-eval [OPTIONS] [INPUTS]...</span>
 
 <span class="go">Options:</span>
@@ -634,7 +638,7 @@ title="Print to PDF"
 </div>
 </div>
 <div class="section" id="vasp">
-<h3>VASP<a class="headerlink" href="#vasp" title="Permalink to this heading">#</a></h3>
+<h3>VASP<a class="headerlink" href="#vasp" title="Permalink to this headline">#</a></h3>
 <p>The VASP Calculator wrapper is based on ASE’s <code class="docutils literal notranslate"><span class="pre">Vasp2</span></code>, and can do energy, force, and stress calculations.  The command will come from the <code class="docutils literal notranslate"><span class="pre">VASP_COMMAND</span></code> (<code class="docutils literal notranslate"><span class="pre">VASP_COMMAND_GAMMA</span></code> for input configs with <code class="docutils literal notranslate"><span class="pre">Atoms.pbc</span> <span class="pre">==</span> <span class="pre">[False]</span> <span class="pre">*</span> <span class="pre">3</span></code>) unless the <code class="docutils literal notranslate"><span class="pre">--vasp-command</span></code> argument is passed.</p>
 <p>The default way for it to find PAWs is somewhat different from the normal behavior for <code class="docutils literal notranslate"><span class="pre">Vasp2</span></code>. The normal way is the <code class="docutils literal notranslate"><span class="pre">VASP_PP_PATH</span></code> environment variable, followed by a subdirectory which depends on XC functional. The argument <code class="docutils literal notranslate"><span class="pre">--potcar-top-dir</span></code> overrides <code class="docutils literal notranslate"><span class="pre">VASP_PP_PATH</span></code> if specified. The subdirectory defaults to <code class="docutils literal notranslate"><span class="pre">.</span></code>, unless overridden by the <code class="docutils literal notranslate"><span class="pre">--potcar-rel-dir</span></code>, instead of using the normal XC-dependent heuristic.  The PAW for each element is normally found in <code class="docutils literal notranslate"><span class="pre">&lt;chem_symbol&gt;/POTCAR</span></code> below whatever directory is chosen (the <code class="docutils literal notranslate"><span class="pre">setups</span></code> keyword argument can contain a dict that sets a suffix to the <code class="docutils literal notranslate"><span class="pre">&lt;chem_symbol&gt;</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">_pv</span></code> for p-electrons in valence) for each atomic number or chemical symbol key, but there is no interface to pass such a dict yet).</p>
 <p>The simplest way to use it is by using parameters from VASP’s normal input files:</p>
@@ -647,7 +651,7 @@ title="Print to PDF"
 </pre></div>
 </div>
 <p>Full help (keyword help messages coming soon)</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> wfl ref-method vasp-eval --help
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wfl ref-method vasp-eval --help
 <span class="go">Usage: wfl ref-method vasp-eval [OPTIONS] [INPUTS]...</span>
 
 <span class="go">Options:</span>
@@ -666,6 +670,18 @@ title="Print to PDF"
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="command_line.automatic_docs.html">wfl</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-descriptor">descriptor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-file-op">file-op</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-fitting">fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-generate-configs">generate-configs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-processing">processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-ref-method">ref-method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-select-configs">select-configs</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -689,7 +705,7 @@ title="Print to PDF"
     <a class='right-next' id="next-link" href="command_line.automatic_docs.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">&lt;no title&gt;</p>
+        <p class="prev-next-title">wfl</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,7 +28,6 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -36,7 +35,7 @@
     <link rel="next" title="Customise Auto-parallelized Functions" href="examples.autopara.html" />
     <link rel="prev" title="Normal Modes (non-periodic)" href="examples.normal_modes.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
+    <meta name="docsearch:language" content="None">
     
 
     <!-- Google Analytics -->
@@ -197,7 +196,12 @@
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="simple">
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="command_line.automatic_docs.html">
+     wfl
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1 current active has-children">
@@ -517,16 +521,16 @@ title="Print to PDF"
               <div>
                 
   <div class="section" id="smiles-to-xyz">
-<h1>SMILES to .xyz<a class="headerlink" href="#smiles-to-xyz" title="Permalink to this heading">#</a></h1>
+<h1>SMILES to .xyz<a class="headerlink" href="#smiles-to-xyz" title="Permalink to this headline">#</a></h1>
 <p>Needs RDKit installed</p>
 <div class="section" id="command-line">
-<h2>Command line<a class="headerlink" href="#command-line" title="Permalink to this heading">#</a></h2>
+<h2>Command line<a class="headerlink" href="#command-line" title="Permalink to this headline">#</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wfl</span> <span class="n">generate</span><span class="o">-</span><span class="n">configs</span> <span class="n">smiles</span> <span class="o">-</span><span class="n">o</span> <span class="n">at</span><span class="o">.</span><span class="n">xyz</span> <span class="n">CCCCCC</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="python-script">
-<h2>Python script<a class="headerlink" href="#python-script" title="Permalink to this heading">#</a></h2>
+<h2>Python script<a class="headerlink" href="#python-script" title="Permalink to this headline">#</a></h2>
 <p>Just the “task”:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">at</span> <span class="o">=</span> <span class="n">wfl</span><span class="o">.</span><span class="n">generate</span><span class="o">.</span><span class="n">smiles</span><span class="o">.</span><span class="n">smi_to_atoms</span><span class="p">(</span><span class="s2">&quot;CCCCCC&quot;</span><span class="p">)</span>
 </pre></div>

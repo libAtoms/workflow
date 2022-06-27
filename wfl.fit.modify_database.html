@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,7 +28,6 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -36,7 +35,7 @@
     <link rel="next" title="wfl.generate package" href="wfl.generate.html" />
     <link rel="prev" title="wfl.fit.gap package" href="wfl.fit.gap.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
+    <meta name="docsearch:language" content="None">
     
 
     <!-- Google Analytics -->
@@ -197,7 +196,12 @@
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="simple">
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="command_line.automatic_docs.html">
+     wfl
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1 has-children">
@@ -473,7 +477,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-fit-modify-database-gap-rss-set-config-sigmas-from-convex-hull-module">
+  <a class="reference internal nav-link" href="#module-wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull">
    wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull module
   </a>
  </li>
@@ -483,7 +487,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-fit-modify-database-simple-factor-nonperiodic-module">
+  <a class="reference internal nav-link" href="#module-wfl.fit.modify_database.simple_factor_nonperiodic">
    wfl.fit.modify_database.simple_factor_nonperiodic module
   </a>
  </li>
@@ -517,7 +521,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-fit-modify-database-gap-rss-set-config-sigmas-from-convex-hull-module">
+  <a class="reference internal nav-link" href="#module-wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull">
    wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull module
   </a>
  </li>
@@ -527,7 +531,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-fit-modify-database-simple-factor-nonperiodic-module">
+  <a class="reference internal nav-link" href="#module-wfl.fit.modify_database.simple_factor_nonperiodic">
    wfl.fit.modify_database.simple_factor_nonperiodic module
   </a>
  </li>
@@ -547,26 +551,84 @@ title="Print to PDF"
               <div>
                 
   <div class="section" id="wfl-fit-modify-database-package">
-<h1>wfl.fit.modify_database package<a class="headerlink" href="#wfl-fit-modify-database-package" title="Permalink to this heading">#</a></h1>
+<h1>wfl.fit.modify_database package<a class="headerlink" href="#wfl-fit-modify-database-package" title="Permalink to this headline">#</a></h1>
 <div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
 </div>
-<div class="section" id="wfl-fit-modify-database-gap-rss-set-config-sigmas-from-convex-hull-module">
-<h2>wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull module<a class="headerlink" href="#wfl-fit-modify-database-gap-rss-set-config-sigmas-from-convex-hull-module" title="Permalink to this heading">#</a></h2>
+<div class="section" id="module-wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull">
+<span id="wfl-fit-modify-database-gap-rss-set-config-sigmas-from-convex-hull-module"></span><h2>wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull module<a class="headerlink" href="#module-wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull.modify">
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull.</span></span><span class="sig-name descname"><span class="pre">modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overall_error_scale_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_error_scale_factors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'REF_'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull.modify" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull.piecewise_linear">
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull.</span></span><span class="sig-name descname"><span class="pre">piecewise_linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull.piecewise_linear" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-wfl.fit.modify_database.scale_orig">
-<span id="wfl-fit-modify-database-scale-orig-module"></span><h2>wfl.fit.modify_database.scale_orig module<a class="headerlink" href="#module-wfl.fit.modify_database.scale_orig" title="Permalink to this heading">#</a></h2>
+<span id="wfl-fit-modify-database-scale-orig-module"></span><h2>wfl.fit.modify_database.scale_orig module<a class="headerlink" href="#module-wfl.fit.modify_database.scale_orig" title="Permalink to this headline">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.fit.modify_database.scale_orig.modify">
 <span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.scale_orig.</span></span><span class="sig-name descname"><span class="pre">modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property_factors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_type_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.scale_orig.modify" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </div>
-<div class="section" id="wfl-fit-modify-database-simple-factor-nonperiodic-module">
-<h2>wfl.fit.modify_database.simple_factor_nonperiodic module<a class="headerlink" href="#wfl-fit-modify-database-simple-factor-nonperiodic-module" title="Permalink to this heading">#</a></h2>
+<div class="section" id="module-wfl.fit.modify_database.simple_factor_nonperiodic">
+<span id="wfl-fit-modify-database-simple-factor-nonperiodic-module"></span><h2>wfl.fit.modify_database.simple_factor_nonperiodic module<a class="headerlink" href="#module-wfl.fit.modify_database.simple_factor_nonperiodic" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.fit.modify_database.simple_factor_nonperiodic.list_to_sigma_dict">
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.simple_factor_nonperiodic.</span></span><span class="sig-name descname"><span class="pre">list_to_sigma_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma_values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.simple_factor_nonperiodic.list_to_sigma_dict" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.fit.modify_database.simple_factor_nonperiodic.modify">
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.simple_factor_nonperiodic.</span></span><span class="sig-name descname"><span class="pre">modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overall_error_scale_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_error_scale_factors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'REF_'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.simple_factor_nonperiodic.modify" title="Permalink to this definition">#</a></dt>
+<dd><p>Modify the database (atoms objects) with a simple scaling of default_sigma values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>configs</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – </p></li>
+<li><p><strong>overall_error_scale_factor</strong> (<em>float</em><em>, </em><em>default=1.0</em>) – </p></li>
+<li><p><strong>field_error_scale_factors</strong> (<em>dict</em>) – this is a trick for now</p></li>
+<li><p><strong>property_prefix</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.fit.modify_database.simple_factor_nonperiodic.modify_cell">
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.simple_factor_nonperiodic.</span></span><span class="sig-name descname"><span class="pre">modify_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ase.atoms.Atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.simple_factor_nonperiodic.modify_cell" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.fit.modify_database.simple_factor_nonperiodic.modify_with_factor">
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.simple_factor_nonperiodic.</span></span><span class="sig-name descname"><span class="pre">modify_with_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">at</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">virial_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hessian_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.simple_factor_nonperiodic.modify_with_factor" title="Permalink to this definition">#</a></dt>
+<dd><p>Set the kernel regularisation values and remove results if given but not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>at</strong> – </p></li>
+<li><p><strong>factor</strong> (<em>float</em><em>, </em><em>default=1.0</em>) – </p></li>
+<li><p><strong>energy_sigma</strong> – </p></li>
+<li><p><strong>force_sigma</strong> – </p></li>
+<li><p><strong>virial_sigma</strong> – </p></li>
+<li><p><strong>hessian_sigma</strong> – </p></li>
+<li><p><strong>property_prefix</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-wfl.fit.modify_database">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.fit.modify_database" title="Permalink to this heading">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.fit.modify_database" title="Permalink to this headline">#</a></h2>
 </div>
 </div>
 

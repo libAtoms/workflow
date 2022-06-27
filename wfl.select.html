@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,7 +28,6 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -36,7 +35,7 @@
     <link rel="next" title="wfl.utils package" href="wfl.utils.html" />
     <link rel="prev" title="wfl.scripts package" href="wfl.scripts.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
+    <meta name="docsearch:language" content="None">
     
 
     <!-- Google Analytics -->
@@ -197,7 +196,12 @@
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="simple">
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="command_line.automatic_docs.html">
+     wfl
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1 has-children">
@@ -473,27 +477,27 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-select-by-descriptor-module">
+  <a class="reference internal nav-link" href="#module-wfl.select.by_descriptor">
    wfl.select.by_descriptor module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-select-convex-hull-module">
+  <a class="reference internal nav-link" href="#module-wfl.select.convex_hull">
    wfl.select.convex_hull module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-select-flat-histogram-module">
+  <a class="reference internal nav-link" href="#module-wfl.select.flat_histogram">
    wfl.select.flat_histogram module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-select-selection-space-module">
+  <a class="reference internal nav-link" href="#module-wfl.select.selection_space">
    wfl.select.selection_space module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-select-simple-module">
+  <a class="reference internal nav-link" href="#module-wfl.select.simple">
    wfl.select.simple module
   </a>
  </li>
@@ -527,27 +531,27 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-select-by-descriptor-module">
+  <a class="reference internal nav-link" href="#module-wfl.select.by_descriptor">
    wfl.select.by_descriptor module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-select-convex-hull-module">
+  <a class="reference internal nav-link" href="#module-wfl.select.convex_hull">
    wfl.select.convex_hull module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-select-flat-histogram-module">
+  <a class="reference internal nav-link" href="#module-wfl.select.flat_histogram">
    wfl.select.flat_histogram module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-select-selection-space-module">
+  <a class="reference internal nav-link" href="#module-wfl.select.selection_space">
    wfl.select.selection_space module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-select-simple-module">
+  <a class="reference internal nav-link" href="#module-wfl.select.simple">
    wfl.select.simple module
   </a>
  </li>
@@ -567,27 +571,281 @@ title="Print to PDF"
               <div>
                 
   <div class="section" id="wfl-select-package">
-<h1>wfl.select package<a class="headerlink" href="#wfl-select-package" title="Permalink to this heading">#</a></h1>
+<h1>wfl.select package<a class="headerlink" href="#wfl-select-package" title="Permalink to this headline">#</a></h1>
 <div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
 </div>
-<div class="section" id="wfl-select-by-descriptor-module">
-<h2>wfl.select.by_descriptor module<a class="headerlink" href="#wfl-select-by-descriptor-module" title="Permalink to this heading">#</a></h2>
+<div class="section" id="module-wfl.select.by_descriptor">
+<span id="wfl-select-by-descriptor-module"></span><h2>wfl.select.by_descriptor module<a class="headerlink" href="#module-wfl.select.by_descriptor" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.select.by_descriptor.CUR">
+<span class="sig-prename descclassname"><span class="pre">wfl.select.by_descriptor.</span></span><span class="sig-name descname"><span class="pre">CUR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stochastic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stochastic_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.by_descriptor.CUR" title="Permalink to this definition">#</a></dt>
+<dd><p>Compute selection by CUR of descriptors with dot-product, with optional exponentiation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mat</strong> (<em>np.array</em><em>(</em><em>vec_len</em><em>, </em><em>n_vecs</em><em>) or </em><em>(</em><em>n_vecs</em><em>, </em><em>n_vecs</em><em>)</em>) – rectangular array of descriptors as column vectors or square kernel matrix</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – number to select</p></li>
+<li><p><strong>stochastic</strong> (<em>bool</em><em>, </em><em>default True</em>) – use stochastic selection algorithm</p></li>
+<li><p><strong>stochastic_seed</strong> (<em>bool</em><em>, </em><em>default None</em>) – fix seed of random number generator</p></li>
+<li><p><strong>exclude_list</strong> (<em>list</em><em>(</em><em>int</em><em>)</em><em>, </em><em>default None</em>) – list of descriptor indices to exclude</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>selected_inds</strong> – list of indices for selected descriptors</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list(int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.select.by_descriptor.CUR_conf_global">
+<span class="sig-prename descclassname"><span class="pre">wfl.select.by_descriptor.</span></span><span class="sig-name descname"><span class="pre">CUR_conf_global</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at_descs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at_descs_info_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_exp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stochastic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stochastic_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_descriptor_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leverage_score_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.by_descriptor.CUR_conf_global" title="Permalink to this definition">#</a></dt>
+<dd><p>Select atoms from a list or iterable using CUR on global (per-config) descriptors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – atomic configs to select from</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – where to write output to</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – number to select</p></li>
+<li><p><strong>stochastic_seed</strong> (<em>bool</em><em>, </em><em>default None</em>) – fix seed of random number generator</p></li>
+<li><p><strong>at_descs</strong> (<em>np.array</em><em>(</em><em>n_descs</em><em>, </em><em>desc_len</em><em>)</em><em>, </em><em>mutually exclusive with at_descs_info_key</em>) – list of descriptor vectors</p></li>
+<li><p><strong>at_descs_info_key</strong> (<em>str</em><em>, </em><em>mutually exclusive with at_descs</em>) – key to Atoms.info dict containing per-config descriptor vector</p></li>
+<li><p><strong>kernel_exp</strong> (<em>float</em><em>, </em><em>default None</em>) – exponent to compute kernel (if other than 1)</p></li>
+<li><p><strong>stochastic</strong> (<em>bool</em><em>, </em><em>default True</em>) – use stochastic selection</p></li>
+<li><p><strong>keep_descriptor_info</strong> (<em>bool</em><em>, </em><em>default True</em>) – do not delete descriptor from info</p></li>
+<li><p><strong>exclude_list</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – list of Atoms to exclude from CUR selection.  Needs to be _exactly_ the same as
+actual Atoms objects in inputs, to full machine precision</p></li>
+<li><p><strong>center</strong> (<em>bool</em><em>, </em><em>default True</em>) – center data before doing SVD, as generally required for PCA</p></li>
+<li><p><strong>leverage_score_key</strong> (<em>str</em><em>, </em><em>default None</em>) – if not None, info key to store leverage score in</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ConfigSet corresponding to selected configs output</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.select.by_descriptor.do_svd">
+<span class="sig-prename descclassname"><span class="pre">wfl.select.by_descriptor.</span></span><span class="sig-name descname"><span class="pre">do_svd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">at_descs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_vectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vh'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.by_descriptor.do_svd" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.select.by_descriptor.greedy_fps_conf_global">
+<span class="sig-prename descclassname"><span class="pre">wfl.select.by_descriptor.</span></span><span class="sig-name descname"><span class="pre">greedy_fps_conf_global</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at_descs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at_descs_info_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_descriptor_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev_selected_descs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">O_N_sq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.by_descriptor.greedy_fps_conf_global" title="Permalink to this definition">#</a></dt>
+<dd><p>Select atoms from a list or iterable using greedy farthest point selection on global (per-config) descriptors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – atomic configs to select from</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – where to write output to</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – number to select</p></li>
+<li><p><strong>at_descs</strong> (<em>np.array</em><em>(</em><em>n_descs</em><em>, </em><em>desc_len</em><em>)</em><em>, </em><em>mutually exclusive with at_descs_info_key</em>) – list of descriptor vectors</p></li>
+<li><p><strong>at_descs_info_key</strong> (<em>str</em><em>, </em><em>mutually exclusive with at_descs</em>) – key to Atoms.info dict containing per-config descriptor vector</p></li>
+<li><p><strong>keep_descriptor_info</strong> (<em>bool</em><em>, </em><em>default True</em>) – do not delete descriptor from info</p></li>
+<li><p><strong>exclude_list</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – list of Atoms to exclude from selection by descriptor</p></li>
+<li><p><strong>prev_selected_descs</strong> (<em>np.array</em><em>(</em><em>n_prev_descs</em><em>, </em><em>desc_len</em><em>)</em><em>, </em><em>default False</em>) – if present, list of previously selected descriptors to also be farthest from</p></li>
+<li><p><strong>O_N_sq</strong> (<em>bool</em><em>, </em><em>default False</em>) – use O(N^2) algorithm with smaller prefactor</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – more verbose output</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>selected_configs</strong> – corresponding to selected configs output</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.select.by_descriptor.prep_descs_and_exclude">
+<span class="sig-prename descclassname"><span class="pre">wfl.select.by_descriptor.</span></span><span class="sig-name descname"><span class="pre">prep_descs_and_exclude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at_descs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at_descs_info_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.by_descriptor.prep_descs_and_exclude" title="Permalink to this definition">#</a></dt>
+<dd><p>process configs and/or input descriptor row array and exclude list to produce
+descriptors column array and indices of excluded configuration</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – input configurations</p></li>
+<li><p><strong>at_descs</strong> (<em>np.ndarray</em><em>( </em><em>n_configs x desc_len</em><em> )</em><em>, </em><em>default None</em>) – if not None, array of descriptors (as rows) for each config
+mutually exclusive with at_descs_info_key, one is required</p></li>
+<li><p><strong>at_descs_info_key</strong> (<em>str</em><em>, </em><em>default None</em>) – key into Atoms.info dict for descriptor vector of each config
+mutually exclusive with at_descs, one is required</p></li>
+<li><p><strong>exclude_list</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – list of Atoms structures to be excluded from selection, to be converted into
+indices into enumerate(inputs)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>at_descs_cols</strong> (<em>np.ndarray (desc_len x n_configs)</em>) – array of descriptors (as columns) for each config</p></li>
+<li><p><strong>exclude_ind_list</strong> (<em>list(int)</em>) – indices of configurations to exclude</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.select.by_descriptor.write_selected_and_clean">
+<span class="sig-prename descclassname"><span class="pre">wfl.select.by_descriptor.</span></span><span class="sig-name descname"><span class="pre">write_selected_and_clean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at_descs_info_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_descriptor_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.by_descriptor.write_selected_and_clean" title="Permalink to this definition">#</a></dt>
+<dd><p>Writes selected (by index) configs to output configset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – input configuration set</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – target for output of selected configurations</p></li>
+<li><p><strong>selected</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – list of indices to be selected, cannot have duplicates</p></li>
+<li><p><strong>at_descs_info_key</strong> (<em>str</em><em>, </em><em>default None</em>) – key in info dict to delete if keep_descriptor_info is False</p></li>
+<li><p><strong>keep_descriptor_info</strong> (<em>bool</em><em>, </em><em>default True</em>) – keep descriptor in info dict</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="wfl-select-convex-hull-module">
-<h2>wfl.select.convex_hull module<a class="headerlink" href="#wfl-select-convex-hull-module" title="Permalink to this heading">#</a></h2>
+<div class="section" id="module-wfl.select.convex_hull">
+<span id="wfl-select-convex-hull-module"></span><h2>wfl.select.convex_hull module<a class="headerlink" href="#module-wfl.select.convex_hull" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.select.convex_hull.select">
+<span class="sig-prename descclassname"><span class="pre">wfl.select.convex_hull.</span></span><span class="sig-name descname"><span class="pre">select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.convex_hull.select" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="wfl-select-flat-histogram-module">
-<h2>wfl.select.flat_histogram module<a class="headerlink" href="#wfl-select-flat-histogram-module" title="Permalink to this heading">#</a></h2>
+<div class="section" id="module-wfl.select.flat_histogram">
+<span id="wfl-select-flat-histogram-module"></span><h2>wfl.select.flat_histogram module<a class="headerlink" href="#module-wfl.select.flat_histogram" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.select.flat_histogram.biased_select_conf">
+<span class="sig-prename descclassname"><span class="pre">wfl.select.flat_histogram.</span></span><span class="sig-name descname"><span class="pre">biased_select_conf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kT</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_bin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.flat_histogram.biased_select_conf" title="Permalink to this definition">#</a></dt>
+<dd><p>select configurations by Boltzmann biased flat histogram on some quantity in Atoms.info</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – input configurations</p></li>
+<li><p><strong>output</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – output configurations</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – number of configs to select</p></li>
+<li><p><strong>info_field</strong> (<em>string</em>) – Atoms.info key for quantity by which to do flat histogram and Boltzmann bias</p></li>
+<li><p><strong>kT</strong> (<em>float</em><em>, </em><em>default -1</em>) – Boltzmann bias temperature, &lt;= 0 to not bias</p></li>
+<li><p><strong>bins</strong> (<em>np.histogram bins argument</em><em>, </em><em>default 'auto'</em>) – argument to pass to np.histogram</p></li>
+<li><p><strong>by_bin</strong> (<em>bool</em><em>, </em><em>default True</em>) – do selections by bin, which is more accurate, but works badly for small kT and does not allow for selection with replacement</p></li>
+<li><p><strong>replace</strong> (<em>bool</em><em>, </em><em>default False</em>) – do selection with replacement (i.e. repeat configs)</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ConfigSet containing output configs</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="wfl-select-selection-space-module">
-<h2>wfl.select.selection_space module<a class="headerlink" href="#wfl-select-selection-space-module" title="Permalink to this heading">#</a></h2>
+<div class="section" id="module-wfl.select.selection_space">
+<span id="wfl-select-selection-space-module"></span><h2>wfl.select.selection_space module<a class="headerlink" href="#module-wfl.select.selection_space" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.select.selection_space.compare_manual_minima">
+<span class="sig-prename descclassname"><span class="pre">wfl.select.selection_space.</span></span><span class="sig-name descname"><span class="pre">compare_manual_minima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nn_minima</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.selection_space.compare_manual_minima" title="Permalink to this definition">#</a></dt>
+<dd><p>compare nearby minima (presumably from efficient np.reduceat) to manual enumeration</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.select.selection_space.minima_among_neighbors">
+<span class="sig-prename descclassname"><span class="pre">wfl.select.selection_space.</span></span><span class="sig-name descname"><span class="pre">minima_among_neighbors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cartesian_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.selection_space.minima_among_neighbors" title="Permalink to this definition">#</a></dt>
+<dd><p>find, for each config, lowest value config that’s within some distance cutoffs (in
+some feature space, typically composition and volume)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>positions</strong> (<em>float array</em><em>(</em><em>Nsamples</em><em>, </em><em>Nfeatures</em><em>)</em>) – array of positions in feature space</p></li>
+<li><p><strong>values</strong> (<em>float array</em><em>(</em><em>Nsamples</em><em>)</em>) – values for each sample</p></li>
+<li><p><strong>cartesian_distance</strong> (<em>bool</em><em>, </em><em>default True</em>) – do Cartesian distance in feature space, otherwise require that max(dist) in each feature
+dimension is &lt; range of that dimension (Chebychev distance?)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>minima</strong> – value of nearby minimum for each sample</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float array(Nsamples)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.select.selection_space.val_relative_to_nearby_composition_volume_min">
+<span class="sig-prename descclassname"><span class="pre">wfl.select.selection_space.</span></span><span class="sig-name descname"><span class="pre">val_relative_to_nearby_composition_volume_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vol_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compos_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_field_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_field_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_atom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.selection_space.val_relative_to_nearby_composition_volume_min" title="Permalink to this definition">#</a></dt>
+<dd><p>compute difference between some value to corresponding values for configurations
+that are nearby in compositions/volume space</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – input configurations</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – corresponding place for output configs</p></li>
+<li><p><strong>vol_range</strong> (<em>float</em>) – cutoff range for “nearby” in cell volume/atom [we should define what to do about nonperiodic systems]</p></li>
+<li><p><strong>compos_range</strong> (<em>float</em>) – cutoff range for “nearby” in composition (fractional, i.e. 0.0-1.0)</p></li>
+<li><p><strong>info_field_in</strong> (<em>str</em>) – Atoms.info field containing quantity to be subtracted relative to “nearby” configs</p></li>
+<li><p><strong>info_field_out</strong> (<em>str</em>) – Atoms.info field to store value differences in</p></li>
+<li><p><strong>Zs</strong> (<em>list</em><em>(</em><em>int</em><em>)</em><em>, </em><em>default None</em>) – Zs that defined the composition space, if None get from inputs</p></li>
+<li><p><strong>per_atom</strong> (<em>bool</em><em>, </em><em>default True</em>) – apply calculations to per-atom quantities, i.e. Atoms.info[info_field_in] / len(atoms)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ConfigSet pointing to configurations with the saved relative value field</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="wfl-select-simple-module">
-<h2>wfl.select.simple module<a class="headerlink" href="#wfl-select-simple-module" title="Permalink to this heading">#</a></h2>
+<div class="section" id="module-wfl.select.simple">
+<span id="wfl-select-simple-module"></span><h2>wfl.select.simple module<a class="headerlink" href="#module-wfl.select.simple" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.select.simple.by_bool_func">
+<span class="sig-prename descclassname"><span class="pre">wfl.select.simple.</span></span><span class="sig-name descname"><span class="pre">by_bool_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at_filter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.simple.by_bool_func" title="Permalink to this definition">#</a></dt>
+<dd><p>apply a filter to a sequence of configs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – input configurations</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – corresponding output configurations</p></li>
+<li><p><strong>at_filter</strong> (<em>callable</em>) – callable that takes an Atoms and returns a bool indicating if it should be selected</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ConfigSet pointing to selected configurations</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.select.simple.by_index">
+<span class="sig-prename descclassname"><span class="pre">wfl.select.simple.</span></span><span class="sig-name descname"><span class="pre">by_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.simple.by_index" title="Permalink to this definition">#</a></dt>
+<dd><p>select atoms from configs by index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – source configurations</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – output configurations</p></li>
+<li><p><strong>indices</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – Indices to be selected.  Values outside 0..len(inputs)-1 will be ignored.
+Repeated values will lead to multiple copies of configuration</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ConfigSet pointing to selected configurations</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This routine depends on details of ConfigSet and OutputSpec,
+so perhaps belongs as a use case of iterable_loop, but since it can return
+multiple outputs for a single input, this cannot be done right now</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-wfl.select">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.select" title="Permalink to this heading">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.select" title="Permalink to this headline">#</a></h2>
 </div>
 </div>
 
