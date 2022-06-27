@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,6 +28,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -35,7 +36,7 @@
     <link rel="next" title="wfl.fit package" href="wfl.fit.html" />
     <link rel="prev" title="wfl.cli package" href="wfl.cli.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
+    <meta name="docsearch:language" content="en">
     
 
     <!-- Google Analytics -->
@@ -196,12 +197,7 @@
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="command_line.automatic_docs.html">
-     wfl
-    </a>
-   </li>
+  <ul class="simple">
   </ul>
  </li>
  <li class="toctree-l1 has-children">
@@ -477,7 +473,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.descriptors.quippy">
+  <a class="reference internal nav-link" href="#wfl-descriptors-quippy-module">
    wfl.descriptors.quippy module
   </a>
  </li>
@@ -511,7 +507,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.descriptors.quippy">
+  <a class="reference internal nav-link" href="#wfl-descriptors-quippy-module">
    wfl.descriptors.quippy module
   </a>
  </li>
@@ -531,106 +527,15 @@ title="Print to PDF"
               <div>
                 
   <div class="section" id="wfl-descriptors-package">
-<h1>wfl.descriptors package<a class="headerlink" href="#wfl-descriptors-package" title="Permalink to this headline">#</a></h1>
+<h1>wfl.descriptors package<a class="headerlink" href="#wfl-descriptors-package" title="Permalink to this heading">#</a></h1>
 <div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 </div>
-<div class="section" id="module-wfl.descriptors.quippy">
-<span id="wfl-descriptors-quippy-module"></span><h2>wfl.descriptors.quippy module<a class="headerlink" href="#module-wfl.descriptors.quippy" title="Permalink to this headline">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.descriptors.quippy.calc">
-<span class="sig-prename descclassname"><span class="pre">wfl.descriptors.quippy.</span></span><span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">composition_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.descriptors.quippy.calc" title="Permalink to this definition">#</a></dt>
-<dd><p>Calculates descriptors on a set of configs, I/O with ConfigSet/OutputSpec</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – input configurations</p></li>
-<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – where to write outputs</p></li>
-<li><p><strong>descs</strong> (<em>str / list</em><em>(</em><em>str</em><em>) </em><em>/ dict</em><em>(</em><em>Z : str</em><em>)</em>) – descriptor (string or dict or quippy.descriptors.Descriptor) or list of descriptors (applied to all species)
-or dict of descriptors for each species (key is species or None for all species)
-If global, combined descriptor will be concatenated.  If local and Z is not None, multiple arrays
-entries will be created, one per Zcenter, named &lt;key&gt;_Z_&lt;Zcenter&gt;.</p></li>
-<li><p><strong>key</strong> (<em>str</em>) – info/arrays key to store descriptor vectors</p></li>
-<li><p><strong>local</strong> (<em>bool</em><em>, </em><em>default False</em>) – calculate descriptors for each atom</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default True</em>) – normalize final vector (e.g. if contributions from multiple descriptors were concatenated)</p></li>
-<li><p><strong>composition_weight</strong> (<em>bool</em><em>, </em><em>default True</em>) – when concatenating contributions from different species for a global, weight each by composition fraction</p></li>
-<li><p><strong>force</strong> (<em>bool</em><em>, </em><em>default False</em>) – overwrite key if already exists</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>OutputSpec.to_ConfigSet() Pointing to outputs</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.descriptors.quippy.calc_autopara_wrappable">
-<span class="sig-prename descclassname"><span class="pre">wfl.descriptors.quippy.</span></span><span class="sig-name descname"><span class="pre">calc_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">composition_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.descriptors.quippy.calc_autopara_wrappable" title="Permalink to this definition">#</a></dt>
-<dd><p>Calculate descriptor for each config or atom</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>ase.atoms.Atoms / list</em><em>(</em><em>Atoms</em><em>)</em>) – input configuration(s)</p></li>
-<li><p><strong>descs</strong> (<em>str / list</em><em>(</em><em>str</em><em>) </em><em>/ dict</em><em>(</em><em>Z : str / Descriptor</em><em> )</em>) – descriptor or list of descriptors (applied to all species) or dict of descriptor string for each
-species (key None for all species)
-If <code class="docutils literal notranslate"><span class="pre">global</span></code>, combined descriptor will be concatenated.  If <code class="docutils literal notranslate"><span class="pre">local</span></code> and <code class="docutils literal notranslate"><span class="pre">Z</span></code> is not None, multiple arrays
-entries will be created, one per Zcenter, named &lt;key&gt;_Z_&lt;Zcenter&gt;.</p></li>
-<li><p><strong>key</strong> (<em>str</em>) – key in Atoms.info (global) or Atoms.arrays (local) to store information</p></li>
-<li><p><strong>local</strong> (<em>bool</em><em>, </em><em>default False</em>) – calculate a local (per-atom) descriptor, as opposed to global (per-config)</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default True</em>) – normalize final vector (e.g. if contributions from multiple descriptors were concatenated)</p></li>
-<li><p><strong>composition_weight</strong> (<em>bool</em><em>, </em><em>default True</em>) – when concatenating contributions from different species for a global, weight each by composition fraction</p></li>
-<li><p><strong>force</strong> (<em>bool</em><em>, </em><em>default False</em>) – overwrite key if already exists</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>atoms</strong> – Input configuration(s) with descriptors in info/arrays</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Atoms or list(Atoms)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.descriptors.quippy.from_any_to_Descriptor">
-<span class="sig-prename descclassname"><span class="pre">wfl.descriptors.quippy.</span></span><span class="sig-name descname"><span class="pre">from_any_to_Descriptor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">descriptor_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.descriptors.quippy.from_any_to_Descriptor" title="Permalink to this definition">#</a></dt>
-<dd><p>Create quippy.descriptors.Descriptor objects</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>descriptor_src</strong> (<em>desc / list</em><em>(</em><em>desc</em><em>) </em><em>/ dict</em><em>(</em><em>Zcenter : desc</em><em>) </em><em>/ dict</em><em>(</em><em>Zcenter : list</em><em>(</em><em>desc</em><em>)</em><em>)</em>) – <p>String to pass to quippy Descriptor. “Zcenter” denotes atomic number of the central atom”.
-Any “desc” value can be a string, a dict (converted to
-key=value string), or quippy.descriptors.Descriptor object.</p>
-<p>Each <code class="docutils literal notranslate"><span class="pre">descriptor_src</span></code> type correponds to</p>
-<blockquote>
-<div><ul>
-<li><p>a dictionary with None as keys: one or more descriptor for for all species.</p></li>
-<li><p>a dictionary with integers as keys: one or more descriptor for for each species.</p></li>
-<li><p>string, dictionary or <code class="docutils literal notranslate"><span class="pre">Descriptor</span></code>: single descriptor</p></li>
-<li><p>list: list of descriptors to concatenate</p></li>
-</ul>
-</div></blockquote>
-</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>descs</strong> – dict of Descriptors objects</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="wfl-descriptors-quippy-module">
+<h2>wfl.descriptors.quippy module<a class="headerlink" href="#wfl-descriptors-quippy-module" title="Permalink to this heading">#</a></h2>
 </div>
 <div class="section" id="module-wfl.descriptors">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.descriptors" title="Permalink to this headline">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.descriptors" title="Permalink to this heading">#</a></h2>
 </div>
 </div>
 

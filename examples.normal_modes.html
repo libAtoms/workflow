@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,6 +28,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -35,7 +36,7 @@
     <link rel="next" title="SMILES to .xyz" href="examples.smiles.html" />
     <link rel="prev" title="ORCA: all parallelisation options" href="examples.orca.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
+    <meta name="docsearch:language" content="en">
     
 
     <!-- Google Analytics -->
@@ -196,12 +197,7 @@
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="command_line.automatic_docs.html">
-     wfl
-    </a>
-   </li>
+  <ul class="simple">
   </ul>
  </li>
  <li class="toctree-l1 current active has-children">
@@ -521,9 +517,9 @@ title="Print to PDF"
               <div>
                 
   <div class="section" id="normal-modes-non-periodic">
-<h1>Normal Modes (non-periodic)<a class="headerlink" href="#normal-modes-non-periodic" title="Permalink to this headline">#</a></h1>
+<h1>Normal Modes (non-periodic)<a class="headerlink" href="#normal-modes-non-periodic" title="Permalink to this heading">#</a></h1>
 <div class="section" id="generate">
-<h2>Generate<a class="headerlink" href="#generate" title="Permalink to this headline">#</a></h2>
+<h2>Generate<a class="headerlink" href="#generate" title="Permalink to this heading">#</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;xtb-normal-modes&#39;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;input-fname&#39;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output-fname&#39;</span><span class="p">)</span>
@@ -532,7 +528,7 @@ title="Print to PDF"
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--parallel-atoms&#39;</span><span class="p">,</span> <span class="s2">&quot;parallel_hessian&quot;</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">xtb_normal_modes</span><span class="p">(</span><span class="n">input_fname</span><span class="p">,</span> <span class="n">output_fname</span><span class="p">,</span> <span class="n">parallel_hessian</span><span class="p">):</span>
 
-    <span class="kn">from</span> <span class="nn">xtb.ase.calculator</span> <span class="kn">import</span> <span class="n">XTB</span>
+    <span class="kn">from</span> <span class="nn">xtb.ase.calculator</span> <span class="k">import</span> <span class="n">XTB</span>
 
     <span class="n">ConfigSet</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_files</span><span class="o">=</span><span class="n">input_fname</span><span class="p">)</span>
     <span class="n">OutputSpec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_files</span><span class="o">=</span><span class="n">output_fname</span><span class="p">)</span>
@@ -556,7 +552,7 @@ title="Print to PDF"
 </div>
 </div>
 <div class="section" id="sample">
-<h2>Sample<a class="headerlink" href="#sample" title="Permalink to this headline">#</a></h2>
+<h2>Sample<a class="headerlink" href="#sample" title="Permalink to this heading">#</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">,</span> <span class="n">prop_prefix</span><span class="p">,</span>
                         <span class="n">info_to_keep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arrays_to_keep</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Multiple times displace along normal modes for all atoms in input</span>

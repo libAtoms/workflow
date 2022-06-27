@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,6 +28,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -35,7 +36,7 @@
     <link rel="next" title="ACE fitting" href="operations.ace_fitting.html" />
     <link rel="prev" title="Fitting GAP" href="operations.gap_fitting.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
+    <meta name="docsearch:language" content="en">
     
 
     <!-- Google Analytics -->
@@ -196,12 +197,7 @@
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="command_line.automatic_docs.html">
-     wfl
-    </a>
-   </li>
+  <ul class="simple">
   </ul>
  </li>
  <li class="toctree-l1 has-children">
@@ -531,10 +527,10 @@ title="Print to PDF"
               <div>
                 
   <div class="section" id="multistage-gap-fitting">
-<span id="gap-fitting"></span><h1>Multistage GAP fitting<a class="headerlink" href="#multistage-gap-fitting" title="Permalink to this headline">#</a></h1>
+<span id="gap-fitting"></span><h1>Multistage GAP fitting<a class="headerlink" href="#multistage-gap-fitting" title="Permalink to this heading">#</a></h1>
 <p>Fit a GAP with multiple descriptor in multiple stages, to calculate the appropriate delta (energy scale) at each stage</p>
 <div class="section" id="procedure">
-<h2>Procedure<a class="headerlink" href="#procedure" title="Permalink to this headline">#</a></h2>
+<h2>Procedure<a class="headerlink" href="#procedure" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>calculate spread of energy in reference data, use for delta in stage 0</p>
 <ul>
@@ -559,7 +555,7 @@ title="Print to PDF"
 </ul>
 </div>
 <div class="section" id="configuration-file">
-<h2>Configuration file<a class="headerlink" href="#configuration-file" title="Permalink to this headline">#</a></h2>
+<h2>Configuration file<a class="headerlink" href="#configuration-file" title="Permalink to this heading">#</a></h2>
 <p>The iterative fitting procedure is controlled by a JSON file that describes the descriptors and fitting params for each stage, and some global fitting params.</p>
 <ul class="simple">
 <li><p>The top level dict contains two keys, <code class="docutils literal notranslate"><span class="pre">stages</span></code> and <code class="docutils literal notranslate"><span class="pre">gap_params</span></code></p>
@@ -590,7 +586,7 @@ title="Print to PDF"
 </ul>
 </div>
 <div class="section" id="creating-configuration-file">
-<h2>Creating configuration file<a class="headerlink" href="#creating-configuration-file" title="Permalink to this headline">#</a></h2>
+<h2>Creating configuration file<a class="headerlink" href="#creating-configuration-file" title="Permalink to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">wfl.fit.gap_multistage</span></code> has a function <code class="docutils literal notranslate"><span class="pre">prep_input</span></code> which takes a _template_ configuration file and creates descriptors for each species using universal SOAP hyperparameters.  The template file format is similar to the configuration file described above.  The main exceptions are</p>
 <ul class="simple">
 <li><p>in addition to the <code class="docutils literal notranslate"><span class="pre">error_scale_factor</span></code> and <code class="docutils literal notranslate"><span class="pre">descriptors</span></code> keys there is another, <code class="docutils literal notranslate"><span class="pre">add_species</span></code></p></li>
