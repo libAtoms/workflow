@@ -142,23 +142,3 @@ jobs:
           name: coverage-html-${{ matrix.python-version }}
           path: coverage-html/
           retention-days: 7
-
-
-  build-docs:
-    runs-on: ubuntu-latest
-    needs: build-and-test
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Build documentation
-        run: |
-          pip install sphinx sphinx-book-theme docutils==0.16 sphinx-click myst-parser
-          pip install --upgrade jinja2
-          cd docs
-          make html
-      - name: Deploy documentation
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/build/html
