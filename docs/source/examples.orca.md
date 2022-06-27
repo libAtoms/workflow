@@ -75,7 +75,7 @@ remote_ifno = {
     "orca.py::evaluate" : {
         "sys_name": "local",
         "job_name": "dft",
-        "resources": {"n" : [4, "tasks"], "partitions":"any$", "max_time": "4h"},
+        "resources": {"num_cores" : 4, "partitions":"any$", "max_time": "4h"},
         "partial_node":true,
         "num_inputs_per_queued_job": 20}}
 ```
@@ -84,7 +84,7 @@ remote_ifno = {
 * `sys_name` - queue/system/cluster name to execute the job on. One fo the entries in `config.json`
 * `job_name` - prefix for the job's name on the queue (converted to `#$ -N` bit of the header on SGE).
 * `resources` - how many resources the job should require from the queue.
-    * `"n": [4, "task"]` - ask for 4 tasks' worth of cores. The default is 1 cores per task, so each job will be run on 4 cores. That's executed by `"header": ["#$ -pe smp {ncores_per_node}"]` of `config.json`. 
+    * `"num_cores": 4` - ask for 4 cores. That's executed by `"header": ["#$ -pe smp {ncores_per_node}"]` of `config.json`. 
     * `partitions` - name of the queue, converted to `#$ -q any` in this example that uses SGE. ExPyRe uses RegEx to find matching partition names, so `any$` will only pick the first of the two partitions specified in `config.json`. 
     * `max_time` - time requirement for the job, converted to `#$ -l h_rt=4:00:00` in this example.
 * `partial_node` - assumes that the que works in "node non-exclusive" way, multiple jobs may be run on a given node and allows picking a partition (`any` in this case) even if it has more cores available (32 here) than the number of cores needed for the job (4 in this case). 
@@ -101,7 +101,7 @@ cat <<EOF > remoteinfo.json
 "orca.py::evaluate" : {
     "sys_name": "local",
     "job_name": "dft",
-    "resources": {"n" : [4, "tasks"], "partitions":"any$", "max_time": "4h"},
+    "resources": {"num_cores" : 4, "partitions":"any$", "max_time": "4h"},
     "partial_node":true,
     "num_inputs_per_queued_job": 20}
 }
@@ -159,7 +159,7 @@ from expyre.resources import Resources
 input_fname = "validation.rdkit.xtb2_md.dft.both.xyz"
 output_fname = "validation.rdkit.xtb2_md.dft.both.dft.xyz"
 num_inputs_per_queued_job = 20
-n_tasks = 4
+num_cores = 4
 max_time = "48h"
 
 # structures
@@ -172,7 +172,7 @@ expyre_dir.mkdir(exist_ok=True)
 # remote info
 resources = Resources(
     max_time = max_time,
-    n = (n_tasks, "tasks"),
+    num_cores = num_cores,
     partitions = "any$")
 
 remote_info = wfl.autoparallelize.remoteinfo.RemoteInfo(
