@@ -116,7 +116,7 @@ def iloop(func, *args, def_num_python_subprocesses=None, def_num_inputs_per_pyth
     else:
         # not as a keyword, must be first positional arg
         inputs = args[0]
-    if 'outputs' in kargs:
+    if 'outputs' in kwargs:
         outputs = kwargs['outputs']
     else:
         # not as a keyword, must be second positions arg
