@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,7 +28,6 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -36,7 +35,7 @@
     <link rel="next" title="Normal Modes (non-periodic)" href="examples.normal_modes.html" />
     <link rel="prev" title="Examples" href="examples.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
+    <meta name="docsearch:language" content="None">
     
 
     <!-- Google Analytics -->
@@ -197,7 +196,12 @@
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="simple">
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="command_line.automatic_docs.html">
+     wfl
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1 current active has-children">
@@ -577,9 +581,9 @@ title="Print to PDF"
               <div>
                 
   <div class="section" id="orca-all-parallelisation-options">
-<h1>ORCA: all parallelisation options<a class="headerlink" href="#orca-all-parallelisation-options" title="Permalink to this heading">#</a></h1>
+<h1>ORCA: all parallelisation options<a class="headerlink" href="#orca-all-parallelisation-options" title="Permalink to this headline">#</a></h1>
 <div class="section" id="evaluate-atomic-configurations-sequentially-on-a-single-core">
-<h2>1. Evaluate atomic configurations sequentially on a single core<a class="headerlink" href="#evaluate-atomic-configurations-sequentially-on-a-single-core" title="Permalink to this heading">#</a></h2>
+<h2>1. Evaluate atomic configurations sequentially on a single core<a class="headerlink" href="#evaluate-atomic-configurations-sequentially-on-a-single-core" title="Permalink to this headline">#</a></h2>
 <p>The following command will evaluate <code class="docutils literal notranslate"><span class="pre">configs.xyz</span></code> with the ORCA DFT code. The Workflow code called with <code class="docutils literal notranslate"><span class="pre">wfl</span> <span class="pre">ref-method</span> <span class="pre">orca-eval</span> <span class="pre">...</span> </code> is an extension of the <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/calculators/orca.html#module-ase.calculators.orca">ASE ORCA calculator</a>. The extended calculator automates file handling: each structure is evaluated in a separate directory and only specified files are kept.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>base_rundir=orca_base_rundir
 orca_simple_input=&quot;UKS B3LYP def2-SV(P) def2/J D3BJ&quot;
@@ -613,19 +617,19 @@ wfl -v ref-method orca-eval -tmp ${tmp_dir} --base-rundir $base_rundir --output-
 <p>With this command each structure will be evaluated sequentially on a single core.</p>
 </div>
 <div class="section" id="parallelise-with-orca">
-<h2>2.1 Parallelise with ORCA<a class="headerlink" href="#parallelise-with-orca" title="Permalink to this heading">#</a></h2>
+<h2>2.1 Parallelise with ORCA<a class="headerlink" href="#parallelise-with-orca" title="Permalink to this headline">#</a></h2>
 <p>Changing the simple input to <code class="docutils literal notranslate"><span class="pre">orca_simple_input=&quot;UKS</span> <span class="pre">B3LYP</span> <span class="pre">def2-SV(P)</span> <span class="pre">def2/J</span> <span class="pre">D3BJ</span> <span class="pre">PAL8&quot;</span></code> will turn on <a class="reference external" href="https://sites.google.com/site/orcainputlibrary/setting-up-orca#h.p0hdj6lom1lz">ORCA’s parallelsation</a>. This command will still evaluate all structures in <code class="docutils literal notranslate"><span class="pre">config.xyz</span></code> in sequence, but each evaluation will use 8 cores and MPI within ORCA (no need to <code class="docutils literal notranslate"><span class="pre">mpirun</span> <span class="pre">-np</span> <span class="pre">8</span> <span class="pre">orca</span></code>)</p>
 </div>
 <div class="section" id="parallelise-with-workflow">
-<h2>2.2 Parallelise with Workflow<a class="headerlink" href="#parallelise-with-workflow" title="Permalink to this heading">#</a></h2>
+<h2>2.2 Parallelise with Workflow<a class="headerlink" href="#parallelise-with-workflow" title="Permalink to this headline">#</a></h2>
 <p>Alternatively, it might be more useful to run ORCA itself sequentially (<code class="docutils literal notranslate"><span class="pre">orca_simple_input=&quot;UKS</span> <span class="pre">B3LYP</span> <span class="pre">def2-SV(P)</span> <span class="pre">def2/J</span> <span class="pre">D3BJ&quot;</span></code>), but use Workflow to evaluate multiple structures at the same time in parallel. For that, <code class="docutils literal notranslate"><span class="pre">WFL_NUM_PYTHON_SUBPROCESSES</span></code> should be set to the number of processes to use (e.g. <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">WFL_NUM_PYTHON_SUBPROCESSES=8</span></code>). (N.B. as a rule of thumb, <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> must be set to <code class="docutils literal notranslate"><span class="pre">1</span></code>).</p>
 </div>
 <div class="section" id="parallelise-with-orca-and-workflow">
-<h2>2.3 Parallelise with ORCA and Workflow<a class="headerlink" href="#parallelise-with-orca-and-workflow" title="Permalink to this heading">#</a></h2>
+<h2>2.3 Parallelise with ORCA and Workflow<a class="headerlink" href="#parallelise-with-orca-and-workflow" title="Permalink to this headline">#</a></h2>
 <p>Mixed-mode parallelisation is not supported or tested and should be avoided. We expect that the two cases above should cover practically all of the use-cases.</p>
 </div>
 <div class="section" id="evaluate-structures-in-multiple-queued-jobs">
-<h2>3. Evaluate structures in multiple queued jobs<a class="headerlink" href="#evaluate-structures-in-multiple-queued-jobs" title="Permalink to this heading">#</a></h2>
+<h2>3. Evaluate structures in multiple queued jobs<a class="headerlink" href="#evaluate-structures-in-multiple-queued-jobs" title="Permalink to this headline">#</a></h2>
 <p>The parallelisation steps described above would normally be done as a “queued job” on a cluster. Workflow allows for the input configurations’ file to be chopped up and submitted as a separate jobs (possibly using parallelisation within each job) allowing for an even more efficient parallelisation.</p>
 <p>First, one need a configuration (<code class="docutils literal notranslate"><span class="pre">config.json</span></code>) that specifies what “resources” are avaliable on the “local” cluster/machine/queue. For explanation of what means what see …</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s2">&quot;systems&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -667,7 +671,7 @@ wfl -v ref-method orca-eval -tmp ${tmp_dir} --base-rundir $base_rundir --output-
 </ul>
 </div>
 <div class="section" id="complete-script">
-<h2>4. Complete script<a class="headerlink" href="#complete-script" title="Permalink to this heading">#</a></h2>
+<h2>4. Complete script<a class="headerlink" href="#complete-script" title="Permalink to this headline">#</a></h2>
 <p>Let us assume 100 structures in the <code class="docutils literal notranslate"><span class="pre">configs.xyz</span></code> file. Put together, this script will create 5 separate 4-core jobs (<code class="docutils literal notranslate"><span class="pre">100/num_inputs_per_queued_job</span></code>) with 20 atomic structures assigned to each. Within a given job, the configs will be evaluated 4 at a time (i.e. <code class="docutils literal notranslate"><span class="pre">WFL_NUM_PYTHON_SUBPROCESSES</span></code> will be <em>automatically</em> set to <code class="docutils literal notranslate"><span class="pre">4</span></code>), each ORCA comman running in serial.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export WFL_EXPYRE_INFO=$PWD/remoteinfo.json
 cat &lt;&lt;EOF &gt; remoteinfo.json
@@ -701,7 +705,7 @@ wfl -v ref-method orca-eval -tmp ${tmp_dir} --base-rundir $base_rundir --output-
 </div>
 </div>
 <div class="section" id="config-json-example">
-<h2>config.json example<a class="headerlink" href="#config-json-example" title="Permalink to this heading">#</a></h2>
+<h2>config.json example<a class="headerlink" href="#config-json-example" title="Permalink to this headline">#</a></h2>
 <p>Below is an example of corresponding <code class="docutils literal notranslate"><span class="pre">config.json</span></code></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="p">{</span> <span class="s2">&quot;systems&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;local&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
@@ -718,16 +722,16 @@ wfl -v ref-method orca-eval -tmp ${tmp_dir} --base-rundir $base_rundir --output-
 </div>
 </div>
 <div class="section" id="another-complete-example">
-<h2>Another complete example<a class="headerlink" href="#another-complete-example" title="Permalink to this heading">#</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="k">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
-<span class="kn">from</span> <span class="nn">wfl.calculators.orca</span> <span class="k">import</span> <span class="n">ORCA</span><span class="p">,</span> <span class="n">natural_population_analysis</span>
+<h2>Another complete example<a class="headerlink" href="#another-complete-example" title="Permalink to this headline">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
+<span class="kn">from</span> <span class="nn">wfl.calculators.orca</span> <span class="kn">import</span> <span class="n">ORCA</span><span class="p">,</span> <span class="n">natural_population_analysis</span>
 <span class="kn">import</span> <span class="nn">util</span>
-<span class="kn">from</span> <span class="nn">util.util_config</span> <span class="k">import</span> <span class="n">Config</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">wfl.calculators</span> <span class="k">import</span> <span class="n">generic</span>
+<span class="kn">from</span> <span class="nn">util.util_config</span> <span class="kn">import</span> <span class="n">Config</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">wfl.calculators</span> <span class="kn">import</span> <span class="n">generic</span>
 <span class="kn">import</span> <span class="nn">wfl.autoparallelize.remoteinfo</span>
-<span class="kn">from</span> <span class="nn">expyre.resources</span> <span class="k">import</span> <span class="n">Resources</span>
+<span class="kn">from</span> <span class="nn">expyre.resources</span> <span class="kn">import</span> <span class="n">Resources</span>
 
 <span class="n">input_fname</span> <span class="o">=</span> <span class="s2">&quot;validation.rdkit.xtb2_md.dft.both.xyz&quot;</span>
 <span class="n">output_fname</span> <span class="o">=</span> <span class="s2">&quot;validation.rdkit.xtb2_md.dft.both.dft.xyz&quot;</span>
@@ -759,7 +763,7 @@ wfl -v ref-method orca-eval -tmp ${tmp_dir} --base-rundir $base_rundir --output-
 <span class="c1"># orca params</span>
 <span class="n">orca_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;orcablocks&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">cf Convergence Tight SmearTemp 5000 end&quot;</span><span class="p">,</span>
                <span class="s2">&quot;orcasimpleinput&quot;</span><span class="p">:</span> <span class="s2">&quot;UKS B3LYP def2-SV(P) def2/J D3BJ&quot;</span><span class="p">}</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;orca_kwargs: </span><span class="si">{orca_kwargs}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;orca_kwargs: </span><span class="si">{</span><span class="n">orca_kwargs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
 <span class="c1"># calculator</span>
 <span class="n">keep_files</span> <span class="o">=</span> <span class="kc">False</span> 

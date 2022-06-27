@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,7 +28,6 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -36,7 +35,7 @@
     <link rel="next" title="wfl.cli package" href="wfl.cli.html" />
     <link rel="prev" title="wfl.calculators package" href="wfl.calculators.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
+    <meta name="docsearch:language" content="None">
     
 
     <!-- Google Analytics -->
@@ -197,7 +196,12 @@
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="simple">
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="command_line.automatic_docs.html">
+     wfl
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1 has-children">
@@ -473,12 +477,12 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-calculators-orca-basinhopping-module">
+  <a class="reference internal nav-link" href="#module-wfl.calculators.orca.basinhopping">
    wfl.calculators.orca.basinhopping module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-contents">
+  <a class="reference internal nav-link" href="#module-wfl.calculators.orca">
    Module contents
   </a>
  </li>
@@ -507,12 +511,12 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#wfl-calculators-orca-basinhopping-module">
+  <a class="reference internal nav-link" href="#module-wfl.calculators.orca.basinhopping">
    wfl.calculators.orca.basinhopping module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-contents">
+  <a class="reference internal nav-link" href="#module-wfl.calculators.orca">
    Module contents
   </a>
  </li>
@@ -527,15 +531,331 @@ title="Print to PDF"
               <div>
                 
   <div class="section" id="wfl-calculators-orca-package">
-<h1>wfl.calculators.orca package<a class="headerlink" href="#wfl-calculators-orca-package" title="Permalink to this heading">#</a></h1>
+<h1>wfl.calculators.orca package<a class="headerlink" href="#wfl-calculators-orca-package" title="Permalink to this headline">#</a></h1>
 <div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
 </div>
-<div class="section" id="wfl-calculators-orca-basinhopping-module">
-<h2>wfl.calculators.orca.basinhopping module<a class="headerlink" href="#wfl-calculators-orca-basinhopping-module" title="Permalink to this heading">#</a></h2>
+<div class="section" id="module-wfl.calculators.orca.basinhopping">
+<span id="wfl-calculators-orca-basinhopping-module"></span><h2>wfl.calculators.orca.basinhopping module<a class="headerlink" href="#module-wfl.calculators.orca.basinhopping" title="Permalink to this headline">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.calculators.orca.basinhopping.BasinHoppingORCA">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.calculators.orca.basinhopping.</span></span><span class="sig-name descname"><span class="pre">BasinHoppingORCA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_hop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratch_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_missing_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'orca'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_orb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smearing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chained_hops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orcasimpleinput</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UHF</span> <span class="pre">PBE</span> <span class="pre">def2-SVP</span> <span class="pre">tightscf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orcablocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orca_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'orca'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uhf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.basinhopping.BasinHoppingORCA" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ase.calculators.calculator.Calculator</span></code></p>
+<p>ORCA calculator with basin hopping in wavefunction space for
+smooth PES of radicals</p>
+<p>call n_runs (3&lt;= recommended) instances of calculation on each
+frame, if all agree in energy within a given
+margin, then it is a successful</p>
+<p>calculation:
+1. no rotation, only smearing calculation
+2. n_hop - 1 number of calculations with random rotations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>ase.Atoms</em>) – molecule for calculation</p></li>
+<li><p><strong>n_hop</strong> (<em>int</em>) – number of hopping steps</p></li>
+<li><p><strong>n_run</strong> (<em>int</em>) – number of independent runs to perform, resultant energy/force
+is checked to be the same</p></li>
+<li><p><strong>scratch_path</strong> (<em>path_like</em>) – put temporary directories here for the calculations, one per task
+very efficient if you have an SSD scratch disk on nodes that
+perform the tasks</p></li>
+<li><p><strong>n_missing_tolerance</strong> (<em>int</em>) – number of files allowed to be missing</p></li>
+<li><p><strong>energy_tol</strong> (<em>float</em>) – energy tolerance in eV/atom</p></li>
+<li><p><strong>force_tol</strong> (<em>float</em>) – force tolerance in eV/Angstrom per component</p></li>
+<li><p><strong>seed</strong> (<em>str</em>) – file name seed</p></li>
+<li><p><strong>n_orb</strong> (<em>int</em>) – number of orbital pairs to rotate</p></li>
+<li><p><strong>max_angle</strong> (<em>float</em>) – maximal angle to rotate orbitals to</p></li>
+<li><p><strong>smearing</strong> (<em>float</em><em>, </em><em>default 5000.</em>) – smearing temperature in K, recommended is 5000 K</p></li>
+<li><p><strong>maxiter</strong> (<em>int</em><em>, </em><em>default 500</em>) – maximum number of SCF iterations to do</p></li>
+<li><p><strong>chained_hops</strong> (<em>bool</em><em>, </em><em>default True</em>) – chain hops, ie. to take the previous wavefunction result or the
+very initial one</p></li>
+<li><p><strong>orcasimpleinput</strong> (<em>str</em>) – What you’d put after the “!” in an orca input file.</p></li>
+<li><p><strong>orcablocks</strong> (<em>str</em>) – What you’d put in the “% … end”-blocks.</p></li>
+<li><p><strong>orca_command</strong> (<em>str</em>) – command of ORCA calculator as in path</p></li>
+<li><p><strong>keep_files</strong> (<em>bool</em>) – to keep the resultant files from each calculation</p></li>
+<li><p><strong>uhf</strong> (<em>bool</em><em>, </em><em>default True</em>) – to use Unrestricted HF/KS method. This is advised to be used at
+all times, implemented for development
+purposes.</p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.basinhopping.BasinHoppingORCA.calculate">
+<span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_changes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['positions',</span> <span class="pre">'numbers',</span> <span class="pre">'cell',</span> <span class="pre">'pbc',</span> <span class="pre">'initial_charges',</span> <span class="pre">'initial_magmoms']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_raw_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.basinhopping.BasinHoppingORCA.calculate" title="Permalink to this definition">#</a></dt>
+<dd><p>Do the calculation.</p>
+<dl class="simple">
+<dt>properties: list of str</dt><dd><p>List of what needs to be calculated.  Can be any combination
+of ‘energy’, ‘forces’, ‘stress’, ‘dipole’, ‘charges’, ‘magmom’
+and ‘magmoms’.</p>
+</dd>
+<dt>system_changes: list of str</dt><dd><p>List of what has changed since last calculation.  Can be
+any combination of these six: ‘positions’, ‘numbers’, ‘cell’,
+‘pbc’, ‘initial_charges’ and ‘initial_magmoms’.</p>
+</dd>
+</dl>
+<p>Subclasses need to implement this, but can ignore properties
+and system_changes if they want.  Calculated properties should
+be inserted into results dictionary like shown in this dummy
+example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;energy&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="s1">&#39;forces&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">),</span> <span class="mi">3</span><span class="p">)),</span>
+                <span class="s1">&#39;stress&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span>
+                <span class="s1">&#39;dipole&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+                <span class="s1">&#39;charges&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)),</span>
+                <span class="s1">&#39;magmom&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="s1">&#39;magmoms&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">))}</span>
+</pre></div>
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
+<p>The subclass implementation should first call this
+implementation to set the atoms attribute and create any missing
+directories.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.basinhopping.BasinHoppingORCA.get_homo">
+<span class="sig-name descname"><span class="pre">get_homo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.basinhopping.BasinHoppingORCA.get_homo" title="Permalink to this definition">#</a></dt>
+<dd><p>Get the index of the HOMO.</p>
+<p>ORCA counts form 0 and fills the alpha (indexed 0) spin more than
+the beta (indexed 1) for odd n_elec.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>i_homo_alpha, i_homo_beta</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.basinhopping.BasinHoppingORCA.get_multiplicity">
+<span class="sig-name descname"><span class="pre">get_multiplicity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.basinhopping.BasinHoppingORCA.get_multiplicity" title="Permalink to this definition">#</a></dt>
+<dd><p>Gets the multiplicity of the atoms object.</p>
+<p>ORCA format: singlet = 1, doublet = 2, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>multiplicity</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wfl.calculators.orca.basinhopping.BasinHoppingORCA.implemented_properties">
+<span class="sig-name descname"><span class="pre">implemented_properties</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['energy',</span> <span class="pre">'forces']</span></em><a class="headerlink" href="#wfl.calculators.orca.basinhopping.BasinHoppingORCA.implemented_properties" title="Permalink to this definition">#</a></dt>
+<dd><p>Properties calculator can handle (energy, forces, …)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.basinhopping.BasinHoppingORCA.process_results">
+<span class="sig-name descname"><span class="pre">process_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.basinhopping.BasinHoppingORCA.process_results" title="Permalink to this definition">#</a></dt>
+<dd><p>Compares the resultant energies and forces</p>
+<p>Maximal difference between energy minima per atom and corresponding
+force components are checked against the
+set thresholds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energy_array</strong> (<em>array</em><em>, </em><em>shape</em><em>(</em><em>n_runs</em><em>, </em><em>n_hop</em><em>)</em>) – </p></li>
+<li><p><strong>force_array</strong> (<em>array</em><em>, </em><em>shape</em><em>(</em><em>n_runs</em><em>, </em><em>n_hop</em><em>, </em><em>len_atoms</em><em>, </em><em>3</em><em>)</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>energy</em></p></li>
+<li><p><em>forces</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.calculators.orca.basinhopping.evaluate_basin_hopping">
+<span class="sig-prename descclassname"><span class="pre">wfl.calculators.orca.basinhopping.</span></span><span class="sig-name descname"><span class="pre">evaluate_basin_hopping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ORCA_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orca_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.basinhopping.evaluate_basin_hopping" title="Permalink to this definition">#</a></dt>
+<dd><p>Evaluate with BasinHoppingORCA calculator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>list</em><em>(</em><em>Atoms</em><em>) </em><em>/ ConfigSet</em>) – input atomic configs, needs to be iterable</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – output atomic configs</p></li>
+<li><p><strong>workdir_root</strong> (<em>path-like</em><em>, </em><em>default os.getcwd</em><em>(</em><em>)</em>) – directory to put calculation directories into</p></li>
+<li><p><strong>dir_prefix</strong> (<em>str</em><em>, </em><em>default 'ORCA_'</em>) – directory name prefix for calculations</p></li>
+<li><p><strong>keep_files</strong> (<em>&quot;default&quot; / bool</em>) – <dl class="simple">
+<dt>what kind of files to keep from the run</dt><dd><ul>
+<li><p>”default : .out, .inp, .ase, .engrad is kept – ase can read
+the results again</p></li>
+<li><p>True : all files kept</p></li>
+<li><p>False: none kept</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>orca_kwargs</strong> (<em>dict</em>) – kwargs for BasinHoppingORCA calculator</p></li>
+<li><p><strong>output_prefix</strong> (<em>str</em><em>, </em><em>default None</em>) – prefix for keys in the</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>results</strong> – outputs.to_ConfigSet()</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-wfl.calculators.orca">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.calculators.orca" title="Permalink to this headline">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.calculators.orca.</span></span><span class="sig-name descname"><span class="pre">ORCA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">restart=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_bad_restart_file=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label='orca'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files='default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_prefix='ORCA_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratch_path=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orca_path='orca'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_process=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.ORCA" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ase.calculators.orca.ORCA</span></code></p>
+<dl class="simple">
+<dt>Extension of ASE’s ORCA calculator:</dt><dd><ul class="simple">
+<li><p>Specify Path to orca executable</p></li>
+<li><p>Unless specified, multiplicity is set to singlet/doublet for
+closed-/open-shell structures</p></li>
+<li><p>Additional tasks with results stored in <cite>extra_results</cite> dictionary.</p></li>
+</ul>
+</dd>
+<dt>Handling of “task”:</dt><dd><ul class="simple">
+<li><p>ORCA programs to run, in addition or instead of calculating energy forces and dipole</p></li>
+<li><p><cite>task</cite> will be pre-pended to the keyword line</p></li>
+<li><p><cite>engrad</cite> is enforced by default, except in the case of geometry optimisation</p></li>
+<li><p>Supported conventional tasks: <cite>opt</cite>, <cite>copt</cite> (see orca manual)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA.calculate">
+<span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['energy',</span> <span class="pre">'forces']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_changes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['positions',</span> <span class="pre">'numbers',</span> <span class="pre">'cell',</span> <span class="pre">'pbc',</span> <span class="pre">'initial_charges',</span> <span class="pre">'initial_magmoms']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.ORCA.calculate" title="Permalink to this definition">#</a></dt>
+<dd><p>Does the calculation. Handles the working directories in addition to regular
+ASE calculation operations (writing input, executing, reading_results)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.ORCA.cleanup" title="Permalink to this definition">#</a></dt>
+<dd><p>Clean all (empty) directories that could not have been removed
+immediately after the calculation, for example, because other parallel
+process might be using them.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA.default_parameters">
+<span class="sig-name descname"><span class="pre">default_parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'charge':</span> <span class="pre">0,</span> <span class="pre">'mult':</span> <span class="pre">None,</span> <span class="pre">'orcablocks':</span> <span class="pre">'%scf</span> <span class="pre">maxiter</span> <span class="pre">200</span> <span class="pre">end',</span> <span class="pre">'orcasimpleinput':</span> <span class="pre">'tightscf</span> <span class="pre">PBE</span> <span class="pre">def2-SVP',</span> <span class="pre">'task':</span> <span class="pre">'engrad'}</span></em><a class="headerlink" href="#wfl.calculators.orca.ORCA.default_parameters" title="Permalink to this definition">#</a></dt>
+<dd><p>Default parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA.get_default_multiplicity">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_default_multiplicity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">charge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.ORCA.get_default_multiplicity" title="Permalink to this definition">#</a></dt>
+<dd><p>Gets the multiplicity of the atoms object.</p>
+<p>ORCA format: singlet = 1, doublet = 2, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>ase.Atoms</em>) – </p></li>
+<li><p><strong>charge</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>multiplicity</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA.implemented_properties">
+<span class="sig-name descname"><span class="pre">implemented_properties</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['energy',</span> <span class="pre">'forces',</span> <span class="pre">'dipole']</span></em><a class="headerlink" href="#wfl.calculators.orca.ORCA.implemented_properties" title="Permalink to this definition">#</a></dt>
+<dd><p>Properties calculator can handle (energy, forces, …)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA.is_converged">
+<span class="sig-name descname"><span class="pre">is_converged</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.ORCA.is_converged" title="Permalink to this definition">#</a></dt>
+<dd><p>checks for warnings about SCF/wavefunction not converging.</p>
+<dl class="simple">
+<dt>Returns</dt><dd><p><code class="docutils literal notranslate"><span class="pre">None</span></code> if “FINAL SINGLE POINT ENERGY” is not in the output
+<code class="docutils literal notranslate"><span class="pre">False</span></code> if “Wavefunction not fully converged” is in the file
+<code class="docutils literal notranslate"><span class="pre">True</span></code> otherwise</p>
+</dd>
+</dl>
+<p>Based on ase.calculators.orca.read_energy().</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA.pick_task">
+<span class="sig-name descname"><span class="pre">pick_task</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.ORCA.pick_task" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA.read_dipole">
+<span class="sig-name descname"><span class="pre">read_dipole</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.ORCA.read_dipole" title="Permalink to this definition">#</a></dt>
+<dd><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Dipole is calculated by default, though only written up to 0.00001
+so the rest of  the digits are not meaningful in the output.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA.read_frequencies">
+<span class="sig-name descname"><span class="pre">read_frequencies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.ORCA.read_frequencies" title="Permalink to this definition">#</a></dt>
+<dd><p>Reads frequencies (dynamical matrix eigenvalues) and normal modes (eigenvectors) from output.
+Currently broken.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA.read_opt_atoms">
+<span class="sig-name descname"><span class="pre">read_opt_atoms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.ORCA.read_opt_atoms" title="Permalink to this definition">#</a></dt>
+<dd><p>Reads the result of the geometry optimisation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA.read_results">
+<span class="sig-name descname"><span class="pre">read_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.ORCA.read_results" title="Permalink to this definition">#</a></dt>
+<dd><p>Reads all results</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA.read_trajectory">
+<span class="sig-name descname"><span class="pre">read_trajectory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.ORCA.read_trajectory" title="Permalink to this definition">#</a></dt>
+<dd><p>Reads the trajectory of the geometry optimisation</p>
+<p class="rubric">Notes</p>
+<p>Each comment line in output xyz has “Coordinates from ORCA-job orca
+E -154.812399026326”;
+# TODO parse out forces as well</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.orca.ORCA.write_input">
+<span class="sig-name descname"><span class="pre">write_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_changes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.ORCA.write_input" title="Permalink to this definition">#</a></dt>
+<dd><p>Writes orca.inp, based on the wfl ORCA calculator parameters</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.calculators.orca.natural_population_analysis">
+<span class="sig-prename descclassname"><span class="pre">wfl.calculators.orca.</span></span><span class="sig-name descname"><span class="pre">natural_population_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">janpa_home_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orca_calc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.natural_population_analysis" title="Permalink to this definition">#</a></dt>
+<dd><p><a class="reference external" href="https://sourceforge.net/p/janpa/wiki/Home/">https://sourceforge.net/p/janpa/wiki/Home/</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.calculators.orca.parse_npa_output">
+<span class="sig-prename descclassname"><span class="pre">wfl.calculators.orca.</span></span><span class="sig-name descname"><span class="pre">parse_npa_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.orca.parse_npa_output" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 </div>
 </div>
 
