@@ -646,7 +646,7 @@ wfl -v ref-method orca-eval -tmp ${tmp_dir} --base-rundir $base_rundir --output-
     <span class="s2">&quot;orca.py::evaluate&quot;</span> <span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;sys_name&quot;</span><span class="p">:</span> <span class="s2">&quot;local&quot;</span><span class="p">,</span>
         <span class="s2">&quot;job_name&quot;</span><span class="p">:</span> <span class="s2">&quot;dft&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;resources&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;n&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;tasks&quot;</span><span class="p">],</span> <span class="s2">&quot;partitions&quot;</span><span class="p">:</span><span class="s2">&quot;any$&quot;</span><span class="p">,</span> <span class="s2">&quot;max_time&quot;</span><span class="p">:</span> <span class="s2">&quot;4h&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;resources&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;num_cores&quot;</span> <span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;partitions&quot;</span><span class="p">:</span><span class="s2">&quot;any$&quot;</span><span class="p">,</span> <span class="s2">&quot;max_time&quot;</span><span class="p">:</span> <span class="s2">&quot;4h&quot;</span><span class="p">},</span>
         <span class="s2">&quot;partial_node&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span>
         <span class="s2">&quot;num_inputs_per_queued_job&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}}</span>
 </pre></div>
@@ -657,7 +657,7 @@ wfl -v ref-method orca-eval -tmp ${tmp_dir} --base-rundir $base_rundir --output-
 <li><p><code class="docutils literal notranslate"><span class="pre">job_name</span></code> - prefix for the job’s name on the queue (converted to <code class="docutils literal notranslate"><span class="pre">#$</span> <span class="pre">-N</span></code> bit of the header on SGE).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">resources</span></code> - how many resources the job should require from the queue.</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">&quot;n&quot;:</span> <span class="pre">[4,</span> <span class="pre">&quot;task&quot;]</span></code> - ask for 4 tasks’ worth of cores. The default is 1 cores per task, so each job will be run on 4 cores. That’s executed by <code class="docutils literal notranslate"><span class="pre">&quot;header&quot;:</span> <span class="pre">[&quot;#$</span> <span class="pre">-pe</span> <span class="pre">smp</span> <span class="pre">{ncores_per_node}&quot;]</span></code> of <code class="docutils literal notranslate"><span class="pre">config.json</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;num_cores&quot;:</span> <span class="pre">4</span></code> - ask for 4 cores. That’s executed by <code class="docutils literal notranslate"><span class="pre">&quot;header&quot;:</span> <span class="pre">[&quot;#$</span> <span class="pre">-pe</span> <span class="pre">smp</span> <span class="pre">{ncores_per_node}&quot;]</span></code> of <code class="docutils literal notranslate"><span class="pre">config.json</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">partitions</span></code> - name of the queue, converted to <code class="docutils literal notranslate"><span class="pre">#$</span> <span class="pre">-q</span> <span class="pre">any</span></code> in this example that uses SGE. ExPyRe uses RegEx to find matching partition names, so <code class="docutils literal notranslate"><span class="pre">any$</span></code> will only pick the first of the two partitions specified in <code class="docutils literal notranslate"><span class="pre">config.json</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">max_time</span></code> - time requirement for the job, converted to <code class="docutils literal notranslate"><span class="pre">#$</span> <span class="pre">-l</span> <span class="pre">h_rt=4:00:00</span></code> in this example.</p></li>
 </ul>
@@ -675,7 +675,7 @@ cat &lt;&lt;EOF &gt; remoteinfo.json
 &quot;orca.py::evaluate&quot; : {
     &quot;sys_name&quot;: &quot;local&quot;,
     &quot;job_name&quot;: &quot;dft&quot;,
-    &quot;resources&quot;: {&quot;n&quot; : [4, &quot;tasks&quot;], &quot;partitions&quot;:&quot;any$&quot;, &quot;max_time&quot;: &quot;4h&quot;},
+    &quot;resources&quot;: {&quot;num_cores&quot; : 4, &quot;partitions&quot;:&quot;any$&quot;, &quot;max_time&quot;: &quot;4h&quot;},
     &quot;partial_node&quot;:true,
     &quot;num_inputs_per_queued_job&quot;: 20}
 }
@@ -732,7 +732,7 @@ wfl -v ref-method orca-eval -tmp ${tmp_dir} --base-rundir $base_rundir --output-
 <span class="n">input_fname</span> <span class="o">=</span> <span class="s2">&quot;validation.rdkit.xtb2_md.dft.both.xyz&quot;</span>
 <span class="n">output_fname</span> <span class="o">=</span> <span class="s2">&quot;validation.rdkit.xtb2_md.dft.both.dft.xyz&quot;</span>
 <span class="n">num_inputs_per_queued_job</span> <span class="o">=</span> <span class="mi">20</span>
-<span class="n">n_tasks</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">num_cores</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="n">max_time</span> <span class="o">=</span> <span class="s2">&quot;48h&quot;</span>
 
 <span class="c1"># structures</span>
@@ -745,7 +745,7 @@ wfl -v ref-method orca-eval -tmp ${tmp_dir} --base-rundir $base_rundir --output-
 <span class="c1"># remote info</span>
 <span class="n">resources</span> <span class="o">=</span> <span class="n">Resources</span><span class="p">(</span>
     <span class="n">max_time</span> <span class="o">=</span> <span class="n">max_time</span><span class="p">,</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_tasks</span><span class="p">,</span> <span class="s2">&quot;tasks&quot;</span><span class="p">),</span>
+    <span class="n">num_cores</span> <span class="o">=</span> <span class="n">num_cores</span><span class="p">,</span>
     <span class="n">partitions</span> <span class="o">=</span> <span class="s2">&quot;any$&quot;</span><span class="p">)</span>
 
 <span class="n">remote_info</span> <span class="o">=</span> <span class="n">wfl</span><span class="o">.</span><span class="n">autoparallelize</span><span class="o">.</span><span class="n">remoteinfo</span><span class="o">.</span><span class="n">RemoteInfo</span><span class="p">(</span>
