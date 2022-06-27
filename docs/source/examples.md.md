@@ -120,7 +120,7 @@ def prepare_inputs(ats, info_label, workdir_root, tags):
         output_files[fname_in] = fname_out
         write(fname_in, at)
 
-    ci = ConfigSet_in(input_files=input_files)
+    ci = ConfigSet(input_files=input_files)
     co = OutputSpec(
         output_files=output_files,
         all_or_none=True, 
