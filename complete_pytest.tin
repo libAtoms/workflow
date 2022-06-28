@@ -21,20 +21,15 @@ pytest -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs >> p
 
 l=`egrep 'passed.*xfailed' pytest_complete_test.out`
 
-# ===== 98 passed, 9 skipped, 1 xfailed, 213 warnings in 3593.75s (0:59:53) ======
+# ===== 99 passed, 8 skipped, 1 xfailed, 213 warnings in 3593.75s (0:59:53) ======
 
-echo $l | grep -q ' 9 skipped'
-if [ $? != 0 ]; then
-    echo "Unexpected number skipped not 9 '$l'" 1>&2
-    exit 1
-fi
-echo $l | grep -q ' 98 passed'
-if [ $? != 0 ]; then
-    echo "Unexpected number passed not 98 '$l'" 1>&2
-    exit 1
-fi
-echo $l | grep -qv ' 1 xfailed'
-if [ $? != 0 ]; then
-    echo "Unexpected number xfailed not 1 '$l'" 1>&2
-    exit 1
-fi
+results=("passed 99" "skipped 8" "xfailed 1")
+for r in "${results[@]}"; do
+    label=$( echo $r | awk '{print $1}' )
+    n=$( echo $r | awk '{print $2}' )
+    echo $l | grep -q " $n $label" pytest_complete_test.out
+    if [ $? != 0 ]; then
+        echo "Unexpected number $label not $n '$l'" 1>&2
+        exit 1
+    fi
+done
