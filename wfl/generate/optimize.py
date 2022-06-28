@@ -216,10 +216,12 @@ def subselect_from_traj(traj, subselect=None):
     Parameters
     ----------
     subselect: int or string, default None
-        None: full trajectory is returned
-        int: (not implemented) how many samples to take from the trajectory.
-        str:
-            - "last_converged": returns [last_config], if converged or None if not.
+
+        - None: full trajectory is returned
+        - int: (not implemented) how many samples to take from the trajectory.
+        - str: specific method
+
+          - "last_converged": returns [last_config] if converged, or None if not.
 
     """
     if subselect is None:

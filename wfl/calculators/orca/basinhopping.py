@@ -31,10 +31,11 @@ def evaluate_basin_hopping(inputs, outputs,
         directory name prefix for calculations
     keep_files: "default" / bool
         what kind of files to keep from the run
-            - "default : .out, .inp, .ase, .engrad is kept -- ase can read
-              the results again
-            - True : all files kept
-            - False: none kept
+
+        - "default : .out, .inp, .ase, .engrad is kept -- ase can read
+          the results again
+        - True : all files kept
+        - False: none kept
     orca_kwargs: dict
         kwargs for BasinHoppingORCA calculator
     output_prefix : str, default None
@@ -57,15 +58,13 @@ class BasinHoppingORCA(Calculator):
     """ORCA calculator with basin hopping in wavefunction space for
     smooth PES of radicals
 
-    Method
-    ------
-    call n_runs (3<= recommended) instances of calculation on each
-    frame, if all agree in energy within a given
-    margin, then it is a successful
+    Call n_runs (3 <= recommended) instances of calculation on each
+    frame. If all agree in energy within a given margin, then it is a successful.
 
-    calculation:
+    calculations:
+
     1. no rotation, only smearing calculation
-    2. n_hop - 1 number of calculations with random rotations
+    2. `n_hop - 1` number of calculations with random rotations
 
     Parameters
     ----------
