@@ -43,10 +43,9 @@ A Sphinx style guide: https://documentation-style-guide-sphinx.readthedocs.io/en
     :caption: Contents:
 
     First example <first_example.md>
-    Code structure <code_structure.rst>
+    Overview <overview.rst>
     Operations <operations.rst>
     Workflows <workflows.rst>
-    Command Line Interface <command_line.rst>
     Examples <examples.rst>
     Modules <modules.rst>
 

@@ -20,6 +20,5 @@ This page is for the functions/modules/code operations that are somewhat more mo
    operations.gap_fitting.md
    operations.multistage_gap_fitting.rst 
    operations.ace_fitting.md
-   operations.plots.rst
    operations.utils.md
   
