@@ -1,7 +1,7 @@
-.. _code_structure:
+.. _design_overview:
 
 ######################################
-Code structure
+Design overview
 ######################################
 
 Most of :ref:`operations <operations>` in Workflow take in (optional) and return (mandatory) an ASE's ``Atoms`` object. These inputs and outputs are abstracted in ``ConfigSet`` and ``OutputSpec`` classes.  ``ConfigSet`` may be initialised with a list(s) of ``Atoms``, by providing one or multiple ``.xyz`` filenames or with a reference to an `ABCD database <https://github.com/libAtoms/abcd>`_. Similarly, returned configurations can be held in memory and subsequently used via ``OutputSpec.to_ConfigSet()``, written to a single or multiple files or uploaded to an ABCD database. This way, an operation may iterate over a ``ConfigSet`` and write ``Atoms`` to ``OutputSpec``, regardless of how the input configs were supplied or how or where to the output configs are going to be collected.
@@ -19,8 +19,8 @@ Some parts of Workflow (e.g. how many parallel processes to run) are controlled 
    :maxdepth: 1
    :caption: More details:
 
-   code_structure.configset.rst
-   code_structure.parallelisation.rst
+   design_overview.configset.rst
+   design_overview.parallelisation.rst
 
 
 

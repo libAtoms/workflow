@@ -7,13 +7,13 @@
 Welcome to Workflow's documentation!
 ########################################
 
-A Python toolkit for building interatomic potential creation and atomistic simulation workflows. 
+A Python toolkit for building interatomic potential creation and atomistic simulation workflows.
 
 Documentation in progress! 
 
-The main functions of Workflow is to efficiently parallelise operations over a set of atomic configurations. Given an operation that is defined to act a single configuration (e.g. evaluate energy of a structure with CASTEP ASE calculator), Workflow may apply the operation to multiple configurations in parallel. 
+The main functions of Workflow is to efficiently parallelise operations over a set of atomic configurations. Given an operation that is defined to act a single configuration (e.g. evaluate energy of a structure with CASTEP ASE calculator), Workflow may apply the operation to multiple configurations in parallel.
 
-The Workflow-specific code structures (e.g. how configurations are handled, mechanism to parallelise operations) are covered in :ref:`Code structure <code_structure>`. Currently implemented self-contained per-configuration operations are sketched out in :ref:`Operations <operations>`. Descriptions of Workflows, built out of these modular operations are described in :ref:`Workflows <workflows>`. There are also descriptions :ref:`command line interface <command_line>`, :ref:`examples <examples>` of common tasks to get started with and a :ref:`Python API <api>`. 
+The overall design of the workflow system (e.g. how configurations are handled, mechanism to parallelise operations) are covered in :ref:`Design overview <design_overview>`. Currently implemented self-contained per-configuration operations are sketched out in :ref:`Operations <operations>`. Descriptions of Workflows, built out of these modular operations are described in :ref:`Workflows <workflows>`. There are also descriptions :ref:`command line interface <command_line>`, :ref:`examples <examples>` of common tasks to get started with and a :ref:`Python API <api>`
 
 ***************************************
 Installation
@@ -42,7 +42,7 @@ A Sphinx style guide: https://documentation-style-guide-sphinx.readthedocs.io/en
     :maxdepth: 2
     :caption: Contents:
 
-    Code structure <code_structure.rst>
+    Design overview <design_overview.rst>
     Operations <operations.rst>
     Workflows <workflows.rst>
     Command Line Interface <command_line.rst>
