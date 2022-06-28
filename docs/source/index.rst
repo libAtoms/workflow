@@ -42,6 +42,7 @@ A Sphinx style guide: https://documentation-style-guide-sphinx.readthedocs.io/en
     :maxdepth: 2
     :caption: Contents:
 
+    First example <first_example.md>
     Code structure <code_structure.rst>
     Operations <operations.rst>
     Workflows <workflows.rst>
