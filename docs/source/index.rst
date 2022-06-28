@@ -13,7 +13,7 @@ Documentation in progress!
 
 The main functions of Workflow is to efficiently parallelise operations over a set of atomic configurations. Given an operation that is defined to act a single configuration (e.g. evaluate energy of a structure with CASTEP ASE calculator), Workflow may apply the operation to multiple configurations in parallel. 
 
-The Workflow-specific code structures (e.g. how configurations are handled, mechanism to parallelise operations) are covered in :ref:`Code structure <code_structure>`. Currently implemented self-contained per-configuration operations are sketched out in :ref:`Operations <operations>`. Descriptions of Workflows, built out of these modular operations are described in :ref:`Workflows <workflows>`. There are also descriptions :ref:`command line interface <command_line>`, :ref:`examples <examples>` of common tasks to get started with and a :ref:`Python API <api>`. 
+Basic use of the workflow is introduced through an :ref:`example <first_example>`.  The overall design of the workflow-specific code structures (e.g. how configurations are handled, mechanism to parallelise operations) are covered in :ref:`Overview <overview>`. Currently implemented self-contained per-configuration operations are sketched out in :ref:`Operations <operations>`. Descriptions of Workflows, built out of these modular operations are described in :ref:`Workflows <workflows>`. There are also descriptions :ref:`command line interface <command_line>`, :ref:`examples <examples>` of common tasks to get started with and a :ref:`Python API <api>`. 
 
 ***************************************
 Installation

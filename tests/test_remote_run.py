@@ -150,15 +150,15 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
 
     t0 = time.time()
     results = generic.run(inputs=ci, outputs=co, calculator=calc)
-    dt = time.time() - t0
-    print('remote parallel calc_time', dt)
+    dt_rerun = time.time() - t0
+    print('remote parallel calc_time', dt_rerun)
 
     dev = [ (np.abs(at.info['EMT_energy'] - ref_E)) / np.maximum(np.abs(ref_E), 1.0e-3) for at, ref_E in zip(results, ref_Es) ]
     print('max deviation', max(dev))
     assert max(dev) < 1.0e-8
 
     # maybe can do the test without being so sensitive to timing?
-    assert dt < 20
+    assert dt_rerun < 20
 
 
 def do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env):

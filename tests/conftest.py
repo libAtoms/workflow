@@ -44,11 +44,14 @@ def pytest_addoption(parser):
     parser.addoption(
         "--runremote", action="store_true", default=False, help="run remote execution tests"
     )
+    parser.addoption(
+        "--runperf", action="store_true", default=False, help="run performance tests")
 
 
 def pytest_configure(config):
     config.addinivalue_line("markers", "slow: mark test as slow to run")
     config.addinivalue_line("markers", "remote: mark test as related to remote execution")
+    config.addinivalue_line("markers", "perf: mark test as testing performance")
 
 
 def pytest_collection_modifyitems(config, items):
@@ -62,6 +65,11 @@ def pytest_collection_modifyitems(config, items):
         for item in items:
             if "remote" in item.keywords:
                 item.add_marker(skip_remote)
+    if not config.getoption("--runperf"):
+        skip_perf = pytest.mark.skip(reason="need --runperf option to run")
+        for item in items:
+            if "perf" in item.keywords:
+                item.add_marker(skip_perf)
 
 
 ### fixture for workflow tests that use expyre, namely tests/test_remote_run.py
