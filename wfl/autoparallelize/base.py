@@ -121,6 +121,9 @@ def iloop_wrapper(func_name, func, *args,
                   def_num_python_subprocesses=None, def_num_inputs_per_python_subprocess=1, iterable_arg=0, def_skip_failed=True,
                   initializer=None, initargs=None, def_remote_info=None, def_remote_label=None, hash_ignore=[], **kwargs):
 
+    # copy kwargs and args so they can be modified for call to autoparallelize
+    kwargs = kwargs.copy()
+    args = list(args)
     if 'inputs' in kwargs:
         # inputs is keyword, outputs must be too, any positional args to func are unchanged
         inputs = kwargs.pop('inputs')
