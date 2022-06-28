@@ -3,6 +3,8 @@ import os
 import json
 import warnings
 import traceback as tb
+import inspect
+import functools
 import re
 
 from wfl.configset import OutputSpec
@@ -65,23 +67,22 @@ def iloop_docstring(orig_docstring, input_iterable_type):
     return output_docstring
 
 
-def iloop(func, *args, def_num_python_subprocesses=None, def_num_inputs_per_python_subprocess=1, iterable_arg=0, def_skip_failed=True,
-          initializer=None, initargs=None, def_remote_info=None, def_remote_label=None, hash_ignore=[], **kwargs):
+def iloop(func_name, func, input_type, **iloop_kwargs):
     """functools.partial-based decorator (using ideas in topic 4 of
     https://pythonicthoughtssnippets.github.io/2020/08/09/PTS13-rethinking-python-decorators.html).
     Works OK and can be pickled, but ugly handling of docstring, and no handling of function signature.
 
     Use by defining operation `op` which takes input iterable and _after_ do
-        `desired_func_name = functools.partial(iloop, op, params_of_iloop...)`
-
-    Fix final docstring by inserting `{iloop_docstring_pre}` before all other parameters in op docstring, similarly
-    for `iloop_docstring_post`, and mangling final docstring with
-        `desired_func_name.__doc__ = op.__doc__.format(iloop_docstring_pre=iloop_docstring_pre,  iloop_docstring_post=iloop_docstring_post)`
+        `desired_func_name = iloop("desired_func_name", op, "input_type", any additional keyword parameters)`
 
     Parameters
     ----------
+    func_name: str
+        name to be attached to func so that remote info matching will work
     func: function
         function to wrap in iterable_loop()
+    input_type: str
+        type of input configs
     def_num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
         number of processes to parallelize over, 0 for running in serial
     def_num_inputs_per_python_subprocess: int, default 1
@@ -103,24 +104,35 @@ def iloop(func, *args, def_num_python_subprocesses=None, def_num_inputs_per_pyth
     hash_ignore: list(str), default []
         arguments to ignore when doing remot executing and computing hash of function to determine
         if it's already done (pass to iterable_loop())
-    *args, **kwargs: list, dict
-        other positional and keyword arguments to func()
 
     Returns
     -------
-    output of func, having been executable by iterable_loop
+    wrapped_func: function wrapped in autoparallelize via iloop_wrapper
     """
 
+    wrapped_func = functools.partial(iloop_wrapper, func_name, func, **iloop_kwargs)
+    wrapped_func.__doc__ = iloop_docstring(func.__doc__, input_type)
+    wrapped_func.__name__ = func_name
+
+    return wrapped_func
+
+
+def iloop_wrapper(func_name, func, *args,
+                  def_num_python_subprocesses=None, def_num_inputs_per_python_subprocess=1, iterable_arg=0, def_skip_failed=True,
+                  initializer=None, initargs=None, def_remote_info=None, def_remote_label=None, hash_ignore=[], **kwargs):
+
     if 'inputs' in kwargs:
-        inputs = kwargs['inputs']
+        # inputs is keyword, outputs must be too, any positional args to func are unchanged
+        inputs = kwargs.pop('inputs')
+        outputs = kwargs.pop('outputs')
     else:
-        # not as a keyword, must be first positional arg
-        inputs = args[0]
-    if 'outputs' in kwargs:
-        outputs = kwargs['outputs']
-    else:
-        # not as a keyword, must be second positions arg
-        outputs = args[1]
+        # inputs is positional, remove it from args to func
+        inputs = args.pop(0)
+        if 'outputs' in kwargs:
+            outputs = kwargs.pop('outputs')
+        else:
+            # outputs is also positional, remote it from func args as well
+            outputs = args.pop(0)
 
     num_python_subprocesses = kwargs.pop('num_python_subprocesses', def_num_python_subprocesses)
     num_inputs_per_python_subprocess = kwargs.pop('num_inputs_per_python_subprocess', def_num_inputs_per_python_subprocess)
@@ -128,8 +140,9 @@ def iloop(func, *args, def_num_python_subprocesses=None, def_num_inputs_per_pyth
     remote_info = kwargs.pop('remote_info', def_remote_info)
     remote_label = kwargs.pop('remote_label', def_remote_label)
 
+    func.__name__ = func_name
     return autoparallelize(num_python_subprocesses, num_inputs_per_python_subprocess, inputs, outputs, func, iterable_arg, skip_failed,
-                         initializer, initargs, remote_info, remote_label, hash_ignore, *args[2:], **kwargs)
+                         initializer, initargs, remote_info, remote_label, hash_ignore, *args, **kwargs)
 
 # do we want to allow for ops that only take singletons, not iterables, as input, maybe with num_inputs_per_python_subprocess=0?
 # that info would have to be passed down to _wrapped_autopara_wrappable so it passes a singleton rather than a list into op
@@ -203,6 +216,11 @@ def autoparallelize(num_python_subprocesses=None, num_inputs_per_python_subproce
                 stack_remote_label = [fs[0] + '::' + fs[2] for fs in tb.extract_stack()[:-1]]
             else:
                 stack_remote_label = []
+            if len(stack_remote_label) > 0 and stack_remote_label[-1].endswith('::iloop_wrapper'):
+                # replace iloop_wrapper stack entry with one for desired function name
+                stack_remote_label.pop()
+                stack_remote_label.append(inspect.getfile(op) + '::' + op.__name__)
+            #DEBUG print("DEBUG stack_remote_label", stack_remote_label)
             match = False
             for ri_k in remote_info:
                 ksplit = [sl.strip() for sl in ri_k.split(',')]
