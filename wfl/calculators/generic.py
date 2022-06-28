@@ -1,4 +1,5 @@
 import warnings
+import functools
 
 from ase import Atoms
 from ase.calculators.calculator import all_changes
@@ -23,6 +24,7 @@ def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_a
         '_auto_' for automatically determining name of calculator constructor, and
         None for SinglePointCalculator instead of info/arrays
     verbose : bool
+        verbose output
     """
 
     if properties is None:
@@ -67,4 +69,8 @@ def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_a
         return at_out
 
 
-run = iloop("run", run_autopara_wrappable, "Atoms", def_num_inputs_per_python_subprocess=10)
+def run(*args, **kwargs):
+    f = functools.partial(iloop, run_autopara_wrappable, def_num_inputs_per_python_subprocess=10)
+    return f(*args, **kwargs)
+
+run.__doc__ = iloop_docstring(run_autopara_wrappable.__doc__, "Atoms")

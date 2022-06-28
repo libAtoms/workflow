@@ -12,49 +12,62 @@ from .pool import do_in_pool
 from .remote import do_remotely
 
 iloop_docstring_params_pre = (
-"""    inputs: iterable({iterable_type})
-        input quantities of type {iterable_type}
-    outputs: OutputSpec or None
-        where to write output atomic configs, or None for no output (i.e. only side-effects)
+"""
+inputs: iterable({iterable_type})
+    input quantities of type {iterable_type}
+outputs: OutputSpec or None
+    where to write output atomic configs, or None for no output (i.e. only side-effects)
 """)
 
 iloop_docstring_params_post = (
-"""    iterable_loop_related:
-        num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
-            number of processes to parallelize over, 0 for running in serial
-        num_inputs_per_python_subprocess: int, default 1 (kwargs only)
-            number of items from iterable to pass to each invocation of operation (pass to iterable_loop())
-        skip_failed: bool, default True
-            skip function calls that return None
-        remote_info: RemoteInfo, default content of env var WFL_EXPYRE_INFO
-            information for running on remote machine.  If None, use WFL_EXPYRE_INFO env var, as
-            json file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
-            RemoteInfo kwrgs with keys that match end of stack trace with function names separated by '.'.
-        remote_label: str, default None
-            remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine
-            filename '::' calling function (pass to iterable_loop())
+"""
+ITERABLE_LOOP_RELATED:
+
+    - num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
+      number of processes to parallelize over, 0 for running in serial
+    - num_inputs_per_python_subprocess: int, default 1 (kwargs only)
+      number of items from iterable to pass to each invocation of operation (pass to iterable_loop())
+    - skip_failed: bool, default True
+      skip function calls that return None
+    - remote_info: RemoteInfo, default content of env var WFL_EXPYRE_INFO
+      information for running on remote machine.  If None, use WFL_EXPYRE_INFO env var, as
+      json file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
+      RemoteInfo kwrgs with keys that match end of stack trace with function names separated by '.'.
+    - remote_label: str, default None
+      remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine
+      filename '::' calling function (pass to iterable_loop())
 """)
 
 iloop_docstring_returns = (
-"""    Returns
-    -------
-    co: ConfigSet with output configs
+"""
+Returns
+-------
+    co: ConfigSet
+        output configs
 """)
 
 def iloop_docstring(orig_docstring, input_iterable_type):
     output_docstring = ""
     got_pre = False
     lines = orig_docstring.splitlines(True)
+    on_parameter_line = False
     for li in range(len(lines)):
-        if (li >= 1 and re.match(r'^\s*[-]*\s*$', lines[li]) and
-                        re.match(r'^\s*Parameters\s*[:]?\s*$', lines[li-1])):
+        prev_line_match = re.match(r'^(\s*)Parameters\s*[:]?\s*$', lines[li-1])
+        if (li >= 1 and re.match(r'^\s*[-]*\s*$', lines[li]) and prev_line_match):
+            on_parameter_line = True
             output_docstring += lines[li]
-            output_docstring += iloop_docstring_params_pre.format(iterable_type=input_iterable_type)
             got_pre = True
-        elif got_pre and re.match(r'^\s*$', lines[li]):
-            output_docstring += iloop_docstring_params_post + lines[li]
+            section_init_space = prev_line_match.group(1)
+        elif on_parameter_line:
+            m = re.match(r'(\s*)', lines[li])
+            param_init_space = m.group(1)
+            output_docstring += ''.join([param_init_space + l for l in iloop_docstring_params_pre.format(iterable_type=input_iterable_type).splitlines(True)])
+            on_parameter_line = False
+            output_docstring += lines[li]
         else:
             output_docstring += lines[li]
+
+    output_docstring += ''.join([param_init_space + l for l in iloop_docstring_params_post.splitlines(True)])
 
     lines = orig_docstring.splitlines(True)
     if not re.match(r'^\s*$', lines[-1]):
@@ -62,23 +75,33 @@ def iloop_docstring(orig_docstring, input_iterable_type):
     if output_docstring[-1] != "\n":
         output_docstring += "\n"
 
-    output_docstring += iloop_docstring_returns
+    output_docstring += ''.join([section_init_space + l for l in iloop_docstring_returns.splitlines(True)])
 
     return output_docstring
 
 
-def iloop(func_name, func, input_type, **iloop_kwargs):
+def iloop(func, *args,
+          def_num_python_subprocesses=None, def_num_inputs_per_python_subprocess=1, iterable_arg=0, def_skip_failed=True,
+          initializer=None, initargs=None, def_remote_info=None, def_remote_label=None, hash_ignore=[], **kwargs):
     """functools.partial-based decorator (using ideas in topic 4 of
     https://pythonicthoughtssnippets.github.io/2020/08/09/PTS13-rethinking-python-decorators.html).
     Works OK and can be pickled, but ugly handling of docstring, and no handling of function signature.
 
-    Use by defining operation `op` which takes input iterable and _after_ do
-        `desired_func_name = iloop("desired_func_name", op, "input_type", any additional keyword parameters)`
+    Use by defining operation `op` which takes an input iterable and returns list of configs, and _after_ do
+
+    .. code-block:: python
+
+        def autopara_op(*args, **kwargs):
+            f = functools.partial(iloop, op, [ iloop_keyword_param_1=val, iloop_keyword_param_2=val, ... ] )
+            return f(*args, **kwargs)
+        autopara_op.doc = iloop_docstring(op.__doc__, "iterable_contents")
+
+
+    The autoparallelized function can then be called with `autopara_op(inputs, outputs, args of op)`
+
 
     Parameters
     ----------
-    func_name: str
-        name to be attached to func so that remote info matching will work
     func: function
         function to wrap in iterable_loop()
     input_type: str
@@ -107,19 +130,8 @@ def iloop(func_name, func, input_type, **iloop_kwargs):
 
     Returns
     -------
-    wrapped_func: function wrapped in autoparallelize via iloop_wrapper
+    wrapped_func: function wrapped in autoparallelize via iloop
     """
-
-    wrapped_func = functools.partial(iloop_wrapper, func_name, func, **iloop_kwargs)
-    wrapped_func.__doc__ = iloop_docstring(func.__doc__, input_type)
-    wrapped_func.__name__ = func_name
-
-    return wrapped_func
-
-
-def iloop_wrapper(func_name, func, *args,
-                  def_num_python_subprocesses=None, def_num_inputs_per_python_subprocess=1, iterable_arg=0, def_skip_failed=True,
-                  initializer=None, initargs=None, def_remote_info=None, def_remote_label=None, hash_ignore=[], **kwargs):
 
     # copy kwargs and args so they can be modified for call to autoparallelize
     kwargs = kwargs.copy()
@@ -143,7 +155,6 @@ def iloop_wrapper(func_name, func, *args,
     remote_info = kwargs.pop('remote_info', def_remote_info)
     remote_label = kwargs.pop('remote_label', def_remote_label)
 
-    func.__name__ = func_name
     return autoparallelize(num_python_subprocesses, num_inputs_per_python_subprocess, inputs, outputs, func, iterable_arg, skip_failed,
                          initializer, initargs, remote_info, remote_label, hash_ignore, *args, **kwargs)
 
@@ -216,13 +227,13 @@ def autoparallelize(num_python_subprocesses=None, num_inputs_per_python_subproce
                 # no explicit remote_label for the remote run was passed into function, so
                 # need to match end of stack trace to remote_info dict keys, here we
                 # construct object to compare to
+                # last stack item is always autoparallelize, so ignore it
                 stack_remote_label = [fs[0] + '::' + fs[2] for fs in tb.extract_stack()[:-1]]
             else:
                 stack_remote_label = []
-            if len(stack_remote_label) > 0 and stack_remote_label[-1].endswith('::iloop_wrapper'):
-                # replace iloop_wrapper stack entry with one for desired function name
+            if len(stack_remote_label) > 0 and stack_remote_label[-1].endswith('base.py::iloop'):
+                # replace iloop stack entry with one for desired function name
                 stack_remote_label.pop()
-                stack_remote_label.append(inspect.getfile(op) + '::' + op.__name__)
             #DEBUG print("DEBUG stack_remote_label", stack_remote_label)
             match = False
             for ri_k in remote_info:
