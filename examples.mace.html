@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Generating Configs &#8212; workflow  documentation</title>
+    <title>Parallelize MACE calculator &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,8 +32,8 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Selecting Configs" href="operations.select.html" />
-    <link rel="prev" title="Calculators in workflow" href="operations.calculators.html" />
+    <link rel="next" title="Normal Modes (non-periodic)" href="examples.normal_modes.html" />
+    <link rel="prev" title="ORCA: all parallelisation options" href="examples.orca.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -113,23 +113,23 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="operations.html">
    Operations
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
+  <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
      Calculators in workflow
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.generate.html">
      Generating Configs
     </a>
    </li>
@@ -187,23 +187,23 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="examples.html">
    Examples
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
   <label for="toctree-checkbox-4">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="examples.orca.html">
      ORCA: all parallelisation options
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.mace.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      Parallelize MACE calculator
     </a>
    </li>
@@ -400,7 +400,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/operations.generate.md.txt"
+        <a href="_sources/examples.mace.md.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -449,7 +449,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Generating Configs</h1>
+                <h1>Parallelize MACE calculator</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -461,9 +461,84 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="generating-configs">
-<h1>Generating Configs<a class="headerlink" href="#generating-configs" title="Permalink to this headline">#</a></h1>
-<p>Mainly brief overview things in of wfl.generate</p>
+  <div class="section" id="parallelize-mace-calculator">
+<h1>Parallelize MACE calculator<a class="headerlink" href="#parallelize-mace-calculator" title="Permalink to this headline">#</a></h1>
+<p>MACE calculator can be parallelized with the <code class="docutils literal notranslate"><span class="pre">wfl.calculators.generic.run</span></code> routine.</p>
+<p>First we define a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> for the inputs and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> to specify how the outputs are handled:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OuptutSpec</span>
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_files</span><span class="o">=</span><span class="s2">&quot;structures.xyz&quot;</span><span class="p">)</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_files</span><span class="o">=</span><span class="s2">&quot;structures.mace.xyz&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Normally, a MACE calculator would be setup like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mace.calculators.mace</span> <span class="kn">import</span> <span class="n">MACECalculator</span> 
+
+<span class="c1"># change the following as appropriate</span>
+<span class="n">mace_model_fname</span> <span class="o">=</span> <span class="s2">&quot;my_mace.model&quot;</span>
+<span class="n">r_max</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span> 
+<span class="n">at_num</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> 
+<span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span>
+
+<span class="c1">#initialise the calculator</span>
+<span class="n">my_mace_calc</span> <span class="o">=</span> <span class="n">MACECalculator</span><span class="p">(</span><span class="n">mace_model_fname</span><span class="p">,</span> <span class="n">r_max</span><span class="o">=</span><span class="n">r_max</span><span class="p">,</span> <span class="n">at_num</span><span class="o">=</span><span class="n">at_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>But in Workflow, for <code class="docutils literal notranslate"><span class="pre">generic.run</span></code> to parallelize this calculator it needs to be defined as a tuple of <code class="docutils literal notranslate"><span class="pre">(calc_function,</span> <span class="pre">[args],</span> <span class="pre">**kwargs)</span></code>. In our example, instead of the above code snippet, that corresponds to</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mace.calculators.mace</span> <span class="kn">import</span> <span class="n">MACECalculator</span> 
+
+<span class="c1"># change the following as appropriate</span>
+<span class="n">mace_model_fname</span> <span class="o">=</span> <span class="s2">&quot;my_mace.model&quot;</span>
+<span class="n">r_max</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span> 
+<span class="n">at_num</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> 
+<span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span>
+
+<span class="n">my_mace_calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">MaceCalculator</span><span class="p">,</span> <span class="p">[</span><span class="n">mace_model_fname</span><span class="p">],</span> <span class="p">{</span><span class="s2">&quot;r_max&quot;</span><span class="p">:</span><span class="n">r_max</span><span class="p">,</span> <span class="s2">&quot;at_num&quot;</span><span class="p">:</span> <span class="n">at_num</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">:</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">&quot;device&quot;</span><span class="p">:</span><span class="s2">&quot;cpu})</span>
+</pre></div>
+</div>
+<p>Now we can evaluate multiple structures in parallel over 8 cores (for example) by exporting (before running the Python script)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">WFL_NUM_PYTHON_SUBPROCESSES</span><span class="o">=</span><span class="mi">8</span>
+</pre></div>
+</div>
+<p>and calling the <code class="docutils literal notranslate"><span class="pre">generic.run</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> 
+    <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
+    <span class="n">calculator</span><span class="o">=</span><span class="n">my_mace_calc</span><span class="p">,</span>
+    <span class="n">properties</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;forces&quot;</span><span class="p">],</span>
+    <span class="n">output_prefix</span><span class="o">=</span><span class="s2">&quot;mace_&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Since <code class="docutils literal notranslate"><span class="pre">output_prefix</span></code> is set to “mace_” and properties are set to “energy” and “forces”, the “structures.mace.xyz” file will have <code class="docutils literal notranslate"><span class="pre">&quot;mace_energy&quot;</span></code> entires in <code class="docutils literal notranslate"><span class="pre">atoms.info</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;mace_forces&quot;</span></code> entries in <code class="docutils literal notranslate"><span class="pre">atoms.arrays</span></code>.</p>
+<p>The complete process</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">WFL_NUM_PYTHON_SUBPROCESSES=8</span></code></p></li>
+<li><p>run the following script:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OuptutSpec</span>
+
+<span class="kn">from</span> <span class="nn">mace.calculators.mace</span> <span class="kn">import</span> <span class="n">MACECalculator</span> 
+
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_files</span><span class="o">=</span><span class="s2">&quot;structures.xyz&quot;</span><span class="p">)</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_files</span><span class="o">=</span><span class="s2">&quot;structures.mace.xyz&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># change the following as appropriate</span>
+<span class="n">mace_model_fname</span> <span class="o">=</span> <span class="s2">&quot;my_mace.model&quot;</span>
+<span class="n">r_max</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span> 
+<span class="n">at_num</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> 
+<span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span>
+
+<span class="n">my_mace_calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">MaceCalculator</span><span class="p">,</span> <span class="p">[</span><span class="n">mace_model_fname</span><span class="p">],</span> <span class="p">{</span><span class="s2">&quot;r_max&quot;</span><span class="p">:</span><span class="n">r_max</span><span class="p">,</span> <span class="s2">&quot;at_num&quot;</span><span class="p">:</span> <span class="n">at_num</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">:</span><span class="n">dtype</span><span class="p">,</span> <span class="s2">&quot;device&quot;</span><span class="p">:</span><span class="s2">&quot;cpu})</span>
+
+<span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> 
+    <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
+    <span class="n">calculator</span><span class="o">=</span><span class="n">my_mace_calc</span><span class="p">,</span>
+    <span class="n">properties</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;forces&quot;</span><span class="p">],</span>
+    <span class="n">output_prefix</span><span class="o">=</span><span class="s2">&quot;mace_&quot;</span><span class="p">)</span>
+
+</pre></div>
+</div>
 </div>
 
 
@@ -474,17 +549,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="operations.calculators.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="examples.orca.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Calculators in workflow</p>
+            <p class="prev-next-title">ORCA: all parallelisation options</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="operations.select.html" title="next page">
+    <a class='right-next' id="next-link" href="examples.normal_modes.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Selecting Configs</p>
+        <p class="prev-next-title">Normal Modes (non-periodic)</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
