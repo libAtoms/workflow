@@ -5,6 +5,9 @@ First short example to serve as a hands-on introduction. Connected to [Issue #98
 _describe short operation with configset, outputspec and autoparallelisation here_
 
 
+Hello world!!
+
+
 ## With remote execution
 
 _extend the above example to work with ExPyRe_
