@@ -70,7 +70,5 @@ def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_a
 
 
 def run(*args, **kwargs):
-    f = functools.partial(iloop, run_autopara_wrappable, def_num_inputs_per_python_subprocess=10)
-    return f(*args, **kwargs)
-
+    return iloop(run_autopara_wrappable, *args, def_num_inputs_per_python_subprocess=10, **kwargs)
 run.__doc__ = iloop_docstring(run_autopara_wrappable.__doc__, "Atoms")
