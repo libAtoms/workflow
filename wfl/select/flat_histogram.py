@@ -101,7 +101,7 @@ def _select_indices_flat_boltzmann_biased(quantities, n, kT=-1.0, bins='auto', b
         number of samples to return
     kT: float, default -1
         if > 0 temperature to bias by
-        [kT] should have the same unit as the property quantities
+        [kT] should have the same unit as the "quantities" parameter
     bins: np.histogram argument, int or sequence of scalars or str, default 'auto'
         value passed to np.histogram bins argument
     by_bin: bool, default True
@@ -143,7 +143,7 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
         Atoms.info key for quantity by which to do flat histogram and Boltzmann bias
     kT: float, default -1
         Boltzmann bias temperature, <= 0 to not bias
-        [kT] should have the same unit as the property info_field
+        [kT] should have the same unit as the "info_field" parameter
     bins: np.histogram bins argument, default 'auto'
         argument to pass to np.histogram
     by_bin: bool, default True
