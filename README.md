@@ -1,6 +1,6 @@
 # Workflow infrastructure
 
-## ConfigSet and Configset_out, thin I/O layers for input and output
+## ConfigSet and OutputSpec, thin I/O layers for input and output
 
 `ConfigSet` and `OutputSpec` are python classes defined in `configset.py`.
 ```python
