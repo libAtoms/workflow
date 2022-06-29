@@ -33,3 +33,4 @@ for r in "${results[@]}"; do
         exit 1
     fi
 done
+echo "No failures"
