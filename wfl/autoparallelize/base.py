@@ -9,6 +9,36 @@ from wfl.configset import OutputSpec
 from .pool import do_in_pool
 from .remote import do_remotely
 
+# NOTES from a previous implementation that does not work with sphinx docstring parsing
+# may not be exactly correct, but can definitely be made to work (except sphinx)
+#
+# note that it is possible to define iloop so that the decorator functionality can be
+# done with
+#
+#     parallelized_op = iloop(op, "parallelized_op", "Atoms",. [iloop_arg_1 = ... ])
+#
+# this is done by renaming the current "iloop" to "_iloop_wrapper", and defining a new "iloop"
+# as something like
+#
+#     def iloop(op, op_name, input_iterator_contents, **iloop_kwargs):
+#         f = functools.partial(_iloop_wrapper, op, **iloop_kwargs)
+#         f.__name__ = op_name
+#         f.__doc__ = iloop_docstring(op.__doc__, input_iterator_contents)
+#         return f
+#
+# it also requires that the code parsing the stack trace to match up the RemoteInfo dict
+# detects the presence of "iloop" in the stack trace, and instead uses
+#
+#     inspect.getfile(op) + "::" + op.__name__
+#
+# instead of the stack trace file and function
+#
+# sphinx docstring parsing cannot handle this, though, because the module associated with
+# the "parallelized_op" symbol is that of "iloop", rather than the python file in which
+# it is actually defined.  As a result, sphinx assumes it's just some imported symbol and does
+# not include its docstring.  There does not appear to be any way to override that on a
+# per-symbol basis in current sphinx versions.
+
 iloop_docstring_params_pre = (
 """inputs: iterable({iterable_type})
     input quantities of type {iterable_type}
@@ -93,13 +123,11 @@ def iloop(func, *args,
 
     .. code-block:: python
 
-        def autopara_op(*args, **kwargs):
-            f = functools.partial(iloop, op, [ iloop_keyword_param_1=val, iloop_keyword_param_2=val, ... ] )
-            return f(*args, **kwargs)
-        autopara_op.doc = iloop_docstring(op.__doc__, "iterable_contents")
+        def parallelized_op(*args, **kwargs):
+            return iloop(op, *args, [ iloop_keyword_param_1=val, iloop_keyword_param_2=val, ... ], **kwargs )
+        parallelized_op.doc = iloop_docstring(op.__doc__, "iterable_contents")
 
-
-    The autoparallelized function can then be called with `autopara_op(inputs, outputs, args of op)`
+    The autoparallelized function can then be called with `parallelized_op(inputs, outputs, [args of op], [args of iloop])`
 
 
     Parameters
