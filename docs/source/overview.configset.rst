@@ -45,7 +45,7 @@ To read from and write to ABCD database records, you can do
 
 In this case the inputs are a dict (single query, AND for each key-value pair) or list of dict for queries (multiple queries, OR of all the dicts), and the output tags are a dict of tags and values to set on writing.  Unless ``output_force=True``, this will refuse  to write if any config already has the output tags set (to ensure  that all the configurations written by the loop can be retrieved exactly, for  passing to the next stage in the pipeline).  The outputs can be retrieved by
 
-.. code-block:: python
+.. code-block:: python 
 
   abcd.get_atoms(output_tags)
 

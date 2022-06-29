@@ -1,4 +1,4 @@
-.. _parallelisation:
+.. _parallelisation: 
 
 ########################################
 Automatic parallelization of tasks
@@ -21,7 +21,7 @@ The other is to set the env var ``WFL_MPIPOOL`` to any value, and to run the scr
 Programming-time view
 ****************************************
 
-To code an operation that can be parallelized over configuration (or any other iterable), it needs to be implemented as a function that it takes, normally as its first argument, an iterable, e.g. a list of ``ase.atoms.Atoms``, and returns a list of ``ase.atoms.Atoms`` the same length.  Input can be any iterable, but output must be ``Atoms`` or nothing, no other objects.  If the actual work is being done in a function called ``op``, it should be defined as
+To code an operation that can be parallelized over configuration (or any other iterable), it needs to be implemented as a function that it takes, normally as its first argument, an iterable, e.g. a list of ``ase.atoms.Atoms``, and returns a list of ``ase.atoms.Atoms`` the same length.  Input can be any iterable, but output must be ``Atoms`` or nothing, no other objects.  If the actual work is being done in a function called ``op``, it should be defined as 
 
 .. code-block:: python
 
@@ -42,7 +42,7 @@ An auto-parallelized wrapper function can then be defined as
 
 ``num_inputs_per_python_subprocess`` controls how many items from the input iterable are passed to each call of ``op()`` (to reduce startup overhead).  All arguments *must be* pickleable.  If something that cannot be pickled must be passed (e.g. a QUIP ``Potential``), it must be passed in some way, e.g. a constructor function and its arguments, that _can_ be pickled.  For things that need to happen once per thread, e.g. random number initialization, there is an ``initializer`` argument to ``iterable_loop()``.
 
-There are many examples of this, including the descriptor calculator, and (with initializers) md and minim.
+There are many examples of this, including the descriptor calculator, and (with initializers) md and minim. 
 
 
 MPI with ``WFL_MPIPOOL``
