@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>wfl.scripts package &#8212; workflow  documentation</title>
+    <title>Automatic parallelization of tasks &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,8 +32,8 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="wfl.select package" href="wfl.select.html" />
-    <link rel="prev" title="wfl.generate package" href="wfl.generate.html" />
+    <link rel="next" title="Operations" href="operations.html" />
+    <link rel="prev" title="Input and output of atomic structures" href="overview.configset.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -91,23 +91,23 @@
    First example
   </a>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="overview.html">
    Overview
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="overview.configset.html">
      Input and output of atomic structures
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="overview.parallelisation.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      Automatic parallelization of tasks
     </a>
    </li>
@@ -224,26 +224,26 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
    Modules
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
   <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
-   <li class="toctree-l2 current active has-children">
+  <ul>
+   <li class="toctree-l2 has-children">
     <a class="reference internal" href="wfl.html">
      wfl package
     </a>
-    <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
     <label for="toctree-checkbox-6">
      <i class="fas fa-chevron-down">
      </i>
     </label>
-    <ul class="current">
+    <ul>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.autoparallelize.html">
        wfl.autoparallelize package
@@ -303,8 +303,8 @@
        wfl.generate package
       </a>
      </li>
-     <li class="toctree-l3 current active">
-      <a class="current reference internal" href="#">
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.scripts.html">
        wfl.scripts package
       </a>
      </li>
@@ -395,7 +395,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/wfl.scripts.rst.txt"
+        <a href="_sources/overview.parallelisation.rst.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -455,9 +455,26 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.scripts">
-   Module contents
+  <a class="reference internal nav-link" href="#runtime-view">
+   Runtime view
   </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#programming-time-view">
+   Programming-time view
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#mpi-with-wfl-mpipool">
+     MPI with
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       WFL_MPIPOOL
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -468,7 +485,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>wfl.scripts package</h1>
+                <h1>Automatic parallelization of tasks</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -479,9 +496,26 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.scripts">
-   Module contents
+  <a class="reference internal nav-link" href="#runtime-view">
+   Runtime view
   </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#programming-time-view">
+   Programming-time view
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#mpi-with-wfl-mpipool">
+     MPI with
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       WFL_MPIPOOL
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -493,10 +527,37 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="wfl-scripts-package">
-<h1>wfl.scripts package<a class="headerlink" href="#wfl-scripts-package" title="Permalink to this headline">#</a></h1>
-<div class="section" id="module-wfl.scripts">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.scripts" title="Permalink to this headline">#</a></h2>
+  <div class="section" id="automatic-parallelization-of-tasks">
+<span id="parallelisation"></span><h1>Automatic parallelization of tasks<a class="headerlink" href="#automatic-parallelization-of-tasks" title="Permalink to this headline">#</a></h1>
+<p>Much of the pipeline, including the input/output facilitated by <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code>/<code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>, was designed that so that simple operations that need to be done to many configurations could easily be parallelized.  The mechanism for that is wrapping the fundamental operations in a call to <code class="docutils literal notranslate"><span class="pre">wfl.autoparallelize.base.iterable_loop</span></code>.</p>
+<div class="section" id="runtime-view">
+<h2>Runtime view<a class="headerlink" href="#runtime-view" title="Permalink to this headline">#</a></h2>
+<p>Once a function that operates on individual configs has been wrapped, the user can get parallelization to happen in one of two different ways.  The first is the use of the env var <code class="docutils literal notranslate"><span class="pre">WFL_NUM_PYTHON_SUBPROCESSES</span></code>.  This variable should be set to a number, and that many python threads will be created (using <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool">multiprocessing.pool.Pool</a>).  The script should be run as usual.</p>
+<p>The other is to set the env var <code class="docutils literal notranslate"><span class="pre">WFL_MPIPOOL</span></code> to any value, and to run the script with <code class="docutils literal notranslate"><span class="pre">mpirun</span></code> (or whatever is appropriate for the installed MPI implementation).  All MPI tasks will be used to parallelize using <a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/">mpi4py</a> and <a class="reference external" href="https://github.com/mpipool/mpipool">mpipool</a>.</p>
+</div>
+<div class="section" id="programming-time-view">
+<h2>Programming-time view<a class="headerlink" href="#programming-time-view" title="Permalink to this headline">#</a></h2>
+<p>To code an operation that can be parallelized over configuration (or any other iterable), it needs to be implemented as a function that it takes, normally as its first argument, an iterable, e.g. a list of <code class="docutils literal notranslate"><span class="pre">ase.atoms.Atoms</span></code>, and returns a list of <code class="docutils literal notranslate"><span class="pre">ase.atoms.Atoms</span></code> the same length.  Input can be any iterable, but output must be <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> or nothing, no other objects.  If the actual work is being done in a function called <code class="docutils literal notranslate"><span class="pre">op</span></code>, it should be defined as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+        <span class="n">output_ats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+        <span class="o">&lt;</span><span class="n">do</span> <span class="n">some</span> <span class="n">stuff</span> <span class="k">with</span> <span class="n">at</span> <span class="ow">and</span> <span class="n">argN</span><span class="o">&gt;</span>
+    <span class="n">output_ats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">at</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_ats</span>
+</pre></div>
+</div>
+<p>An auto-parallelized wrapper function can then be defined as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">wrapped_op</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">iterable_loop</span><span class="p">(</span><span class="n">iterable</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputspec</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span> <span class="n">num_inputs_per_python_subprocess</span><span class="o">=&lt;</span><span class="n">N</span><span class="o">&gt;</span><span class="p">,</span>
+          <span class="n">arg1</span><span class="o">=</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="o">=</span><span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="o">=</span><span class="n">arg3</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">num_inputs_per_python_subprocess</span></code> controls how many items from the input iterable are passed to each call of <code class="docutils literal notranslate"><span class="pre">op()</span></code> (to reduce startup overhead).  All arguments <em>must be</em> pickleable.  If something that cannot be pickled must be passed (e.g. a QUIP <code class="docutils literal notranslate"><span class="pre">Potential</span></code>), it must be passed in some way, e.g. a constructor function and its arguments, that _can_ be pickled.  For things that need to happen once per thread, e.g. random number initialization, there is an <code class="docutils literal notranslate"><span class="pre">initializer</span></code> argument to <code class="docutils literal notranslate"><span class="pre">iterable_loop()</span></code>.</p>
+<p>There are many examples of this, including the descriptor calculator, and (with initializers) md and minim.</p>
+<div class="section" id="mpi-with-wfl-mpipool">
+<h3>MPI with <code class="docutils literal notranslate"><span class="pre">WFL_MPIPOOL</span></code><a class="headerlink" href="#mpi-with-wfl-mpipool" title="Permalink to this headline">#</a></h3>
+<p>The operator-level implementation of <code class="docutils literal notranslate"><span class="pre">mpipool</span></code>-based parallelization is the same.  The only difference is that (assuming that the script as a whole is written for a single task/thread), at startup the script has to call <code class="docutils literal notranslate"><span class="pre">wfl.mpipool_support.init()</span></code>.  This function will hang for every task except for <code class="docutils literal notranslate"><span class="pre">rank</span> <span class="pre">==</span> <span class="pre">0</span></code>, and all those tasks will wait for things to be done through the <code class="docutils literal notranslate"><span class="pre">mpipool</span></code> mechanism.  Task 0 should continue, doing whatever it needs to, and when it calls the wrapped operation it will be parallelized over all MPI tasks.</p>
+</div>
 </div>
 </div>
 
@@ -508,17 +569,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="wfl.generate.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="overview.configset.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">wfl.generate package</p>
+            <p class="prev-next-title">Input and output of atomic structures</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="wfl.select.html" title="next page">
+    <a class='right-next' id="next-link" href="operations.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">wfl.select package</p>
+        <p class="prev-next-title">Operations</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

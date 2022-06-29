@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>wfl.scripts package &#8212; workflow  documentation</title>
+    <title>Input and output of atomic structures &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,8 +32,8 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="wfl.select package" href="wfl.select.html" />
-    <link rel="prev" title="wfl.generate package" href="wfl.generate.html" />
+    <link rel="next" title="Automatic parallelization of tasks" href="overview.parallelisation.html" />
+    <link rel="prev" title="Code structure" href="overview.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -91,18 +91,18 @@
    First example
   </a>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="overview.html">
    Overview
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="overview.configset.html">
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      Input and output of atomic structures
     </a>
    </li>
@@ -224,26 +224,26 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
    Modules
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
   <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
-   <li class="toctree-l2 current active has-children">
+  <ul>
+   <li class="toctree-l2 has-children">
     <a class="reference internal" href="wfl.html">
      wfl package
     </a>
-    <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
     <label for="toctree-checkbox-6">
      <i class="fas fa-chevron-down">
      </i>
     </label>
-    <ul class="current">
+    <ul>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.autoparallelize.html">
        wfl.autoparallelize package
@@ -303,8 +303,8 @@
        wfl.generate package
       </a>
      </li>
-     <li class="toctree-l3 current active">
-      <a class="current reference internal" href="#">
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.scripts.html">
        wfl.scripts package
       </a>
      </li>
@@ -395,7 +395,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/wfl.scripts.rst.txt"
+        <a href="_sources/overview.configset.rst.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -432,60 +432,23 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
-</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.scripts">
-   Module contents
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
     </div>
     <div class="article row">
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>wfl.scripts package</h1>
+                <h1>Input and output of atomic structures</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.scripts">
-   Module contents
-  </a>
- </li>
-</ul>
-
-                        </nav>
                     </div>
                 </div>
             </div>
@@ -493,10 +456,33 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="wfl-scripts-package">
-<h1>wfl.scripts package<a class="headerlink" href="#wfl-scripts-package" title="Permalink to this headline">#</a></h1>
-<div class="section" id="module-wfl.scripts">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.scripts" title="Permalink to this headline">#</a></h2>
+  <div class="section" id="input-and-output-of-atomic-structures">
+<span id="configset"></span><h1>Input and output of atomic structures<a class="headerlink" href="#input-and-output-of-atomic-structures" title="Permalink to this headline">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> are python classes defined in <code class="docutils literal notranslate"><span class="pre">configset.py</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> can encapsulate one or multiple lists of <code class="docutils literal notranslate"><span class="pre">ase.atoms.Atoms</span></code> objects, or reference to stored sets of configuration in files or ABCD databases. It can function as an iterator over all configs in the input, or iterate over groups of them according to the input definition with the <code class="docutils literal notranslate"><span class="pre">ConfigSet().group_iter()</span></code> method. The <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> must be initialized with its inputs and indices for them.</p>
+<p><code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> works as the output layer, can be used for writing results into it during iterations, but the actual writing is only happening when the operation is closed with <code class="docutils literal notranslate"><span class="pre">OutputSpec.end_write()</span></code>. Input mapping can be added to output into multiple files, based on the input. This is not fully functional for putting configs into the different outputs in a random order and repeatedly touching one.</p>
+<p>For example, to read from two files and write corresponding configs to two other files, use</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">s_in</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_files</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;in1.xyz&#39;</span><span class="p">,</span><span class="s1">&#39;dir/in2.xyz&#39;</span><span class="p">])</span>
+<span class="n">s_out</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_files</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;in1.xyz&quot;</span><span class="p">:</span> <span class="s2">&quot;out1.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;in2.xyz&quot;</span><span class="p">:</span> <span class="s2">&quot;out2.xyz&quot;</span><span class="p">})</span>
+<span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">s_in</span><span class="p">:</span>
+    <span class="n">do_some_operation</span><span class="p">(</span><span class="n">at</span><span class="p">)</span>
+    <span class="n">s_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">at</span><span class="p">,</span> <span class="n">from_input_file</span><span class="o">=</span><span class="n">s_in</span><span class="o">.</span><span class="n">get_current_input_file</span><span class="p">())</span>
+<span class="n">s_out</span><span class="o">.</span><span class="n">end_write</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In this case the inputs is a list of files, and the outputs is either a single file (many -&gt; 1) or a mapping between equal number of input and output categories (multiple 1 -&gt; 1). This will not overwrite unless you also pass <code class="docutils literal notranslate"><span class="pre">force=True</span></code>.</p>
+<p>To read from and write to ABCD database records, you can do</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">output_tags</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;output_tag&#39;</span> <span class="p">:</span> <span class="s1">&#39;some unique value&#39;</span><span class="p">}</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_abcd</span><span class="o">=</span><span class="s1">&#39;mongodb://localhost:27017&#39;</span> <span class="n">inputs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;input_tag&#39;</span> <span class="p">:</span> <span class="s1">&#39;necessary_input-val&#39;</span><span class="p">},</span>
+            <span class="n">output_abcd</span><span class="o">=</span><span class="s1">&#39;mongodb://localhost:27017&#39;</span><span class="p">,</span> <span class="n">output_tags</span><span class="o">=</span><span class="n">output_tags</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this case the inputs are a dict (single query, AND for each key-value pair) or list of dict for queries (multiple queries, OR of all the dicts), and the output tags are a dict of tags and values to set on writing.  Unless <code class="docutils literal notranslate"><span class="pre">output_force=True</span></code>, this will refuse  to write if any config already has the output tags set (to ensure  that all the configurations written by the loop can be retrieved exactly, for  passing to the next stage in the pipeline).  The outputs can be retrieved by</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">abcd</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">(</span><span class="n">output_tags</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 
@@ -508,17 +494,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="wfl.generate.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="overview.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">wfl.generate package</p>
+            <p class="prev-next-title">Code structure</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="wfl.select.html" title="next page">
+    <a class='right-next' id="next-link" href="overview.parallelisation.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">wfl.select package</p>
+        <p class="prev-next-title">Automatic parallelization of tasks</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

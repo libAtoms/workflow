@@ -91,11 +91,33 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="operations.html">
-   Operations
+  <a class="reference internal" href="overview.html">
+   Overview
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.configset.html">
+     Input and output of atomic structures
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.parallelisation.html">
+     Automatic parallelization of tasks
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="operations.html">
+   Operations
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -146,8 +168,8 @@
   <a class="reference internal" href="workflows.html">
    Workflows
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-  <label for="toctree-checkbox-2">
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -157,14 +179,19 @@
      How to do GAP-RSS
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="workflows.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="examples.html">
    Examples
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -200,8 +227,8 @@
   <a class="reference internal" href="modules.html">
    Modules
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
-  <label for="toctree-checkbox-4">
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -210,8 +237,8 @@
     <a class="reference internal" href="wfl.html">
      wfl package
     </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-    <label for="toctree-checkbox-5">
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
      <i class="fas fa-chevron-down">
      </i>
     </label>
@@ -225,8 +252,8 @@
       <a class="reference internal" href="wfl.calculators.html">
        wfl.calculators package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
-      <label for="toctree-checkbox-6">
+      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+      <label for="toctree-checkbox-7">
        <i class="fas fa-chevron-down">
        </i>
       </label>
@@ -252,8 +279,8 @@
       <a class="reference internal" href="wfl.fit.html">
        wfl.fit package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
-      <label for="toctree-checkbox-7">
+      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+      <label for="toctree-checkbox-8">
        <i class="fas fa-chevron-down">
        </i>
       </label>
@@ -480,7 +507,7 @@ title="Print to PDF"
 <p>A Python toolkit for building interatomic potential creation and atomistic simulation workflows.</p>
 <p>Documentation in progress!</p>
 <p>The main functions of Workflow is to efficiently parallelise operations over a set of atomic configurations. Given an operation that is defined to act a single configuration (e.g. evaluate energy of a structure with CASTEP ASE calculator), Workflow may apply the operation to multiple configurations in parallel.</p>
-<p>The Workflow-specific code structures (e.g. how configurations are handled, mechanism to parallelise operations) are covered in <span class="xref std std-ref">Code structure</span>. Currently implemented self-contained per-configuration operations are sketched out in <a class="reference internal" href="operations.html#operations"><span class="std std-ref">Operations</span></a>. Descriptions of Workflows, built out of these modular operations are described in <a class="reference internal" href="workflows.html#workflows"><span class="std std-ref">Workflows</span></a>. There are also descriptions <a class="reference internal" href="command_line.html#command-line"><span class="std std-ref">command line interface</span></a>, <a class="reference internal" href="examples.html#examples"><span class="std std-ref">examples</span></a> of common tasks to get started with and a <a class="reference internal" href="modules.html#api"><span class="std std-ref">Python API</span></a>.</p>
+<p>The Workflow-specific code structures (e.g. how configurations are handled, mechanism to parallelise operations) are covered in <a class="reference internal" href="overview.html#code-structure"><span class="std std-ref">Code structure</span></a>. Currently implemented self-contained per-configuration operations are sketched out in <a class="reference internal" href="operations.html#operations"><span class="std std-ref">Operations</span></a>. Descriptions of Workflows, built out of these modular operations are described in <a class="reference internal" href="workflows.html#workflows"><span class="std std-ref">Workflows</span></a>. There are also descriptions <a class="reference internal" href="command_line.html#command-line"><span class="std std-ref">command line interface</span></a>, <a class="reference internal" href="examples.html#examples"><span class="std std-ref">examples</span></a> of common tasks to get started with and a <a class="reference internal" href="modules.html#api"><span class="std std-ref">Python API</span></a>.</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">#</a></h2>
 <p>Quick start that installs all of the mandatory dependencies:</p>
@@ -504,6 +531,11 @@ title="Print to PDF"
 <li class="toctree-l2"><a class="reference internal" href="first_example.html#with-remote-execution">With remote execution</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.configset.html">Input and output of atomic structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.parallelisation.html">Automatic parallelization of tasks</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="operations.html">Operations</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="operations.calculators.html">Calculators in workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="operations.generate.html">Generating Configs</a></li>
@@ -517,6 +549,7 @@ title="Print to PDF"
 </li>
 <li class="toctree-l1"><a class="reference internal" href="workflows.html">Workflows</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="workflows.rss.html">How to do GAP-RSS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.mlip_fitting.html">Fitting a MLIP</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>

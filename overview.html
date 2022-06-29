@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>wfl.scripts package &#8212; workflow  documentation</title>
+    <title>Code structure &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,8 +32,8 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="wfl.select package" href="wfl.select.html" />
-    <link rel="prev" title="wfl.generate package" href="wfl.generate.html" />
+    <link rel="next" title="Input and output of atomic structures" href="overview.configset.html" />
+    <link rel="prev" title="First Example" href="first_example.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -91,11 +91,11 @@
    First example
   </a>
  </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="overview.html">
+ <li class="toctree-l1 current active has-children">
+  <a class="current reference internal" href="#">
    Overview
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
    <i class="fas fa-chevron-down">
    </i>
@@ -224,26 +224,26 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
    Modules
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
   <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
-   <li class="toctree-l2 current active has-children">
+  <ul>
+   <li class="toctree-l2 has-children">
     <a class="reference internal" href="wfl.html">
      wfl package
     </a>
-    <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
     <label for="toctree-checkbox-6">
      <i class="fas fa-chevron-down">
      </i>
     </label>
-    <ul class="current">
+    <ul>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.autoparallelize.html">
        wfl.autoparallelize package
@@ -303,8 +303,8 @@
        wfl.generate package
       </a>
      </li>
-     <li class="toctree-l3 current active">
-      <a class="current reference internal" href="#">
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.scripts.html">
        wfl.scripts package
       </a>
      </li>
@@ -395,7 +395,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/wfl.scripts.rst.txt"
+        <a href="_sources/overview.rst.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -432,60 +432,23 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
-</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.scripts">
-   Module contents
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
     </div>
     <div class="article row">
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>wfl.scripts package</h1>
+                <h1>Code structure</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.scripts">
-   Module contents
-  </a>
- </li>
-</ul>
-
-                        </nav>
                     </div>
                 </div>
             </div>
@@ -493,10 +456,23 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="wfl-scripts-package">
-<h1>wfl.scripts package<a class="headerlink" href="#wfl-scripts-package" title="Permalink to this headline">#</a></h1>
-<div class="section" id="module-wfl.scripts">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.scripts" title="Permalink to this headline">#</a></h2>
+  <div class="section" id="code-structure">
+<span id="id1"></span><h1>Code structure<a class="headerlink" href="#code-structure" title="Permalink to this headline">#</a></h1>
+<p>Most of <a class="reference internal" href="operations.html#operations"><span class="std std-ref">operations</span></a> in Workflow take in (optional) and return (mandatory) an ASE’s <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> object. These inputs and outputs are abstracted in <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> classes.  <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> may be initialised with a list(s) of <code class="docutils literal notranslate"><span class="pre">Atoms</span></code>, by providing one or multiple <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> filenames or with a reference to an <a class="reference external" href="https://github.com/libAtoms/abcd">ABCD database</a>. Similarly, returned configurations can be held in memory and subsequently used via <code class="docutils literal notranslate"><span class="pre">OutputSpec.to_ConfigSet()</span></code>, written to a single or multiple files or uploaded to an ABCD database. This way, an operation may iterate over a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and write <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> to <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>, regardless of how the input configs were supplied or how or where to the output configs are going to be collected.</p>
+<p>Given a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and an operation acting on (or returning) a single <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> instance, Workflow can parallelise the operation over all <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects in <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> (or an iterable leading to returning an <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> object). This is achieved by wrapping the operation in a call to <code class="docutils literal notranslate"><span class="pre">wfl.pipeline.iterable_loop</span></code>. In addition to parallelising on readily accessible cores, the operations may executed in a number of independently queued jobs on a HPC cluster with the help of <a class="reference external" href="https://github.com/libAtoms/ExPyRe">ExPyRe</a>.</p>
+<p>Some parts of Workflow (e.g. how many parallel processes to run) are controlled via environment variables. Off the top of my head:</p>
+<ul class="simple">
+<li><p>WFL_NUM_PYTHON_SUBPROCESSES</p></li>
+<li><p>WFL_MPIPOOL</p></li>
+<li><p>WFL_GAP_FIT_OMP_NUM_THREADS</p></li>
+<li><p>OMP_NUM_THREADS might have to be set to 1</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">More details:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.configset.html">Input and output of atomic structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.parallelisation.html">Automatic parallelization of tasks</a></li>
+</ul>
 </div>
 </div>
 
@@ -508,17 +484,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="wfl.generate.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="first_example.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">wfl.generate package</p>
+            <p class="prev-next-title">First Example</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="wfl.select.html" title="next page">
+    <a class='right-next' id="next-link" href="overview.configset.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">wfl.select package</p>
+        <p class="prev-next-title">Input and output of atomic structures</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
