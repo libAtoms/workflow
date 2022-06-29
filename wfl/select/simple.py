@@ -5,7 +5,7 @@ import numpy as np
 from ase import Atoms
 
 from wfl.configset import ConfigSet
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import _autoparallelize_ll
 
 
 def by_bool_func(inputs, outputs, at_filter):
@@ -30,7 +30,7 @@ def by_bool_func(inputs, outputs, at_filter):
         num_python_subprocesses = 0
     else:
         num_python_subprocesses = None
-    return autoparallelize(num_python_subprocesses=num_python_subprocesses, iterable=inputs, outputspec=outputs, at_filter=at_filter, op=_select_autopara_wrappable)
+    return _autoparallelize_ll(num_python_subprocesses=num_python_subprocesses, iterable=inputs, outputspec=outputs, at_filter=at_filter, op=_select_autopara_wrappable)
 
 
 def _select_autopara_wrappable(inputs, at_filter):

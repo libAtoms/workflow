@@ -8,7 +8,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.md.verlet import VelocityVerlet
 from ase.units import GPa, fs
 
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import _autoparallelize_ll
 from wfl.utils.at_copy_save_results import at_copy_save_results
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
@@ -31,7 +31,7 @@ def sample(inputs, outputs, calculator, steps, dt,
         initializer = None
     else:
         initializer = np.random.seed
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=sample_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
+    return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=sample_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
                          calculator=calculator, steps=steps, dt=dt,
                          temperature=temperature, temperature_tau=temperature_tau,
                          pressure=pressure, pressure_tau=pressure_tau,

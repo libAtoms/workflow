@@ -1,4 +1,4 @@
-from .base import autoparallelize, iloop, iloop_docstring
+from .base import _autoparallelize_ll, autoparallelize, autoparallelize_docstring
+assert _autoparallelize_ll
 assert autoparallelize
-assert iloop
-assert iloop_docstring
+assert autoparallelize_docstring

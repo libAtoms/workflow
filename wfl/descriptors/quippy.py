@@ -8,7 +8,7 @@ try:
 except ModuleNotFoundError:
     pass
 
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import _autoparallelize_ll
 from wfl.utils.quip_cli_strings import dict_to_quip_str
 
 
@@ -103,7 +103,7 @@ def calc(inputs, outputs, descs, key, local=False, normalize=True, composition_w
     ConfigSet 
         OutputSpec.to_ConfigSet() Pointing to outputs
     """
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=calc_autopara_wrappable, descs=descs, key=key, local=local,
+    return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=calc_autopara_wrappable, descs=descs, key=key, local=local,
                          force=force, verbose=verbose, normalize=normalize, composition_weight=composition_weight)
 
 

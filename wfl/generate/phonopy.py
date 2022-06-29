@@ -1,7 +1,7 @@
 import numpy as np
 from ase.atoms import Atoms
 
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import _autoparallelize_ll
 
 try:
     import phonopy
@@ -15,7 +15,7 @@ except:
 
 
 def run(inputs, outputs, displacements, strain_displs, ph2_supercell, ph3_supercell=None, pair_cutoff=None, num_inputs_per_python_subprocess=10):
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, 
+    return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, 
                          displacements=displacements, strain_displs=strain_displs, ph2_supercell=ph2_supercell,
                          ph3_supercell=ph3_supercell, pair_cutoff=pair_cutoff)
 

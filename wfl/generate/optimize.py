@@ -7,7 +7,7 @@ import spglib
 from ase.constraints import ExpCellFilter
 from ase.optimize.precon import PreconLBFGS
 
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import _autoparallelize_ll
 from wfl.utils.at_copy_save_results import at_copy_save_results
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
@@ -43,7 +43,7 @@ def run(inputs, outputs, calculator, fmax=1.0e-3, smax=None, steps=1000, pressur
         initializer = None
     else:
         initializer = np.random.seed
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
+    return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
                          calculator=calculator, fmax=fmax, smax=smax, steps=steps,
                          pressure=pressure, keep_symmetry=keep_symmetry, traj_step_interval=traj_step_interval,
                          traj_subselect=traj_subselect, skip_failures=skip_failures, results_prefix=results_prefix,

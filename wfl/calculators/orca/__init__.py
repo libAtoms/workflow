@@ -15,7 +15,7 @@ from ase.calculators.calculator import CalculationFailed, Calculator, \
 import ase.calculators.orca
 
 from wfl.calculators.utils import clean_rundir, save_results
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import _autoparallelize_ll
 from wfl.utils.misc import atoms_to_list, chunks
 from wfl.calculators.orca.basinhopping import BasinHoppingORCA
 

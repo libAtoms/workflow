@@ -4,7 +4,7 @@ import functools
 from ase import Atoms
 from ase.calculators.calculator import all_changes
 
-from wfl.autoparallelize import iloop, iloop_docstring
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
 from .utils import save_results
@@ -70,5 +70,5 @@ def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_a
 
 
 def run(*args, **kwargs):
-    return iloop(run_autopara_wrappable, *args, def_num_inputs_per_python_subprocess=10, **kwargs)
-run.__doc__ = iloop_docstring(run_autopara_wrappable.__doc__, "Atoms")
+    return autoparallelize(run_autopara_wrappable, *args, def_num_inputs_per_python_subprocess=10, **kwargs)
+run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")

@@ -39,14 +39,14 @@ from .remote import do_remotely
 # not include its docstring.  There does not appear to be any way to override that on a
 # per-symbol basis in current sphinx versions.
 
-iloop_docstring_params_pre = (
+_iloop_docstring_params_pre = (
 """inputs: iterable({iterable_type})
     input quantities of type {iterable_type}
 outputs: OutputSpec or None
     where to write output atomic configs, or None for no output (i.e. only side-effects)
 """)
 
-iloop_docstring_params_post = (
+_iloop_docstring_params_post = (
 """ITERABLE_LOOP_RELATED:
 
     - num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
@@ -71,7 +71,7 @@ iloop_docstring_returns = (
         output configs
 """)
 
-def iloop_docstring(orig_docstring, input_iterable_type):
+def autoparallelize_docstring(orig_docstring, input_iterable_type):
     output_docstring = ""
     lines = orig_docstring.splitlines(True)
     prev_line_was_parameters_section = False
@@ -90,7 +90,7 @@ def iloop_docstring(orig_docstring, input_iterable_type):
             param_init_space = m.group(1)
             # insert extra lines between Parameters section header and initial function parameters,
             # with consistent indentation
-            output_docstring += ''.join([param_init_space + l for l in iloop_docstring_params_pre.format(iterable_type=input_iterable_type).splitlines(True)])
+            output_docstring += ''.join([param_init_space + l for l in _iloop_docstring_params_pre.format(iterable_type=input_iterable_type).splitlines(True)])
             # no longer need to insert iloop-related lines
             prev_line_was_parameters_section = False
         # save orig line
@@ -104,7 +104,7 @@ def iloop_docstring(orig_docstring, input_iterable_type):
         output_docstring += "\n"
 
     # insert docstring lines for parameters that come _after_ function's real parameters
-    output_docstring += '\n' + ''.join([param_init_space + l for l in iloop_docstring_params_post.splitlines(True)])
+    output_docstring += '\n' + ''.join([param_init_space + l for l in _iloop_docstring_params_post.splitlines(True)])
 
     # insert Returns section
     output_docstring += '\n' + ''.join([section_init_space + l for l in iloop_docstring_returns.splitlines(True)])
@@ -112,7 +112,7 @@ def iloop_docstring(orig_docstring, input_iterable_type):
     return output_docstring
 
 
-def iloop(func, *args,
+def autoparallelize(func, *args,
           def_num_python_subprocesses=None, def_num_inputs_per_python_subprocess=1, iterable_arg=0, def_skip_failed=True,
           initializer=None, initargs=None, def_remote_info=None, def_remote_label=None, hash_ignore=[], **kwargs):
     """functools.partial-based decorator (using ideas in topic 4 of
@@ -156,11 +156,11 @@ def iloop(func, *args,
         remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine filename '::' calling function (pass to iterable_loop())
     hash_ignore: list(str), default []
         arguments to ignore when doing remot executing and computing hash of function to determine
-        if it's already done (pass to iterable_loop())
+        if it is already done (pass to iterable_loop())
 
     Returns
     -------
-    wrapped_func: function wrapped in autoparallelize via iloop
+    wrapped_func: function wrapped in autoparallelize via _autoparallelize_ll
     """
 
     # copy kwargs and args so they can be modified for call to autoparallelize
@@ -185,15 +185,17 @@ def iloop(func, *args,
     remote_info = kwargs.pop('remote_info', def_remote_info)
     remote_label = kwargs.pop('remote_label', def_remote_label)
 
-    return autoparallelize(num_python_subprocesses, num_inputs_per_python_subprocess, inputs, outputs, func, iterable_arg, skip_failed,
+    return _autoparallelize_ll(num_python_subprocesses, num_inputs_per_python_subprocess, inputs, outputs, func, iterable_arg, skip_failed,
                          initializer, initargs, remote_info, remote_label, hash_ignore, *args, **kwargs)
 
 # do we want to allow for ops that only take singletons, not iterables, as input, maybe with num_inputs_per_python_subprocess=0?
 # that info would have to be passed down to _wrapped_autopara_wrappable so it passes a singleton rather than a list into op
 #
 # some ifs (int positional vs. str keyword) could be removed if we required that the iterable be passed into a kwarg.
-def autoparallelize(num_python_subprocesses=None, num_inputs_per_python_subprocess=1, iterable=None, outputspec=None, op=None, iterable_arg=0, skip_failed=True,
-                  initializer=None, initargs=None, remote_info=None, remote_label=None, hash_ignore=[], *args, **kwargs):
+
+def _autoparallelize_ll(num_python_subprocesses=None, num_inputs_per_python_subprocess=1, iterable=None, outputspec=None,
+                        op=None, iterable_arg=0, skip_failed=True, initializer=None, initargs=None, remote_info=None, 
+                        remote_label=None, hash_ignore=[], *args, **kwargs):
     """parallelize some operation over an iterable
 
     Parameters
@@ -261,8 +263,8 @@ def autoparallelize(num_python_subprocesses=None, num_inputs_per_python_subproce
                 stack_remote_label = [fs[0] + '::' + fs[2] for fs in tb.extract_stack()[:-1]]
             else:
                 stack_remote_label = []
-            if len(stack_remote_label) > 0 and stack_remote_label[-1].endswith('base.py::iloop'):
-                # replace iloop stack entry with one for desired function name
+            if len(stack_remote_label) > 0 and stack_remote_label[-1].endswith('base.py::autoparallelize'):
+                # replace autoparallelize stack entry with one for desired function name
                 stack_remote_label.pop()
             #DEBUG print("DEBUG stack_remote_label", stack_remote_label)
             match = False

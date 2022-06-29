@@ -10,7 +10,7 @@ from ase.calculators.calculator import all_changes, CalculationFailed
 from ase.calculators.calculator import Calculator
 
 from wfl.calculators import orca
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import _autoparallelize_ll
 
 
 def evaluate_basin_hopping(inputs, outputs,
@@ -46,7 +46,7 @@ def evaluate_basin_hopping(inputs, outputs,
     results : ConfigSet
         outputs.to_ConfigSet()
     """
-    return autoparallelize(iterable=inputs, OutputSpec=outputs,
+    return _autoparallelize_ll(iterable=inputs, OutputSpec=outputs,
                          op=orca.evaluate_op,
                          workdir_root=workdir_root, dir_prefix=dir_prefix,
                          keep_files=keep_files, orca_kwargs=orca_kwargs,
