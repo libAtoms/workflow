@@ -11,6 +11,7 @@ Self-contained code snippets of common things that can be done with Workflow.
    :caption: Contents:
 
    examples.orca.md
+   examples.mace.md
    examples.normal_modes.md
    examples.smiles.md
    examples.autopara.md
