@@ -13,7 +13,7 @@ This page is for the functions/modules/code operations that are somewhat more mo
    :maxdepth: 2
    :caption: Contents:
 
-   operations.calculators.rst
+   operations.calculators.md
    operations.generate.md
    operations.select.rst
    operations.descriptors.md
