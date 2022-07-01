@@ -14,8 +14,8 @@ except:
     phono3py = None
 
 
-def run(inputs, outputs, displacements, strain_displs, ph2_supercell, ph3_supercell=None, pair_cutoff=None, chunksize=10):
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, chunksize=chunksize, 
+def run(inputs, outputs, displacements, strain_displs, ph2_supercell, ph3_supercell=None, pair_cutoff=None, num_inputs_per_python_subprocess=10):
+    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, 
                          displacements=displacements, strain_displs=strain_displs, ph2_supercell=ph2_supercell,
                          ph3_supercell=ph3_supercell, pair_cutoff=pair_cutoff)
 

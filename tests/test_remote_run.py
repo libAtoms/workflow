@@ -20,46 +20,43 @@ from wfl.calculators import generic
 from wfl.generate import optimize
 from wfl.calculators.dft import evaluate_dft
 
-
-def test_generic_calc(tmp_path, expyre_systems, monkeypatch):
+def test_generic_calc(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
-        do_generic_calc(tmp_path, sys_name, monkeypatch)
+        do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env)
 
 
 # do we need this tested remotely as well?
-def test_minim_local(tmp_path, expyre_systems, monkeypatch):
+def test_minim_local(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
-        do_minim(tmp_path, sys_name, monkeypatch)
+        do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env)
 
 
-def test_vasp_fail(tmp_path, expyre_systems, monkeypatch):
+def test_vasp_fail(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
-        do_vasp_fail(tmp_path, sys_name, monkeypatch)
+        do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env)
 
 
-def do_vasp_fail(tmp_path, sys_name, monkeypatch):
+def do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri = {'sys_name': sys_name, 'job_name': 'test_vasp_'+sys_name,
           'env_vars' : ['VASP_COMMAND=NONE', 'VASP_COMMAND_GAMMA=NONE'],
           'input_files' : ['POTCARs'],
-          'resources': {'max_time': '5m', 'n': (1, 'nodes')},
-          'job_chunksize': 1, 'check_interval': 10}
+          'resources': {'max_time': '5m', 'num_nodes': 1},
+          'num_inputs_per_queued_job': 1, 'check_interval': 10}
 
-    if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-        ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
-        ri.update(ri_extra)
+    remoteinfo_env(ri)
 
     ri = {'test_remote_run.py::do_vasp_fail,calculators/dft.py::evaluate_dft': ri}
     print('RemoteInfo', ri)
-    monkeypatch.setenv('WFL_AUTOPARA_REMOTEINFO', json.dumps(ri))
+    monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
 
     nconfigs = 2
     nat = 8
@@ -93,21 +90,16 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch):
             assert not k.startswith('TEST_')
 
 
-def do_generic_calc(tmp_path, sys_name, monkeypatch):
+def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri = {'sys_name': sys_name, 'job_name': 'test_'+sys_name,
-          'resources': {'max_time': '1h', 'n': (1, 'nodes')},
-          'job_chunksize': -36, 'check_interval': 10}
+          'resources': {'max_time': '1h', 'num_nodes': 1},
+          'num_inputs_per_queued_job': -36, 'check_interval': 10}
 
-    if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-        ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
-        if 'resources' in ri_extra:
-            ri['resources'].update(ri_extra['resources'])
-            del ri_extra['resources']
-        ri.update(ri_extra)
+    remoteinfo_env(ri)
 
     ri = {'test_remote_run.py::do_generic_calc,calculators/generic.py::run': ri}
     print('RemoteInfo', ri)
-    monkeypatch.setenv('WFL_AUTOPARA_REMOTEINFO', json.dumps(ri))
+    monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
 
     nconfigs = 1000
     nat = 40
@@ -138,14 +130,14 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch):
     co = OutputSpec(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
 
     # do not mark as processed so next call can reuse
-    monkeypatch.setenv('WFL_AUTOPARA_REMOTE_NO_MARK_PROCESSED', '1')
+    monkeypatch.setenv('WFL_EXPYRE_NO_MARK_PROCESSED', '1')
 
     t0 = time.time()
     results = generic.run(inputs=ci, outputs=co, calculator=calc)
     dt = time.time() - t0
     print('remote parallel calc_time', dt)
 
-    monkeypatch.delenv('WFL_AUTOPARA_REMOTE_NO_MARK_PROCESSED')
+    monkeypatch.delenv('WFL_EXPYRE_NO_MARK_PROCESSED')
 
     dev = [ (np.abs(at.info['EMT_energy'] - ref_E)) / np.maximum(np.abs(ref_E), 1.0e-3) for at, ref_E in zip(results, ref_Es) ]
     print('max deviation', max(dev))
@@ -169,13 +161,12 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch):
     assert dt < 20
 
 
-def do_minim(tmp_path, sys_name, monkeypatch):
+def do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri = {'sys_name': sys_name, 'job_name': 'test_'+sys_name,
-          'resources': {'max_time': '1h', 'n': (1, 'nodes')},
-          'job_chunksize': -36, 'check_interval': 10}
-    if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-        ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
-        ri.update(ri_extra)
+          'resources': {'max_time': '1h', 'num_nodes': 1},
+          'num_inputs_per_queued_job': -36, 'check_interval': 10}
+
+    remoteinfo_env(ri)
 
     ri = {'test_remote_run.py::do_minim,generate_configs/minim.py::run': ri}
     print('RemoteInfo', ri)
@@ -206,7 +197,7 @@ def do_minim(tmp_path, sys_name, monkeypatch):
     results = optimize.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
 
     # run remotely
-    monkeypatch.setenv('WFL_AUTOPARA_REMOTEINFO', json.dumps(ri))
+    monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
 
     co = OutputSpec(output_files={f: f.replace('_i_', '_o_') for f in infiles})
     t0 = time.time()

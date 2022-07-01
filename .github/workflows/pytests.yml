@@ -1,0 +1,144 @@
+# This is testing the python versions *other than* the
+#   one in the QUIP Docker, which is 3.7.10 at the time
+#   of writing this. Coverage is disabled.
+
+name: Python Package and tests
+
+# on all push actions AND can be triggered manually as well
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ 3.8 ]
+      max-parallel: 5
+    env:
+      coverage-on-version: 3.8
+      use-mpi: True
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Add conda to system path
+        run: |
+          # $CONDA is an environment variable pointing to the root of the miniconda directory
+          echo $CONDA/bin >> $GITHUB_PATH
+
+      # - name: Install Dependencies from Conda
+        # run: conda env update --file=devtools/conda-envs/environment.yml --name=base
+
+      - name: Install pip from Conda
+        run: conda install pip
+
+      - name: Install phono3py from Conda forge
+        run: conda install -c conda-forge phono3py h5py
+
+      - name: Install dependencies from pip (some will already be taken care of by conda's phonop3py and its dependencies)
+        run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib phonopy phono3py rdkit-pypi flake8 pytest pytest-cov
+
+      - name: Install Quippy from PyPI
+        run: pip install quippy-ase
+
+      - name: Install wfl (expyre and universalSOAP are dependencies)
+        run: pip install .
+
+      - name: Update apt-get for various later package instralls
+        run: |
+          sudo apt-get update
+
+      - name: Install Quantum Espresso
+        run: |
+          sudo apt-get install --no-install-recommends quantum-espresso
+
+      - name: Install buildcell
+        run: |
+          sudo apt-get install gfortran
+          wget https://www.mtg.msm.cam.ac.uk/system/files/documents/airss-0.9.1.tgz
+          tar xzf airss-0.9.1.tgz
+          cd airss-0.9.1
+          make buildcell
+          mkdir -p $HOME/bin
+          cp src/buildcell/src/buildcell $HOME/bin/
+
+      - name: Install MPI dependencies
+        if: env.use-mpi
+        run: |
+          # this can eaily be turned off if needed
+          conda install -c conda-forge mpi4py openmpi pytest-mpi
+          pip install mpipool
+
+      - name: Install and configure slurm and ExPyRe
+        run: |
+          sudo apt-get install -u slurm-wlm mailutils
+          host_s=$( hostname -s )
+          sudo cp .github/workflows_assets/slurm.conf /etc/slurm-llnl/
+          sudo sed -i -e "s/_HOST_/$host_s/g" /etc/slurm-llnl/slurm.conf
+          sudo mkdir /var/log/slurm
+          sudo mkdir /var/spool/slurmd
+          sudo service slurmd start
+          sudo service slurmctld start
+          sleep 5
+          echo "sinfo -s --long"
+          sinfo -s --long
+          mkdir $HOME/.expyre
+          cp .github/workflows_assets/config.json $HOME/.expyre
+          echo "which pw.x"
+          which pw.x
+          ls -l /usr/bin/pw.x
+
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 wfl/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings.
+          flake8 wfl/ --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+
+      - name: Test with pytest - plain
+        if: env.coverage-on-version != matrix.python-version
+        run: |
+          rm -rf $HOME/pytest_plain
+          mkdir $HOME/pytest_plain
+          #
+          export EXPYRE_PYTEST_SYSTEMS=github
+          export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
+          pytest --runremote --basetemp $HOME/pytest_plain -rxXs
+
+      - name: Test with pytest - coverage
+        if: env.coverage-on-version == matrix.python-version
+        run: |
+          rm -rf $HOME/pytest_cov
+          mkdir $HOME/pytest_cov
+          #
+          export EXPYRE_PYTEST_SYSTEMS=github
+          export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
+          pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs
+
+      - name: MPI tests -- plain
+        if: ${{ env.use-mpi && env.coverage-on-version != matrix.python-version}}
+        run: |
+          # envvar and test run - No coverage
+          export WFL_MPIPOOL=2
+          mpirun -n 2 pytest --with-mpi -k mpi
+
+      - name: MPI tests -- coverage
+        if: ${{ env.use-mpi && env.coverage-on-version == matrix.python-version}}
+        run: |
+          # envvar and coverage Appended to the previous
+          export WFL_MPIPOOL=2
+          mpirun -n 2 pytest --cov=wfl --cov-report term --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --with-mpi -k mpi --cov-append
+
+      - name: 'Upload Coverage Data'
+        uses: actions/upload-artifact@v2
+        if: env.coverage-on-version == matrix.python-version
+        with:
+          name: coverage-html-${{ matrix.python-version }}
+          path: coverage-html/
+          retention-days: 7

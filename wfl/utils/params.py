@@ -78,7 +78,7 @@ class Params:
                 result
             except NameError as exc:
                 raise ValueError('Failed to find path component \'{}\''.format(leading_comp)) from exc
-            result = Params(result).get(path_comps[1], default=default)
+            result = Params(result, cur_iter=self.cur_iter).get(path_comps[1], default=default)
         else:
             # final item return (or default)
             try:

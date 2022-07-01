@@ -1,0 +1,26 @@
+function arguments
+    npool -> num_python_subprocesses
+    chunksize -> num_inputs_per_python_subprocess
+
+remote info initializer args / dict keys
+    job_chunksize -> num_inputs_per_queued_job
+    "n": [<N>, "nodes"] -> "num_nodes": <N>
+    "n": [<N>, "tasks"] -> "num_cores": <N>
+    "max_mem": <val> -> "max_mem_tot": <val>
+        (can now also do "max_mem_per_core": <val>)
+
+no more "tasks" as in "cores_per_task" or EXPYRE_TASKS_PER_NODE or EXPYRE_CORES_PER_TASK
+    only cores are defined.
+note that "task" is also used to mean other things in the documentation, which is part of why
+    we stopped using it as a specific expyre/wfl concept
+
+env vars
+    WFL_AUTOPARA_NPOOL -> WFL_NUM_PYTHON_SUBPROCESSES
+    WFL_AUTOPARA_REMOTEINFO -> WFL_EXPYRE_INFO
+
+    EXPYRE_TOT_NCORES -> EXPYRE_NUM_CORES
+    EXPYRE_NNODES -> EXPYRE_NUM_NODES
+    EXPYRE_NCORES_PER_NODE -> EXPYRE_NUM_CORES_PER_NODE
+    no more EXPYRE_*TASK*
+    GAP_FIT_OMP_NUM_THREADS -> WFL_GAP_FIT_OMP_NUM_THREADS
+    ACE_FIT_OMP_NUM_THREADS -> WFL_ACE_FIT_BLAS_THREADS 

@@ -6,7 +6,7 @@ from ase.md.nptberendsen import NPTBerendsen
 from ase.md.nvtberendsen import NVTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.md.verlet import VelocityVerlet
-from ase.units import GPa, fs, kB
+from ase.units import GPa, fs
 
 from wfl.autoparallelize import autoparallelize
 from wfl.utils.at_copy_save_results import at_copy_save_results
@@ -25,7 +25,7 @@ def sample(inputs, outputs, calculator, steps, dt,
            temperature=None, temperature_tau=None, pressure=None, pressure_tau=None,
            compressibility_fd_displ=0.01,
            traj_step_interval=1, skip_failures=True, results_prefix='md_',
-           chunksize=1, verbose=False, npool=None,update_config_type=True,
+           num_inputs_per_python_subprocess=1, verbose=False, npool=None,update_config_type=True,
            selector_function=None, remote_info=None):
     # Normally each thread needs to call np.random.seed so that it will generate a different
     # set of random numbers.  This env var overrides that to produce deterministic output,
@@ -34,7 +34,7 @@ def sample(inputs, outputs, calculator, steps, dt,
         initializer = None
     else:
         initializer = np.random.seed
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=sample_autopara_wrappable, chunksize=chunksize,
+    return autoparallelize(iterable=inputs, outputspec=outputs, op=sample_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
                          calculator=calculator, steps=steps, dt=dt,
                          temperature=temperature, temperature_tau=temperature_tau,
                          pressure=pressure, pressure_tau=pressure_tau,
@@ -61,7 +61,7 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
     steps: int
         number of steps
     temperature: float or (float, float, [int]]), or list of dicts  default None
-        temperature control.  
+        temperature control (Kelvin)
         - float: constant T
         - tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp
         - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with duration
@@ -148,7 +148,7 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
 
         if temperature is not None:
             # set initial temperature
-            MaxwellBoltzmannDistribution(at, temperature[0]['T_i'] * kB, force_temp=True, communicator=None)
+            MaxwellBoltzmannDistribution(at, temperature_K=temperature[0]['T_i'], force_temp=True, communicator=None)
             Stationary(at, preserve_temperature=True)
 
         stage_kwargs = {'timestep': dt * fs, 'logfile': logfile}

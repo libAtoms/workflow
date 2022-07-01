@@ -6,7 +6,6 @@ from pytest import approx
 
 from wfl.generate import vib
 from wfl.configset import ConfigSet, OutputSpec
-import wfl.plotting.normal_modes
 
 def test_getting_normal_modes():
     ref_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
@@ -112,12 +111,3 @@ def test_print_summary():
 
     # just check that it prints successfully
     my_vib.summary()
-
-
-def test_eigenvector_plot():
-    # just checks that function executes without errors
-
-    nm_fn = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                         'assets/normal_modes/water_dftb_nms.xyz')
-
-    wfl.plotting.normal_modes.eigenvector_plot(nm_fn, nm_fn, '', '')

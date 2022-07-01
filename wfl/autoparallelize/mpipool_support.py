@@ -25,7 +25,7 @@ def init(verbose=1):
     """
     global wfl_mpipool
 
-    if wfl_mpipool is None and 'WFL_AUTOPARA_MPIPOOL' in os.environ:
+    if wfl_mpipool is None and 'WFL_MPIPOOL' in os.environ:
         # check version
         import mpipool
         from packaging.version import parse
