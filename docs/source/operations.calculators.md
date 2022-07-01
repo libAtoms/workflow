@@ -11,13 +11,17 @@ In ASE, we iterate over all `Atoms` objects, initialize a calculator, set it to 
 The calculator has to be defined as a tuple of `(Calculator, [args], **kwargs)`, for example 
 
 ```python
-dftb_calc = (quippy.potentials.Potential, ["TB DFTB"], {"param_filename": :"tightbind.parms.DFTB.mio-0-1.xm"})
+dftb_calc = (
+    quippy.potentials.Potential, 
+    ["TB DFTB"], 
+    {"param_filename": :"tightbind.parms.DFTB.mio-0-1.xm"}
+    )
 ```
 
 See [autoparallelization page](overview.parallelisation.rst) for further explanation, [MACE example](examples.mace.md) and [wfl.calculators.generic.run](??) for more details.  
 
 
-## Files-based calculators
+## File-based calculators
 
 ASE's calculators that write & read files to & from disk (subclasses of `FileIOCalculator` (TODO check)) need to be slightly modified if they were to be parallelized via Workflow's `generic` calculator. Specifically, each instance of calculator must execute the calculation in a separate folder. Workflow handles the files, as well as creation and clean-up of temporary directories. 
 

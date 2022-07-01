@@ -59,7 +59,7 @@ generic.run(
 Since `output_prefix` is set to "mace_" and properties are set to "energy" and "forces", the "structures.mace.xyz" file will have `"mace_energy"` entires in `atoms.info` and `"mace_forces"` entries in `atoms.arrays`. 
 
 
-The complete process 
+## Complete example
 
 1. `export WFL_NUM_PYTHON_SUBPROCESSES=8`
 
