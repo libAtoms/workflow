@@ -25,7 +25,7 @@ def sample(inputs, outputs, calculator, steps, dt,
            temperature=None, temperature_tau=None, pressure=None, pressure_tau=None,
            compressibility_fd_displ=0.01,
            traj_step_interval=1, skip_failures=True, results_prefix='md_',
-           num_inputs_per_python_subprocess=1, verbose=False, npool=None,update_config_type=True,
+           num_inputs_per_python_subprocess=1, verbose=False, num_python_subprocesses=None,update_config_type=True,
            selector_function=None, remote_info=None):
     # Normally each thread needs to call np.random.seed so that it will generate a different
     # set of random numbers.  This env var overrides that to produce deterministic output,
@@ -40,7 +40,7 @@ def sample(inputs, outputs, calculator, steps, dt,
                          pressure=pressure, pressure_tau=pressure_tau,
                          compressibility_fd_displ=compressibility_fd_displ,
                          traj_step_interval=traj_step_interval, skip_failures=skip_failures,
-                         results_prefix=results_prefix, verbose=verbose, initializer=initializer, npool=npool, update_config_type=update_config_type, selector_function=selector_function, remote_info=remote_info)
+                         results_prefix=results_prefix, verbose=verbose, initializer=initializer, num_python_subprocesses=num_python_subprocesses, update_config_type=update_config_type, selector_function=selector_function, remote_info=remote_info)
 
 
 def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
