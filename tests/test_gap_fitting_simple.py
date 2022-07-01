@@ -107,9 +107,9 @@ def test_fitting_gap_cli(quippy, tmp_path):
 
 @pytest.mark.skipif(not shutil.which("gap_fit"), reason="gap_fit not in PATH")  # skips it if gap_fit not in path
 @pytest.mark.remote
-def test_fitting_gap_cli_remote(quippy, tmp_path, expyre_systems, monkeypatch):
+def test_fitting_gap_cli_remote(quippy, tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     mypath = Path(__file__).parent.parent
-    ri = {'resources' : {'max_time': '10m', 'n': [1, 'nodes']}}
+    ri = {'resources' : {'max_time': '10m', 'num_nodes': 1}}
 
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
@@ -118,12 +118,7 @@ def test_fitting_gap_cli_remote(quippy, tmp_path, expyre_systems, monkeypatch):
         ri['sys_name'] = sys_name
         ri['job_name'] = 'pytest_gap_fit_'+sys_name
 
-        if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-            ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
-            if 'resources' in ri_extra:
-                ri['resources'].update(ri_extra['resources'])
-                del ri_extra['resources']
-            ri.update(ri_extra)
+        remoteinfo_env(ri)
 
-        monkeypatch.setenv('WFL_GAP_SIMPLE_FIT_REMOTEINFO', json.dumps(ri))
+        monkeypatch.setenv('WFL_GAP_SIMPLE_FIT_EXPYRE_INFO', json.dumps(ri))
         test_fitting_gap_cli(quippy, tmp_path)

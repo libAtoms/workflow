@@ -25,7 +25,7 @@ except ModuleNotFoundError:
 
 
 # add stress to this when gap#7
-GAP_FIT_PROPERTIES = ['energy', 'forces', 'virial', 'hessian', 'stress']
+GAP_fit_properties = ['energy', 'forces', 'virial', 'hessian', 'stress']
 
 try:
     from quippy.descriptors import Descriptor
@@ -130,7 +130,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
     remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
-        will try to use env var WFL_GAP_MULTISTAGE_FIT_REMOTEINFO used (see below). '_IGNORE' is for
+        will try to use env var WFL_GAP_MULTISTAGE_FIT_EXPYRE_INFO used (see below). '_IGNORE' is for
         internal use, to ensure that remotely running job does not itself attempt to spawn another
         remotely running job.
     wait_for_results: bool, default True
@@ -138,9 +138,9 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
     Environment Variables
     ---------------------
-    WFL_GAP_MULTISTAGE_FIT_REMOTEINFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
+    WFL_GAP_MULTISTAGE_FIT_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
         contructor to be used to run fitting in separate queued job
-    GAP_FIT_OMP_NUM_THREADS: number of threads to set for OpenMP of gap_fit
+    WFL_GAP_FIT_OMP_NUM_THREADS: number of threads to set for OpenMP of gap_fit
 
     Returns
     -------
@@ -176,7 +176,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
             # Potential seems to return RuntimeError when file is missing
             pass
 
-    remote_info = get_RemoteInfo(remote_info, 'WFL_GAP_MULTISTAGE_FIT_REMOTEINFO')
+    remote_info = get_RemoteInfo(remote_info, 'WFL_GAP_MULTISTAGE_FIT_EXPYRE_INFO')
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.output_files.copy()
         output_files = remote_info.output_files.copy() + [str(run_dir)]
@@ -184,10 +184,10 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         fitting_configs = fitting_configs.in_memory()
 
         # set number of threads in queued job, only if user hasn't set them
-        if not any([var.split('=')[0] == 'GAP_FIT_OMP_NUM_THREADS' for var in remote_info.env_vars]):
-            remote_info.env_vars.append('GAP_FIT_OMP_NUM_THREADS=$EXPYRE_NCORES_PER_NODE')
-        if not any([var.split('=')[0] == 'WFL_AUTOPARAL_NPOOL' for var in remote_info.env_vars]):
-            remote_info.env_vars.append('WFL_AUTOPARA_NPOOL=$EXPYRE_NCORES_PER_NODE')
+        if not any([var.split('=')[0] == 'WFL_GAP_FIT_OMP_NUM_THREADS' for var in remote_info.env_vars]):
+            remote_info.env_vars.append('WFL_GAP_FIT_OMP_NUM_THREADS=$EXPYRE_NUM_CORES_PER_NODE')
+        if not any([var.split('=')[0] == 'WFL_NUM_PYTHON_SUBPROCESSES' for var in remote_info.env_vars]):
+            remote_info.env_vars.append('WFL_NUM_PYTHON_SUBPROCESSES=$EXPYRE_NUM_CORES_PER_NODE')
 
 
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
@@ -230,7 +230,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
     fitting_line_kwargs = {}
 
     # create part of arg line with *_parameter_name arguments to pass to gap_fit
-    for k in GAP_FIT_PROPERTIES:
+    for k in GAP_fit_properties:
         fitting_line_kwargs[f'{k.replace("forces", "force")}_parameter_name'] = ref_property_prefix + k
 
     # add core IP if needed
@@ -317,7 +317,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         # WORKAROUND FOR PY/FORTRAN EXTXYZ ISSUES
         # keep only info/arrays quantities that we actually need, to avoid Fortran choking on weird formatting
         _select_info(fitting_configs,
-                     info_keys=[ref_property_prefix + k for k in GAP_FIT_PROPERTIES if k != "forces"] +
+                     info_keys=[ref_property_prefix + k for k in GAP_fit_properties if k != "forces"] +
                                ['energy_sigma', 'force_sigma', 'virial_sigma', 'hessian_sigma'] +
                                ['_orig_energy_sigma', '_orig_force_sigma', '_orig_virial_sigma', '_orig_hessian_sigma'] +
                                ['config_type'])

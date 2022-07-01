@@ -2,7 +2,8 @@
 Tests for Quantum Espresso calculator interface
 """
 import os
-from shutil import which
+from shutil import which, copy as shutil_copy
+from pathlib import Path
 import pytest
 
 import ase.io
@@ -40,26 +41,19 @@ def qe_cmd_and_pseudo(tmp_path_factory):
     else:
         cmd = which("pw.x")
 
-    # broken due to need for account/license click
+    # originally downloaded from here, but broken due to need for account/license click
     # url = "https://www.quantum-espresso.org/upf_files/Si.pbe-n-kjpaw_psl.1.0.0.UPF"
-    url = "http://nninc.cnf.cornell.edu/psp_files/Si.pz-vbc.UPF"
+    # replaced with this
+    # url = "http://nninc.cnf.cornell.edu/psp_files/Si.pz-vbc.UPF"
     # alternative
     # url = "https://web.mit.edu/espresso_v6.1/amd64_linux26/qe-6.1/pseudo/Si.pz-vbc.UPF"
 
-    # get the pseudo potential file, ~1.2MB
-    try:
-        r = requests.get(url)
-    except requests.exceptions.ConnectionError:
-        # no internet!
-        skip(f"failed to make URL connection {url}")
-
-    if r.status_code != requests.codes.ok:
-        # the download has not worked
-        skip(f"failed to download from URL {url}")
+    # current version is using a local copy, from the web.mit.edu URL above
 
     # write to a temporary file
     pspot_file = tmp_path_factory.getbasetemp() / "Si.UPF"
-    pspot_file.write_bytes(r.content)
+    shutil_copy(Path(__file__).parent / ".." / "assets" / "QE" / "Si.pz-vbc.UPF", pspot_file)
+
     return cmd, pspot_file
 
 

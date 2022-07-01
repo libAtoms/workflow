@@ -52,7 +52,7 @@ The fitting settings are as follows:
     "gap_params" : "default_sigma='{0.0025 0.0625 0.125 0.125}' sparse_jitter=1.0e-8 do_copy_at_file=F sparse_separate_file=T"
   }
 
-This is a file containing ``stages`` of GAP_FIT, which are descriptors laid out for fitting hierarchically. From first to last, a model will be created for each and the energy scale (``delta``, typical variance of GP) for the next one defined from the energy variance per descriptor.
+This is a file containing ``stages`` of GAP fitting, which are descriptors laid out for fitting hierarchically. From first to last, a model will be created for each and the energy scale (``delta``, typical variance of GP) for the next one defined from the energy variance per descriptor.
 Additionally, general settings can be given in ``gap_params`` for the fit.
 
 The filename of this file goes into the main config's ``fit/GAP_template_file`` field.
@@ -178,12 +178,12 @@ Take a node / workstation that has enough memory for the ``gap_fit`` steps with 
 
 The code is parallelised with python's ``multiprocessing.Pool`` at many steps, for example minimisation, DFT evaluations and descriptor calculations.
 
-The number of workers to use in the pool is controlled by the ``AUTOPARA_NPOOL`` env variable. Set this to the number of physical cores, hyperthreading is not expected to be beneficial.
+The number of workers to use in the pool is controlled by the ``WFL_NUM_PYTHON_SUBPROCESSES`` env variable. Set this to the number of physical cores, hyperthreading is not expected to be beneficial.
 
 .. code-block:: console
 
   # usable logical threads are given in NSLOTS
-  export AUTOPARA_NPOOL=${NSLOTS}
+  export WFL_NUM_PYTHON_SUBPROCESSES=${NSLOTS}
 
 Export the DFT calculator's executable, as ASE can understand it:
 
@@ -208,11 +208,11 @@ Set the number of OMP threads to 1 in general and to the maximum for gap_fit
 .. code-block:: console 
 
   export OMP_NUM_THREADS=1
-  export GAP_FIT_OMP_NUM_THREADS=${NSLOTS}
+  export WFL_GAP_FIT_OMP_NUM_THREADS=${NSLOTS}
 
 The active iteration's number is written in the file ``ACTIVE_ITER``, which if you keep then the iteration number will be increased. Directories will be created with names ``run_iter_<number>`` and all work of a given iteration self contained in them.
 
-Anything that is done already can be skipped, the ``Configset_out`` implementation is taking care of this, which lets you not repeat work in a lot of cases when restarting the calculations.
+Anything that is done already can be skipped, the ``OutputSpec`` implementation is taking care of this, which lets you not repeat work in a lot of cases when restarting the calculations.
 
 An efficient and handy way to run multiple iterations is as follows:
 

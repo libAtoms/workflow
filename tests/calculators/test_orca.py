@@ -118,7 +118,7 @@ def test_orca_with_generic(tmp_path):
                 keep_files = "default", 
                 mult=1)
 
-    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", npool=0)
+    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", num_python_subprocesses=0)
     for at in outputs.to_ConfigSet():
         assert "orca_energy" in at.info or "orca_calculation_failed" in at.info
 
@@ -137,7 +137,7 @@ def test_orca_geometry_optimisation(tmp_path):
                 task="opt")
 
 
-    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", npool=0)
+    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", num_python_subprocesses=0)
 
     out = [at for at in outputs.to_ConfigSet()][0]
 
@@ -192,7 +192,7 @@ def test_run_npa(tmp_path):
 
     inputs = ConfigSet(input_configs=atoms)
     outputs = OutputSpec()
-    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", npool=0) 
+    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", num_python_subprocesses=0) 
 
     atoms = [at for at in outputs.to_ConfigSet()][0]
     assert "orca_NPA_electron_population" in atoms.arrays

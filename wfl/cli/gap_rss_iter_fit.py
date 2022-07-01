@@ -17,6 +17,7 @@ import pathlib
 import pprint
 from datetime import datetime
 from pathlib import Path
+import re
 
 import ase.atoms
 import click
@@ -37,7 +38,7 @@ import wfl.generate.atoms_and_dimers
 import wfl.generate.buildcell
 import wfl.select.by_descriptor
 import wfl.select.convex_hull
-import wfl.select.simple_filters
+import wfl.select.simple
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate import md, optimize, supercells
 from wfl.select.flat_histogram import biased_select_conf
@@ -65,7 +66,7 @@ def cli(ctx, verbose, configuration, buildcell_cmd, cur_iter, seeds):
     ctx.obj['seeds'] = seeds
     if ctx.obj['seeds'] is not None:
         warnings.warn(f'Setting initial seeds to {ctx.obj["seeds"]}.  If autoparallelization '
-                       'is on (WFL_AUTOPARA_NPOOL, etc), this will not affect runs on other threads.')
+                       'is on (WFL_NUM_PYTHON_SUBPROCESSES, etc), this will not affect runs on other threads.')
         ctx.obj['seeds'] = [int(s) for s in ctx.obj['seeds'].split(',')]
         np.random.seed(ctx.obj['seeds'][0])
         del ctx.obj['seeds'][0]
@@ -276,7 +277,7 @@ def create_all_buildcell(cur_iter, run_dir, Zs, compositions, N_configs_tot,
             # output_force is set here (and below) so that it will not fail even if this has run before
             # because actual operation will skip it in that case.
             c_out = OutputSpec(file_root=run_dir, output_files='initial_random_configs.{}.{}.xyz'.format(
-                label_str, buildcell_type), all_or_none=True, force=True)
+                label_str, buildcell_type))
             extra_info = {'buildcell_type': buildcell_type}
             if single_composition_group:
                 extra_info['gap_rss_group'] = 'ALL'
@@ -426,15 +427,13 @@ def evaluate_iter_and_fit_all(cur_iter, run_dir, params, step_params, cur_fittin
     print_log('evaluating with DFT')
     # evaluate fitting configs with DFT
     fitting_configs = ConfigSet(input_configsets=cur_fitting_configs)
-    fitting_configs_out = OutputSpec(file_root=run_dir, output_files='DFT_evaluated_fitting.ALL.xyz',
-                                        all_or_none=True, force=True)
+    fitting_configs_out = OutputSpec(file_root=run_dir, output_files='DFT_evaluated_fitting.ALL.xyz')
     evaluated_configs = evaluate_ref(fitting_configs, fitting_configs_out, params, run_dir, verbose)
 
     error_scale_factor = step_params.get('fit_error_scale_factor', None)
     if error_scale_factor is not None:
         # add fit_error_scale_factor to every config's Atoms.info dict
-        co = OutputSpec(file_root=run_dir, output_files="DFT_evaluated_fitting.error_scale_factor.ALL.xyz",
-                           all_or_none=True, force=True)
+        co = OutputSpec(file_root=run_dir, output_files="DFT_evaluated_fitting.error_scale_factor.ALL.xyz")
         if not co.is_done():
             for at in evaluated_configs:
                 at.info["fit_error_scale_factor"] = error_scale_factor
@@ -456,8 +455,7 @@ def evaluate_iter_and_fit_all(cur_iter, run_dir, params, step_params, cur_fittin
     # evaluate testing configs (if any) with DFT
     if any([c is not None for c in testing_configs]):
         testing_configs = ConfigSet(input_configsets=[c for c in testing_configs if c is not None])
-        testing_configs_out = OutputSpec(file_root=run_dir, output_files='DFT_evaluated_testing.ALL.xyz',
-                                            all_or_none=True, force=True)
+        testing_configs_out = OutputSpec(file_root=run_dir, output_files='DFT_evaluated_testing.ALL.xyz')
         testing_configs = [evaluate_ref(testing_configs, testing_configs_out, params, run_dir, verbose)]
     else:
         testing_configs = []
@@ -476,6 +474,50 @@ def evaluate_iter_and_fit_all(cur_iter, run_dir, params, step_params, cur_fittin
     GAP_xml_file = do_fit_and_test(cur_iter, run_dir, params, fitting_configs, testing_configs,
                                    database_modify_mod=database_modify_mod, seeds=seeds, verbose=verbose)
     return GAP_xml_file
+
+
+def get_buildcell_input_files(step_label, cur_iter):
+    files = (glob.glob(f"gap_rss_iter_fit.prep.buildcell_inputs.{step_label}.iter_*.yaml") +
+             glob.glob(f"gap_rss_iter_fit.prep.buildcell_inputs.{step_label}.yaml") +
+             glob.glob("gap_rss_iter_fit.prep.buildcell_inputs.default.iter_*.yaml") +
+             glob.glob("gap_rss_iter_fit.prep.buildcell_inputs.default.yaml"))
+    if len(files) == 0:
+        raise RuntimeError(f"No buildcell inputs yaml file for step {step_label}")
+
+    use_filename = None
+
+    # look for iter specific file
+    for filename in files:
+        m = re.search(r"\.iter_([0-9:]+)\.yaml$", filename)
+        if not m:
+            # not iter specific, skip for now
+            continue
+        file_iter_range = m.group(1).split(":")
+        if len(file_iter_range) == 1:
+            if cur_iter != int(file_iter_range[0]):
+                continue
+        elif len(file_iter_range) == 2:
+            if ((len(file_iter_range[0]) != 0 and cur_iter < int(file_iter_range[0])) or
+                (len(file_iter_range[1]) != 0 and cur_iter >= int(file_iter_range[1]))):
+                continue
+        else:
+            raise RuntimeError("buildcell inputs yaml filename range expression {m.group(1)} not valid")
+
+        use_filename = filename
+        break
+
+    if use_filename is None:
+        # look for non-iter-specific file
+        for filename in files:
+            if filename.endswith(f".{step_label}.yaml") or filename.endswith(f".default.yaml"):
+                use_filename = filename
+                break
+
+    with open(use_filename) as fin:
+        # must use full load because dict keys are tuples
+        buildcell_input_files = yaml.full_load(fin)
+
+    return buildcell_input_files
 
 
 @cli.command('initial_step')
@@ -498,14 +540,7 @@ def do_initial_step(ctx, cur_iter, verbose):
     select_by_desc_method = params.get('global/select_by_desc_method', default='CUR')
 
     buildcell_cmd = ctx.obj['buildcell_cmd']
-    try:
-        with open('gap_rss_iter_fit.prep.buildcell_inputs.initial.yaml') as fin:
-            # must use full load because dict keys are tuples
-            buildcell_input_files = yaml.full_load(fin)
-    except FileNotFoundError:
-        with open('gap_rss_iter_fit.prep.buildcell_inputs.default.yaml') as fin:
-            # must use full load because dict keys are tuples
-            buildcell_input_files = yaml.full_load(fin)
+    buildcell_input_files = get_buildcell_input_files("initial", cur_iter)
 
     # SAVE gap_rss_group in Atoms.info for later steps like doing convex hull
     #     based sigma setting separately for each group's convex hull
@@ -558,12 +593,7 @@ def do_rss_step(ctx, cur_iter, verbose):
     select_by_desc_method = params.get('global/select_by_desc_method', default='CUR')
 
     buildcell_cmd = ctx.obj['buildcell_cmd']
-    try:
-        with open('gap_rss_iter_fit.prep.buildcell_inputs.rss.yaml') as fin:
-            buildcell_input_files = yaml.full_load(fin)
-    except FileNotFoundError:
-        with open('gap_rss_iter_fit.prep.buildcell_inputs.default.yaml') as fin:
-            buildcell_input_files = yaml.full_load(fin)
+    buildcell_input_files = get_buildcell_input_files("rss", cur_iter)
     with open('gap_rss_iter_fit.prep.config_selection_descriptors.yaml') as fin:
         descriptor_strs = yaml.safe_load(fin)
 
@@ -630,12 +660,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
         single_composition_group = params.get('global/single_composition_group', default=True)
 
         buildcell_cmd = ctx.obj['buildcell_cmd']
-        try:
-            with open('gap_rss_iter_fit.prep.buildcell_inputs.MD_bulk_defect.yaml') as fin:
-                buildcell_input_files = yaml.full_load(fin)
-        except FileNotFoundError:
-            with open('gap_rss_iter_fit.prep.buildcell_inputs.default.yaml') as fin:
-                buildcell_input_files = yaml.full_load(fin)
+        buildcell_input_files = get_buildcell_input_files("MD_bulk_defect", cur_iter)
 
         # store info for each group: fraction of total, and configs
         # NEED TO SAVE gap_rss_group in Atoms.info for later steps like fitting convex hull
@@ -671,14 +696,14 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
     # create supercells
     print_log('creating supercells')
     for grp_label in groups:
-        n_bulk_MD = int(params.get('MD_bulk_defect_step/N_bulk') * groups[grp_label]['frac'])
+        n_bulk_MD = int(params.get('MD_bulk_defect_step/N_bulk', 0) * groups[grp_label]['frac'])
 
         # go through configs, reading from file if necessary, to get number so that np.random.choice()
         # selection below doesn't have to do it repeatedly
         n_minima = len([None for at in groups[grp_label]['cur_confs']])
 
         minima_inds = np.random.choice(range(n_minima), n_bulk_MD)
-        selected_minima = wfl.select.simple_filters.by_index(
+        selected_minima = wfl.select.simple.by_index(
             groups[grp_label]['cur_confs'],
             OutputSpec(file_root=run_dir, output_files=f'MD_minima.bulk.{grp_label}.xyz', all_or_none=True,
                           force=True),
@@ -689,17 +714,20 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                           force=True),
             max_n_atoms=max_n_atoms)
 
-        n_vacancy_MD = int(params.get('MD_bulk_defect_step/N_vacancy') * groups[grp_label]['frac'])
-        n_interstitial_MD = int(params.get('MD_bulk_defect_step/N_interstitial') * groups[grp_label]['frac'])
-        n_surface_MD = int(params.get('MD_bulk_defect_step/N_surface') * groups[grp_label]['frac'])
+        n_vacancy_MD = int(params.get('MD_bulk_defect_step/N_vacancy', 0) * groups[grp_label]['frac'])
+        n_antisite_MD = int(params.get('MD_bulk_defect_step/N_antisite', 0) * groups[grp_label]['frac'])
+        n_interstitial_MD = int(params.get('MD_bulk_defect_step/N_interstitial', 0) * groups[grp_label]['frac'])
+        n_surface_MD = int(params.get('MD_bulk_defect_step/N_surface', 0) * groups[grp_label]['frac'])
 
         vacancy_type_args = params.get('MD_bulk_defect_step/vacancy_type_args', [('', {})])
+        antisite_type_args = params.get('MD_bulk_defect_step/antisite_type_args', [('', {})])
 
         defect_confs = []
         for base_label, sc_func, n_configs, sc_extra_args in [('vacancy', supercells.vacancy, n_vacancy_MD, vacancy_type_args),
-                                                         ('interstitial', supercells.interstitial, n_interstitial_MD, [('', {})]),
-                                                         ('surface', supercells.surface, n_surface_MD,
-                                                          [('', {'min_thickness': surf_min_thickness, 'vacuum': surf_vacuum})])]:
+                                                              ('antisite', supercells.antisite, n_antisite_MD, antisite_type_args),
+                                                              ('interstitial', supercells.interstitial, n_interstitial_MD, [('', {})]),
+                                                              ('surface', supercells.surface, n_surface_MD,
+                                                               [('', {'min_thickness': surf_min_thickness, 'vacuum': surf_vacuum})])]:
             if n_configs <= 0:
                 continue
             for extra_label, extra_kwargs in sc_extra_args:
@@ -707,20 +735,18 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                 label = base_label
                 if len(extra_label) > 0:
                     label += '.' + extra_label
-                selected_minima = wfl.select.simple_filters.by_index(
+                selected_minima = wfl.select.simple.by_index(
                     groups[grp_label]['cur_confs'],
-                    OutputSpec(file_root=run_dir, output_files=f'MD_minima.{label}.{grp_label}.xyz',
-                                  all_or_none=True, force=True),
+                    OutputSpec(file_root=run_dir, output_files=f'MD_minima.{label}.{grp_label}.xyz'),
                     minima_inds)
 
                 defect_confs.append(sc_func(selected_minima, OutputSpec(file_root=run_dir,
-                                                                           output_files=f'MD_cells.{label}.{grp_label}.xyz',
-                                                                           all_or_none=True, force=True),
+                                                                        output_files=f'MD_cells.{label}.{grp_label}.xyz'),
                                             max_n_atoms=max_n_atoms, **extra_kwargs))
         # NOTE: grouping all the defect configurations this way makes for better potential parallelism
         # since all the MDs can run side by side, but possibly worse restart for interrupted jobs, since the
         # results are all-or-none on the entire set.
-        groups[grp_label]['defect_confs'] = ConfigSet(input_configs=defect_confs)
+        groups[grp_label]['defect_confs'] = ConfigSet(input_configsets=defect_confs)
 
     # NOTE: perhaps the hard-wiring of specific md.sample parameters should be replaced with an
     # 'md_kwargs' param, similar to 'optimize_kwargs'
@@ -731,8 +757,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
         print_log('  group ' + grp_label)
         # MD for bulks
         bulk_traj = md.sample(groups[grp_label]['bulk_confs'],
-                              OutputSpec(file_root=run_dir, output_files=f'bulk_MD_trajs.{grp_label}.xyz',
-                                            all_or_none=True, force=True),
+                              OutputSpec(file_root=run_dir, output_files=f'bulk_MD_trajs.{grp_label}.xyz'),
                               calculator=(Potential, None, {'param_filename': prev_GAP}),
                               steps=bulk_MD_n_steps, dt=MD_dt,
                               temperature=bulk_MD_T_range, temperature_tau=10.0 * MD_dt,
@@ -742,23 +767,19 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
             # minim defects
             defect_optimize_trajs = optimize.run(groups[grp_label]['defect_confs'],
                                            OutputSpec(file_root=run_dir,
-                                                         output_files=f'defect_optimize_trajs.{grp_label}.xyz',
-                                                         all_or_none=True, force=True),
+                                                      output_files=f'defect_optimize_trajs.{grp_label}.xyz'),
                                            calculator=(Potential, None, {'param_filename': prev_GAP}),
                                            precon='ID', keep_symmetry=True, **optimize_kwargs)
-            defect_starting = wfl.select.simple_filters.apply(defect_optimize_trajs,
-                                                                      OutputSpec(file_root=run_dir,
-                                                                                    output_files=f'defect_minima.{grp_label}.xyz',
-                                                                                    all_or_none=True, force=True),
-                                                                      wfl.select.simple_filters.InfoAllStartWith(
-                                                                          ('optimize_config_type', 'optimize_last')))
+            defect_starting = wfl.select.simple.by_bool_func(defect_optimize_trajs,
+                                                             OutputSpec(file_root=run_dir,
+                                                                        output_files=f'defect_minima.{grp_label}.xyz'),
+                                                             lambda at : at.info["optimize_config_type"].startswith("optimize_last"))
         else:
             defect_starting = groups[grp_label]['defect_confs']
 
         # MD defects
         defect_traj = md.sample(defect_starting,
-                                OutputSpec(file_root=run_dir, output_files=f'defect_MD_trajs.{grp_label}.xyz',
-                                              all_or_none=True, force=True),
+                                OutputSpec(file_root=run_dir, output_files=f'defect_MD_trajs.{grp_label}.xyz'),
                                 calculator=(Potential, None, {'param_filename': prev_GAP}),
                                 steps=defect_MD_n_steps, dt=MD_dt,
                                 temperature=defect_MD_T_range, temperature_tau=10.0 * MD_dt,
@@ -808,10 +829,25 @@ def do_reevaluate_and_fit_step(ctx, cur_iter, verbose):
 
         # no rundir, assuming that old_fitting_files are all relative to directory from which top level script is started
         reeval_configs_in = ConfigSet(input_files=old_fitting_files)
-        reeval_configs_out = OutputSpec(file_root=run_dir, output_files=f'DFT_evaluated_fitting.reevaluated_extra_glob_{glob_i}.xyz',
-                                           all_or_none=True, force=True)
+        reeval_configs_out = OutputSpec(file_root=run_dir, output_files=f'DFT_evaluated_fitting.reevaluated_extra_glob_{glob_i}.xyz')
 
         fitting_configs.append(evaluate_ref(reeval_configs_in, reeval_configs_out, params, run_dir, verbose))
+
+    testing_configs = []
+    for glob_i, old_testing_glob in enumerate(params.get('reevaluate_and_fit_step/testing_files')):
+
+        old_testing_files = []
+        for old_file in glob.glob(old_testing_glob):
+            assert Path(old_file).is_file()
+            old_testing_files.append(old_file)
+
+        print_log(f'Reevaluating testing configs in existing files {old_testing_files}')
+
+        # no rundir, assuming that old_testing_files are all relative to directory from which top level script is started
+        reeval_configs_in = ConfigSet(input_files=old_testing_files)
+        reeval_configs_out = OutputSpec(file_root=run_dir, output_files=f'DFT_evaluated_testing.reevaluated_extra_glob_{glob_i}.xyz')
+
+        testing_configs.append(evaluate_ref(reeval_configs_in, reeval_configs_out, params, run_dir, verbose))
 
     GAP_xml_file = do_fit_and_test(cur_iter, run_dir, params, fitting_configs, None,
                                    database_modify_mod=params.get('fit/database_modify_mod'),
@@ -866,18 +902,15 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
         # preconditioner neighbor list to go crazy.
         trajs = optimize.run(groups[grp_label]['cur_confs'],
                           OutputSpec(file_root=run_dir,
-                                        output_files=f'optimize_traj.{grp_label}.xyz',
-                                        all_or_none=True, force=True),
+                                     output_files=f'optimize_traj.{grp_label}.xyz'),
                           calculator=(Potential, None, {'param_filename': prev_GAP}),
                           precon='ID', keep_symmetry=True, **optimize_kwargs)
 
         print_log('selecting minima from trajectories')
         # select minima from trajs
-        minima = wfl.select.simple_filters.apply(trajs, OutputSpec(file_root=run_dir,
-                                                                              output_files=f'minima.{grp_label}.xyz',
-                                                                              all_or_none=True, force=True),
-                                                         wfl.select.simple_filters.InfoAllStartWith(
-                                                             ('optimize_config_type', 'optimize_last')))
+        minima = wfl.select.simple.by_bool_func(trajs, OutputSpec(file_root=run_dir,
+                                                                  output_files=f'minima.{grp_label}.xyz'),
+                                                lambda at : at.info["optimize_config_type"].startswith("optimize_last"))
 
         if select_convex_hull:
             print_log('selecting convex hull of minima')
@@ -916,11 +949,10 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
             selected_minima_config_i = set([at.info['buildcell_config_i'] for at in selected_minima])
 
             # select all configs for these indices from all trajs
-            selected_traj = wfl.select.simple_filters.apply(
+            selected_traj = wfl.select.simple.by_bool_func(
                 trajs, OutputSpec(file_root=run_dir,
-                                     output_files=f'selected_rss_traj.{grp_label}.xyz',
-                                     all_or_none=True, force=True),
-                wfl.select.simple_filters.InfoAllIn(('buildcell_config_i', selected_minima_config_i)))
+                                  output_files=f'selected_rss_traj.{grp_label}.xyz'),
+                lambda at : at.info["buildcell_config_i"] in selected_minima_config_i)
 
             groups[grp_label]['cur_confs'] = selected_traj
 
@@ -991,8 +1023,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
         # NOTE: may eventually need to deal with extxyz read not storing energy in Atoms.info
         configs_rel_E = val_relative_to_nearby_composition_volume_min(
             configs, OutputSpec(file_root=run_dir,
-                                   output_files=f'{file_label}_E_rel_nearby.{grp_label}.xyz',
-                                   all_or_none=True, force=True),
+                                   output_files=f'{file_label}_E_rel_nearby.{grp_label}.xyz'),
             vol_range=vol_range, compos_range=compos_range,
             info_field_in=E_info_field,
             info_field_out='E_per_atom_dist_to_nearby',
@@ -1000,8 +1031,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
 
         print_log(f'selecting from configs with flat histogram, kT {flat_histo_kT}, for {file_label}')
         configs_init = biased_select_conf(configs_rel_E, OutputSpec(file_root=run_dir,
-                                                                       output_files=f'{file_label}_flat_histo.{grp_label}.xyz',
-                                                                       all_or_none=True, force=True),
+                                                                       output_files=f'{file_label}_flat_histo.{grp_label}.xyz'),
                                           num=flat_histo_N, info_field='E_per_atom_dist_to_nearby',
                                           kT=flat_histo_kT,
                                           by_bin=flat_histo_by_bin,       ## Default changed, not compatible with old behavior
@@ -1009,28 +1039,25 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
                                           verbose=verbose)
     else:
         # flat_histo_N < 0 means select at random (UGLY HACK)
-        # NOTE: the following should probably be refactored into a simple_filters routine
+        # NOTE: the following should probably be refactored into a simple routine
         n_configs = sum([1 for at in configs])
         selected_inds = np.random.choice(n_configs, size=-flat_histo_N, replace=False)
-        configs_init = wfl.select.simple_filters.by_index(configs,
-            OutputSpec(file_root=run_dir, output_files=f'{file_label}_random_init.{grp_label}.xyz',
-                          all_or_none=True, force=True),
+        configs_init = wfl.select.simple.by_index(configs,
+            OutputSpec(file_root=run_dir, output_files=f'{file_label}_random_init.{grp_label}.xyz'),
             selected_inds)
 
     if select_by_desc_method == 'random':
         n_configs = sum([1 for at in configs_init])
         selected_inds = np.random.choice(n_configs, size=by_desc_select_N, replace=False)
-        configs_selected = wfl.select.simple_filters.by_index(configs_init,
-            OutputSpec(file_root=run_dir, output_files=f'{file_label}_random_selected.{grp_label}.xyz',
-                          all_or_none=True, force=True),
+        configs_selected = wfl.select.simple.by_index(configs_init,
+            OutputSpec(file_root=run_dir, output_files=f'{file_label}_random_selected.{grp_label}.xyz'),
             selected_inds)
         if testing_N > 0:
             avail_inds = set(list(range(n_configs)))
             avail_inds -= set(selected_inds)
             selected_testing_inds = np.random.choice(list(avail_inds), size=testing_N, replace=False)
-            testing_configs = wfl.select.simple_filters.by_index(configs_init,
-                OutputSpec(file_root=run_dir, output_files=f'{file_label}_testing.{grp_label}.xyz',
-                              all_or_none=True, force=True),
+            testing_configs = wfl.select.simple.by_index(configs_init,
+                OutputSpec(file_root=run_dir, output_files=f'{file_label}_testing.{grp_label}.xyz'),
                 selected_testing_inds)
 
     else:
@@ -1040,8 +1067,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
         # calc descriptors and by-desc select from flat histo selected
         configs_flat_histo_with_desc = wfl.descriptors.quippy.calc(
             configs_init, OutputSpec(file_root=run_dir,
-                                        output_files=f'{file_label}_with_desc.{grp_label}.xyz',
-                                        all_or_none=True, force=True),
+                                        output_files=f'{file_label}_with_desc.{grp_label}.xyz'),
             config_selection_descriptor_strs, 'config_selection_desc',
             local=config_selection_descriptor_local,
             verbose=verbose)
@@ -1060,16 +1086,14 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
 
         configs_selected = selector_func(configs_flat_histo_with_desc,
                                         OutputSpec(file_root=run_dir,
-                                                      output_files=f'{file_label}_by_desc.{grp_label}.xyz',
-                                                      all_or_none=True, force=True),
+                                                   output_files=f'{file_label}_by_desc.{grp_label}.xyz'),
                                         num=by_desc_select_N, at_descs_info_key='config_selection_desc',
                                         keep_descriptor_info=False, exclude_list=by_desc_exclude_list, **extra_kwargs)
         if testing_N > 0:
             by_desc_exclude_list = ConfigSet(input_configsets=[by_desc_exclude_list, configs_selected])
             testing_configs = selector_func(configs_flat_histo_with_desc,
                                             OutputSpec(file_root=run_dir,
-                                                          output_files=f'{file_label}_testing.{grp_label}.xyz',
-                                                          all_or_none=True, force=True),
+                                                       output_files=f'{file_label}_testing.{grp_label}.xyz'),
                                             num=testing_N, at_descs_info_key='config_selection_desc',
                                             keep_descriptor_info=False, exclude_list=by_desc_exclude_list, **extra_kwargs)
         else:
@@ -1103,9 +1127,17 @@ def load_old_descriptors_arrays(run_dirs, basename, grp_label):
 
     descriptors_array = []
     for run_dir in run_dirs:
-        descriptors_array.append(np.loadtxt(os.path.join(run_dir, f'{basename}.{grp_label}.average_desc.txt')))
+        try:
+            descriptors_array.append(np.loadtxt(os.path.join(run_dir, f'{basename}.{grp_label}.average_desc.txt')))
+        except OSError:
+            # Ignore missing files. Various innocuous causes, e.g. changing of groups between
+            # iterations.
+            pass
 
-    return np.vstack(descriptors_array)
+    if len(descriptors_array) > 0:
+        return np.vstack(descriptors_array)
+    else:
+        return np.asarray([])
 
 
 def select_fitting_and_testing_for_groups(run_dir, cur_iter, groups, step_params, Zs, E_info_field, select_by_desc_method,
@@ -1155,7 +1187,7 @@ def select_fitting_and_testing_for_groups(run_dir, cur_iter, groups, step_params
         # params for optional initial filter by flat histo
         if flat_histo:
             flat_histo_kT = step_params.get('flat_histo_kT')
-            flat_histo_N = step_params.get('final_flat_histo_N')
+            flat_histo_N = int(step_params.get('final_flat_histo_N') * grp_frac)
         else:
             flat_histo_kT = None
             flat_histo_N = None
