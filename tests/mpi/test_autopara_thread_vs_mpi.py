@@ -1,4 +1,4 @@
-# for this test to work WFL_AUTOPARA_MPIPOOL must be in os.environ, because
+# for this test to work WFL_MPIPOOL must be in os.environ, because
 # wfl.mpipool_support.init() requires it to actually do something
 
 import os
@@ -23,8 +23,8 @@ def get_atoms():
     return atoms
 
 
-@pytest.mark.skipif('WFL_AUTOPARA_MPIPOOL' not in os.environ,
-                    reason="only if WFL_AUTOPARA_MPIPOOL is in env")
+@pytest.mark.skipif('WFL_MPIPOOL' not in os.environ,
+                    reason="only if WFL_MPIPOOL is in env")
 @pytest.mark.mpi(minsize=2)
 def test_run(tmp_path):
     from mpi4py import MPI
@@ -35,7 +35,7 @@ def test_run(tmp_path):
     ## assert MPI.COMM_WORLD.size > 1
 
     # on one thread, run a serial reference calc
-    os.environ['WFL_AUTOPARA_NPOOL'] = '0'
+    os.environ['WFL_NUM_PYTHON_SUBPROCESSES'] = '0'
 
     mol_in = get_atoms()
 
@@ -48,7 +48,7 @@ def test_run(tmp_path):
         assert isinstance(at, Atoms)
 
     # re-enable mpi pool based parallelism (although actual value is ignore if > 0 )
-    os.environ['WFL_AUTOPARA_NPOOL'] = str(MPI.COMM_WORLD.size)
+    os.environ['WFL_NUM_PYTHON_SUBPROCESSES'] = str(MPI.COMM_WORLD.size)
 
     mol_in = get_atoms()
 

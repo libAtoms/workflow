@@ -1,6 +1,7 @@
 import sys
 import os
 import re
+import json
 
 import pytest
 
@@ -15,7 +16,7 @@ def do_init_mpipool():
 
 
 @pytest.mark.skipif(
-    "WFL_AUTOPARA_MPIPOOL" not in os.environ, reason="only init mpipool if WFL_AUTOPARA_MPIPOOL is in env"
+    "WFL_MPIPOOL" not in os.environ, reason="only init mpipool if WFL_MPIPOOL is in env"
 )
 @pytest.mark.mpi(minsize=2)
 @pytest.fixture(scope="session", autouse=True)
@@ -87,4 +88,20 @@ def expyre_systems(tmp_path):
 
     return expyre_mod.config.systems
 
+@pytest.fixture()
+def remoteinfo_env():
+    def remoteinfo_env_func(ri):
+        if 'WFL_PYTEST_EXPYRE_INFO' in os.environ:
+            ri_extra = json.loads(os.environ['WFL_PYTEST_EXPYRE_INFO'])
+            if 'resources' in ri_extra:
+                ri['resources'].update(ri_extra['resources'])
+                del ri_extra['resources']
+            ri.update(ri_extra)
+
+        # add current wfl directory to PYTHONPATH early, so it's used for remote jobs
+        if 'env_vars' not in ri:
+            ri['env_vars'] = []
+        ri['env_vars'].append(f'PYTHONPATH={Path(__file__).parent.parent}:$PYTHONPATH')
+
+    return remoteinfo_env_func
 

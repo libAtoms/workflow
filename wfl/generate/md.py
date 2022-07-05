@@ -6,7 +6,8 @@ from ase.md.nptberendsen import NPTBerendsen
 from ase.md.nvtberendsen import NVTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.md.verlet import VelocityVerlet
-from ase.units import GPa, fs, kB
+from ase.units import GPa, fs
+from ase.io import write
 
 from wfl.autoparallelize import autoparallelize
 from wfl.utils.at_copy_save_results import at_copy_save_results
@@ -25,8 +26,8 @@ def sample(inputs, outputs, calculator, steps, dt,
            temperature=None, temperature_tau=None, pressure=None, pressure_tau=None,
            compressibility_fd_displ=0.01,
            traj_step_interval=1, skip_failures=True, results_prefix='md_',
-           chunksize=1, verbose=False, npool=None,update_config_type=True,
-           selector_function=None, remote_info=None):
+           num_inputs_per_python_subprocess=1, verbose=False, num_python_subprocesses=None,update_config_type=True,
+           selector_function=None, remote_info=None, traj_fn_info_entry=None):
     # Normally each thread needs to call np.random.seed so that it will generate a different
     # set of random numbers.  This env var overrides that to produce deterministic output,
     # for purposes like testing
@@ -34,19 +35,19 @@ def sample(inputs, outputs, calculator, steps, dt,
         initializer = None
     else:
         initializer = np.random.seed
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=sample_autopara_wrappable, chunksize=chunksize,
+    return autoparallelize(iterable=inputs, outputspec=outputs, op=sample_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
                          calculator=calculator, steps=steps, dt=dt,
                          temperature=temperature, temperature_tau=temperature_tau,
                          pressure=pressure, pressure_tau=pressure_tau,
                          compressibility_fd_displ=compressibility_fd_displ,
                          traj_step_interval=traj_step_interval, skip_failures=skip_failures,
-                         results_prefix=results_prefix, verbose=verbose, initializer=initializer, npool=npool, update_config_type=update_config_type, selector_function=selector_function, remote_info=remote_info)
+                         results_prefix=results_prefix, verbose=verbose, initializer=initializer, num_python_subprocesses=num_python_subprocesses, update_config_type=update_config_type, selector_function=selector_function, remote_info=remote_info, traj_fn_info_entry=traj_fn_info_entry)
 
 
 def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
               traj_step_interval=1,  skip_failures=True, results_prefix='md_', verbose=False,
-              selector_function=None, update_config_type=True):
+              selector_function=None, update_config_type=True, traj_fn_info_entry=None):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for
     sampling configs
 
@@ -61,7 +62,7 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
     steps: int
         number of steps
     temperature: float or (float, float, [int]]), or list of dicts  default None
-        temperature control.  
+        temperature control (Kelvin)
         - float: constant T
         - tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp
         - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with duration
@@ -148,7 +149,7 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
 
         if temperature is not None:
             # set initial temperature
-            MaxwellBoltzmannDistribution(at, temperature[0]['T_i'] * kB, force_temp=True, communicator=None)
+            MaxwellBoltzmannDistribution(at, temperature_K=temperature[0]['T_i'], force_temp=True, communicator=None)
             Stationary(at, preserve_temperature=True)
 
         stage_kwargs = {'timestep': dt * fs, 'logfile': logfile}
@@ -205,6 +206,9 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
             if not first_step_of_later_stage and cur_step % interval == 0:
                 at.info['MD_time_fs'] = cur_step * dt
                 traj.append(at_copy_save_results(at, results_prefix=results_prefix))
+                if traj_fn_info_entry is not None:
+                    traj_fn = at.info[traj_fn_info_entry] + '.md_traj.xyz' 
+                    write(traj_fn, at, append=True)
                 geometry_ok = configs.check_geometry(at)
                 if not geometry_ok:
                     bad_geometry_counter += 1

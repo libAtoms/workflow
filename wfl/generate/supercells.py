@@ -10,30 +10,35 @@ from wfl.autoparallelize import autoparallelize
 from wfl.utils.find_voids import find_voids
 
 
-def largest_bulk(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, chunksize=10):
+def largest_bulk(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, num_inputs_per_python_subprocess=10):
     return autoparallelize(iterable=inputs, outputspec=outputs, op=largest_bulk_autopara_wrappable,
-                         chunksize=chunksize, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec)
+                         num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec)
 
 
-def vacancy(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, n_vac=1, cluster_r=0.0, chunksize=10):
+def vacancy(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, n_vac=1, cluster_r=0.0, num_inputs_per_python_subprocess=10):
     return autoparallelize(iterable=inputs, outputspec=outputs, op=vacancy_autopara_wrappable,
-                         chunksize=chunksize, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec,
+                         num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec,
                          n_vac=n_vac, cluster_r=cluster_r)
+
+def antisite(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, n_antisite=1, cluster_r=0.0, num_inputs_per_python_subprocess=10):
+    return autoparallelize(iterable=inputs, outputspec=outputs, op=antisite_autopara_wrappable,
+                         num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec,
+                         n_antisite=n_antisite, cluster_r=cluster_r)
 
 
 def interstitial(inputs, outputs, max_n_atoms, interstitial_probability_radius_exponent=3.0,
-                 primitive=True, symprec=1.0e-3, chunksize=10):
+                 primitive=True, symprec=1.0e-3, num_inputs_per_python_subprocess=10):
     return autoparallelize(iterable=inputs, outputspec=outputs, op=interstitial_autopara_wrappable,
-                         chunksize=chunksize, max_n_atoms=max_n_atoms,
+                         num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, max_n_atoms=max_n_atoms,
                          interstitial_probability_radius_exponent=interstitial_probability_radius_exponent,
                          primitive=primitive, symprec=symprec)
 
 
 def surface(inputs, outputs, max_n_atoms, min_thickness, vacuum,
             simple_cut=False, max_surface_cell_indices=1, duplicate_in_plane=True, pert=0.0,
-            primitive=True, symprec=1.0e-3, chunksize=10):
+            primitive=True, symprec=1.0e-3, num_inputs_per_python_subprocess=10):
     return autoparallelize(iterable=inputs, outputspec=outputs, op=surface_autopara_wrappable,
-                         chunksize=chunksize, max_n_atoms=max_n_atoms,
+                         num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, max_n_atoms=max_n_atoms,
                          min_thickness=min_thickness, vacuum=vacuum, simple_cut=simple_cut,
                          max_surface_cell_indices=max_surface_cell_indices,
                          duplicate_in_plane=duplicate_in_plane, pert=pert,
@@ -219,6 +224,96 @@ def vacancy_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, sym
         at.positions += pert * np.random.normal(size=at.positions.shape)
         ####################################################################################################
         # workaround for non-working results invalidation when number of atoms has changed
+        at.calc = None
+        ####################################################################################################
+    return supercells
+
+
+def antisite_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3, n_antisite=1, cluster_r=0.0, Zs=None):
+    """make antisites in largest bulk-like supercells
+
+    Parameters
+    ----------
+    atoms: list(Atoms)
+        input primitive cell configs
+    max_n_atoms: int
+        maximum number of atoms allowed in a supercell
+    pert: float, default 0.0
+        magnitude of random displacement
+    primitive: bool, default True
+        reduce input Atoms to primitive cell using spglib
+    symprec: float, default 1.0e-3
+        symprec for primitive lattice check
+    n_antisite: int, default 1
+        number of antisites to create in each supercell
+    cluster_r: float, default 0.0
+        if > 0.0, multiply by 1st nn distance of initial antisite, and make antisites in cluster of
+        atoms within this distance of initial antisite.
+    Zs: iterable(int), default None
+        list of atomic numbers to be used to create antisites.  If none or length 0, use set of species already present in each config for itself.
+
+    Returns
+    -------
+        list(Atoms) supercells with antisites
+    """
+    supercells = largest_bulk_autopara_wrappable(atoms, max_n_atoms, primitive=primitive, symprec=symprec)
+    for at in supercells:
+        if len(at) <= n_antisite:
+            # should this be an error?
+            warnings.warn(f"Cannot make {n_antisite} antisites in structure with {len(at)} atoms")
+            continue
+
+        if Zs is None or len(Zs) == 0:
+            avail_Zs = set(at.numbers)
+        else:
+            avail_Zs = set(Zs)
+
+        if len(set(at.numbers)) == 1 and set(at.numbers) == avail_Zs:
+            warnings.warn(f"Cannot make {n_antisite} antisites in structure with only one species with only same species available")
+            continue
+
+        if cluster_r > 0.0:
+            # cluster
+            nns = []
+            n_try = 0
+            while n_try < 20:
+                init_antisite_i = np.random.choice(len(at))
+                inds = list(range(len(at)))
+                dists = at.get_distances(init_antisite_i, inds, mic=True)
+                nearest_d = np.amin(dists[np.where(dists > 0.0)])
+                nns = np.where(np.logical_and(dists <= cluster_r*nearest_d, dists > 0.0))[0]
+                if len(nns) >= n_antisite:
+                    break
+                n_try += 1
+
+            if len(nns) < n_antisite:
+                # should this be an error?
+                warnings.warn(f'Failed to find antisite with at least {n_antisite}-1 neighbors after 20 tries')
+                continue
+
+            antisite_i = np.concatenate(([init_antisite_i], np.random.choice(nns, size=n_antisite-1, replace=False)))
+        else:
+            # entirely random set
+            antisite_i = np.random.choice(len(at), size=n_antisite, replace=False)
+
+        antisite_Zs = []
+        for ii in antisite_i:
+            Z_new = np.random.choice(list(avail_Zs - set([at.numbers[ii]])))
+            antisite_Zs.append([at.numbers[ii], Z_new])
+            at.numbers[ii] = Z_new
+
+        at.info["antisite_Zs"] = np.asarray(antisite_Zs)
+        at.info["antisite_pos"] = at.positions[antisite_i]
+        at.info["config_type"] = "supercell_antisite"
+        if n_antisite > 1:
+            at.info["config_type"] += f'_{n_antisite}'
+        if cluster_r > 0.0:
+            at.info["config_type"] += f'_r_{cluster_r}_{nearest_d:.3f}'
+
+
+        at.positions += pert * np.random.normal(size=at.positions.shape)
+        ####################################################################################################
+        # workaround for non-working results invalidation when identity of atoms has changed
         at.calc = None
         ####################################################################################################
     return supercells

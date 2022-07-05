@@ -36,14 +36,6 @@ wfl.cli.gap\_rss\_iter\_fit module
    :undoc-members:
    :show-inheritance:
 
-wfl.cli.reactions\_iter\_fit module
------------------------------------
-
-.. automodule:: wfl.cli.reactions_iter_fit
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

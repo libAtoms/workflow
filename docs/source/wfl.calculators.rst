@@ -1,6 +1,14 @@
 wfl.calculators package
 =======================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   wfl.calculators.orca
+
 Submodules
 ----------
 
@@ -40,14 +48,6 @@ wfl.calculators.generic module
 ------------------------------
 
 .. automodule:: wfl.calculators.generic
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-wfl.calculators.orca module
----------------------------
-
-.. automodule:: wfl.calculators.orca
    :members:
    :undoc-members:
    :show-inheritance:
