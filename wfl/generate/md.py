@@ -7,6 +7,7 @@ from ase.md.nvtberendsen import NVTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.md.verlet import VelocityVerlet
 from ase.units import GPa, fs
+from ase.io import write
 
 from wfl.autoparallelize import autoparallelize
 from wfl.utils.at_copy_save_results import at_copy_save_results
@@ -26,7 +27,7 @@ def sample(inputs, outputs, calculator, steps, dt,
            compressibility_fd_displ=0.01,
            traj_step_interval=1, skip_failures=True, results_prefix='md_',
            num_inputs_per_python_subprocess=1, verbose=False, num_python_subprocesses=None,update_config_type=True,
-           selector_function=None, remote_info=None):
+           selector_function=None, remote_info=None, traj_fn_info_entry=None):
     # Normally each thread needs to call np.random.seed so that it will generate a different
     # set of random numbers.  This env var overrides that to produce deterministic output,
     # for purposes like testing
@@ -40,13 +41,13 @@ def sample(inputs, outputs, calculator, steps, dt,
                          pressure=pressure, pressure_tau=pressure_tau,
                          compressibility_fd_displ=compressibility_fd_displ,
                          traj_step_interval=traj_step_interval, skip_failures=skip_failures,
-                         results_prefix=results_prefix, verbose=verbose, initializer=initializer, num_python_subprocesses=num_python_subprocesses, update_config_type=update_config_type, selector_function=selector_function, remote_info=remote_info)
+                         results_prefix=results_prefix, verbose=verbose, initializer=initializer, num_python_subprocesses=num_python_subprocesses, update_config_type=update_config_type, selector_function=selector_function, remote_info=remote_info, traj_fn_info_entry=traj_fn_info_entry)
 
 
 def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
               traj_step_interval=1,  skip_failures=True, results_prefix='md_', verbose=False,
-              selector_function=None, update_config_type=True):
+              selector_function=None, update_config_type=True, traj_fn_info_entry=None):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for
     sampling configs
 
@@ -205,6 +206,9 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
             if not first_step_of_later_stage and cur_step % interval == 0:
                 at.info['MD_time_fs'] = cur_step * dt
                 traj.append(at_copy_save_results(at, results_prefix=results_prefix))
+                if traj_fn_info_entry is not None:
+                    traj_fn = at.info[traj_fn_info_entry] + '.md_traj.xyz' 
+                    write(traj_fn, at, append=True)
                 geometry_ok = configs.check_geometry(at)
                 if not geometry_ok:
                     bad_geometry_counter += 1
