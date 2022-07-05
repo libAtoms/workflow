@@ -127,13 +127,13 @@ def subcli_fitting(ctx):
 @click.argument("smiles", nargs=-1)
 @click.option("--output", "-o", help="Output filename, see Configset for details", required=True)
 @click.option("--info", "-i", help="Extra info to add to Atoms.info")
-@click.option("--force", "-f", help="force writing", is_flag=True)
-def configs_from_smiles(ctx, smiles, output, info, force):
+# @click.option("--force", "-f", help="force writing", is_flag=True)
+def configs_from_smiles(ctx, smiles, output, info):#, force):
     """ ase.Atoms from SMILES string"""
 
     verbose = ctx.obj["verbose"]
 
-    outputspec = OutputSpec(output_files=output, force=force)
+    outputspec = OutputSpec(output_files=output)#, force=force)
 
     if info is not None:
         info = key_val_str_to_dict(info)
