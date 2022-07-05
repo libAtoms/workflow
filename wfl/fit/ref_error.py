@@ -33,7 +33,7 @@ def calc(input_configs, output_configs, calculator,
         error for each quantity by group
     """
 
-    # remove calc because multiprocessing.pool.map (used by the iterable_loop invoked in
+    # remove calc because multiprocessing.pool.map (used by the autoparallelize invoked in
     # calc) will send an Atoms object with pickle, and you can't pickle
     # an Atoms with a Potential attached as a calculator (weakref)
     input_configs = input_configs.in_memory()

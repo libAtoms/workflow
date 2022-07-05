@@ -12,47 +12,47 @@ from .remote import do_remotely
 # NOTES from a previous implementation that does not work with sphinx docstring parsing
 # may not be exactly correct, but can definitely be made to work (except sphinx)
 #
-# note that it is possible to define iloop so that the decorator functionality can be
+# note that it is possible to define autoparallelize so that the decorator functionality can be
 # done with
 #
-#     parallelized_op = iloop(op, "parallelized_op", "Atoms",. [iloop_arg_1 = ... ])
+#     parallelized_op = autoparallelize(op, "parallelized_op", "Atoms",. [autoparallelize_arg_1 = ... ])
 #
-# this is done by renaming the current "iloop" to "_iloop_wrapper", and defining a new "iloop"
+# this is done by renaming the current "autoparallelize" to "_autoparallelize_wrapper", and defining a new "autoparallelize"
 # as something like
 #
-#     def iloop(op, op_name, input_iterator_contents, **iloop_kwargs):
-#         f = functools.partial(_iloop_wrapper, op, **iloop_kwargs)
+#     def autoparallelize(op, op_name, input_iterator_contents, **autoparallelize_kwargs):
+#         f = functools.partial(_autoparallelize_wrapper, op, **autoparallelize_kwargs)
 #         f.__name__ = op_name
-#         f.__doc__ = iloop_docstring(op.__doc__, input_iterator_contents)
+#         f.__doc__ = autopara_docstring(op.__doc__, input_iterator_contents)
 #         return f
 #
 # it also requires that the code parsing the stack trace to match up the RemoteInfo dict
-# detects the presence of "iloop" in the stack trace, and instead uses
+# detects the presence of "autoparallelize" in the stack trace, and instead uses
 #
 #     inspect.getfile(op) + "::" + op.__name__
 #
 # instead of the stack trace file and function
 #
 # sphinx docstring parsing cannot handle this, though, because the module associated with
-# the "parallelized_op" symbol is that of "iloop", rather than the python file in which
+# the "parallelized_op" symbol is that of "autoparallelize", rather than the python file in which
 # it is actually defined.  As a result, sphinx assumes it's just some imported symbol and does
 # not include its docstring.  There does not appear to be any way to override that on a
 # per-symbol basis in current sphinx versions.
 
-_iloop_docstring_params_pre = (
+_autopara_docstring_params_pre = (
 """inputs: iterable({iterable_type})
     input quantities of type {iterable_type}
 outputs: OutputSpec or None
     where to write output atomic configs, or None for no output (i.e. only side-effects)
 """)
 
-_iloop_docstring_params_post = (
-"""ITERABLE_LOOP_RELATED:
+_autopara_docstring_params_post = (
+"""AUTOPARALLELIZE_RELATED:
 
     - num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
       number of processes to parallelize over, 0 for running in serial
     - num_inputs_per_python_subprocess: int, default 1 (kwargs only)
-      number of items from iterable to pass to each invocation of operation (pass to iterable_loop())
+      number of items from iterable to pass to each invocation of operation (pass to autoparallelize())
     - skip_failed: bool, default True
       skip function calls that return None
     - remote_info: RemoteInfo, default content of env var WFL_EXPYRE_INFO
@@ -61,10 +61,10 @@ _iloop_docstring_params_post = (
       RemoteInfo kwrgs with keys that match end of stack trace with function names separated by '.'.
     - remote_label: str, default None
       remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine
-      filename '::' calling function (pass to iterable_loop())
+      filename '::' calling function (pass to autoparallelize())
 """)
 
-iloop_docstring_returns = (
+autopara_docstring_returns = (
 """Returns
 -------
     co: ConfigSet
@@ -78,7 +78,7 @@ def autoparallelize_docstring(orig_docstring, input_iterable_type):
     for li in range(len(lines)):
         prev_line_match = re.match(r'^(\s*)Parameters\s*[:]?\s*$', lines[li-1])
         if (li >= 1 and re.match(r'^\s*[-]*\s*$', lines[li]) and prev_line_match):
-            # set flag so that iloop_docstring_params_pre can be inserted starting on the next line
+            # set flag so that autopara_docstring_params_pre can be inserted starting on the next line
             prev_line_was_parameters_section = True
             # save line-initial space on parameter line to keep indentation consistent for Returns
             # section that will be inserted into docstring later
@@ -90,8 +90,8 @@ def autoparallelize_docstring(orig_docstring, input_iterable_type):
             param_init_space = m.group(1)
             # insert extra lines between Parameters section header and initial function parameters,
             # with consistent indentation
-            output_docstring += ''.join([param_init_space + l for l in _iloop_docstring_params_pre.format(iterable_type=input_iterable_type).splitlines(True)])
-            # no longer need to insert iloop-related lines
+            output_docstring += ''.join([param_init_space + l for l in _autopara_docstring_params_pre.format(iterable_type=input_iterable_type).splitlines(True)])
+            # no longer need to insert autoparallelize-related lines
             prev_line_was_parameters_section = False
         # save orig line
         output_docstring += lines[li]
@@ -104,10 +104,10 @@ def autoparallelize_docstring(orig_docstring, input_iterable_type):
         output_docstring += "\n"
 
     # insert docstring lines for parameters that come _after_ function's real parameters
-    output_docstring += '\n' + ''.join([param_init_space + l for l in _iloop_docstring_params_post.splitlines(True)])
+    output_docstring += '\n' + ''.join([param_init_space + l for l in _autopara_docstring_params_post.splitlines(True)])
 
     # insert Returns section
-    output_docstring += '\n' + ''.join([section_init_space + l for l in iloop_docstring_returns.splitlines(True)])
+    output_docstring += '\n' + ''.join([section_init_space + l for l in autopara_docstring_returns.splitlines(True)])
 
     return output_docstring
 
@@ -124,39 +124,39 @@ def autoparallelize(func, *args,
     .. code-block:: python
 
         def parallelized_op(*args, **kwargs):
-            return iloop(op, *args, [ iloop_keyword_param_1=val, iloop_keyword_param_2=val, ... ], **kwargs )
-        parallelized_op.doc = iloop_docstring(op.__doc__, "iterable_contents")
+            return autoparallelize(op, *args, [ autoparallelize_keyword_param_1=val, autoparallelize_keyword_param_2=val, ... ], **kwargs )
+        parallelized_op.doc = autopara_docstring(op.__doc__, "iterable_contents")
 
-    The autoparallelized function can then be called with `parallelized_op(inputs, outputs, [args of op], [args of iloop])`
+    The autoparallelized function can then be called with `parallelized_op(inputs, outputs, [args of op], [args of autoparallelize])`
 
 
     Parameters
     ----------
     func: function
-        function to wrap in iterable_loop()
+        function to wrap in _autoparallelize_ll()
     input_type: str
         type of input configs
     def_num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
         number of processes to parallelize over, 0 for running in serial
     def_num_inputs_per_python_subprocess: int, default 1
-        default number of items from iterable to pass to each invocation of operation (pass to iterable_loop())
+        default number of items from iterable to pass to each invocation of operation (pass to _autoparallelize_ll())
     iterable_arg: int or str, default 0
-        positional argument or keyword argument to place iterable items in when calling op (pass to iterable_loop())
+        positional argument or keyword argument to place iterable items in when calling op (pass to _autoparallelize_ll())
     def_skip_failed: bool, default True
         skip function calls that return None
     initializer: callable, default None
-        function to call at beginning of each thread (pass to iterable_loop())
+        function to call at beginning of each thread (pass to _autoparallelize_ll())
     initargs: list, default None
-        positional arguments for initializer (pass to iterable_loop())
+        positional arguments for initializer (pass to _autoparallelize_ll())
     def_remote_info: RemoteInfo, default content of env var WFL_EXPYRE_INFO
         information for running on remote machine.  If None, use WFL_EXPYRE_INFO env var, as
         json file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
         RemoteInfo kwrgs with keys that match end of stack trace with function names separated by '.'.
     def_remote_label: str, default None
-        remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine filename '::' calling function (pass to iterable_loop())
+        remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine filename '::' calling function (pass to _autoparallelize_ll())
     hash_ignore: list(str), default []
         arguments to ignore when doing remot executing and computing hash of function to determine
-        if it is already done (pass to iterable_loop())
+        if it is already done (pass to _autoparallelize_ll())
 
     Returns
     -------
@@ -286,7 +286,7 @@ def _autoparallelize_ll(num_python_subprocesses=None, num_inputs_per_python_subp
 
     if outputspec is not None:
         if not isinstance(outputspec, OutputSpec):
-            raise RuntimeError('iterable_loop requires outputspec be None or OutputSpec')
+            raise RuntimeError('autoparallelize requires outputspec be None or OutputSpec')
         if outputspec.is_done():
             sys.stderr.write(f'Returning before {op} since output is done\n')
             return outputspec.to_ConfigSet()

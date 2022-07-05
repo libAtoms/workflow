@@ -42,7 +42,7 @@ def _select_autopara_wrappable(inputs, at_filter):
     return outputs
 
 
-# NOTE this could probably be done with iterable_loop by returning a list with multiple
+# NOTE this could probably be done with autoparallelize by returning a list with multiple
 # copies when a single config needs to be returned multiple times, and either
 # None or [] when a config isn't selected
 def by_index(inputs, outputs, indices):
@@ -65,7 +65,7 @@ def by_index(inputs, outputs, indices):
     Notes
     -----
     This routine depends on details of ConfigSet and OutputSpec,
-    so perhaps belongs as a use case of iterable_loop, but since it can return
+    so perhaps belongs as a use case of autoparallelize, but since it can return
     multiple outputs for a single input, this cannot be done right now
     """
     if outputs.is_done():
