@@ -460,13 +460,8 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#runtime-view">
-   Runtime view
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#programming-time-view">
-   Programming-time view
+  <a class="reference internal nav-link" href="#programming-script-that-use-parallelized-operations">
+   Programming script that use parallelized operations
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
@@ -480,6 +475,28 @@ title="Print to PDF"
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#runtime-control-over-parallelization">
+   Runtime control over parallelization
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#single-node-using-python-subprocesses">
+     Single node using python subprocesses
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#multiple-nodes-using-mpi">
+     Multiple nodes using MPI
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#creating-auto-parallelized-functions">
+   Creating auto-parallelized functions
+  </a>
  </li>
 </ul>
 
@@ -501,13 +518,8 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#runtime-view">
-   Runtime view
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#programming-time-view">
-   Programming-time view
+  <a class="reference internal nav-link" href="#programming-script-that-use-parallelized-operations">
+   Programming script that use parallelized operations
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
@@ -522,6 +534,28 @@ title="Print to PDF"
    </li>
   </ul>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#runtime-control-over-parallelization">
+   Runtime control over parallelization
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#single-node-using-python-subprocesses">
+     Single node using python subprocesses
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#multiple-nodes-using-mpi">
+     Multiple nodes using MPI
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#creating-auto-parallelized-functions">
+   Creating auto-parallelized functions
+  </a>
+ </li>
 </ul>
 
                         </nav>
@@ -534,35 +568,97 @@ title="Print to PDF"
                 
   <div class="section" id="automatic-parallelization-of-tasks">
 <span id="parallelisation"></span><h1>Automatic parallelization of tasks<a class="headerlink" href="#automatic-parallelization-of-tasks" title="Permalink to this headline">#</a></h1>
-<p>Much of the pipeline, including the input/output facilitated by <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code>/<code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>, was designed that so that simple operations that need to be done to many configurations could easily be parallelized.  The mechanism for that is wrapping the fundamental operations in a call to <code class="docutils literal notranslate"><span class="pre">wfl.autoparallelize.base.iterable_loop</span></code>.</p>
-<div class="section" id="runtime-view">
-<h2>Runtime view<a class="headerlink" href="#runtime-view" title="Permalink to this headline">#</a></h2>
-<p>Once a function that operates on individual configs has been wrapped, the user can get parallelization to happen in one of two different ways.  The first is the use of the env var <code class="docutils literal notranslate"><span class="pre">WFL_NUM_PYTHON_SUBPROCESSES</span></code>.  This variable should be set to a number, and that many python threads will be created (using <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool">multiprocessing.pool.Pool</a>).  The script should be run as usual.</p>
-<p>The other is to set the env var <code class="docutils literal notranslate"><span class="pre">WFL_MPIPOOL</span></code> to any value, and to run the script with <code class="docutils literal notranslate"><span class="pre">mpirun</span></code> (or whatever is appropriate for the installed MPI implementation).  All MPI tasks will be used to parallelize using <a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/">mpi4py</a> and <a class="reference external" href="https://github.com/mpipool/mpipool">mpipool</a>.</p>
+<p>Much of the pipeline, including the input/output facilitated by <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code>/<code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>, was designed that so that simple operations that need to be done to many configurations could easily be parallelized.  The mechanism for that is wrapping the fundamental operations in a call to <code class="docutils literal notranslate"><span class="pre">wfl.autoparallelize.base.autoparallelize</span></code>. This parallelization can in principle include two levels</p>
+<ul class="simple">
+<li><p>Splitting up the input iterator into groups, each of which is processed by a separate
+python subprocess.</p></li>
+<li><p>Splitting up the input iterator into groups, each of which is processed in a separate
+job submitted to a local or remote queuing system. The job can then use python
+subprocess parallelization itself. [remote jobs not documented here yet]</p></li>
+</ul>
+<div class="section" id="programming-script-that-use-parallelized-operations">
+<h2>Programming script that use parallelized operations<a class="headerlink" href="#programming-script-that-use-parallelized-operations" title="Permalink to this headline">#</a></h2>
+<p>Parallelized operations can be called from a python script, and have</p>
+<ul class="simple">
+<li><p>the first function argument is the inputs, as an iterator (usually <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code>, but some operations, e.g. <code class="docutils literal notranslate"><span class="pre">buildcell</span></code>,
+just use a counter like <code class="docutils literal notranslate"><span class="pre">range(n)</span></code>).</p></li>
+<li><p>The second function argument is outputs, as an <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>. There is no support for returned values of any type other
+than <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> store in a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code>.</p></li>
+</ul>
+<p>The function will return a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> containing the output configs, which will be stored wherever the <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>
+object’s constructor arguments indicated.</p>
+<p>The optional argument <code class="docutils literal notranslate"><span class="pre">num_inputs_per_python_subprocess</span></code> will determine how many input values will
+be procesed in each call to the low level function.  This defaults to 1, but can be increasd to reduce
+overhead that happens once per call, e.g. the construction of expensive ASE calculators like <code class="docutils literal notranslate"><span class="pre">quippy.potential.Potential</span></code>
+with a GAP model.</p>
+<div class="section" id="mpi-with-wfl-mpipool">
+<h3>MPI with <code class="docutils literal notranslate"><span class="pre">WFL_MPIPOOL</span></code><a class="headerlink" href="#mpi-with-wfl-mpipool" title="Permalink to this headline">#</a></h3>
+<p>If it is necessary to parallelize over more than one node, <code class="docutils literal notranslate"><span class="pre">mpipool</span></code>
+(see below) can be used. In this case (assuming that the script as a
+whole is written for a single task/thread), at startup the script has
+to call <code class="docutils literal notranslate"><span class="pre">wfl.autoparallelize.mpipool_support.init()</span></code>.  This function
+will hang for every task except for <code class="docutils literal notranslate"><span class="pre">rank</span> <span class="pre">==</span> <span class="pre">0</span></code>, and all those tasks
+will wait for things to be done through the <code class="docutils literal notranslate"><span class="pre">mpipool</span></code> mechanism.
+Task 0 should continue, doing whatever it needs to, and when it calls
+the wrapped operation it will be parallelized over all MPI tasks.</p>
 </div>
-<div class="section" id="programming-time-view">
-<h2>Programming-time view<a class="headerlink" href="#programming-time-view" title="Permalink to this headline">#</a></h2>
-<p>To code an operation that can be parallelized over configuration (or any other iterable), it needs to be implemented as a function that it takes, normally as its first argument, an iterable, e.g. a list of <code class="docutils literal notranslate"><span class="pre">ase.atoms.Atoms</span></code>, and returns a list of <code class="docutils literal notranslate"><span class="pre">ase.atoms.Atoms</span></code> the same length.  Input can be any iterable, but output must be <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> or nothing, no other objects.  If the actual work is being done in a function called <code class="docutils literal notranslate"><span class="pre">op</span></code>, it should be defined as</p>
+</div>
+<div class="section" id="runtime-control-over-parallelization">
+<h2>Runtime control over parallelization<a class="headerlink" href="#runtime-control-over-parallelization" title="Permalink to this headline">#</a></h2>
+<p>Once a function that operates on individual configs has been wrapped,
+the user can get parallelization to happen in one of two different ways.</p>
+<div class="section" id="single-node-using-python-subprocesses">
+<h3>Single node using python subprocesses<a class="headerlink" href="#single-node-using-python-subprocesses" title="Permalink to this headline">#</a></h3>
+<p>The first is using python threads,
+created using <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool">multiprocessing.pool.Pool</a>.
+The number of threads is controlled by an integer, passed in to the
+function as an optional <code class="docutils literal notranslate"><span class="pre">num_python_subprocesses</span></code> argument, or stored
+in the env var <code class="docutils literal notranslate"><span class="pre">WFL_NUM_PYTHON_SUBPROCESSES</span></code>.  The script should be
+started with a normal run of the python executable.</p>
+</div>
+<div class="section" id="multiple-nodes-using-mpi">
+<h3>Multiple nodes using MPI<a class="headerlink" href="#multiple-nodes-using-mpi" title="Permalink to this headline">#</a></h3>
+<p>If using <code class="docutils literal notranslate"><span class="pre">mpipool</span></code> the env var <code class="docutils literal notranslate"><span class="pre">WFL_MPIPOOL</span></code> must be set to any value.
+In this case  the script must be run with <code class="docutils literal notranslate"><span class="pre">mpirun</span></code> (or whatever is
+appropriate for the installed MPI implementation), and the number of
+python subprocesses will be determined by the number of <code class="docutils literal notranslate"><span class="pre">mpirun</span></code>
+MPI tasks (e.g. <code class="docutils literal notranslate"><span class="pre">-np</span> <span class="pre">N</span></code>).  All MPI tasks will be used to parallelize
+using <a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/">mpi4py</a> and
+<a class="reference external" href="https://github.com/mpipool/mpipool">mpipool</a>.</p>
+</div>
+</div>
+<div class="section" id="creating-auto-parallelized-functions">
+<h2>Creating auto-parallelized functions<a class="headerlink" href="#creating-auto-parallelized-functions" title="Permalink to this headline">#</a></h2>
+<p>To code an operation that can be parallelized over configuration (or
+any other iterable), it needs to be implemented as a function that
+takes, normally as its first argument, an <strong>iterable</strong>, e.g. a list of
+<code class="docutils literal notranslate"><span class="pre">ase.atoms.Atoms</span></code>, and returns a <strong>list</strong> of <code class="docutils literal notranslate"><span class="pre">ase.atoms.Atoms</span></code>
+of the same length.  Input can be any iterable, but output must be
+<code class="docutils literal notranslate"><span class="pre">Atoms</span></code> or nothing, no other objects.  If the actual work is being
+done in a function called <code class="docutils literal notranslate"><span class="pre">op</span></code>, it should be defined as</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
-        <span class="n">output_ats</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+    <span class="n">output_ats</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
         <span class="o">&lt;</span><span class="n">do</span> <span class="n">some</span> <span class="n">stuff</span> <span class="k">with</span> <span class="n">at</span> <span class="ow">and</span> <span class="n">argN</span><span class="o">&gt;</span>
-    <span class="n">output_ats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">at</span><span class="p">)</span>
+        <span class="n">output_ats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">at</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">output_ats</span>
 </pre></div>
 </div>
-<p>An auto-parallelized wrapper function can then be defined as</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">wrapped_op</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">iterable_loop</span><span class="p">(</span><span class="n">iterable</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputspec</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span> <span class="n">num_inputs_per_python_subprocess</span><span class="o">=&lt;</span><span class="n">N</span><span class="o">&gt;</span><span class="p">,</span>
-          <span class="n">arg1</span><span class="o">=</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="o">=</span><span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="o">=</span><span class="n">arg3</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<p>An auto-parallelized wrapper function can then be defined as (for example)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">autopara_op</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">autoparallelize</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">def_num_inputs_per_python_subprocess</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">autopara_op</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">autoparallelize_docstring</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">__foc__</span><span class="p">,</span> <span class="s2">&quot;Atoms&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">num_inputs_per_python_subprocess</span></code> controls how many items from the input iterable are passed to each call of <code class="docutils literal notranslate"><span class="pre">op()</span></code> (to reduce startup overhead).  All arguments <em>must be</em> pickleable.  If something that cannot be pickled must be passed (e.g. a QUIP <code class="docutils literal notranslate"><span class="pre">Potential</span></code>), it must be passed in some way, e.g. a constructor function and its arguments, that _can_ be pickled.  For things that need to happen once per thread, e.g. random number initialization, there is an <code class="docutils literal notranslate"><span class="pre">initializer</span></code> argument to <code class="docutils literal notranslate"><span class="pre">iterable_loop()</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">def_num_inputs_per_python_subprocess</span></code> controls how many items
+(by default) from the input iterable are passed to each call of
+<code class="docutils literal notranslate"><span class="pre">op()</span></code> (to reduce startup overhead).  All arguments <em>must be</em>
+pickleable.  If something that cannot be pickled must be passed (e.g. a
+<code class="docutils literal notranslate"><span class="pre">quippy.potential.Potential</span></code>), it must be passed in some way, e.g. a
+constructor function and its arguments, that _can_ be pickled (see <code class="docutils literal notranslate"><span class="pre">wfl.calculators.generic</span></code>).  For things
+that need to happen once per thread, e.g. random number initialization,
+there is an <code class="docutils literal notranslate"><span class="pre">initializer</span></code> argument to <code class="docutils literal notranslate"><span class="pre">autoparallelize()</span></code> (see <code class="docutils literal notranslate"><span class="pre">wfl.generate.md</span></code>).</p>
 <p>There are many examples of this, including the descriptor calculator, and (with initializers) md and minim.</p>
-<div class="section" id="mpi-with-wfl-mpipool">
-<h3>MPI with <code class="docutils literal notranslate"><span class="pre">WFL_MPIPOOL</span></code><a class="headerlink" href="#mpi-with-wfl-mpipool" title="Permalink to this headline">#</a></h3>
-<p>The operator-level implementation of <code class="docutils literal notranslate"><span class="pre">mpipool</span></code>-based parallelization is the same.  The only difference is that (assuming that the script as a whole is written for a single task/thread), at startup the script has to call <code class="docutils literal notranslate"><span class="pre">wfl.mpipool_support.init()</span></code>.  This function will hang for every task except for <code class="docutils literal notranslate"><span class="pre">rank</span> <span class="pre">==</span> <span class="pre">0</span></code>, and all those tasks will wait for things to be done through the <code class="docutils literal notranslate"><span class="pre">mpipool</span></code> mechanism.  Task 0 should continue, doing whatever it needs to, and when it calls the wrapped operation it will be parallelized over all MPI tasks.</p>
-</div>
 </div>
 </div>
 

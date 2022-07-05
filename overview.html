@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Code structure &#8212; workflow  documentation</title>
+    <title>Overall design &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -449,7 +449,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Code structure</h1>
+                <h1>Overall design</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -461,16 +461,53 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="code-structure">
-<span id="id1"></span><h1>Code structure<a class="headerlink" href="#code-structure" title="Permalink to this headline">#</a></h1>
-<p>Most of <a class="reference internal" href="operations.html#operations"><span class="std std-ref">operations</span></a> in Workflow take in (optional) and return (mandatory) an ASE’s <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> object. These inputs and outputs are abstracted in <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> classes.  <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> may be initialised with a list(s) of <code class="docutils literal notranslate"><span class="pre">Atoms</span></code>, by providing one or multiple <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> filenames or with a reference to an <a class="reference external" href="https://github.com/libAtoms/abcd">ABCD database</a>. Similarly, returned configurations can be held in memory and subsequently used via <code class="docutils literal notranslate"><span class="pre">OutputSpec.to_ConfigSet()</span></code>, written to a single or multiple files or uploaded to an ABCD database. This way, an operation may iterate over a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and write <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> to <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>, regardless of how the input configs were supplied or how or where to the output configs are going to be collected.</p>
-<p>Given a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and an operation acting on (or returning) a single <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> instance, Workflow can parallelise the operation over all <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects in <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> (or an iterable leading to returning an <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> object). This is achieved by wrapping the operation in a call to <code class="docutils literal notranslate"><span class="pre">wfl.pipeline.iterable_loop</span></code>. In addition to parallelising on readily accessible cores, the operations may executed in a number of independently queued jobs on a HPC cluster with the help of <a class="reference external" href="https://github.com/libAtoms/ExPyRe">ExPyRe</a>.</p>
-<p>Some parts of Workflow (e.g. how many parallel processes to run) are controlled via environment variables. Off the top of my head:</p>
+  <div class="section" id="overall-design">
+<span id="code-structure"></span><h1>Overall design<a class="headerlink" href="#overall-design" title="Permalink to this headline">#</a></h1>
+<p>The main goal of the Workflow package is to make it easy operate on sets of input atomic
+configurations, typically doing the same operation to each one, and
+returning corresponding sets of output configurations.  There are also
+functions that do not fit this structure, but use the same data types,
+or are otherwise useful.</p>
+<p>Most of <a class="reference internal" href="operations.html#operations"><span class="std std-ref">operations</span></a> in Workflow take in</p>
 <ul class="simple">
-<li><p>WFL_NUM_PYTHON_SUBPROCESSES</p></li>
-<li><p>WFL_MPIPOOL</p></li>
-<li><p>WFL_GAP_FIT_OMP_NUM_THREADS</p></li>
-<li><p>OMP_NUM_THREADS might have to be set to 1</p></li>
+<li><p>an iterator, usually a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> (see below) which contains ASE <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects</p></li>
+<li><p>an <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> (see below) indicating where to store the returned ASE <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects</p></li>
+</ul>
+<p>and return</p>
+<ul class="simple">
+<li><p>a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> containing the output configurations.</p></li>
+</ul>
+<p>These two classes abstract the storage of atomic configurations in memory,
+files, or the ABCD database.  A <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> used for input may be
+initialised with</p>
+<ul class="simple">
+<li><p>a list (or list of lists) of ASE <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects in memory</p></li>
+<li><p>one or more filenames that can be read by <code class="docutils literal notranslate"><span class="pre">ase.io.read()</span></code>, such as <code class="docutils literal notranslate"><span class="pre">.extxyz</span></code></p></li>
+<li><p>a query to an <a class="reference external" href="https://github.com/libAtoms/abcd">ABCD database</a></p></li>
+<li><p>a list of <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> objects that use the same type of storage</p></li>
+</ul>
+<p>Similarly, returned configurations can be held in memory,
+file(s), or ABCD, depending on the arguments to the <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>
+constructor. The workflow function returns a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> generated by
+<code class="docutils literal notranslate"><span class="pre">OutputSpec.to_ConfigSet()</span></code>, which can be used to access the output
+configs.  This way, an operation may iterate over a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code>
+and write <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> to <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>, regardless of how the input
+configs were supplied or how or where to the output configs are going
+to be collected.</p>
+<p>In addition to this abstraction of <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> storage, the workflow makes
+it easy to parallelize operations over sets of configurations and/or
+run them as (possibly remote) queued jobs, and this has been implemented
+for most of its operations.  This is achieved by wrapping the operation in a
+call to <code class="docutils literal notranslate"><span class="pre">wfl.pipeline.autoparallelize</span></code>. In addition to parallelising
+on readily accessible cores, the operations may be executed in a number
+of independently queued jobs on an HPC cluster with the help of
+<a class="reference external" href="https://github.com/libAtoms/ExPyRe">ExPyRe</a>.</p>
+<p>Some parts of Workflow (e.g. how many parallel processes to run) are controlled via environment variables. The
+most commonly used ones are</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">WFL_NUM_PYTHON_SUBPROCESSES</span></code> which controls how many python processes (on the
+same node) are used to parallelize a single operation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WFL_EXPYRE_INFO</span></code> which controls what HPC resources will be used for a remote job</p></li>
 </ul>
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">More details:</span></p>
