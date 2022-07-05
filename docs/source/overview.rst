@@ -4,7 +4,7 @@
 Overall design
 ######################################
 
-The main goal of the workflow is make it easy operate on sets of input atomic
+The main goal of the Workflow package is to make it easy operate on sets of input atomic
 configurations, typically doing the same operation to each one, and
 returning corresponding sets of output configurations.  There are also
 functions that do not fit this structure, but use the same data types,
@@ -42,7 +42,7 @@ it easy to parallelize operations over sets of configurations and/or
 run them as (possibly remote) queued jobs, and this has been implemented
 for most of its operations.  This is achieved by wrapping the operation in a
 call to ``wfl.pipeline.autoparallelize``. In addition to parallelising
-on readily accessible cores, the operations may executed in a number
+on readily accessible cores, the operations may be executed in a number
 of independently queued jobs on an HPC cluster with the help of 
 `ExPyRe <https://github.com/libAtoms/ExPyRe>`_.
 
