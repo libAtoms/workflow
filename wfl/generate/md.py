@@ -28,9 +28,9 @@ def sample(inputs, outputs, calculator, steps, dt,
     # set of random numbers.  This env var overrides that to produce deterministic output,
     # for purposes like testing
     if 'WFL_DETERMINISTIC_HACK' in os.environ:
-        initializer = None
+        initializer = (None, [])
     else:
-        initializer = np.random.seed
+        initializer = (np.random.seed, [])
     return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=sample_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
                          calculator=calculator, steps=steps, dt=dt,
                          temperature=temperature, temperature_tau=temperature_tau,

@@ -9,6 +9,7 @@ from ase.calculators.emt import EMT
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate import buildcell
 from wfl.calculators import generic
+from wfl.autoparallelize.autoparainfo import AutoparaInfo
 
 
 def test_empty_iterator(tmp_path):
@@ -27,11 +28,11 @@ def test_pool_speedup():
         ats.append(Atoms(['Al'] * nconf, scaled_positions=np.random.uniform(size=(nconf, 3)), cell=[10, 10, 10], pbc=[True] * 3))
 
     t0 = time.time()
-    co = generic.run(ConfigSet(input_configs=ats), OutputSpec(), EMT(), output_prefix="_auto_", num_python_subprocesses=1)
+    co = generic.run(ConfigSet(input_configs=ats), OutputSpec(), EMT(), output_prefix="_auto_", autopara_info=AutoparaInfo(num_python_subprocesses=1))
     dt_1 = time.time() - t0
 
     t0 = time.time()
-    co = generic.run(ConfigSet(input_configs=ats), OutputSpec(), EMT(), output_prefix="_auto_", num_python_subprocesses=2)
+    co = generic.run(ConfigSet(input_configs=ats), OutputSpec(), EMT(), output_prefix="_auto_", autopara_info=AutoparaInfo(num_python_subprocesses=2))
     dt_2 = time.time() - t0
 
     print("time ratio", dt_2 / dt_1)

@@ -8,14 +8,18 @@ import re
 from wfl.configset import OutputSpec
 from .pool import do_in_pool
 from .remote import do_remotely
+from .autoparainfo import AutoparaInfo
 
 # NOTES from a previous implementation that does not work with sphinx docstring parsing
 # may not be exactly correct, but can definitely be made to work (except sphinx)
 #
-# note that it is possible to define autoparallelize so that the decorator functionality can be
-# done with
+# It is possible to define autoparallelize so that the decorator functionality can be done with
 #
 #     parallelized_op = autoparallelize(op, "parallelized_op", "Atoms",. [autoparallelize_arg_1 = ... ])
+#
+# using functools.partial-based decorator (with ideas from topic 4 of
+# https://pythonicthoughtssnippets.github.io/2020/08/09/PTS13-rethinking-python-decorators.html).
+# Works OK and can be pickled, but ugly handling of docstring, and no handling of function signature.
 #
 # this is done by renaming the current "autoparallelize" to "_autoparallelize_wrapper", and defining a new "autoparallelize"
 # as something like
@@ -47,21 +51,8 @@ outputs: OutputSpec or None
 """)
 
 _autopara_docstring_params_post = (
-"""AUTOPARALLELIZE_RELATED:
-
-    - num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
-      number of processes to parallelize over, 0 for running in serial
-    - num_inputs_per_python_subprocess: int, default 1 (kwargs only)
-      number of items from iterable to pass to each invocation of operation (pass to autoparallelize())
-    - skip_failed: bool, default True
-      skip function calls that return None
-    - remote_info: RemoteInfo, default content of env var WFL_EXPYRE_INFO
-      information for running on remote machine.  If None, use WFL_EXPYRE_INFO env var, as
-      json file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
-      RemoteInfo kwrgs with keys that match end of stack trace with function names separated by '.'.
-    - remote_label: str, default None
-      remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine
-      filename '::' calling function (pass to autoparallelize())
+"""autopara_info: AutoparaInfo, default None
+    information for automatic parallelization
 """)
 
 autopara_docstring_returns = (
@@ -112,55 +103,40 @@ def autoparallelize_docstring(orig_docstring, input_iterable_type):
     return output_docstring
 
 
-def autoparallelize(func, *args,
-          def_num_python_subprocesses=None, def_num_inputs_per_python_subprocess=1, iterable_arg=0, def_skip_failed=True,
-          initializer=None, initargs=None, def_remote_info=None, def_remote_label=None, hash_ignore=[], **kwargs):
-    """functools.partial-based decorator (using ideas in topic 4 of
-    https://pythonicthoughtssnippets.github.io/2020/08/09/PTS13-rethinking-python-decorators.html).
-    Works OK and can be pickled, but ugly handling of docstring, and no handling of function signature.
+def autoparallelize(func, *args, def_autopara_info={}, **kwargs):
+    """autoparallelize a function
 
-    Use by defining operation `op` which takes an input iterable and returns list of configs, and _after_ do
+    Use by defining function "op" which takes an input iterable and returns list of configs, and _after_ do
 
     .. code-block:: python
 
-        def parallelized_op(*args, **kwargs):
-            return autoparallelize(op, *args, [ autoparallelize_keyword_param_1=val, autoparallelize_keyword_param_2=val, ... ], **kwargs )
-        parallelized_op.doc = autopara_docstring(op.__doc__, "iterable_contents")
+        def autoparallelized_op(*args, **kwargs):
+            return autoparallelize(op, *args, def_autopara_info={"autoparallelize_keyword_param_1": val, "autoparallelize_keyword_param_2": val, ... }, **kwargs )
+        autoparallelized_op.doc = autopara_docstring(op.__doc__, "iterable_contents")
 
-    The autoparallelized function can then be called with `parallelized_op(inputs, outputs, [args of op], [args of autoparallelize])`
+    The autoparallelized function can then be called with 
+
+    .. code-block:: python
+        parallelized_op(inputs, outputs, [args of op], autopara_info=AutoparaInfo(arg1=val1, ...), [kwargs of op])
 
 
     Parameters
     ----------
     func: function
         function to wrap in _autoparallelize_ll()
-    input_type: str
-        type of input configs
-    def_num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
-        number of processes to parallelize over, 0 for running in serial
-    def_num_inputs_per_python_subprocess: int, default 1
-        default number of items from iterable to pass to each invocation of operation (pass to _autoparallelize_ll())
-    iterable_arg: int or str, default 0
-        positional argument or keyword argument to place iterable items in when calling op (pass to _autoparallelize_ll())
-    def_skip_failed: bool, default True
-        skip function calls that return None
-    initializer: callable, default None
-        function to call at beginning of each thread (pass to _autoparallelize_ll())
-    initargs: list, default None
-        positional arguments for initializer (pass to _autoparallelize_ll())
-    def_remote_info: RemoteInfo, default content of env var WFL_EXPYRE_INFO
-        information for running on remote machine.  If None, use WFL_EXPYRE_INFO env var, as
-        json file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
-        RemoteInfo kwrgs with keys that match end of stack trace with function names separated by '.'.
-    def_remote_label: str, default None
-        remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine filename '::' calling function (pass to _autoparallelize_ll())
-    hash_ignore: list(str), default []
-        arguments to ignore when doing remot executing and computing hash of function to determine
-        if it is already done (pass to _autoparallelize_ll())
+
+    *args: list
+        positional arguments to func, plus optional first or first and second inputs (iterable) and outputs (OutputSpec) arguments to wrapped function
+
+    def_autopara_info: dict, default {}
+        dict with default values for AutoparaInfo constructor keywords setting default autoparallelization info
+
+    **kwargs: dict
+        keyword arguments to func, plus optional inputs (iterable), outputs (OutputSpec), and  autopara_info (AutoparaInfo)
 
     Returns
     -------
-    wrapped_func: function wrapped in autoparallelize via _autoparallelize_ll
+    wrapped_func_out: results of calling the function wrapped in autoparallelize via _autoparallelize_ll
     """
 
     # copy kwargs and args so they can be modified for call to autoparallelize
@@ -179,14 +155,13 @@ def autoparallelize(func, *args,
             # outputs is also positional, remote it from func args as well
             outputs = args.pop(0)
 
-    num_python_subprocesses = kwargs.pop('num_python_subprocesses', def_num_python_subprocesses)
-    num_inputs_per_python_subprocess = kwargs.pop('num_inputs_per_python_subprocess', def_num_inputs_per_python_subprocess)
-    skip_failed = kwargs.pop('skip_failed', def_skip_failed)
-    remote_info = kwargs.pop('remote_info', def_remote_info)
-    remote_label = kwargs.pop('remote_label', def_remote_label)
+    autopara_info = kwargs.pop("autopara_info", AutoparaInfo())
+    autopara_info.update_defaults(def_autopara_info)
 
-    return _autoparallelize_ll(num_python_subprocesses, num_inputs_per_python_subprocess, inputs, outputs, func, iterable_arg, skip_failed,
-                         initializer, initargs, remote_info, remote_label, hash_ignore, *args, **kwargs)
+    return _autoparallelize_ll(autopara_info.num_python_subprocesses, autopara_info.num_inputs_per_python_subprocess, inputs, outputs, func,
+                               autopara_info.iterable_arg, autopara_info.skip_failed, autopara_info.initializer,
+                               autopara_info.remote_info, autopara_info.remote_label, autopara_info.hash_ignore,
+                               *args, **kwargs)
 
 # do we want to allow for ops that only take singletons, not iterables, as input, maybe with num_inputs_per_python_subprocess=0?
 # that info would have to be passed down to _wrapped_autopara_wrappable so it passes a singleton rather than a list into op
@@ -194,7 +169,7 @@ def autoparallelize(func, *args,
 # some ifs (int positional vs. str keyword) could be removed if we required that the iterable be passed into a kwarg.
 
 def _autoparallelize_ll(num_python_subprocesses=None, num_inputs_per_python_subprocess=1, iterable=None, outputspec=None,
-                        op=None, iterable_arg=0, skip_failed=True, initializer=None, initargs=None, remote_info=None, 
+                        op=None, iterable_arg=0, skip_failed=True, initializer=(None, ()), remote_info=None,
                         remote_label=None, hash_ignore=[], *args, **kwargs):
     """parallelize some operation over an iterable
 
@@ -214,10 +189,8 @@ def _autoparallelize_ll(num_python_subprocesses=None, num_inputs_per_python_subp
         positional argument or keyword argument to place iterable items in when calling op
     skip_failed: bool, default True
         skip function calls that return None
-    initializer: callable, default None
-        function to call at beginning of each thread
-    initargs: list, default None
-        positional arguments for initializer
+    initializer: (callable, list), default (None, ())
+        function to call at beginning of each thread and its positional arguments
     remote_info: RemoteInfo, default content of env var WFL_EXPYRE_INFO
         information for running on remote machine.  If None, use WFL_EXPYRE_INFO env var, as
         json file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
@@ -236,9 +209,6 @@ def _autoparallelize_ll(num_python_subprocesses=None, num_inputs_per_python_subp
     -------
     ConfigSet containing returned configs if outputspec is not None, otherwise None
     """
-    if initargs is None:
-        initargs = []
-
     if remote_info is None and 'WFL_EXPYRE_INFO' in os.environ:
         try:
             remote_info = json.loads(os.environ['WFL_EXPYRE_INFO'])
@@ -293,9 +263,9 @@ def _autoparallelize_ll(num_python_subprocesses=None, num_inputs_per_python_subp
 
     if remote_info is not None:
         out = do_remotely(remote_info, hash_ignore, num_inputs_per_python_subprocess, iterable, outputspec,
-                          op, iterable_arg, skip_failed, initializer, initargs, args, kwargs)
+                          op, iterable_arg, skip_failed, initializer, args, kwargs)
     else:
         out = do_in_pool(num_python_subprocesses, num_inputs_per_python_subprocess, iterable, outputspec, op, iterable_arg,
-                         skip_failed, initializer, initargs, args, kwargs)
+                         skip_failed, initializer, args, kwargs)
 
     return out
