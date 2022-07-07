@@ -8,7 +8,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.md.verlet import VelocityVerlet
 from ase.units import GPa, fs
 
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import _autoparallelize_ll
 from wfl.utils.at_copy_save_results import at_copy_save_results
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
@@ -28,10 +28,10 @@ def sample(inputs, outputs, calculator, steps, dt,
     # set of random numbers.  This env var overrides that to produce deterministic output,
     # for purposes like testing
     if 'WFL_DETERMINISTIC_HACK' in os.environ:
-        initializer = None
+        initializer = (None, [])
     else:
-        initializer = np.random.seed
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=sample_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
+        initializer = (np.random.seed, [])
+    return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=sample_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
                          calculator=calculator, steps=steps, dt=dt,
                          temperature=temperature, temperature_tau=temperature_tau,
                          pressure=pressure, pressure_tau=pressure_tau,
@@ -58,10 +58,11 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
         number of steps
     temperature: float or (float, float, [int]]), or list of dicts  default None
         temperature control (Kelvin)
+
         - float: constant T
         - tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp
-        - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with duration
-          defined as fraction of total number of steps
+        - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with
+          duration defined as fraction of total number of steps
     temperature_tau: float, default None
         time scale that enables Berendsen constant T temperature rescaling (fs)
     pressure: None / float / tuple

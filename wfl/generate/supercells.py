@@ -6,29 +6,29 @@ import numpy as np
 import spglib
 from ase.atoms import Atoms
 
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import _autoparallelize_ll
 from wfl.utils.find_voids import find_voids
 
 
 def largest_bulk(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, num_inputs_per_python_subprocess=10):
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=largest_bulk_autopara_wrappable,
+    return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=largest_bulk_autopara_wrappable,
                          num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec)
 
 
 def vacancy(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, n_vac=1, cluster_r=0.0, num_inputs_per_python_subprocess=10):
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=vacancy_autopara_wrappable,
+    return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=vacancy_autopara_wrappable,
                          num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec,
                          n_vac=n_vac, cluster_r=cluster_r)
 
 def antisite(inputs, outputs, max_n_atoms, primitive=True, symprec=1.0e-3, n_antisite=1, cluster_r=0.0, num_inputs_per_python_subprocess=10):
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=antisite_autopara_wrappable,
+    return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=antisite_autopara_wrappable,
                          num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, max_n_atoms=max_n_atoms, primitive=primitive, symprec=symprec,
                          n_antisite=n_antisite, cluster_r=cluster_r)
 
 
 def interstitial(inputs, outputs, max_n_atoms, interstitial_probability_radius_exponent=3.0,
                  primitive=True, symprec=1.0e-3, num_inputs_per_python_subprocess=10):
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=interstitial_autopara_wrappable,
+    return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=interstitial_autopara_wrappable,
                          num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, max_n_atoms=max_n_atoms,
                          interstitial_probability_radius_exponent=interstitial_probability_radius_exponent,
                          primitive=primitive, symprec=symprec)
@@ -37,7 +37,7 @@ def interstitial(inputs, outputs, max_n_atoms, interstitial_probability_radius_e
 def surface(inputs, outputs, max_n_atoms, min_thickness, vacuum,
             simple_cut=False, max_surface_cell_indices=1, duplicate_in_plane=True, pert=0.0,
             primitive=True, symprec=1.0e-3, num_inputs_per_python_subprocess=10):
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=surface_autopara_wrappable,
+    return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=surface_autopara_wrappable,
                          num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, max_n_atoms=max_n_atoms,
                          min_thickness=min_thickness, vacuum=vacuum, simple_cut=simple_cut,
                          max_surface_cell_indices=max_surface_cell_indices,

@@ -59,7 +59,7 @@ def _wrapped_autopara_wrappable(op, iterable_arg, args, kwargs, item_inputs):
 #
 # some ifs (int positional vs. str keyword) could be removed if we required that the iterable be passed into a kwarg.
 def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1, iterable=None, outputspec=None, op=None, iterable_arg=0,
-               skip_failed=True, initializer=None, initargs=None, args=[], kwargs={}):
+               skip_failed=True, initializer=(None, []), args=[], kwargs={}):
     """parallelize some operation over an iterable
     
     Parameters
@@ -78,10 +78,8 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
         positional argument or keyword argument to place iterable items in when calling op
     skip_failed: bool, default True
         skip function calls that return None
-    initializer: callable, default None
-        function to call at beginning of each thread
-    initargs: list, default None
-        positional arguments for initializer
+    initializer: (callable, list), default (None, [])
+        function to call at beginning of each thread and its positional args
     args: list
         positional arguments to op
     kwargs: dict
@@ -91,8 +89,7 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
     -------
     ConfigSet containing returned configs if outputspec is not None, otherwise None
     """
-    if initargs is None:
-        initargs = []
+    assert len(initializer) == 2
 
     if num_python_subprocesses is None:
         num_python_subprocesses = int(os.environ.get('WFL_NUM_PYTHON_SUBPROCESSES', 0))
@@ -117,14 +114,14 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
             # MPI pool is global and unique, created at script start, so do not create one here
             warnings.warn(f'mpipool ignores > 0 value of num_python_subprocesses={num_python_subprocesses}, '
                           f'always uses all MPI processes {wfl_mpipool.size}')
-            if initializer is not None:
+            if initializer[0] is not None:
                 # generate a task for each mpi process that will call initializer with positional initargs
-                _ = wfl_mpipool.map(functools.partial(_wrapped_autopara_wrappable, initializer, None, initargs, {}),
+                _ = wfl_mpipool.map(functools.partial(_wrapped_autopara_wrappable, initializer[0], None, initializer[1], {}),
                                     grouper(1, ((None, None) for i in range(wfl_mpipool.size))))
             pool = wfl_mpipool
         else:
-            if initializer is not None:
-                initializer_args = {'initializer': initializer, 'initargs': initargs}
+            if initializer[0] is not None:
+                initializer_args = {'initializer': initializer[0], 'initargs': initializer[1]}
             else:
                 initializer_args = {}
             pool = Pool(num_python_subprocesses, **initializer_args)

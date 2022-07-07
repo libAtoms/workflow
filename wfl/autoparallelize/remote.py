@@ -13,7 +13,7 @@ from expyre import ExPyRe
 
 
 def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1, iterable=None, outputspec=None, op=None, iterable_arg=0,
-                skip_failed=True, initializer=None, initargs=None, args=[], kwargs={}, quiet=False):
+                skip_failed=True, initializer=(None, []), args=[], kwargs={}, quiet=False):
     """run tasks as series of remote jobs
 
     Parameters
@@ -76,7 +76,7 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
                             kwargs={'num_python_subprocesses': None, 'num_inputs_per_python_subprocess': num_inputs_per_python_subprocess, 'iterable': job_iterable,
                                     'outputspec': co, 'op': op, 'iterable_arg': iterable_arg,
                                     'skip_failed': skip_failed, 'initializer': initializer,
-                                    'initargs': initargs, 'args': args, 'kwargs': kwargs}))
+                                    'args': args, 'kwargs': kwargs}))
 
     # start jobs (shouldn't do anything if they've already been started)
     for xpr in xprs:

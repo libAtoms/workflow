@@ -1,3 +1,4 @@
+(first_example)=
 # First Example
 
 First short example to serve as a hands-on introduction. Connected to [Issue #98](https://github.com/libAtoms/workflow/issues/98)

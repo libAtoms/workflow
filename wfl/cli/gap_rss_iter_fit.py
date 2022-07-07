@@ -349,8 +349,7 @@ def evaluate_ref(dft_in_configs, dft_evaluated_configs, params, run_dir, verbose
     Returns
     -------
     evaluated_configs : ConfigSet
-        as got from iterable_loop of the evaluators
-
+        configurations with evaluated reference quantities
     """
 
     if verbose:

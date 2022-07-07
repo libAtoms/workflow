@@ -7,7 +7,7 @@ try:
 except ModuleNotFoundError:
     pass
 
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import _autoparallelize_ll
 
 
 def smi_to_atoms(smi, useBasicKnowledge=True, useExpTorsionAnglePrefs=True):
@@ -50,7 +50,7 @@ def run(outputs, smiles, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, e
 
     """
 
-    return autoparallelize(iterable=smiles, outputspec=outputs, op=run_autopara_wrappable,
+    return _autoparallelize_ll(iterable=smiles, outputspec=outputs, op=run_autopara_wrappable,
                          useBasicKnowledge=useBasicKnowledge,
                          useExpTorsionAnglePrefs=useExpTorsionAnglePrefs,
                          extra_info=extra_info)

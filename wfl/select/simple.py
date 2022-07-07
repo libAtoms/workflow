@@ -5,7 +5,7 @@ import numpy as np
 from ase import Atoms
 
 from wfl.configset import ConfigSet
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import _autoparallelize_ll
 
 
 def by_bool_func(inputs, outputs, at_filter):
@@ -30,7 +30,7 @@ def by_bool_func(inputs, outputs, at_filter):
         num_python_subprocesses = 0
     else:
         num_python_subprocesses = None
-    return autoparallelize(num_python_subprocesses=num_python_subprocesses, iterable=inputs, outputspec=outputs, at_filter=at_filter, op=_select_autopara_wrappable)
+    return _autoparallelize_ll(num_python_subprocesses=num_python_subprocesses, iterable=inputs, outputspec=outputs, at_filter=at_filter, op=_select_autopara_wrappable)
 
 
 def _select_autopara_wrappable(inputs, at_filter):
@@ -42,7 +42,7 @@ def _select_autopara_wrappable(inputs, at_filter):
     return outputs
 
 
-# NOTE this could probably be done with iterable_loop by returning a list with multiple
+# NOTE this could probably be done with autoparallelize by returning a list with multiple
 # copies when a single config needs to be returned multiple times, and either
 # None or [] when a config isn't selected
 def by_index(inputs, outputs, indices):
@@ -65,7 +65,7 @@ def by_index(inputs, outputs, indices):
     Notes
     -----
     This routine depends on details of ConfigSet and OutputSpec,
-    so perhaps belongs as a use case of iterable_loop, but since it can return
+    so perhaps belongs as a use case of autoparallelize, but since it can return
     multiple outputs for a single input, this cannot be done right now
     """
     if outputs.is_done():
