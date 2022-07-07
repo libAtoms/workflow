@@ -1,5 +1,7 @@
 import os
+import time
 import sys
+from pathlib import Path
 
 import numpy as np
 from ase.md.nptberendsen import NPTBerendsen
@@ -27,7 +29,7 @@ def sample(inputs, outputs, calculator, steps, dt,
            compressibility_fd_displ=0.01,
            traj_step_interval=1, skip_failures=True, results_prefix='md_',
            num_inputs_per_python_subprocess=1, verbose=False, num_python_subprocesses=None,update_config_type=True,
-           selector_function=None, remote_info=None, traj_fn_info_entry=None):
+           selector_function=None, remote_info=None, traj_fn_info_entry=None, wdir=None):
     # Normally each thread needs to call np.random.seed so that it will generate a different
     # set of random numbers.  This env var overrides that to produce deterministic output,
     # for purposes like testing
@@ -41,13 +43,14 @@ def sample(inputs, outputs, calculator, steps, dt,
                          pressure=pressure, pressure_tau=pressure_tau,
                          compressibility_fd_displ=compressibility_fd_displ,
                          traj_step_interval=traj_step_interval, skip_failures=skip_failures,
-                         results_prefix=results_prefix, verbose=verbose, initializer=initializer, num_python_subprocesses=num_python_subprocesses, update_config_type=update_config_type, selector_function=selector_function, remote_info=remote_info, traj_fn_info_entry=traj_fn_info_entry)
+                         results_prefix=results_prefix, verbose=verbose, initializer=initializer, num_python_subprocesses=num_python_subprocesses, update_config_type=update_config_type, selector_function=selector_function, remote_info=remote_info, traj_fn_info_entry=traj_fn_info_entry,
+                         wdir=wdir)
 
 
 def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
               traj_step_interval=1,  skip_failures=True, results_prefix='md_', verbose=False,
-              selector_function=None, update_config_type=True, traj_fn_info_entry=None):
+              selector_function=None, update_config_type=True, traj_fn_info_entry=None, wdir=None):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for
     sampling configs
 
@@ -104,6 +107,12 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
     else:
         logfile = None
 
+    if wdir is None:
+        wdir = Path('.')
+    else:
+        wdir = Path(wdir)
+
+
     if temperature_tau is None and not isinstance(temperature, float):
         raise RuntimeError('NVE (temperature_tau is None) can only accept temperature=float for initial T')
 
@@ -131,6 +140,10 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
     for at in atoms_to_list(atoms):
         at.calc = calculator
         compressibility = None
+
+        if traj_fn_info_entry is not None and logfile is not None:
+            logfile = wdir / (at.info[traj_fn_info_entry] + '.log')
+
         if pressure is not None:
             pressure = sample_pressure(pressure, at)
             at.info['MD_pressure_GPa'] = pressure
@@ -207,7 +220,7 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
                 at.info['MD_time_fs'] = cur_step * dt
                 traj.append(at_copy_save_results(at, results_prefix=results_prefix))
                 if traj_fn_info_entry is not None:
-                    traj_fn = at.info[traj_fn_info_entry] + '.md_traj.xyz' 
+                    traj_fn = wdir / (at.info[traj_fn_info_entry] + '.md_traj.xyz')
                     write(traj_fn, at, append=True)
                 geometry_ok = configs.check_geometry(at)
                 if not geometry_ok:
@@ -239,7 +252,10 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
                 first_step_of_later_stage = True
 
             try:
+                start = time.time()
                 md.run(**run_kwargs)
+                end = time.time()
+                runtime = end - start
             except Exception as exc:
                 if skip_failures:
                     sys.stderr.write(f'MD failed with exception \'{exc}\'\n')
@@ -247,6 +263,9 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
                     break
                 else:
                     raise
+        
+        for at in traj:
+            at.info["md_walltime"] = runtime
 
         if len(traj) == 0 or traj[-1] != at:
             at.info['MD_time_fs'] = cur_step * dt
