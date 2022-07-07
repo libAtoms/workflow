@@ -531,12 +531,13 @@ title="Print to PDF"
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ase.calculators.calculator.Calculator</span></code></p>
 <p>ORCA calculator with basin hopping in wavefunction space for
 smooth PES of radicals</p>
-<p>call n_runs (3&lt;= recommended) instances of calculation on each
-frame, if all agree in energy within a given
-margin, then it is a successful</p>
-<p>calculation:
-1. no rotation, only smearing calculation
-2. n_hop - 1 number of calculations with random rotations</p>
+<p>Call n_runs (3 &lt;= recommended) instances of calculation on each
+frame. If all agree in energy within a given margin, then it is a successful.</p>
+<p>calculations:</p>
+<ol class="arabic simple">
+<li><p>no rotation, only smearing calculation</p></li>
+<li><p><cite>n_hop - 1</cite> number of calculations with random rotations</p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -674,15 +675,13 @@ set thresholds.</p>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – output atomic configs</p></li>
 <li><p><strong>workdir_root</strong> (<em>path-like</em><em>, </em><em>default os.getcwd</em><em>(</em><em>)</em>) – directory to put calculation directories into</p></li>
 <li><p><strong>dir_prefix</strong> (<em>str</em><em>, </em><em>default 'ORCA_'</em>) – directory name prefix for calculations</p></li>
-<li><p><strong>keep_files</strong> (<em>&quot;default&quot; / bool</em>) – <dl class="simple">
-<dt>what kind of files to keep from the run</dt><dd><ul>
+<li><p><strong>keep_files</strong> (<em>&quot;default&quot; / bool</em>) – <p>what kind of files to keep from the run</p>
+<ul>
 <li><p>”default : .out, .inp, .ase, .engrad is kept – ase can read
 the results again</p></li>
 <li><p>True : all files kept</p></li>
 <li><p>False: none kept</p></li>
 </ul>
-</dd>
-</dl>
 </p></li>
 <li><p><strong>orca_kwargs</strong> (<em>dict</em>) – kwargs for BasinHoppingORCA calculator</p></li>
 <li><p><strong>output_prefix</strong> (<em>str</em><em>, </em><em>default None</em>) – prefix for keys in the</p></li>

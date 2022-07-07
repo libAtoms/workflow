@@ -743,13 +743,13 @@ sampling configs</p>
 <li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
 <li><p><strong>dt</strong> (<em>float</em>) – time step (fs)</p></li>
 <li><p><strong>steps</strong> (<em>int</em>) – number of steps</p></li>
-<li><p><strong>temperature</strong> (<em>float</em><em> or </em><em>(</em><em>float</em><em>, </em><em>float</em><em>, </em><em>[</em><em>int</em><em>]</em><em>]</em><em>)</em><em>, or </em><em>list of dicts  default None</em>) – <p>temperature control (Kelvin)
-- float: constant T
-- tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp
-- [ {‘T_i’: float, ‘T_f’ : float, ‘traj_frac’ : flot, ‘n_stages’: int=10}, … ] list of stages, each one a ramp, with duration</p>
-<blockquote>
-<div><p>defined as fraction of total number of steps</p>
-</div></blockquote>
+<li><p><strong>temperature</strong> (<em>float</em><em> or </em><em>(</em><em>float</em><em>, </em><em>float</em><em>, </em><em>[</em><em>int</em><em>]</em><em>]</em><em>)</em><em>, or </em><em>list of dicts  default None</em>) – <p>temperature control (Kelvin)</p>
+<ul>
+<li><p>float: constant T</p></li>
+<li><p>tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp</p></li>
+<li><p>[ {‘T_i’: float, ‘T_f’ : float, ‘traj_frac’ : flot, ‘n_stages’: int=10}, … ] list of stages, each one a ramp, with
+duration defined as fraction of total number of steps</p></li>
+</ul>
 </p></li>
 <li><p><strong>temperature_tau</strong> (<em>float</em><em>, </em><em>default None</em>) – time scale that enables Berendsen constant T temperature rescaling (fs)</p></li>
 <li><p><strong>pressure</strong> (<em>None / float / tuple</em>) – applied pressure distribution (GPa) as parsed by wfl.utils.pressure.sample_pressure()
@@ -818,14 +818,15 @@ optimisation logs are not printed unless this is True</p></li>
 <dd><p>Sub-selects configurations from trajectory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>subselect</strong> (<em>int</em><em> or </em><em>string</em><em>, </em><em>default None</em>) – <p>None: full trajectory is returned
-int: (not implemented) how many samples to take from the trajectory.
-str:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>”last_converged”: returns [last_config], if converged or None if not.</p></li>
+<dd class="field-odd"><p><strong>subselect</strong> (<em>int</em><em> or </em><em>string</em><em>, </em><em>default None</em>) – <ul class="simple">
+<li><p>None: full trajectory is returned</p></li>
+<li><p>int: (not implemented) how many samples to take from the trajectory.</p></li>
+<li><p>str: specific method</p>
+<ul>
+<li><p>”last_converged”: returns [last_config] if converged, or None if not.</p></li>
 </ul>
-</div></blockquote>
+</li>
+</ul>
 </p>
 </dd>
 </dl>
