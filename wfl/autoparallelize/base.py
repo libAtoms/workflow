@@ -2,13 +2,13 @@ import sys
 import os
 import json
 import warnings
-import traceback as tb
 import re
 
 from wfl.configset import OutputSpec
 from .pool import do_in_pool
 from .remote import do_remotely
 from .autoparainfo import AutoparaInfo
+from .utils import get_remote_info
 
 # NOTES from a previous implementation that does not work with sphinx docstring parsing
 # may not be exactly correct, but can definitely be made to work (except sphinx)
@@ -209,46 +209,7 @@ def _autoparallelize_ll(num_python_subprocesses=None, num_inputs_per_python_subp
     -------
     ConfigSet containing returned configs if outputspec is not None, otherwise None
     """
-    if remote_info is None and 'WFL_EXPYRE_INFO' in os.environ:
-        try:
-            remote_info = json.loads(os.environ['WFL_EXPYRE_INFO'])
-        except Exception as exc:
-            remote_info = os.environ['WFL_EXPYRE_INFO']
-            if ' ' in remote_info:
-                # if it's not JSON, it must be a filename, so presence of space is suspicious
-                warnings.warn(f'remote_info from WFL_EXPYRE_INFO has whitespace, but not parseable as JSON with error {exc}')
-        if isinstance(remote_info, str):
-            # filename
-            with open(remote_info) as fin:
-                remote_info = json.load(fin)
-        if 'sys_name' in remote_info:
-            # remote_info directly in top level dict
-            warnings.warn('WFL_EXPYRE_INFO appears to be a RemoteInfo kwargs, using directly')
-        else:
-            if remote_label is None:
-                # no explicit remote_label for the remote run was passed into function, so
-                # need to match end of stack trace to remote_info dict keys, here we
-                # construct object to compare to
-                # last stack item is always autoparallelize, so ignore it
-                stack_remote_label = [fs[0] + '::' + fs[2] for fs in tb.extract_stack()[:-1]]
-            else:
-                stack_remote_label = []
-            if len(stack_remote_label) > 0 and stack_remote_label[-1].endswith('base.py::autoparallelize'):
-                # replace autoparallelize stack entry with one for desired function name
-                stack_remote_label.pop()
-            #DEBUG print("DEBUG stack_remote_label", stack_remote_label)
-            match = False
-            for ri_k in remote_info:
-                ksplit = [sl.strip() for sl in ri_k.split(',')]
-                # match dict key to remote_label if present, otherwise end of stack
-                if ((remote_label is None and all([re.search(kk + '$', sl) for sl, kk in zip(stack_remote_label[-len(ksplit):], ksplit)])) or
-                    (remote_label == ri_k)):
-                    sys.stderr.write(f'WFL_EXPYRE_INFO matched key {ri_k} for remote_label {remote_label}\n')
-                    remote_info = remote_info[ri_k]
-                    match = True
-                    break
-            if not match:
-                remote_info = None
+    remote_info = get_remote_info(remote_info, remote_label)
 
     if isinstance(iterable_arg, int):
         assert len(args) >= iterable_arg
