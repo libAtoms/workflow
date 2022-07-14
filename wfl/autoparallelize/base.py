@@ -117,6 +117,7 @@ def autoparallelize(func, *args, def_autopara_info={}, **kwargs):
     The autoparallelized function can then be called with 
 
     .. code-block:: python
+
         parallelized_op(inputs, outputs, [args of op], autopara_info=AutoparaInfo(arg1=val1, ...), [kwargs of op])
 
 
