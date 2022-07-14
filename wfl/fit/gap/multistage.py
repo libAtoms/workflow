@@ -193,7 +193,6 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         if not any([var.split('=')[0] == 'WFL_NUM_PYTHON_SUBPROCESSES' for var in remote_info.env_vars]):
             remote_info.env_vars.append('WFL_NUM_PYTHON_SUBPROCESSES=$EXPYRE_NUM_CORES_PER_NODE')
 
-
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                      env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=fit,
                      kwargs={'fitting_configs': fitting_configs, 'GAP_name': GAP_name, 'params': params, 'ref_property_prefix': ref_property_prefix,
@@ -434,7 +433,13 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         # do a simple fit using gap_simple_fit
         stdout_file = run_dir / f'stdout.{GAP_name}.stage_{i_stage}.gap_fit'
-        run_gap_fit(database_ci, gap_simple_fit, stdout_file=stdout_file, verbose=verbose)
+        # If this function was called without a remote_info that applies to it, remote_info here 
+        # will still be the real remote_info, which can then be used in the underlying simple fits
+        # If we're here with the multistage fit running remotely, the wrapper above passed
+        # _IGNORE as remote_info, so these fits will run in this job, not their own separate remote
+        # jobs.
+        run_gap_fit(database_ci, gap_simple_fit, stdout_file=stdout_file, verbose=verbose,
+                    remote_info=remote_info, remote_label=remote_label)
 
         print('')
 
@@ -461,7 +466,8 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         # perform the fit
         stdout_file = run_dir / f'stdout.{GAP_name}{committee_name_postfix}{i_committee}.gap_fit'
-        run_gap_fit(database_ci, gap_simple_fit, stdout_file=stdout_file, verbose=verbose)
+        run_gap_fit(database_ci, gap_simple_fit, stdout_file=stdout_file, verbose=verbose,
+                    remote_info=remote_info, remote_label=remote_label)
 
         GAP_xml_modify_label(GAPfile, new_label=GAPname)
 
