@@ -3,8 +3,10 @@ import os
 import json
 import traceback as tb
 import re
+import warnings
 import itertools
 
+from .remoteinfo import RemoteInfo
 
 def grouper(n, iterable):
     """iterator that goes over iterable in specified size groups
@@ -28,7 +30,7 @@ def grouper(n, iterable):
         yield chunk
 
 
-def get_remote_info(remote_info, remote_label):
+def get_remote_info(remote_info, remote_label, env_var="WFL_EXPYRE_INFO"):
     """get remote_info dict from passed in dict, label, and/or env. var
 
     Parameters
@@ -43,23 +45,23 @@ def get_remote_info(remote_info, remote_label):
 
     Returns
     -------
-    remote_info dict or RemoteInfo or None
+    remote_info: RemoteInfo or None
     """
-    if remote_info is None and 'WFL_EXPYRE_INFO' in os.environ:
+    if remote_info is None and env_var in os.environ:
         try:
-            remote_info = json.loads(os.environ['WFL_EXPYRE_INFO'])
+            remote_info = json.loads(os.environ[env_var])
         except Exception as exc:
-            remote_info = os.environ['WFL_EXPYRE_INFO']
+            remote_info = os.environ[env_var]
             if ' ' in remote_info:
                 # if it's not JSON, it must be a filename, so presence of space is suspicious
-                warnings.warn(f'remote_info from WFL_EXPYRE_INFO has whitespace, but not parseable as JSON with error {exc}')
+                warnings.warn(f'remote_info "{remote_info}" from WFL_EXPYRE_INFO has whitespace, but not parseable as JSON with error {exc}')
         if isinstance(remote_info, str):
             # filename
             with open(remote_info) as fin:
                 remote_info = json.load(fin)
         if 'sys_name' in remote_info:
             # remote_info directly in top level dict
-            warnings.warn('WFL_EXPYRE_INFO appears to be a RemoteInfo kwargs, using directly')
+            warnings.warn(f'env var {env_var} appears to be a RemoteInfo kwargs, using directly')
         else:
             if remote_label is None:
                 # no explicit remote_label for the remote run was passed into function, so
@@ -81,11 +83,14 @@ def get_remote_info(remote_info, remote_label):
                 # match dict key to remote_label if present, otherwise end of stack
                 if ((remote_label is None and all([re.search(kk + '$', sl) for sl, kk in zip(stack_remote_label[-len(ksplit):], ksplit)])) or
                     (remote_label == ri_k)):
-                    sys.stderr.write(f'WFL_EXPYRE_INFO matched key {ri_k} for remote_label {remote_label}\n')
+                    sys.stderr.write(f'{env_var} matched key {ri_k} for remote_label {remote_label}\n')
                     remote_info = remote_info[ri_k]
                     match = True
                     break
             if not match:
                 remote_info = None
+
+    if isinstance(remote_info, dict):
+        remote_info = RemoteInfo(**remote_info)
 
     return remote_info

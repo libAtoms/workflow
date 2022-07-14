@@ -14,7 +14,7 @@ from wfl.configset import ConfigSet, OutputSpec
 from wfl.descriptor_heuristics import descriptor_2brn_uniform_file, descriptors_from_length_scales
 from wfl.fit.gap.simple import run_gap_fit
 from wfl.utils.quip_cli_strings import dict_to_quip_str
-from ..utils import get_RemoteInfo
+from wfl.autoparallelize.utils import get_remote_info
 from ..modify_database.scale_orig import modify as modify_scale_orig
 
 try:
@@ -99,7 +99,7 @@ def max_cutoff(params):
 def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         seeds=None, skip_if_present=False, run_dir='.',
         num_committee=0, committee_extra_seeds=None, committee_name_postfix='.committee_',
-        verbose=False, remote_info=None, wait_for_results=True):
+        verbose=False, remote_info=None, remote_label=None, wait_for_results=True):
     """Fit a GAP iteratively, setting delta from error relative to previous stage
 
     Parameters
@@ -130,15 +130,17 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
     remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
-        will try to use env var WFL_GAP_MULTISTAGE_FIT_EXPYRE_INFO used (see below). '_IGNORE' is for
+        will try to use env var WFL_EXPYRE_INFO used (see below). '_IGNORE' is for
         internal use, to ensure that remotely running job does not itself attempt to spawn another
         remotely running job.
+    remote_label: str, default None
+        label to match in WFL_EXPYRE_INFO
     wait_for_results: bool, default True
         wait for results of remotely executed job, otherwise return after starting job
 
     Environment Variables
     ---------------------
-    WFL_GAP_MULTISTAGE_FIT_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
+    WFL_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
         contructor to be used to run fitting in separate queued job
     WFL_GAP_FIT_OMP_NUM_THREADS: number of threads to set for OpenMP of gap_fit
 
@@ -176,7 +178,9 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
             # Potential seems to return RuntimeError when file is missing
             pass
 
-    remote_info = get_RemoteInfo(remote_info, 'WFL_GAP_MULTISTAGE_FIT_EXPYRE_INFO')
+    if remote_info != '_IGNORE':
+        remote_info = get_remote_info(remote_info, remote_label)
+
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.output_files.copy()
         output_files = remote_info.output_files.copy() + [str(run_dir)]

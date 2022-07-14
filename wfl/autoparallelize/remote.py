@@ -18,7 +18,7 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
 
     Parameters
     ----------
-    remote_info: RemoteInfo or dict
+    remote_info: RemoteInfo
         object with all information on remote job, including system, resources, job num_inputs_per_python_subprocess, etc, or dict of kwargs for its constructor
     quiet: bool, default False
         do not output (to stderr) progress info
@@ -27,9 +27,6 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
     """
     if ExPyRe is None:
         raise RuntimeError('Cannot run as remote jobs since expyre module could not be imported')
-
-    if not isinstance(remote_info, RemoteInfo):
-        remote_info = RemoteInfo(**remote_info)
 
     if remote_info.num_inputs_per_queued_job < 0:
         remote_info.num_inputs_per_queued_job = -remote_info.num_inputs_per_queued_job * num_inputs_per_python_subprocess

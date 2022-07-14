@@ -21,7 +21,7 @@ def test_buildcell_remote(tmp_path, expyre_systems, monkeypatch, remoteinfo_env)
 
 
 def do_buildcell_remote(tmp_path, sys_name, monkeypatch, remoteinfo_env):
-    ri = {'sys_name': sys_name, 'job_name': 'test_'+sys_name,
+    ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
           'resources': {'max_time': '1h', 'num_nodes': 1},
           'num_inputs_per_queued_job': -36, 'check_interval': 10}
 
