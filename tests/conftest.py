@@ -9,6 +9,12 @@ from pathlib import Path
 import shutil
 
 
+@pytest.fixture(autouse=True)
+def env_setup(monkeypatch):
+    if "WFL_NUM_PYTHON_SUBPROCESSES" not in os.environ:
+        monkeypatch.setenv("WFL_NUM_PYTHON_SUBPROCESSES", "2")
+
+
 def do_init_mpipool():
     import wfl.autoparallelize.mpipool_support
 
