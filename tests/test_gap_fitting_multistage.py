@@ -125,7 +125,7 @@ def test_gap_multistage_fit_remote(request, tmp_path, quippy, expyre_systems, mo
 
         remoteinfo_env(ri)
 
-        monkeypatch.setenv('WFL_GAP_MULTISTAGE_FIT_EXPYRE_INFO', json.dumps(ri))
+        monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
         test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir=f'run_dir_{sys_name}')
 
 

@@ -14,7 +14,7 @@ from wfl.configset import ConfigSet, OutputSpec
 from wfl.descriptor_heuristics import descriptor_2brn_uniform_file, descriptors_from_length_scales
 from wfl.fit.gap.simple import run_gap_fit
 from wfl.utils.quip_cli_strings import dict_to_quip_str
-from ..utils import get_RemoteInfo
+from wfl.autoparallelize.utils import get_remote_info
 from ..modify_database.scale_orig import modify as modify_scale_orig
 
 try:
@@ -99,7 +99,7 @@ def max_cutoff(params):
 def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         seeds=None, skip_if_present=False, run_dir='.',
         num_committee=0, committee_extra_seeds=None, committee_name_postfix='.committee_',
-        verbose=False, remote_info=None, wait_for_results=True):
+        verbose=False, remote_info=None, remote_label=None, wait_for_results=True):
     """Fit a GAP iteratively, setting delta from error relative to previous stage
 
     Parameters
@@ -130,15 +130,17 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
     remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
-        will try to use env var WFL_GAP_MULTISTAGE_FIT_EXPYRE_INFO used (see below). '_IGNORE' is for
+        will try to use env var WFL_EXPYRE_INFO used (see below). '_IGNORE' is for
         internal use, to ensure that remotely running job does not itself attempt to spawn another
         remotely running job.
+    remote_label: str, default None
+        label to match in WFL_EXPYRE_INFO
     wait_for_results: bool, default True
         wait for results of remotely executed job, otherwise return after starting job
 
     Environment Variables
     ---------------------
-    WFL_GAP_MULTISTAGE_FIT_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
+    WFL_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
         contructor to be used to run fitting in separate queued job
     WFL_GAP_FIT_OMP_NUM_THREADS: number of threads to set for OpenMP of gap_fit
 
@@ -176,7 +178,9 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
             # Potential seems to return RuntimeError when file is missing
             pass
 
-    remote_info = get_RemoteInfo(remote_info, 'WFL_GAP_MULTISTAGE_FIT_EXPYRE_INFO')
+    if remote_info != '_IGNORE':
+        remote_info = get_remote_info(remote_info, remote_label)
+
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.output_files.copy()
         output_files = remote_info.output_files.copy() + [str(run_dir)]
@@ -188,7 +192,6 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
             remote_info.env_vars.append('WFL_GAP_FIT_OMP_NUM_THREADS=$EXPYRE_NUM_CORES_PER_NODE')
         if not any([var.split('=')[0] == 'WFL_NUM_PYTHON_SUBPROCESSES' for var in remote_info.env_vars]):
             remote_info.env_vars.append('WFL_NUM_PYTHON_SUBPROCESSES=$EXPYRE_NUM_CORES_PER_NODE')
-
 
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                      env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=fit,
@@ -430,7 +433,13 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         # do a simple fit using gap_simple_fit
         stdout_file = run_dir / f'stdout.{GAP_name}.stage_{i_stage}.gap_fit'
-        run_gap_fit(database_ci, gap_simple_fit, stdout_file=stdout_file, verbose=verbose)
+        # If this function was called without a remote_info that applies to it, remote_info here 
+        # will still be the real remote_info, which can then be used in the underlying simple fits
+        # If we're here with the multistage fit running remotely, the wrapper above passed
+        # _IGNORE as remote_info, so these fits will run in this job, not their own separate remote
+        # jobs.
+        run_gap_fit(database_ci, gap_simple_fit, stdout_file=stdout_file, verbose=verbose,
+                    remote_info=remote_info, remote_label=remote_label)
 
         print('')
 
@@ -457,7 +466,8 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         # perform the fit
         stdout_file = run_dir / f'stdout.{GAP_name}{committee_name_postfix}{i_committee}.gap_fit'
-        run_gap_fit(database_ci, gap_simple_fit, stdout_file=stdout_file, verbose=verbose)
+        run_gap_fit(database_ci, gap_simple_fit, stdout_file=stdout_file, verbose=verbose,
+                    remote_info=remote_info, remote_label=remote_label)
 
         GAP_xml_modify_label(GAPfile, new_label=GAPname)
 

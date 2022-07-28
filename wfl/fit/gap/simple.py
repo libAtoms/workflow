@@ -6,13 +6,13 @@ from copy import deepcopy
 
 from wfl.configset import ConfigSet
 from wfl.utils.quip_cli_strings import dict_to_quip_str
-from ..utils import get_RemoteInfo
+from wfl.autoparallelize.utils import get_remote_info
 from .relocate import gap_relocate
 
 from expyre import ExPyRe
 
 def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fit",
-                verbose=True, do_fit=True, remote_info=None, **kwargs):
+                verbose=True, do_fit=True, remote_info=None, remote_label=None, **kwargs):
     """Runs gap_fit
 
     Parameters
@@ -31,21 +31,25 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
     remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
-        will try to use env var WFL_GAP_SIMPLE_FIT_EXPYRE_INFO used (see below). '_IGNORE' is for
+        will try to use env var WFL_EXPYRE_INFO used (see below). '_IGNORE' is for
         internal use, to ensure that remotely running job does not itself attempt to spawn another
         remotely running job.
+    remote_label: str, default None
+        remote label to patch in WFL_EXPYRE_INFO
     kwargs
         any key:val pair will be added to the fitting str
 
     Environment Variables
     ---------------------
-    WFL_GAP_SIMPLE_FIT_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
+    WFL_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
         contructor to be used to run fitting in separate queued job
     WFL_GAP_FIT_OMP_NUM_THREADS: number of threads to set for OpenMP of gap_fit
     """
     assert 'atoms_filename' not in fitting_dict and 'at_file' not in fitting_dict
 
-    remote_info = get_RemoteInfo(remote_info, 'WFL_GAP_SIMPLE_FIT_EXPYRE_INFO')
+    if remote_info != '_IGNORE':
+        remote_info = get_remote_info(remote_info, remote_label)
+
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.input_files.copy()
         output_files = remote_info.output_files.copy()
