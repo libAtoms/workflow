@@ -111,6 +111,7 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
         op_full_name = inspect.getmodule(op).__name__ + "." + op.__name__
         sys.stderr.write(f'Running {op_full_name} with num_python_subprocesses={num_python_subprocesses}, '
                          f'num_inputs_per_python_subprocess={num_inputs_per_python_subprocess}\n')
+        tmp_omp_num_threads = False
         if wfl_mpipool:
             # MPI pool is global and unique, created at script start, so do not create one here
             warnings.warn(f'mpipool ignores > 0 value of num_python_subprocesses={num_python_subprocesses}, '
@@ -125,6 +126,11 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
                 initializer_args = {'initializer': initializer[0], 'initargs': initializer[1]}
             else:
                 initializer_args = {}
+            # if no OMP_NUM_THREADS is set, OpenMP will use all available threads, and this 
+            # will be inefficient (at best) if more than one python subprocess is created
+            if "OMP_NUM_THREADS" not in os.environ and num_python_subprocesses > 1:
+                os.environ["OMP_NUM_THREADS"] = "1"
+                tmp_omp_num_threads = True
             pool = Pool(num_python_subprocesses, context=get_context("forkserver"), **initializer_args)
 
         if wfl_mpipool:
@@ -136,6 +142,9 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
         if not wfl_mpipool:
             # only close pool if it's from multiprocessing.pool
             pool.close()
+
+        if tmp_omp_num_threads:
+            del os.environ["OMP_NUM_THREADS"]
 
         # always loop over results to trigger lazy imap()
         for result_group in results:
