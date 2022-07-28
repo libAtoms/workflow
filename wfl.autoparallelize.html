@@ -20,7 +20,7 @@
     href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -29,7 +29,7 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="wfl.calculators package" href="wfl.calculators.html" />
@@ -586,6 +586,9 @@ title="Print to PDF"
 </pre></div>
 </div>
 <p>The autoparallelized function can then be called with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parallelized_op</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="p">[</span><span class="n">args</span> <span class="n">of</span> <span class="n">op</span><span class="p">],</span> <span class="n">autopara_info</span><span class="o">=</span><span class="n">AutoparaInfo</span><span class="p">(</span><span class="n">arg1</span><span class="o">=</span><span class="n">val1</span><span class="p">,</span> <span class="o">...</span><span class="p">),</span> <span class="p">[</span><span class="n">kwargs</span> <span class="n">of</span> <span class="n">op</span><span class="p">])</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -672,7 +675,7 @@ function, others wait to do mpipool stuff.  Initialises
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>remote_info</strong> (<a class="reference internal" href="#wfl.autoparallelize.remoteinfo.RemoteInfo" title="wfl.autoparallelize.remoteinfo.RemoteInfo"><em>RemoteInfo</em></a><em> or </em><em>dict</em>) – object with all information on remote job, including system, resources, job num_inputs_per_python_subprocess, etc, or dict of kwargs for its constructor</p></li>
+<li><p><strong>remote_info</strong> (<a class="reference internal" href="#wfl.autoparallelize.remoteinfo.RemoteInfo" title="wfl.autoparallelize.remoteinfo.RemoteInfo"><em>RemoteInfo</em></a>) – object with all information on remote job, including system, resources, job num_inputs_per_python_subprocess, etc, or dict of kwargs for its constructor</p></li>
 <li><p><strong>quiet</strong> (<em>bool</em><em>, </em><em>default False</em>) – do not output (to stderr) progress info</p></li>
 <li><p><strong>args</strong> (<em>See autoparallelize.autoparallelize</em><em>(</em><em>) </em><em>for other</em>) – </p></li>
 </ul>
@@ -714,6 +717,28 @@ function, others wait to do mpipool stuff.  Initialises
 </div>
 <div class="section" id="module-wfl.autoparallelize.utils">
 <span id="wfl-autoparallelize-utils-module"></span><h2>wfl.autoparallelize.utils module<a class="headerlink" href="#module-wfl.autoparallelize.utils" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.autoparallelize.utils.get_remote_info">
+<span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.utils.</span></span><span class="sig-name descname"><span class="pre">get_remote_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'WFL_EXPYRE_INFO'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.utils.get_remote_info" title="Permalink to this definition">#</a></dt>
+<dd><p>get remote_info dict from passed in dict, label, and/or env. var</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>remote_info</strong> (<a class="reference internal" href="#wfl.autoparallelize.remoteinfo.RemoteInfo" title="wfl.autoparallelize.remoteinfo.RemoteInfo"><em>RemoteInfo</em></a><em>, </em><em>default content of env var WFL_EXPYRE_INFO</em>) – information for running on remote machine.  If None, use WFL_EXPYRE_INFO env var, as
+json file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
+RemoteInfo kwrgs with keys that match end of stack trace with function names separated by ‘.’.</p></li>
+<li><p><strong>remote_label</strong> (<em>str</em><em>, </em><em>default None</em>) – remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine filename ‘::’ calling function</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>remote_info</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#wfl.autoparallelize.remoteinfo.RemoteInfo" title="wfl.autoparallelize.remoteinfo.RemoteInfo">RemoteInfo</a> or None</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.autoparallelize.utils.grouper">
 <span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.utils.</span></span><span class="sig-name descname"><span class="pre">grouper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.utils.grouper" title="Permalink to this definition">#</a></dt>
