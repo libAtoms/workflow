@@ -48,7 +48,7 @@ def test_calc_descriptor_average_any_atomic_number_normalization():
 
     assert 1.0 == approx(np.linalg.norm(list(ats_desc)[0].info['desc']))
 
-    del ats[0].info["desc"]
+    ats[0].info.pop("desc", None)
     ats_desc = calc(ci, OutputSpec(),
                     ['soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 average n_species=2 species_Z={6 14}', 
                      'soap n_max=3 l_max=3 cutoff=5.0 atom_sigma=0.5 average n_species=2 species_Z={6 14}'], 'desc', normalize=False)
