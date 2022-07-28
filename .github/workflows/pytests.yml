@@ -109,6 +109,8 @@ jobs:
           #
           export EXPYRE_PYTEST_SYSTEMS=github
           export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
+          export WFL_NUM_PYTHON_SUBPROCESSES=2
+          export OMP_NUM_THREADS=1
           pytest --runremote --basetemp $HOME/pytest_plain -rxXs
 
       - name: Test with pytest - coverage
@@ -119,6 +121,8 @@ jobs:
           #
           export EXPYRE_PYTEST_SYSTEMS=github
           export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
+          export WFL_NUM_PYTHON_SUBPROCESSES=2
+          export OMP_NUM_THREADS=1
           time pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs tests/test_remote_run.py
           # sleep 120
           # if jobs | wc -l | grep -qv 0; then
@@ -135,6 +139,8 @@ jobs:
         run: |
           # envvar and test run - No coverage
           export WFL_MPIPOOL=2
+          export WFL_NUM_PYTHON_SUBPROCESSES=2
+          export OMP_NUM_THREADS=1
           mpirun -n 2 pytest --with-mpi -k mpi
 
       - name: MPI tests -- coverage
@@ -142,6 +148,8 @@ jobs:
         run: |
           # envvar and coverage Appended to the previous
           export WFL_MPIPOOL=2
+          export WFL_NUM_PYTHON_SUBPROCESSES=2
+          export OMP_NUM_THREADS=1
           mpirun -n 2 pytest --cov=wfl --cov-report term --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --with-mpi -k mpi --cov-append
 
       - name: 'Upload Coverage Data'
