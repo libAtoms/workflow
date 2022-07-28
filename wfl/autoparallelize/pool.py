@@ -5,6 +5,7 @@ import inspect
 
 import functools
 from multiprocessing.pool import Pool
+import multiprocessing
 
 from wfl.configset import ConfigSet
 from wfl.autoparallelize.mpipool_support import wfl_mpipool
@@ -124,7 +125,7 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
                 initializer_args = {'initializer': initializer[0], 'initargs': initializer[1]}
             else:
                 initializer_args = {}
-            pool = Pool(num_python_subprocesses, **initializer_args)
+            pool = Pool(num_python_subprocesses, context=multiprocessing.get_context("forkserver"), **initializer_args)
 
         if wfl_mpipool:
             map_f = pool.map
