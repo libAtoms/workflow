@@ -133,5 +133,5 @@ def test_ace_fit_remote(request, tmp_path, expyre_systems, monkeypatch, remotein
 
         remoteinfo_env(ri)
 
-        monkeypatch.setenv('WFL_ACE_FIT_EXPYRE_INFO', json.dumps(ri))
+        monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
         test_ace_fit(request, tmp_path, monkeypatch, run_dir=f'run_dir_{sys_name}')

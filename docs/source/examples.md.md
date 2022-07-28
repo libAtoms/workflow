@@ -146,13 +146,13 @@ expyre config.json:
         "scheduler": "slurm",
         "commands": ["source /work/e89/e89/eg475/.bashrc",  "echo $(date)", "hostname"],
         "header": ["#SBATCH --nodes={nnodes}",
-                   "#SBATCH --tasks-per-node={ncores_per_node}",
+                   "#SBATCH --tasks-per-node={num_cores_per_node}",
                    "#SBATCH --cpus-per-task=1",
                    "#SBATCH --account=change-me",
                    "#SBATCH --qos=standard"],
                 "rundir": "/work/e89/e89/eg475/expyre_rundir",
-        "partitions": {"standard" : {"ncores": 128, "max_time" : "24h", "max_mem": "256G"},
-                       "highmem" : {"ncores": 128, "max_time" : "24h", "max_mem": "512G"}}
+        "partitions": {"standard" : {"num_cores": 128, "max_time" : "24h", "max_mem": "256G"},
+                       "highmem" : {"num_cores": 128, "max_time" : "24h", "max_mem": "512G"}}
                  }
 }}
 

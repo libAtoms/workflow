@@ -14,7 +14,7 @@ import ase.io
 from ase.stress import voigt_6_to_full_3x3_stress
 
 from wfl.configset import ConfigSet
-from .utils import get_RemoteInfo
+from wfl.autoparallelize.utils import get_remote_info
 
 from expyre import ExPyRe
 import wfl.scripts
@@ -22,7 +22,7 @@ import wfl.scripts
 def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
         skip_if_present=False, run_dir='.',
         ace_fit_exec=str((Path(wfl.scripts.__file__).parent / 'ace_fit.jl').resolve()), dry_run=False,
-        verbose=True, remote_info=None, wait_for_results=True):
+        verbose=True, remote_info=None, remote_label=None, wait_for_results=True):
     """Runs ace_fit on a set of fitting configs
 
     Parameters
@@ -51,9 +51,11 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
     remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
-        will try to use env var WFL_ACE_FIT_EXPYRE_INFO used (see below). '_IGNORE' is for
+        will try to use env var WFL_EXPYRE_INFO used (see below). '_IGNORE' is for
         internal use, to ensure that remotely running job does not itself attempt to spawn another
         remotely running job.
+    remote_label: str, default None
+        label to use to match in WFL_EXPYRE_INFO
     wait_for_results: bool, default True
         wait for results of remotely executed job, otherwise return after starting job
 
@@ -65,7 +67,7 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
 
     Environment Variables
     ---------------------
-    WFL_ACE_FIT_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
+    WFL_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
         contructor to be used to run fitting in separate queued job
     WFL_ACE_FIT_JULIA_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will use julia multithreading (LSQ assembly)
     WFL_ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
@@ -76,7 +78,7 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
 
     return run_ace_fit(fitting_configs, ace_fit_params,
                 skip_if_present=skip_if_present, run_dir=run_dir, ace_fit_exec=ace_fit_exec, dry_run=dry_run,
-                verbose=verbose, remote_info=remote_info, wait_for_results=wait_for_results)
+                verbose=verbose, remote_info=remote_info, remote_label=remote_label, wait_for_results=wait_for_results)
 
 
 def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_property_prefix='REF_'):
@@ -140,7 +142,7 @@ def prepare_configs(fitting_configs, ref_property_prefix='REF_'):
 
 def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir='.',
         ace_fit_exec=str((Path(wfl.scripts.__file__).parent / 'ace_fit.jl').resolve()), dry_run=False,
-        verbose=True, remote_info=None, wait_for_results=True):
+        verbose=True, remote_info=None, remote_label=None, wait_for_results=True):
     """Runs ace_fit on a a set of fitting configs
 
     Parameters
@@ -163,9 +165,11 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
     remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
-        will try to use env var WFL_ACE_FIT_EXPYRE_INFO used (see below). '_IGNORE' is for
+        will try to use env var WFL_EXPYRE_INFO used (see below). '_IGNORE' is for
         internal use, to ensure that remotely running job does not itself attempt to spawn another
         remotely running job.
+    remote_label: str, default None
+        label to use to match in WFL_EXPYRE_INFO
     wait_for_results: bool, default True
         wait for results of remotely executed job, otherwise return after starting job
 
@@ -177,7 +181,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
     Environment Variables
     ---------------------
-    WFL_ACE_FIT_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
+    WFL_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
         contructor to be used to run fitting in separate queued job
     WFL_ACE_FIT_JULIA_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will use julia multithreading (LSQ assembly)
     WFL_ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
@@ -207,7 +211,9 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
             # continue below for actual size calculation or fitting
             pass
 
-    remote_info = get_RemoteInfo(remote_info, 'WFL_ACE_FIT_EXPYRE_INFO')
+    if remote_info != '_IGNORE':
+        remote_info = get_remote_info(remote_info, remote_label)
+
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.input_files.copy()
         output_files = remote_info.output_files.copy()
