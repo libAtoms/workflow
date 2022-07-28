@@ -119,11 +119,11 @@ jobs:
           #
           export EXPYRE_PYTEST_SYSTEMS=github
           export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
-          pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs tests/test_remote_run.py &
-          sleep 120
-          if jobs | wc -l | grep -qv 0; then
-            exit 1
-          fi
+          time pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs tests/test_remote_run.py
+          # sleep 120
+          # if jobs | wc -l | grep -qv 0; then
+          # exit 1
+          # fi
 
       - name: Setup tmate session
         if: failure()

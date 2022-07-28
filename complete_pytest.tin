@@ -9,6 +9,7 @@ echo "" >> pytest_complete_test.out
 # buildcell
 export WFL_PYTEST_BUILDCELL=$HOME/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
 # VASP
+module load vasp
 export VASP_COMMAND=vasp.serial
 export VASP_COMMAND_GAMMA=vasp.gamma_serial
 export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
