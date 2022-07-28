@@ -54,6 +54,10 @@ jobs:
         run: |
           sudo apt-get update
 
+      - name: Install gdb for debugging
+        run: |
+          sudo apt-get install gdb
+
       - name: Install Quantum Espresso
         run: |
           sudo apt-get install --no-install-recommends quantum-espresso
@@ -119,7 +123,19 @@ jobs:
           #
           export EXPYRE_PYTEST_SYSTEMS=github
           export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
-          pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs
+          # pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs
+          pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs -s tests/test_calc_descriptor.py &
+          # max waiting time
+          sleep 30
+          if jobs | wc -l | grep -vq 0; then
+              kill %1
+              exit 1
+          fi
+
+      - name: Setup tmate session
+        if: failure()
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 15
 
       - name: MPI tests -- plain
         if: ${{ env.use-mpi && env.coverage-on-version != matrix.python-version}}
