@@ -11,7 +11,7 @@ import shutil
 
 @pytest.fixture(autouse=True)
 def env_setup(monkeypatch):
-    # actually run in parallel by default
+    # actually run in parallel python subprocesses by default
     if "WFL_NUM_PYTHON_SUBPROCESSES" not in os.environ:
         monkeypatch.setenv("WFL_NUM_PYTHON_SUBPROCESSES", "2")
     # disable OpenMP because it conflicts with multiprocessing.pool on some machines (e.g. github CI)

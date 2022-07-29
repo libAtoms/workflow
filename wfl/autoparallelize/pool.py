@@ -146,9 +146,6 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
             # only close pool if it's from multiprocessing.pool
             pool.close()
 
-        if tmp_omp_num_threads:
-            del os.environ["OMP_NUM_THREADS"]
-
         # always loop over results to trigger lazy imap()
         for result_group in results:
             if outputspec is not None:
@@ -157,6 +154,9 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
                         continue
                     did_no_work = False
                     outputspec.write(at, from_input_file=from_input_file)
+
+        if tmp_omp_num_threads:
+            del os.environ["OMP_NUM_THREADS"]
 
         if not wfl_mpipool:
             # call join pool (prevent pytest-cov deadlock as per https://pytest-cov.readthedocs.io/en/latest/subprocess-support.html)
