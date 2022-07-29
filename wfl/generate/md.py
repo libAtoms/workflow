@@ -257,6 +257,7 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
                 end = time.time()
                 runtime = end - start
             except Exception as exc:
+                runtime = "exception"
                 if skip_failures:
                     sys.stderr.write(f'MD failed with exception \'{exc}\'\n')
                     sys.stderr.flush()
