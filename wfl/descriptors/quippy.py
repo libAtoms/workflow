@@ -137,6 +137,8 @@ def calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, comp
     atoms: Atoms or list(Atoms)
         Input configuration(s) with descriptors in info/arrays
     """
+    import sys
+    sys.stderr.write(f"BOB descriptors.quippy.calc_autopara_wrappable {os.environ.get('OMP_NUM_THREADS')}\n")
 
     descs = from_any_to_Descriptor(descs, verbose=verbose)
 
