@@ -14,9 +14,6 @@ def env_setup(monkeypatch):
     # actually run in parallel by default
     if "WFL_NUM_PYTHON_SUBPROCESSES" not in os.environ:
         monkeypatch.setenv("WFL_NUM_PYTHON_SUBPROCESSES", "2")
-    # disable OpenMP because it conflicts with multiprocessing.pool on some machines (e.g. github CI)
-    if "OMP_NUM_THREADS" not in os.environ:
-        monkeypatch.setenv("OMP_NUM_THREADS", "1")
 
 
 def do_init_mpipool():
