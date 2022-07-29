@@ -125,6 +125,11 @@ jobs:
           export OMP_NUM_THREADS=1
           pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs
 
+      # - name: Setup tmate session
+      #   if: failure()
+      #   uses: mxschmitt/action-tmate@v3
+      #   timeout-minutes: 15
+
       - name: MPI tests -- plain
         if: ${{ env.use-mpi && env.coverage-on-version != matrix.python-version}}
         run: |
