@@ -128,8 +128,9 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
                 initializer_args = {}
             # if no OMP_NUM_THREADS is set, OpenMP will use all available threads, and this 
             # will be inefficient (at best) if more than one python subprocess is created
+            sys.stderr.write(f"BOB OMP_NUM_THREADS {os.environ.get('OMP_NUM_THREADS')}\n")
             if "OMP_NUM_THREADS" not in os.environ and num_python_subprocesses > 1:
-                sys.stderr.write("pre-pool OMP_NUM_THREADS unset, setting to 1")
+                sys.stderr.write("BOB pre-pool OMP_NUM_THREADS unset, setting to 1")
                 os.environ["OMP_NUM_THREADS"] = "1"
                 tmp_omp_num_threads = True
             pool = Pool(num_python_subprocesses, context=get_context("forkserver"), **initializer_args)

@@ -123,6 +123,8 @@ jobs:
           export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
           export WFL_NUM_PYTHON_SUBPROCESSES=2
           # export OMP_NUM_THREADS=1
+          echo "BOB"
+          env | grep OMP_NUM_THREADS
           pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs tests/test_remote_run.py
 
       - name: MPI tests -- plain
