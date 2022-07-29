@@ -125,7 +125,7 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
                 initializer_args = {'initializer': initializer[0], 'initargs': initializer[1]}
             else:
                 initializer_args = {}
-            # if no OMP_NUM_THREADS is set, OpenMP will use all available threads, and this 
+            # if no OMP_NUM_THREADS is set, OpenMP will use all available threads, and this
             # will be inefficient (at best) if more than one python subprocess is created
             if "OMP_NUM_THREADS" not in os.environ:
                 warnings.warn("OMP_NUM_THREADS was not set when starting multiprocessing.pool, "
