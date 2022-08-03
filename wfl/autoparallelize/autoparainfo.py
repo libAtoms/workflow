@@ -57,7 +57,7 @@ class AutoparaInfo:
         for k in AutoparaInfo._kwargs:
             if not hasattr(self, k):
                 setattr(self, k, def_kwargs.pop(k, AutoparaInfo._kwargs[k]))
-            elif k in AutoparaInfo._kwargs:
+            else:
                 # it is a valid default, but was already set in AutoparaInfo by the user,
                 #  so not overwriting with defaults
                 del def_kwargs[k] 
