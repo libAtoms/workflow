@@ -57,9 +57,14 @@ class AutoparaInfo:
         for k in AutoparaInfo._kwargs:
             if not hasattr(self, k):
                 setattr(self, k, def_kwargs.pop(k, AutoparaInfo._kwargs[k]))
+            else:
+                # it is a valid default, but was already set in AutoparaInfo by the user,
+                #  so not overwriting with defaults
+                del def_kwargs[k] 
+
 
         if len(def_kwargs) != 0:
-            raise ValueError("def_kwargs contained unknown keywords {list(def_kwargs.keys())}")
+            raise ValueError(f"def_kwargs contained unknown keywords {list(def_kwargs.keys())}")
 
 
     def __str__(self):
