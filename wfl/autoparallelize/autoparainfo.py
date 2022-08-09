@@ -50,18 +50,23 @@ class AutoparaInfo:
 
 
     def update_defaults(self, def_kwargs):
+        """Starting from object passed by user at runtime, update all unspecified fields to the defaults
+        specified when wrapping function, otherwise to class-wide defaults
+        """
         # copy defaults dict so it can be modified (pop)
         def_kwargs = def_kwargs.copy()
 
         # set missing values from def_kwargs, falling back to class-predefined defaults
+        # remove each as its used from def_kwargs, so any remaining can be detected as invalid
         for k in AutoparaInfo._kwargs:
             if not hasattr(self, k):
+                # user hasn't set this attribute, set it from wrapper or class-wide default
                 setattr(self, k, def_kwargs.pop(k, AutoparaInfo._kwargs[k]))
             else:
-                # it is a valid default, but was already set in AutoparaInfo by the user,
-                #  so not overwriting with defaults
-                del def_kwargs[k] 
-
+                # user has set this, still remove from def_kwargs to facilitate check for invalid
+                # def_kwargs keys below
+                if k in def_kwargs:
+                    del def_kwargs[k]
 
         if len(def_kwargs) != 0:
             raise ValueError(f"def_kwargs contained unknown keywords {list(def_kwargs.keys())}")
