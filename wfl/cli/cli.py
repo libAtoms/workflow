@@ -678,7 +678,7 @@ def multistage_gap(ctx, inputs, gap_name, params_file, property_prefix, database
               help='xyz with training configs and isolated atoms')
 @click.option('--param-file', '-p', required=True,
               help='yml file with gap parameters ')
-@click.option('--gap-fit-exec', default='gap_fit',
+@click.option('--gap-fit-command', default='gap_fit',
               help='executable for gap_fit')
 @click.option('--output-file', '-o', default='default',
               help='filename where to save gap output, defaults to '
