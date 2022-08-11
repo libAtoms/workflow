@@ -686,7 +686,7 @@ def multistage_gap(ctx, inputs, gap_name, params_file, property_prefix, database
 @click.option('--fit', is_flag=True, help='Actually run the gap_fit command')
 @click.option("--verbose", "-v", is_flag=True)
 def simple_gap_fit(ctx, gap_file, atoms_filename, param_file,
-                   gap_fit_exec, output_file, fit, verbose):
+                   gap_fit_command, output_file, fit, verbose):
     """Fit a GAP with descriptors from  an .yml file"""
 
     # read properties from the param file
@@ -721,7 +721,7 @@ def simple_gap_fit(ctx, gap_file, atoms_filename, param_file,
 
     fit_gap.simple.run_gap_fit(fitting_ci, fitting_dict=params,
                                stdout_file=output_file,
-                               gap_fit_exec=gap_fit_exec,
+                               gap_fit_command=gap_fit_command,
                                do_fit=fit, verbose=verbose)
 
 

@@ -11,7 +11,7 @@ from .relocate import gap_relocate
 
 from expyre import ExPyRe
 
-def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fit",
+def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command="gap_fit",
                 verbose=True, do_fit=True, remote_info=None, remote_label=None, **kwargs):
     """Runs gap_fit
 
@@ -23,7 +23,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
         dict of keys to turn into command line for gap_fit
     stdout_file: str / Path
         filename to pass standard output to
-    gap_fit_exec: str, default "gap_fit"
+    gap_fit_command: str, default "gap_fit"
         executable for gap_fit
     verbose: bool, default True
     do_fit: bool, default True
@@ -82,7 +82,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
 
         remote_func_kwargs = {'fitting_configs': fitting_configs, 'fitting_dict': fitting_dict,
                               'stdout_file': use_stdout_file,
-                              'gap_fit_exec': gap_fit_exec, 'verbose': verbose, 'do_fit': do_fit,
+                              'gap_fit_command': gap_fit_command, 'verbose': verbose, 'do_fit': do_fit,
                               'remote_info': '_IGNORE'}
         remote_func_kwargs.update(kwargs)
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
@@ -116,7 +116,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
 
     fitting_line = dict_to_gap_fit_string(use_fitting_dict)
 
-    cmd = f'{gap_fit_exec} {fitting_line} 2>&1 > {stdout_file} '
+    cmd = f'{gap_fit_command} {fitting_line} 2>&1 > {stdout_file} '
 
     if not do_fit or verbose:
         print('fitting command:\n', cmd)
