@@ -84,7 +84,7 @@ class Espresso(ase.calculators.espresso.Espresso):
         # so let's make a copy of the initial parameters
         self.initial_parameters = deepcopy(self.parameters)
 
-    def calculate(self, atoms=None, properties=self.implemented_properties, system_cahges=all_changes):
+    def calculate(self, atoms=None, properties=["energy", "forces", "stress"] , system_cahges=all_changes):
         """Does the calculation. Handles the working directories in addition to regular 
         ASE calculation operations (writing input, executing, reading_results) """
 
@@ -123,8 +123,6 @@ class Espresso(ase.calculators.espresso.Espresso):
 
 
     def setup_params_for_this_calc(self, properties):
-        # TODO check if the same logic is followed
-        # due to not separating kwargs and modified_kwargs anymore. 
 
         # first determine if we do a non-periodic calculation. 
         # and update the properties that we will use. 
@@ -236,14 +234,14 @@ def evaluate_autopara_wrappable(
         properties = __default_properties
 
     # keyword setup
-    if calculator_kwargs is None:                                                       # TODO 
+    if calculator_kwargs is None:                                                       # Not sure whether/how to check for this? 
         raise ValueError("QE will not perform a calculation without settings given!")
 
     if workdir_root is None:
         # using the current directory
         workdir_root = os.getcwd()
     else:
-        pathlib.Path(workdir_root).mkdir(parents=True, exist_ok=True)
+        Path(workdir_root).mkdir(parents=True, exist_ok=True)
 
     for at in at_list:
 

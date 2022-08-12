@@ -243,3 +243,5 @@ def test_qe_to_spc(tmp_path, qe_cmd_and_pseudo):
     assert "stress" in ats[0].calc.results
     assert "forces" in ats[0].calc.results
     # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
+
+
