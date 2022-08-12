@@ -3,6 +3,7 @@ import os
 import subprocess
 from pathlib import Path
 from copy import deepcopy
+import warnings
 
 from wfl.configset import ConfigSet
 from wfl.utils.quip_cli_strings import dict_to_quip_str
@@ -24,7 +25,9 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command="gap
     stdout_file: str / Path
         filename to pass standard output to
     gap_fit_command: str, default "gap_fit"
-        executable for gap_fit
+        executable for gap_fit.
+        Alternatively set by WFL_GAP_FIT_COMMAND environment variable, 
+        which overrides this `gap_fit_command` argument. 
     verbose: bool, default True
     do_fit: bool, default True
         carry out the fit, otherwise only print fitting command
@@ -44,6 +47,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command="gap
     WFL_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
         contructor to be used to run fitting in separate queued job
     WFL_GAP_FIT_OMP_NUM_THREADS: number of threads to set for OpenMP of gap_fit
+    WFL_GAP_FIT_COMMAND: executable for gap_fit. Overrides the `gap_fit_command` argument.
     """
     assert 'atoms_filename' not in fitting_dict and 'at_file' not in fitting_dict
 
@@ -115,6 +119,12 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command="gap
     use_fitting_dict = dict(fitting_dict, atoms_filename=fitting_configs_filename, **kwargs)
 
     fitting_line = dict_to_gap_fit_string(use_fitting_dict)
+
+    env_gap_fit_command = os.environ.get("WFL_GAP_FIT_COMMAND", None)        
+    if env_gap_fit_command is not None:
+        if gap_fit_command is not None:
+            warnings.warn(f'Found "WFL_GAP_FIT_COMMAND={env_gap_fit_command}" env variable, using this nstead of {gap_fit_command}.')
+        gap_fit_command = env_gap_fit_command
 
     cmd = f'{gap_fit_command} {fitting_line} 2>&1 > {stdout_file} '
 
