@@ -27,7 +27,7 @@ from ..utils.misc import atoms_to_list
 __default_keep_files = ["*.pwo"]
 __default_properties = ["energy", "forces", "stress"]           # done as "implemented_propertie"
 
-
+'''
 class Espresso(ase.calculators.espresso.Espresso):
     """Extension of ASE's Espresso calculator
 
@@ -62,6 +62,7 @@ class Espresso(ase.calculators.espresso.Espresso):
                  # calculator command?
             
         # parameters are set from kwargs at the Calculator level
+        import pdb; pdb.set_trace()
         super(Espresso, self).__init__()
 
         self.keep_files = keep_files
@@ -84,7 +85,19 @@ class Espresso(ase.calculators.espresso.Espresso):
         # so let's make a copy of the initial parameters
         self.initial_parameters = deepcopy(self.parameters)
 
-    def calculate(self, atoms=None, properties=["energy", "forces", "stress"] , system_cahges=all_changes):
+        # ASE's espresso calculator does not inherit from Calculator, so have to do this
+        self._directory = None
+
+    @property
+    def directory(self):
+        return self._directory
+
+    @directory.setter
+    def directory(self, directory):
+        self._directory = str(Path(directory)) 
+
+
+    def calculate(self, atoms=None, properties=["energy", "forces", "stress"] , system_changes=all_changes):
         """Does the calculation. Handles the working directories in addition to regular 
         ASE calculation operations (writing input, executing, reading_results) """
 
@@ -185,7 +198,7 @@ class Espresso(ase.calculators.espresso.Espresso):
             print(f'{self.workdir_root.name} is not empty, not removing')
         else:
             self.workdir_root.rmdir()
-
+'''
 
 def evaluate_autopara_wrappable(
     atoms,
@@ -260,7 +273,7 @@ def evaluate_autopara_wrappable(
 
         # create temp dir and calculator                                                    # done in calculate()
         rundir = tempfile.mkdtemp(dir=workdir_root, prefix=dir_prefix)
-        at.calc = Espresso(directory=rundir, **kwargs_this_calc)
+        at.calc = ase.calculators.espresso.Espresso(directory=rundir, **kwargs_this_calc)
 
         # calculate
         calculation_succeeded = False
@@ -275,6 +288,7 @@ def evaluate_autopara_wrappable(
             #     since pw.x returns a non-zero status
             warnings.warn(f'Calculation failed with exc {exc}')
             at.info['DFT_FAILED_ESPRESSO'] = True
+            raise exc
 
         # save results
         if calculation_succeeded:                                                           # done at generic.py

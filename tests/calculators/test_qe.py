@@ -14,6 +14,7 @@ from ase.build import bulk
 from pytest import approx, fixture, raises, skip
 
 from wfl.calculators.espresso import evaluate_autopara_wrappable, qe_kpoints_and_kwargs
+import wfl.calculators.espresso
 from wfl.calculators.dft import evaluate_dft
 from wfl.configset import ConfigSet, OutputSpec
 
@@ -245,3 +246,25 @@ def test_qe_to_spc(tmp_path, qe_cmd_and_pseudo):
     # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
 
 
+
+def test_wfl_Espresso_calc(tmp_path, qe_cmd_and_pseudo):
+    # command and pspot
+    _, pspot = qe_cmd_and_pseudo
+
+
+    atoms = Atoms("Si", cell=(2, 2, 2), pbc=[True] * 3)
+    workdir_root = tmp_path
+    kw = dict(
+        pseudopotentials=dict(Si=os.path.basename(pspot)),
+        input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
+        pseudo_dir=os.path.dirname(pspot),
+        kpts=(2, 2, 2),
+        conv_thr=0.0001
+    ) 
+
+    calc = wfl.calculators.espresso.Espresso(workdir_root=workdir_root, **kw)
+    atoms.calc = calc
+
+    atoms.get_potential_energy()
+    atoms.get_forces()
+    atoms.get_stress()
