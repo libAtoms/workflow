@@ -12,7 +12,8 @@ from pathlib import Path
 import numpy as np
 
 from ase import Atoms
-from ase.calculators.calculator import all_changes, CalculationFailed, Calculator
+from ase.calculators.calculator import all_changes, CalculationFailed
+from ase.calculators.genericfileio import GenericFileIOCalculator
 import ase.calculators.espresso
 try:
     from ase.calculators.espresso import EspressoProfile
@@ -24,10 +25,10 @@ from .utils import clean_rundir, handle_nonperiodic, save_results
 from ..utils.misc import atoms_to_list
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
-__default_keep_files = ["*.pwo"]
-__default_properties = ["energy", "forces", "stress"]           # done as "implemented_propertie"
+default_keep_files = ["*.pwo"]
+default_properties = ["energy", "forces", "stress"]           # done as "implemented_propertie"
 
-'''
+
 class Espresso(ase.calculators.espresso.Espresso):
     """Extension of ASE's Espresso calculator
 
@@ -59,19 +60,18 @@ class Espresso(ase.calculators.espresso.Espresso):
     def __init__(self, atoms=None, keep_files="default", 
                  dir_prefix="run_QE_", scratch_path=None,
                  calculator_command=None, **kwargs):
-                 # calculator command?
             
         # parameters are set from kwargs at the Calculator level
-        import pdb; pdb.set_trace()
-        super(Espresso, self).__init__()
+        super(Espresso, self).__init__(**kwargs)
 
         self.keep_files = keep_files
         self.scratch_path = scratch_path
         # self.directory is overwritten in self.calculate, so let's just keep track
         self.dir_prefix = dir_prefix
-        self.workdir_root = Path(self.directory) / (self.dir_prefix + 'FileIOCalc_files') 
+        self.workdir_root = Path(self.directory) / (self.dir_prefix + 'FileIOCalc_files')
         self.workdir_root.mkdir(parents=True, exist_ok=True)
 
+        # I think we can only keep the newer syntax
         if calculator_command is not None: 
             if EspressoProfile is None:
                 # older syntax
@@ -85,40 +85,28 @@ class Espresso(ase.calculators.espresso.Espresso):
         # so let's make a copy of the initial parameters
         self.initial_parameters = deepcopy(self.parameters)
 
-        # ASE's espresso calculator does not inherit from Calculator, so have to do this
-        self._directory = None
 
-    @property
-    def directory(self):
-        return self._directory
-
-    @directory.setter
-    def directory(self, directory):
-        self._directory = str(Path(directory)) 
-
-
-    def calculate(self, atoms=None, properties=["energy", "forces", "stress"] , system_changes=all_changes):
+    def calculate(self, atoms=None, properties=default_properties , system_changes=all_changes):
         """Does the calculation. Handles the working directories in addition to regular 
-        ASE calculation operations (writing input, executing, reading_results) """
+        ASE calculation operations (writing input, executing, reading_results) 
+        Reimplements & extends GenericFileIOCalculator.calculate()"""
 
-        # just makes the directories, essentially and sets self.atoms with given atoms, if not none. 
-        # Properties and system changes are ignored. So let's do it with default properties, even 
-        # though they are updated later for just this calculation. 
-        Calculator.calculate(self, atoms, properties, system_changes)
+        if atoms is not None:
+            self.atoms = atoms.copy()
 
         properties = self.setup_params_for_this_calc(properties)
 
-
         if self.scratch_path is not None:
-            self.directory = tempfile.mkdtemp(dir=self.scratch_path, prefix=self.dir_prefix)
+            directory = tempfile.mkdtemp(dir=self.scratch_path, prefix=self.dir_prefix)
         else:
-            self.directory = tempfile.mkdtemp(dir=self.workdir_root, prefix=self.dir_prefix)
-
+            directory = tempfile.mkdtemp(dir=self.workdir_root, prefix=self.dir_prefix)
+        directory = Path(directory)
+    
 
         try:
-            self.write_input(self.atoms, properties, system_cahges)
-            self.execute()
-            self.read_results()
+            self.template.write_input(directory, self.atoms, self.parameters, properties)
+            self.template.execute(directory, self.profile)
+            self.results = self.template.read_results(directory)
             calculation_succeeded=True
         except Exception as e:
             calculation_succeeded=False
@@ -126,9 +114,9 @@ class Espresso(ase.calculators.espresso.Espresso):
         finally:
             # when exception is raised, `calculation_succeeded` is set to False, 
             # the following code is executed and exception is re-raised. 
-            clean_rundir(self.directory, self.keep_files, default_keep_files, calculation_succeeded)
-            if self.scratch_path is not None and Path(self.directory).exists():
-                shutil.move(self.directory, self.workdir_root)
+            clean_rundir(directory, self.keep_files, default_keep_files, calculation_succeeded)
+            if self.scratch_path is not None and Path(directory).exists():
+                shutil.move(directory, self.workdir_root)
 
             # return the parameters to what they were when the calculator was initialised
             # there is likely a more ASE-appropriate way with self.set() and self.reset(), etc. 
@@ -139,7 +127,7 @@ class Espresso(ase.calculators.espresso.Espresso):
 
         # first determine if we do a non-periodic calculation. 
         # and update the properties that we will use. 
-        nonperiodic, properties = handle_nonperiodic(atoms, properties, allow_mixed=True)
+        nonperiodic, properties = handle_nonperiodic(self.atoms, properties, allow_mixed=True)
 
         # update the parameters with the cool wfl logic 
         self.parameters["tprnfor"] = "forces" in properties
@@ -198,7 +186,7 @@ class Espresso(ase.calculators.espresso.Espresso):
             print(f'{self.workdir_root.name} is not empty, not removing')
         else:
             self.workdir_root.rmdir()
-'''
+
 
 def evaluate_autopara_wrappable(
     atoms,
@@ -244,7 +232,7 @@ def evaluate_autopara_wrappable(
 
     # default properties
     if properties is None:                                                              # done in generic
-        properties = __default_properties
+        properties = default_properties
 
     # keyword setup
     if calculator_kwargs is None:                                                       # Not sure whether/how to check for this? 
@@ -288,14 +276,13 @@ def evaluate_autopara_wrappable(
             #     since pw.x returns a non-zero status
             warnings.warn(f'Calculation failed with exc {exc}')
             at.info['DFT_FAILED_ESPRESSO'] = True
-            raise exc
 
         # save results
         if calculation_succeeded:                                                           # done at generic.py
             save_results(at, properties_use, output_prefix)
 
         # clean run directory
-        clean_rundir(rundir, keep_files, __default_keep_files, calculation_succeeded)
+        clean_rundir(rundir, keep_files, default_keep_files, calculation_succeeded)
 
     if isinstance(atoms, Atoms):                                                           # done at generic.py
         return at_list[0]

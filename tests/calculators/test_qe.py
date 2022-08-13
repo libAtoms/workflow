@@ -249,11 +249,9 @@ def test_qe_to_spc(tmp_path, qe_cmd_and_pseudo):
 
 def test_wfl_Espresso_calc(tmp_path, qe_cmd_and_pseudo):
     # command and pspot
-    _, pspot = qe_cmd_and_pseudo
-
+    qe_cmd, pspot = qe_cmd_and_pseudo
 
     atoms = Atoms("Si", cell=(2, 2, 2), pbc=[True] * 3)
-    workdir_root = tmp_path
     kw = dict(
         pseudopotentials=dict(Si=os.path.basename(pspot)),
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
@@ -262,9 +260,12 @@ def test_wfl_Espresso_calc(tmp_path, qe_cmd_and_pseudo):
         conv_thr=0.0001
     ) 
 
-    calc = wfl.calculators.espresso.Espresso(workdir_root=workdir_root, **kw)
+    calc = wfl.calculators.espresso.Espresso(
+        directory=tmp_path,
+        **kw)
     atoms.calc = calc
 
     atoms.get_potential_energy()
     atoms.get_forces()
     atoms.get_stress()
+
