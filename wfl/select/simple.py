@@ -5,35 +5,45 @@ import numpy as np
 from ase import Atoms
 
 from wfl.configset import ConfigSet
-from wfl.autoparallelize import _autoparallelize_ll
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
+
+# def by_bool_func(inputs, outputs, at_filter):
+#     """apply a filter to a sequence of configs
+
+#     Parameters
+#     ----------
+#     inputs: ConfigSet
+#         input configurations
+#     outputs: OutputSpec
+#         corresponding output configurations
+#     at_filter: callable
+#         callable that takes an Atoms and returns a bool indicating if it should be selected
+
+#     Returns
+#     -------
+#     ConfigSet pointing to selected configurations
+#     """
+#     # disable parallelization by passing num_python_subprocesses=0
+#     if isinstance(at_filter, LambdaType) and at_filter.__name__ == "<lambda>":
+#         # turn of autoparallelization for lambdas, which cannot be pickled
+#         num_python_subprocesses = 0
+#     else:
+#         num_python_subprocesses = None
+#     return _autoparallelize_ll(num_python_subprocesses=num_python_subprocesses, iterable=inputs, outputspec=outputs, at_filter=at_filter, op=_select_autopara_wrappable)
 
 
-def by_bool_func(inputs, outputs, at_filter):
+def _select_autopara_wrappable(inputs, at_filter):
     """apply a filter to a sequence of configs
 
     Parameters
     ----------
-    inputs: ConfigSet
+    inputs: list(Atoms), ConfigSet
         input configurations
-    outputs: OutputSpec
-        corresponding output configurations
     at_filter: callable
         callable that takes an Atoms and returns a bool indicating if it should be selected
 
-    Returns
-    -------
-    ConfigSet pointing to selected configurations
+
     """
-    # disable parallelization by passing num_python_subprocesses=0
-    if isinstance(at_filter, LambdaType) and at_filter.__name__ == "<lambda>":
-        # turn of autoparallelization for lambdas, which cannot be pickled
-        num_python_subprocesses = 0
-    else:
-        num_python_subprocesses = None
-    return _autoparallelize_ll(num_python_subprocesses=num_python_subprocesses, iterable=inputs, outputspec=outputs, at_filter=at_filter, op=_select_autopara_wrappable)
-
-
-def _select_autopara_wrappable(inputs, at_filter):
     outputs = []
     for at in inputs:
         if at_filter(at):
@@ -41,6 +51,18 @@ def _select_autopara_wrappable(inputs, at_filter):
 
     return outputs
 
+def by_bool_func(*args, **kwargs):
+    at_filter = args[2]
+    # disable parallelization by passing num_python_subprocesses=0
+    if isinstance(at_filter, LambdaType) and at_filter.__name__ == "<lambda>":
+        # turn of autoparallelization for lambdas, which cannot be pickled
+        num_python_subprocesses = 0
+    else:
+        num_python_subprocesses = None
+    def_autopara_info={"num_python_subprocesses":num_python_subprocesses}
+    return autoparallelize(_select_autopara_wrappable, *args,
+           def_autopara_info=def_autopara_info, **kwargs)
+by_bool_func.__doc__ = autoparallelize_docstring(_select_autopara_wrappable.__doc__, "Atoms")
 
 # NOTE this could probably be done with autoparallelize by returning a list with multiple
 # copies when a single config needs to be returned multiple times, and either

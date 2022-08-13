@@ -8,7 +8,6 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.md.verlet import VelocityVerlet
 from ase.units import GPa, fs
 
-# from wfl.autoparallelize import _autoparallelize_ll
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.at_copy_save_results import at_copy_save_results
 from wfl.utils.misc import atoms_to_list
