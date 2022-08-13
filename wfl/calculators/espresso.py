@@ -14,7 +14,6 @@ import numpy as np
 
 from ase import Atoms
 from ase.calculators.calculator import all_changes, CalculationFailed
-from ase.calculators.genericfileio import GenericFileIOCalculator
 import ase.calculators.espresso
 try:
     from ase.calculators.espresso import EspressoProfile
