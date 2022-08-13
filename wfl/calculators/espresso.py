@@ -6,6 +6,7 @@ import os
 import tempfile
 import subprocess
 import warnings
+import shutil
 
 from copy import deepcopy
 from pathlib import Path
