@@ -16,7 +16,9 @@ from pytest import approx, fixture, raises, skip
 from wfl.calculators.espresso import evaluate_autopara_wrappable, qe_kpoints_and_kwargs
 import wfl.calculators.espresso
 from wfl.calculators.dft import evaluate_dft
+from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
+from wfl.autoparallelize.autoparainfo import AutoparaInfo
 
 
 @fixture(scope="session")
@@ -268,4 +270,39 @@ def test_wfl_Espresso_calc(tmp_path, qe_cmd_and_pseudo):
     atoms.get_potential_energy()
     atoms.get_forces()
     atoms.get_stress()
+
+
+def test_wfl_Espresso_calc_via_generic(tmp_path, qe_cmd_and_pseudo):
+
+    qe_cmd, pspot = qe_cmd_and_pseudo
+
+    atoms = Atoms("Si", cell=(2, 2, 2), pbc=[True] * 3)
+    kw = dict(
+        pseudopotentials=dict(Si=os.path.basename(pspot)),
+        input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
+        pseudo_dir=os.path.dirname(pspot),
+        kpts=(2, 2, 2),
+        conv_thr=0.0001,
+        directory=tmp_path
+    ) 
+
+    calc = (wfl.calculators.espresso.Espresso, [], kw)
+
+    cfgs = [atoms]*3 + [Atoms("Cu", cell=(2, 2, 2), pbc=[True]*3)]
+    ci = ConfigSet(input_configs=cfgs)
+    co = OutputSpec()
+    autoparainfo = AutoparaInfo(
+        num_python_subprocesses=0
+    )
+
+    ci = generic.run(
+        inputs=ci,
+        outputs=co, 
+        calculator=calc, 
+        output_prefix='qe_',
+        autopara_info=autoparainfo
+    )
+
+    assert "qe_calculation_failed" in list(ci)[-1].info
+
 

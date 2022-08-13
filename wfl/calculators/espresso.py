@@ -50,8 +50,7 @@ class Espresso(ase.calculators.espresso.Espresso):
         command for QE, without any prefix or redirection set.
         for example: "mpirun -n 4 /path/to/pw.x"
 
-        4. see what is done in the dft calculator 
-
+    **kwargs: arguments for ase.calculators.espresso.Espresso
     """
     implemented_properties = ["energy", "forces", "stress"]
 
@@ -61,7 +60,6 @@ class Espresso(ase.calculators.espresso.Espresso):
                  dir_prefix="run_QE_", scratch_path=None,
                  calculator_command=None, **kwargs):
             
-        # parameters are set from kwargs at the Calculator level
         super(Espresso, self).__init__(**kwargs)
 
         self.keep_files = keep_files
@@ -71,7 +69,7 @@ class Espresso(ase.calculators.espresso.Espresso):
         self.workdir_root = Path(self.directory) / (self.dir_prefix + 'FileIOCalc_files')
         self.workdir_root.mkdir(parents=True, exist_ok=True)
 
-        # I think we can only keep the newer syntax
+        # I think we can only keep the newer syntax?
         if calculator_command is not None: 
             if EspressoProfile is None:
                 # older syntax
@@ -101,7 +99,6 @@ class Espresso(ase.calculators.espresso.Espresso):
         else:
             directory = tempfile.mkdtemp(dir=self.workdir_root, prefix=self.dir_prefix)
         directory = Path(directory)
-    
 
         try:
             self.template.write_input(directory, self.atoms, self.parameters, properties)
@@ -118,8 +115,8 @@ class Espresso(ase.calculators.espresso.Espresso):
             if self.scratch_path is not None and Path(directory).exists():
                 shutil.move(directory, self.workdir_root)
 
-            # return the parameters to what they were when the calculator was initialised
-            # there is likely a more ASE-appropriate way with self.set() and self.reset(), etc. 
+            # Return the parameters to what they were when the calculator was initialised.
+            # There is likely a more ASE-appropriate way with self.set() and self.reset(), etc. 
             self.parameters = deepcopy(self.initial_parameters)
 
 
@@ -173,7 +170,6 @@ class Espresso(ase.calculators.espresso.Espresso):
                     self.parameters["koffset"] = k_offset        
 
         return properties 
-
 
 
     def cleanup(self):
