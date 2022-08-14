@@ -7,30 +7,6 @@ from ase import Atoms
 from wfl.configset import ConfigSet
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 
-# def by_bool_func(inputs, outputs, at_filter):
-#     """apply a filter to a sequence of configs
-
-#     Parameters
-#     ----------
-#     inputs: ConfigSet
-#         input configurations
-#     outputs: OutputSpec
-#         corresponding output configurations
-#     at_filter: callable
-#         callable that takes an Atoms and returns a bool indicating if it should be selected
-
-#     Returns
-#     -------
-#     ConfigSet pointing to selected configurations
-#     """
-#     # disable parallelization by passing num_python_subprocesses=0
-#     if isinstance(at_filter, LambdaType) and at_filter.__name__ == "<lambda>":
-#         # turn of autoparallelization for lambdas, which cannot be pickled
-#         num_python_subprocesses = 0
-#     else:
-#         num_python_subprocesses = None
-#     return _autoparallelize_ll(num_python_subprocesses=num_python_subprocesses, iterable=inputs, outputspec=outputs, at_filter=at_filter, op=_select_autopara_wrappable)
-
 
 def _select_autopara_wrappable(inputs, at_filter):
     """apply a filter to a sequence of configs
