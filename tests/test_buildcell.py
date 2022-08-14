@@ -48,3 +48,4 @@ def do_buildcell(tmp_path, filename):
                       buildcell_cmd=os.environ['WFL_PYTEST_BUILDCELL'], buildcell_input=buildcell_input)
 
     assert len(list(co)) == 100
+
