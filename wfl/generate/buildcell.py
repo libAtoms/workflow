@@ -208,7 +208,5 @@ def run_autopara_wrappable(config_is, buildcell_cmd, buildcell_input, extra_info
     return atoms_list
 
 def run(*args, **kwargs):
-    if kwargs["extra_info"] is None:
-        kwargs["extra_info"] = {}
     return autoparallelize(run_autopara_wrappable, *args, **kwargs)
 run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")
