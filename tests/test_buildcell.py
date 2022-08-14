@@ -44,7 +44,7 @@ def do_buildcell(tmp_path, filename):
 #MINSEP=0.5 Li-Li=2.7
 ##EXTRA_INFO RSS_min_vol_per_atom=10.0"""
 
-    co = buildcell.run(OutputSpec(output_files=str(tmp_path / filename)), range(100),
+    co = buildcell.run(range(100), OutputSpec(output_files=str(tmp_path / filename)), 
                       buildcell_cmd=os.environ['WFL_PYTEST_BUILDCELL'], buildcell_input=buildcell_input)
 
     assert len(list(co)) == 100
