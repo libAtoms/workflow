@@ -13,7 +13,7 @@ from pathlib import Path
 import numpy as np
 
 from ase import Atoms
-from ase.calculators.calculator import all_changes, CalculationFailed
+from ase.calculators.calculator import all_changes, CalculationFailed, Calculator
 import ase.calculators.espresso
 try:
     from ase.calculators.espresso import EspressoProfile
@@ -69,7 +69,6 @@ class Espresso(ase.calculators.espresso.Espresso):
         self.workdir_root = Path(self.directory) / (self.dir_prefix + 'FileIOCalc_files')
         self.workdir_root.mkdir(parents=True, exist_ok=True)
 
-        # I think we can only keep the newer syntax?
         if calculator_command is not None: 
             if EspressoProfile is None:
                 # older syntax
@@ -87,7 +86,8 @@ class Espresso(ase.calculators.espresso.Espresso):
     def calculate(self, atoms=None, properties=default_properties , system_changes=all_changes):
         """Does the calculation. Handles the working directories in addition to regular 
         ASE calculation operations (writing input, executing, reading_results) 
-        Reimplements & extends GenericFileIOCalculator.calculate()"""
+        Reimplements & extends GenericFileIOCalculator.calculate() for the development version of ASE
+        or FileIOCalculator.calculate() for the v3.22.1"""
 
         if atoms is not None:
             self.atoms = atoms.copy()
@@ -98,12 +98,10 @@ class Espresso(ase.calculators.espresso.Espresso):
             directory = tempfile.mkdtemp(dir=self.scratch_path, prefix=self.dir_prefix)
         else:
             directory = tempfile.mkdtemp(dir=self.workdir_root, prefix=self.dir_prefix)
-        directory = Path(directory)
+        self.directory = Path(directory)
 
         try:
-            self.template.write_input(directory, self.atoms, self.parameters, properties)
-            self.template.execute(directory, self.profile)
-            self.results = self.template.read_results(directory)
+            super().calculate(atoms=atoms, properties=properties,system_changes=system_changes) 
             calculation_succeeded=True
         except Exception as e:
             calculation_succeeded=False
@@ -118,7 +116,6 @@ class Espresso(ase.calculators.espresso.Espresso):
             # Return the parameters to what they were when the calculator was initialised.
             # There is likely a more ASE-appropriate way with self.set() and self.reset(), etc. 
             self.parameters = deepcopy(self.initial_parameters)
-
 
     def setup_params_for_this_calc(self, properties):
 
