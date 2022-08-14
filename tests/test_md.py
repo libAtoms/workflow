@@ -10,6 +10,8 @@ from ase.calculators.emt import EMT
 
 from wfl.generate import md
 from wfl.configset import ConfigSet, OutputSpec
+from wfl.generate.md import select_every_10_fs_for_tests
+from wfl.generate.md import check_validity_for_tests
 
 
 @pytest.fixture
@@ -109,3 +111,36 @@ def test_NVT_complex_ramp(cu_slab):
         # print(at_i, at.info['MD_time_fs'], 'MD', at.info['MD_temperature_K'], 'test', Ts[at_i])
 
     assert all(np.isclose(Ts, [at.info['MD_temperature_K'] for at in atoms_traj]))
+
+
+def test_subselector_function(cu_slab):
+
+    calc = EMT()
+
+    inputs = ConfigSet(input_configs = cu_slab)
+    outputs = OutputSpec()
+
+    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
+                           temperature = 500.0, traj_subsampling_fun=select_every_10_fs_for_tests)
+
+    atoms_traj = list(atoms_traj)
+    atoms_final = atoms_traj[-1]
+
+    assert len(atoms_traj) == 31 
+
+
+def test_validity_checker_fun(cu_slab):
+
+    calc = EMT()
+
+    inputs = ConfigSet(input_configs = cu_slab)
+    outputs = OutputSpec()
+
+    # should fail at 55th fs
+    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
+                           temperature = 500.0, traj_validity_checker_fn=check_validity_for_tests, invalid_tolerance=5)
+
+    atoms_traj = list(atoms_traj)
+    atoms_final = atoms_traj[-1]
+
+    assert atoms_traj[-1].info["MD_time_fs"] == 54

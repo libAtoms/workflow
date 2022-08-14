@@ -409,8 +409,6 @@ def parse_npa_output(fname):
     electron_pop = []
     npa_charge = [] 
 
-    # import pdb; pdb.set_trace()
-    
     block = pattern_npa_block.findall(text)[0]
     for line in block.split('\n'):
         values = pattern_entry.search(line)

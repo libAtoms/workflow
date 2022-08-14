@@ -20,7 +20,8 @@ bar = 1.0e-4 * GPa
 
 def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
-              traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False):
+              traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False, update_config_type=True, traj_subsampling_fun=None,
+              traj_validity_checker_fn=None, invalid_tolerance=10):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for
     sampling configs
 
@@ -36,7 +37,6 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
         number of steps
     temperature: float or (float, float, [int]]), or list of dicts  default None
         temperature control (Kelvin)
-
         - float: constant T
         - tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp
         - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with
@@ -58,6 +58,15 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
     verbose: bool, default False
         verbose output
         MD logs are not printed unless this is True
+    update_config_type: bool, default True
+        append "MD" to at.info['config_type']
+    traj_subsampling_fun: None
+        Function to sub-select configs from the first trajectory. 
+        Takes in list of configs and returns list of configs.
+    traj_validity_checker_fn: None
+        Function evaluated at every trajectory snapshot (every `traj_step_interval` steps). If evaluates `False` for `invalid_tolerance` steps in a row, the trajectory is interpreted as faulty and RuntimeError is raised. 
+    invalid_tolerance: int, default=10
+        number of steps in a row for `traj_validity_checker_fn` to be evaluated as `False` before throwing a RuntimeError. 
 
     Returns
     -------
@@ -165,13 +174,27 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
         traj = []
         cur_step = 1
         first_step_of_later_stage = False
+        invalid_counter = 0
+        previous_step_is_valid = True
 
         def process_step(interval):
             nonlocal cur_step, first_step_of_later_stage
+            nonlocal invalid_counter, previous_step_is_valid
 
             if not first_step_of_later_stage and cur_step % interval == 0:
                 at.info['MD_time_fs'] = cur_step * dt
                 traj.append(at_copy_save_results(at, results_prefix=results_prefix))
+
+                if traj_validity_checker_fn is not None:
+                    is_valid = traj_validity_checker_fn(at)
+                    if not is_valid:
+                        invalid_counter += 1
+                        if invalid_counter == invalid_tolerance:
+                            raise RuntimeError(f"{invalid_tolerance} md trajectory snapshots in a row were determined as invalid, stopping the MD.")
+                        previous_step_is_valid = False 
+                    else:
+                        previous_step_is_valid = True
+                        invalid_counter = 0 
 
             first_step_of_later_stage = False
             cur_step += 1
@@ -180,7 +203,7 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
             if verbose:
                 print('run stage', stage_kwargs, run_kwargs)
 
-            # avoid double counbing of steps and end of each stage and beginning of next
+            # avoid double counting of steps and end of each stage and beginning of next
             cur_step -= 1
 
             if temperature_tau is not None:
@@ -206,9 +229,13 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
             at.info['MD_time_fs'] = cur_step * dt
             traj.append(at_copy_save_results(at, results_prefix=results_prefix))
 
-        # save config_type
-        for at in traj:
-            config_type_append(at, 'MD')
+        if traj_subsampling_fun is not None:
+            traj = traj_subsampling_fun(traj)
+
+        if update_config_type:
+            # save config_type
+            for at in traj:
+                config_type_append(at, 'MD')
 
         all_trajs.append(traj)
 
@@ -229,3 +256,14 @@ def sample(*args, **kwargs):
     return autoparallelize(sample_autopara_wrappable, *args, 
         def_autopara_info=def_autopara_info, **kwargs)
 sample.__doc__ = autoparallelize_docstring(sample_autopara_wrappable.__doc__, "Atoms")
+
+
+# for tests, can't pickle if defined as a fixture
+def select_every_10_fs_for_tests(traj):
+    return [at for at in traj if at.info["MD_time_fs"] % 10 == 0]
+
+
+def check_validity_for_tests(at):
+    if "5" in str(at.info["MD_time_fs"]):
+        return False
+    return True
