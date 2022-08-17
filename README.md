@@ -51,10 +51,10 @@ abcd.get_atoms(output_tags)
 ## running wfl functions as independently queued jobs
 
 
-Operations that have been wrapped in `iterable_loop` can be split into independent jobs with minimal
+Operations that have been wrapped in `autoparallelize` can be split into independent jobs with minimal
 coding.  A `config.json` file must describe the available queuing sytem resources (see
 [expyre README](https://github.com/libAtoms/ExPyRe#readme)), and a JSON file (content or path in
-env var `WFL_EXPYRE_INFO`) describes the resources needed by any `iterable_loop` call that
+env var `WFL_EXPYRE_INFO`) describes the resources needed by any `autoparallelize` call that
 should be executed this way.  Any remote machine to be used requires that the `wfl` python
 module be installed.  If needed, commands needed to make this module available (e.g. setting `PYTHONPATH`)
 can be set on a per-machine basis in the `config.json` file mentioned below.
@@ -126,7 +126,7 @@ the directory hierarchy level that indicates the scope of the project,
 to separate the jobs database from any other project.
 
 Restarts are supposed to be handled automatically - if the workflow script is
-interrupted, just rerun it.  If the entire `iterable_loop` call is complete,
+interrupted, just rerun it.  If the entire `autoparallelize` call is complete,
 the default of `force=True, all_or_none=True` for `OutputSpec()` will allow
 it to skip the operation entirely.  If the operation is not entirely done,
 the remote running package will detect an attempt to compute a previously
@@ -148,7 +148,7 @@ indicating particular function calls, and values containing arguments for constr
 
 Each key consist of a comma separated list of `"end_of_path_to_file::function_name"`.  The list needs to match the _end_ of the stack
 trace, i.e. the first item matches the outermost (of the `len(str.split(','))` comma separate items specified) calling function, the second item matches
-the function that was called by it, etc., down to the final item matching the innermost function (not including the actual `iterable_loop` call).
+the function that was called by it, etc., down to the final item matching the innermost function (not including the actual `autoparallelize` call).
 Each item in the list needs to match the _end_ of the file path, followed by a `:`, followed by the function name in that file.
 
 For example, to parallelize only the call to `minin.run(...)` from `gap_rss_iter_fit.py` `do_MD_bulk_defect_step(...)`, the key could be set to
@@ -160,7 +160,7 @@ Each value consists of a dict that will be passed to the `RemoteInfo` constructo
 
 ### Dividing items into and parallelising within jobs
 
-When using the iterable loop remote job functionality, the number
+When using the autoparallelized loop remote job functionality, the number
 of items from the iterable assigned to each job is set by the
 `num_inputs_per_queued_job` parameter of the `RemoteInfo` object (normally set by
 `WFL_EXPYRE_INFO`).  If positive, it directly specifies the
@@ -189,7 +189,7 @@ Optional env vars:
  - `EXPYRE_PYTEST_SYSTEMS`: regexp to filter systems in `$HOME/.expyre/config.json` that will
    be used for testing.
  - `WFL_PYTEST_EXPYRE_INFO`: dict of fields to _add_ to `RemoteInfo` object when doing high
-   level (`iterable_loop`, `gap_fit`) remote run tests.
+   level (`autoparallelize`, `gap_fit`) remote run tests.
 
 #### pytest with remote run example
 Running a maximally complete set of tests with somehwat verbose output (also need `pw.x`
