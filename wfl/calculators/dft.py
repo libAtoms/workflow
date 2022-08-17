@@ -76,7 +76,7 @@ def evaluate_dft(
     elif calculator_name == "QE":
         op = espresso.evaluate_autopara_wrappable
     elif calculator_name == "AIMS":
-        op = aims.evaluate_op
+        op = aims.evaluate_autopara_wrappable
     else:
         raise ValueError(f"Calculator name `{calculator_name}` not understood")
 

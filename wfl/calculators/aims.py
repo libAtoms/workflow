@@ -20,15 +20,15 @@ __default_keep_files = ["*"]
 __default_properties = ["energy", "forces", "stress"]
 
 
-def evaluate_op(
+def evaluate_autopara_wrappable(
     atoms,
-    base_rundir=None,
-    dir_prefix="AIMS_run_",
+    workdir_root=None,
+    dir_prefix="run_AIMS_",
     calculator_command=None,
     calculator_kwargs=None,
-    output_prefix="aims_",
+    output_prefix="AIMS_",
     properties=None,
-    keep_files="default"
+    keep_files="default",
 ):
     """Evaluate a configuration with FHI-aims
 
@@ -56,6 +56,11 @@ def evaluate_op(
     Returns
     -------
         Atoms or list(Atoms) with calculated properties
+    
+    note: 
+        Aims properly supports both periodic calcuations and non-periodic. 
+        this calculator will fail if p[arameters are inconsisten - eg. if kpoints are specified and pbc=False
+        no support for semi-periodic yet.
     """
     # use list of atoms in any case
     at_list = atoms_to_list(atoms)
@@ -71,26 +76,18 @@ def evaluate_op(
     if calculator_command is None:
         raise ValueError('calculator command not specified')
         
-    if base_rundir is None:
-        base_rundir = os.getcwd()
+    if workdir_root is None:
+        workdir_root = os.getcwd()
     else:
-        pathlib.Path(base_rundir).mkdir(parents=True, exist_ok=True)
+        pathlib.Path(workdir_root).mkdir(parents=True, exist_ok=True)
 
     # set up the keywords of the calculator -- this is reused
-    aims_calc_kwargs = dict(calculator_kwargs)
+    calculator_kwargs = dict(calculator_kwargs)
     
-    #ncores_per_task = os.environ["EXPYRE_NCORES_PER_TASK"]    
-    #if calculator_command is not None:
-    #    mpi_calculator_command = "mpirun -n " + str(ncores_per_task) + " " + calculator_command
-    #    kwargs_this_calc["command"] = mpi_calculator_command
-
-    #if calculator_command is not None:
-    #    aims_calc_kwargs["command"] = calculator_command
-    
-    if not "species_dir" in aims_calc_kwargs:
+    if not "species_dir" in calculator_kwargs:
         raise ValueError('no species directory set')
 
-    """ Required contents of aims_calc_kwargs: 
+    """ Required contents of calculator_kwargs: 
         all calculations:
             'xc'
             'aims_command'
@@ -101,29 +98,28 @@ def evaluate_op(
 
         computing forces / stress:
             'compute_forces' / 'compute_analytical_stress'
-
-    note: the following assumes that the same calculation is not perfomed over 
-    a config set containing both periodic and non-perodic systems
     """
 
     # check for any missmatch between properties and kwargs
-    if (('compute_forces' in aims_calc_kwargs) and ('forces' not in properties) or 
-        ('compute_forces' not in aims_calc_kwargs) and ('forces' in properties)):
-        raise ValueError('compute_forces and contents of properties are inconsistent')
+    pbc = at_list[0].pbc
+    assert(pbc[0] == pbc[1] and pbc[0] == pbc[2])
+    pbc = pbc[0]
 
-    if (('compute_analytical_stress' in aims_calc_kwargs) and ('stress' not in properties) or 
-        ('compute_analytical_stress' not in aims_calc_kwargs) and ('stress' in properties)):
-        raise ValueError('compute_analytical_stress and contents of properties are inconsistent')
+    assert(all([at.pbc[0] == pbc for at in at_list]))
 
-    # can specifiy
-    if 'aims_command' in aims_calc_kwargs:
+    has_kdensity = "k_grid_density" in calculator_kwargs
+    requires_stresses = "compute_analytical_stress" in calculator_kwargs
+    assert(has_kdensity == pbc and requires_stresses == pbc)
+
+    # don't do this
+    if 'aims_command' in calculator_kwargs:
         raise ValueError('unexpected key aims_command in the aims kwargs dicitionary')
 
     for at in at_list:
         # create temp dir and calculator
-        rundir = tempfile.mkdtemp(dir=base_rundir, prefix=dir_prefix)
+        rundir = tempfile.mkdtemp(dir=workdir_root, prefix=dir_prefix)
         prof = AimsProfile(calculator_command.split())
-        at.calc = Aims(profile=prof, directory=rundir, **aims_calc_kwargs)
+        at.calc = Aims(profile=prof, directory=rundir, **calculator_kwargs)
 
         # calculate
         calculation_succeeded = False
