@@ -422,7 +422,7 @@ def _vasp_eval(ctx, inputs, output_file, output_all_or_none, workdir_root, direc
 @click.option("--keep-files", type=click.STRING, default="default",
               help="How much of files to keep, default is NOMAD compatible subset")
 @click.option("--force", is_flag=True)
-def _aims_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, directory_prefix, properties,
+def _aims_eval(ctx, inputs, output_file, output_all_or_none, workdir_root, directory_prefix, properties,
                  aims_command, aims_kwargs_file, keep_files, output_prefix, force):
 
     with open(aims_kwargs_file) as fp:
@@ -437,17 +437,17 @@ def _aims_eval(ctx, inputs, output_file, output_all_or_none, base_rundir, direct
             for inputf in inputs:
                 head = os.path.split(inputf)[0]
                 tail = os.path.split(inputf)[1]
-                output_file[inputf] = os.path.join(head, "annotated" + tail)
+                output_file[inputf] = os.path.join(head, "annotated_" + tail)
         else:
             head = os.path.split(inputs)[0]
             tail = os.path.split(inputs)[1]
             output_file = os.path.join(head, "annotated_" + tail)
 
     evaluate_dft(
-        inputs=ConfigSet_in(input_files=inputs),
-        outputs=ConfigSet_out(output_files=output_file, all_or_none=output_all_or_none, force=force),
+        inputs=ConfigSet(input_files=inputs),
+        outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none, force=force),
         calculator_name="AIMS",
-        base_rundir=base_rundir,
+        workdir_root=workdir_root,
         dir_prefix=directory_prefix,
         properties=properties.split(),
         calculator_command=aims_command,
