@@ -215,7 +215,7 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
         expected = np.array([-0.03510667, -0.03507546, -0.03507546, -0.00256625, -0., -0.,]),
     )
     assert "QE_forces" in si2.arrays
-    assert si2.arrays["QE_forces"][0, 0] == approx(-0.17099353)
+    assert si2.arrays["QE_forces"][0, 0] == approx(expected=-0.17099353, abs=1e-3)
     assert si2.arrays["QE_forces"][:, 1:] == approx(0.0)
     assert si2.arrays["QE_forces"][0] == approx(-1 * si2.arrays["QE_forces"][1])
 
