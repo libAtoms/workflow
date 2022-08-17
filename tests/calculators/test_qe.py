@@ -155,7 +155,6 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     assert calc.parameters["koffset"] == (0, 0, 0)
 
 
-@pytest.mark.xfail(reason="PP file changes. Even before that hard-wired values are wrong, also calculation does not converge with default conv_thr")
 def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
     # command and pspot
     qe_cmd, pspot = qe_cmd_and_pseudo
@@ -170,8 +169,12 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         pseudo_dir=os.path.dirname(pspot),
         kpts=(2, 2, 2),
-        conv_thr=0.0001
-    )
+        conv_thr=0.0001,
+        calculator_command=qe_cmd,
+        directory=tmp_path
+    ) 
+
+    calc = (wfl.calculators.espresso.Espresso, [], kw)
 
     # output container
     c_out = OutputSpec(
@@ -181,15 +184,13 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
         all_or_none=True,
     )
 
-    results = evaluate_dft(
-        calculator_name="QE",
+    results = generic.run(
         inputs=[at0, at],
-        outputs=c_out,
-        workdir_root=tmp_path,
-        calculator_command=qe_cmd,
-        calculator_kwargs=kw,
-        output_prefix="QE_",
+        outputs=c_out, 
+        calculator=calc, 
+        output_prefix='QE_',
     )
+
 
     # unpack the configset
     si_single, si2 = list(results)

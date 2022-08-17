@@ -7,7 +7,7 @@ Currently implemented codes:
 - Quantum Espresso
 """
 from wfl.autoparallelize import _autoparallelize_ll
-from wfl.calculators import castep, vasp, espresso
+from wfl.calculators import castep, vasp 
 
 
 def evaluate_dft(
