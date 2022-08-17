@@ -8,7 +8,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.md.verlet import VelocityVerlet
 from ase.units import GPa, fs
 
-from wfl.autoparallelize import _autoparallelize_ll
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.at_copy_save_results import at_copy_save_results
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
@@ -16,28 +16,6 @@ from wfl.utils.pressure import sample_pressure
 from .utils import config_type_append
 
 bar = 1.0e-4 * GPa
-
-
-# run that operates on ConfigSet, for multiprocessing
-def sample(inputs, outputs, calculator, steps, dt,
-           temperature=None, temperature_tau=None, pressure=None, pressure_tau=None,
-           compressibility_fd_displ=0.01,
-           traj_step_interval=1, skip_failures=True, results_prefix='md_',
-           num_inputs_per_python_subprocess=1, verbose=False):
-    # Normally each thread needs to call np.random.seed so that it will generate a different
-    # set of random numbers.  This env var overrides that to produce deterministic output,
-    # for purposes like testing
-    if 'WFL_DETERMINISTIC_HACK' in os.environ:
-        initializer = (None, [])
-    else:
-        initializer = (np.random.seed, [])
-    return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=sample_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
-                         calculator=calculator, steps=steps, dt=dt,
-                         temperature=temperature, temperature_tau=temperature_tau,
-                         pressure=pressure, pressure_tau=pressure_tau,
-                         compressibility_fd_displ=compressibility_fd_displ,
-                         traj_step_interval=traj_step_interval, skip_failures=skip_failures,
-                         results_prefix=results_prefix, verbose=verbose, initializer=initializer)
 
 
 def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
@@ -235,3 +213,19 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
         all_trajs.append(traj)
 
     return all_trajs
+
+
+def sample(*args, **kwargs):
+    # Normally each thread needs to call np.random.seed so that it will generate a different
+    # set of random numbers.  This env var overrides that to produce deterministic output,
+    # for purposes like testing
+    # EG: do we need a "hash_ignore" like in optimize.py?
+    if 'WFL_DETERMINISTIC_HACK' in os.environ:
+        initializer = (None, [])
+    else:
+        initializer = (np.random.seed, [])
+    def_autopara_info={"initializer":initializer}
+
+    return autoparallelize(sample_autopara_wrappable, *args, 
+        def_autopara_info=def_autopara_info, **kwargs)
+sample.__doc__ = autoparallelize_docstring(sample_autopara_wrappable.__doc__, "Atoms")

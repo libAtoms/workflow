@@ -18,11 +18,12 @@ def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_a
     calculator: Calculator / (initializer, args, kwargs)
         ASE calculator or routine to call to create calculator
     properties: list(str), default ['energy', 'forces', stress']
-        properties to request from calculator
+        Properties to request from calculator. If any are not present after calculation (e.g.
+        stress for nonperiodic configurations), a warning will be printed.
     output_prefix: str, default _auto_
-        string to prefix info/arrays key names where results will be stored.
+        String to prefix info/arrays key names where results will be stored.
         '_auto_' for automatically determining name of calculator constructor, and
-        None for SinglePointCalculator instead of info/arrays
+        None for SinglePointCalculator instead of info/arrays.
     verbose : bool
         verbose output
     """
