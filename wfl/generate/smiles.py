@@ -7,7 +7,7 @@ try:
 except ModuleNotFoundError:
     pass
 
-from wfl.autoparallelize import _autoparallelize_ll
+from wfl.autoparallelize import autoparallelize 
 
 
 def smi_to_atoms(smi, useBasicKnowledge=True, useExpTorsionAnglePrefs=True):
@@ -27,33 +27,6 @@ def smi_to_atoms(smi, useBasicKnowledge=True, useExpTorsionAnglePrefs=True):
     atoms = read(xyz_file, format='xyz')
     return atoms
 
-
-def run(outputs, smiles, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, extra_info=None):
-    """Creates atomic configurations by repeatedly running smi_to_xyz, I/O with OutputSpec.
-
-    Parameters
-    ----------
-    outputs: OutputSpec
-        where to write outputs
-    smiles: str/list(str)
-       smiles string to generate structure from
-    useBasicKnowledge: bool, default True
-        impose basic knowledge such as flat aromatic rings
-    useExpTorsionAnglePrefs: bool, default True
-        impose experimental torsion angle preferences
-    extra_info: dict, default {}
-        extra fields to place into created atoms info dict
-
-    Returns
-    -------
-    ConfigSet corresponding to output
-
-    """
-
-    return _autoparallelize_ll(iterable=smiles, outputspec=outputs, op=run_autopara_wrappable,
-                         useBasicKnowledge=useBasicKnowledge,
-                         useExpTorsionAnglePrefs=useExpTorsionAnglePrefs,
-                         extra_info=extra_info)
 
 
 def run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, extra_info=None):
@@ -91,3 +64,8 @@ def run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePre
         atoms_list.append(at)
 
     return atoms_list
+
+
+def run(*args, **kwargs):
+    return autoparallelize(run_autopara_wrappable, *args, **kwargs)
+run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "SMILES string")

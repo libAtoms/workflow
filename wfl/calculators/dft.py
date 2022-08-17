@@ -6,7 +6,7 @@ Currently implemented codes:
 - VASP
 - Quantum Espresso
 """
-from wfl.autoparallelize import _autoparallelize_ll
+from wfl.autoparallelize.base import _autoparallelize_ll
 from wfl.calculators import castep, vasp, espresso
 
 
