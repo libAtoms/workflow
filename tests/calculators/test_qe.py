@@ -207,7 +207,7 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
 
     # bulk Si tests
     assert "QE_energy" in si2.info
-    assert si2.info["QE_energy"] == approx(-213.10730256386654)
+    assert si2.info["QE_energy"] == approx(expected=-213.10730256386654, abs=1e-3)
     assert "QE_stress" in si2.info
     print(si2.info["QE_stress"])
     assert si2.info["QE_stress"] == approx(
