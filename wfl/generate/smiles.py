@@ -7,7 +7,7 @@ try:
 except ModuleNotFoundError:
     pass
 
-from wfl.autoparallelize import autoparallelize 
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 
 
 def smi_to_atoms(smi, useBasicKnowledge=True, useExpTorsionAnglePrefs=True):
