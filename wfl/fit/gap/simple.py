@@ -122,7 +122,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None
 
     if gap_fit_command is None:
         gap_fit_command = os.environ.get("WFL_GAP_FIT_COMMAND", None)        
-        if gap_fit_command is not None:
+        if gap_fit_command is None:
             gap_fit_command = "gap_fit"
 
     cmd = f'{gap_fit_command} {fitting_line} 2>&1 > {stdout_file} '
