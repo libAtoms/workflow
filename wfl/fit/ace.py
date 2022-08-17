@@ -260,7 +260,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
         if "WFL_ACE_FIT_COMMAND" in os.environ:
            ace_fit_command = os.environ["WFL_ACE_FIT_COMMAND"]
         else:
-            raise RuntimeError("Executable and path to ace_fit.jl must be given either as a `ace_fit_command` argument "\
+            raise ValueError("Executable and path to ace_fit.jl must be given either as a `ace_fit_command` argument "\
                 "to `run_ace_fit()` or via WFL_ACE_FIT_COMMAND environment variable ")
     
 

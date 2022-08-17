@@ -12,7 +12,7 @@ from .relocate import gap_relocate
 
 from expyre import ExPyRe
 
-def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command="gap_fit",
+def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None,
                 verbose=True, do_fit=True, remote_info=None, remote_label=None, **kwargs):
     """Runs gap_fit
 
@@ -120,11 +120,10 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command="gap
 
     fitting_line = dict_to_gap_fit_string(use_fitting_dict)
 
-    env_gap_fit_command = os.environ.get("WFL_GAP_FIT_COMMAND", None)        
-    if env_gap_fit_command is not None:
+    if gap_fit_command is None:
+        gap_fit_command = os.environ.get("WFL_GAP_FIT_COMMAND", None)        
         if gap_fit_command is not None:
-            warnings.warn(f'Found "WFL_GAP_FIT_COMMAND={env_gap_fit_command}" env variable, using this nstead of {gap_fit_command}.')
-        gap_fit_command = env_gap_fit_command
+            gap_fit_command = "gap_fit"
 
     cmd = f'{gap_fit_command} {fitting_line} 2>&1 > {stdout_file} '
 
