@@ -10,7 +10,7 @@ from ase.calculators.calculator import all_changes, CalculationFailed
 from ase.calculators.calculator import Calculator
 
 from wfl.calculators import orca
-from wfl.autoparallelize import _autoparallelize_ll
+from wfl.autoparallelize.base import _autoparallelize_ll
 
 
 def evaluate_basin_hopping(inputs, outputs,

@@ -7,7 +7,7 @@ import spglib
 from ase.constraints import ExpCellFilter
 from ase.optimize.precon import PreconLBFGS
 
-from wfl.autoparallelize import _autoparallelize_ll
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.at_copy_save_results import at_copy_save_results
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
@@ -31,24 +31,6 @@ def new_log(self, forces=None):
 
 PreconLBFGS.log = new_log
 
-
-# run that operates on ConfigSet, for multiprocessing
-def run(inputs, outputs, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
-        keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
-        results_prefix='optimize_', num_inputs_per_python_subprocess=10, verbose=False, update_config_type=True, **opt_kwargs):
-    # Normally each thread needs to call np.random.seed so that it will generate a different
-    # set of random numbers.  This env var overrides that to produce deterministic output,
-    # for purposes like testing
-    if 'WFL_DETERMINISTIC_HACK' in os.environ:
-        initializer = (None, [])
-    else:
-        initializer = (np.random.seed, [])
-    return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
-                         calculator=calculator, fmax=fmax, smax=smax, steps=steps,
-                         pressure=pressure, keep_symmetry=keep_symmetry, traj_step_interval=traj_step_interval,
-                         traj_subselect=traj_subselect, skip_failures=skip_failures, results_prefix=results_prefix,
-                         verbose=verbose, update_config_type=update_config_type,
-                         initializer=initializer, hash_ignore=['initializer'], **opt_kwargs)
 
 
 def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
@@ -203,6 +185,23 @@ def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000
         all_trajs.append(traj)
 
     return all_trajs
+
+
+def run(*args, **kwargs):
+    # Normally each thread needs to call np.random.seed so that it will generate a different
+    # set of random numbers.  This env var overrides that to produce deterministic output,
+    # for purposes like testing
+    if 'WFL_DETERMINISTIC_HACK' in os.environ:
+        initializer = (None, [])
+    else:
+        initializer = (np.random.seed, [])
+    def_autopara_info={"initializer":initializer, "num_inputs_per_python_subprocess":10,
+            "hash_ignore":["initializer"]}
+
+    return autoparallelize(run_autopara_wrappable, *args, 
+        def_autopara_info=def_autopara_info, **kwargs)
+run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")
+
 
 
 # Just a placeholder for now. Could perhaps include:

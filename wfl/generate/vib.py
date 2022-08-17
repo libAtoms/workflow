@@ -15,7 +15,7 @@ from scipy import stats
 
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.autoparallelize import _autoparallelize_ll
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.misc import atoms_to_list
 
 # conversion factor from eV/Å^2/amu to eV^2
@@ -570,16 +570,12 @@ def generate_normal_modes_autopara_wrappable(inputs, calculator, prop_prefix,
     return atoms_out
 
 
-def generate_normal_modes_parallel_atoms(inputs, outputs, calculator,
-                                         prop_prefix, num_inputs_per_python_subprocess=10):
-    # iterable loop parallelizes over input structures, not over 6xN
+def generate_normal_modes_parallel_atoms(*args, **kwargs):
+     # iterable loop parallelizes over input structures, not over 6xN
     # displaced structures needed for numerical hessian
-    parallel_hessian = False
-
-    return _autoparallelize_ll(iterable=inputs, outputspec=outputs,
-                         op=generate_normal_modes_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
-                         calculator=calculator, prop_prefix=prop_prefix,
-                         parallel_hessian=parallel_hessian)
+    kwargs["parallel_hessian"] = False 
+    return autoparallelize(generate_normal_modes_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
+generate_normal_modes_parallel_atoms.__doc__ = autoparallelize_docstring(generate_normal_modes_autopara_wrappable.__doc__, "Atoms")
 
 
 def generate_normal_modes_parallel_hessian(inputs, outputs, calculator,
