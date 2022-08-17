@@ -9,7 +9,6 @@ Currently implemented codes:
 from wfl.autoparallelize import _autoparallelize_ll
 from wfl.calculators import castep, vasp 
 
-
 def evaluate_dft(
     inputs,
     outputs,
