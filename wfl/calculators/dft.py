@@ -7,15 +7,15 @@ Currently implemented codes:
 - Quantum Espresso
 - FHIaims
 """
-from wfl.pipeline import iterable_loop
 from wfl.calculators import castep, vasp, espresso, aims
+from wfl.autoparallelize import _autoparallelize_ll
 
 
 def evaluate_dft(
     inputs,
     outputs,
     calculator_name,
-    base_rundir=None,
+    workdir_root=None,
     dir_prefix=None,
     calculator_command=None,
     calculator_kwargs=None,
@@ -28,7 +28,7 @@ def evaluate_dft(
 
     Parameters
     ----------
-    inputs: list(Atoms) / Configset_in
+    inputs: list(Atoms) / Configset
         input atomic configs, needs to be iterable
     outputs: list(Atoms) / Configset_out
         output atomic configs
@@ -62,7 +62,7 @@ def evaluate_dft(
 
     Returns
     -------
-    ConfigSet_in of configurations with calculated properties
+    ConfigSet of configurations with calculated properties
     """
     # defaults
     if dir_prefix is None:
@@ -70,22 +70,22 @@ def evaluate_dft(
 
     # choose the calculator
     if calculator_name == "CASTEP":
-        op = castep.evaluate_op
+        op = castep.evaluate_autopara_wrappable
     elif calculator_name == "VASP":
-        op = vasp.evaluate_op
+        op = vasp.evaluate_autopara_wrappable
     elif calculator_name == "QE":
-        op = espresso.evaluate_op
+        op = espresso.evaluate_autopara_wrappable
     elif calculator_name == "AIMS":
         op = aims.evaluate_op
     else:
         raise ValueError(f"Calculator name `{calculator_name}` not understood")
 
     # run the calculation in parallel
-    return iterable_loop(
+    return _autoparallelize_ll(
         iterable=inputs,
-        configset_out=outputs,
+        outputspec=outputs,
         op=op,
-        base_rundir=base_rundir,
+        workdir_root=workdir_root,
         dir_prefix=dir_prefix,
         calculator_command=calculator_command,
         calculator_kwargs=calculator_kwargs,

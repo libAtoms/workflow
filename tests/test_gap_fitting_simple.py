@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-from wfl.fit import gap_simple
+from wfl.fit.gap import simple as gap_simple
 from wfl.utils.quip_cli_strings import dict_to_quip_str
 
 from wfl.cli.cli import cli
@@ -18,7 +18,7 @@ def test_dict_to_quip_str():
                        'delta': 1, 'covariance_type': 'dot_product',
                        'zeta': 4, 'n_sparse': 100,
                        'sparse_method': 'cur_points',
-                       'config_type_sigma': 'cfg1:1.0:2.0:0.3:4.0:cfg2:1:1:1:1',
+                       'config_type_sigma': { 'cfg1' : [1.0, 2.0, 0.3, 4.0], 'cfg2': [1, 1, 1, 1]},
                        'atom_gaussian_width': 0.3, 'add_species': False,
                        'n_species': 3, 'Z': 8, 'species_Z': [8, 1, 6]}
 
@@ -107,9 +107,9 @@ def test_fitting_gap_cli(quippy, tmp_path):
 
 @pytest.mark.skipif(not shutil.which("gap_fit"), reason="gap_fit not in PATH")  # skips it if gap_fit not in path
 @pytest.mark.remote
-def test_fitting_gap_cli_remote(quippy, tmp_path, expyre_systems, monkeypatch):
+def test_fitting_gap_cli_remote(quippy, tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     mypath = Path(__file__).parent.parent
-    ri = {'resources' : {'max_time': '10m', 'n': [1, 'nodes']}}
+    ri = {'resources' : {'max_time': '10m', 'num_nodes': 1}}
 
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
@@ -118,12 +118,7 @@ def test_fitting_gap_cli_remote(quippy, tmp_path, expyre_systems, monkeypatch):
         ri['sys_name'] = sys_name
         ri['job_name'] = 'pytest_gap_fit_'+sys_name
 
-        if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-            ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
-            if 'resources' in ri_extra:
-                ri['resources'].update(ri_extra['resources'])
-                del ri_extra['resources']
-            ri.update(ri_extra)
+        remoteinfo_env(ri)
 
-        monkeypatch.setenv('WFL_GAP_SIMPLE_FIT_REMOTEINFO', json.dumps(ri))
+        monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
         test_fitting_gap_cli(quippy, tmp_path)

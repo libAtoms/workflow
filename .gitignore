@@ -1,5 +1,7 @@
+._*
 __pycache__
 *xyz.idx
 *.egg-info
 build
 dist
+test_cli_create_ref

@@ -21,7 +21,11 @@
   },
   "prep": {
     "length_scales_file": "length_scales.yaml",
-    "dimer_n_steps": 40
+    "dimer_n_steps": 40,
+    "buildcell" : {
+        "default": [6, 24],
+        "MD_bulk_defect" : [4, 8]
+    }
   },
   "initial_step": {
     "buildcell_total_N": 100,
@@ -36,7 +40,7 @@
     "fitting_by_desc_select_N": 30,
     "testing_by_desc_select_N": 10,
     "select_convex_hull": false,
-    "minim_kwargs": {
+    "optimize_kwargs": {
       "pressure" : [ "exponential", 0.2 ],
       "steps" : 20
     },
@@ -56,7 +60,7 @@
     "fitting_by_desc_select_N": 30,
     "testing_by_desc_select_N": 10,
     "flat_histo_kT": 0.1,
-    "minim_kwargs": {
+    "optimize_kwargs": {
       "pressure" : [ "exponential", 0.2 ],
       "steps" : 20
     },

@@ -5,7 +5,7 @@ import json
 
 import numpy as np
 
-from wfl.configset import ConfigSet_out
+from wfl.configset import OutputSpec
 from wfl.calculators.generic import run as generic_calc
 
 
@@ -16,9 +16,9 @@ def calc(input_configs, output_configs, calculator,
 
     Parameters
     ----------
-    input_configs: ConfigSet_in
+    input_configs: ConfigSet
         configs to check
-    output_configs: ConfigSet_out
+    output_configs: OutputSpec
         optional location for calculated configs (otherwise will be in memory, and lost when function returns)
     calculator: tuple(constructor, args, kwargs)
         contructor for calculator with any args or kwargs
@@ -33,7 +33,7 @@ def calc(input_configs, output_configs, calculator,
         error for each quantity by group
     """
 
-    # remove calc because multiprocessing.pool.map (used by the iterable_loop invoked in
+    # remove calc because multiprocessing.pool.map (used by the autoparallelize invoked in
     # calc) will send an Atoms object with pickle, and you can't pickle
     # an Atoms with a Potential attached as a calculator (weakref)
     input_configs = input_configs.in_memory()
@@ -41,7 +41,7 @@ def calc(input_configs, output_configs, calculator,
         at.calc = None
 
     if output_configs is None:
-        output_configs = ConfigSet_out()
+        output_configs = OutputSpec()
 
     properties, calculator_properties = get_properties()
 

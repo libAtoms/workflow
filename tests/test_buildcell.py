@@ -3,9 +3,8 @@ import json
 
 import pytest
 
-from wfl.configset import ConfigSet_out
-from wfl.generate_configs import buildcell
-
+from wfl.configset import OutputSpec
+from wfl.generate import buildcell
 
 def test_buildcell(tmp_path):
 
@@ -13,25 +12,20 @@ def test_buildcell(tmp_path):
 
 
 @pytest.mark.remote
-def test_buildcell_remote(tmp_path, expyre_systems, monkeypatch):
+def test_buildcell_remote(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
-        do_buildcell_remote(tmp_path, sys_name, monkeypatch)
+        do_buildcell_remote(tmp_path, sys_name, monkeypatch, remoteinfo_env)
 
 
-def do_buildcell_remote(tmp_path, sys_name, monkeypatch):
-    ri = {'sys_name': sys_name, 'job_name': 'test_'+sys_name,
-          'resources': {'max_time': '1h', 'n': (1, 'nodes')},
-          'job_chunksize': -36, 'check_interval': 10}
+def do_buildcell_remote(tmp_path, sys_name, monkeypatch, remoteinfo_env):
+    ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
+          'resources': {'max_time': '1h', 'num_nodes': 1},
+          'num_inputs_per_queued_job': -36, 'check_interval': 10}
 
-    if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-        ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
-        if 'resources' in ri_extra:
-            ri['resources'].update(ri_extra['resources'])
-            del ri_extra['resources']
-        ri.update(ri_extra)
+    remoteinfo_env(ri)
 
     do_buildcell(tmp_path, f'dummy_{sys_name}.xyz')
 
@@ -50,7 +44,7 @@ def do_buildcell(tmp_path, filename):
 #MINSEP=0.5 Li-Li=2.7
 ##EXTRA_INFO RSS_min_vol_per_atom=10.0"""
 
-    co = buildcell.run(ConfigSet_out(output_files=str(tmp_path / filename)), range(100),
+    co = buildcell.run(OutputSpec(output_files=str(tmp_path / filename)), range(100),
                       buildcell_cmd=os.environ['WFL_PYTEST_BUILDCELL'], buildcell_input=buildcell_input)
 
     assert len(list(co)) == 100

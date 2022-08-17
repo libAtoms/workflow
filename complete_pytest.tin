@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# should include both tin and tin_ssh - not as good as real remote machine, but maybe close enough
+export EXPYRE_PYTEST_SYSTEMS='tin'
+
+echo  "GIT VERSION " $( git describe --always --tags --dirty ) > pytest_complete_test.out 
+echo "" >> pytest_complete_test.out 
+
+# buildcell
+export WFL_PYTEST_BUILDCELL=$HOME/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
+# VASP
+export VASP_COMMAND=vasp.serial
+export VASP_COMMAND_GAMMA=vasp.gamma_serial
+export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
+# QE
+module load pwscf
+# no ORCA
+
+rm -rf $HOME/pytest_wfl
+pytest -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs >> pytest_complete_test.out 2>&1
+
+l=`egrep 'passed.*xfailed' pytest_complete_test.out`
+
+# ===== 99 passed, 8 skipped, 1 xfailed, 213 warnings in 3593.75s (0:59:53) ======
+
+results=("passed 99" "skipped 8" "xfailed 1")
+for r in "${results[@]}"; do
+    label=$( echo $r | awk '{print $1}' )
+    n=$( echo $r | awk '{print $2}' )
+    echo $l | grep -q " $n $label" pytest_complete_test.out
+    if [ $? != 0 ]; then
+        echo "Unexpected number $label not $n '$l'" 1>&2
+        exit 1
+    fi
+done
+echo "No failures"

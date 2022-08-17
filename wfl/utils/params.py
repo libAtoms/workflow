@@ -51,7 +51,6 @@ class Params:
         path_comps = item_path.split('/', 1)
         leading_comp = path_comps[0]
 
-        result = None
         if leading_comp in self.d:
             result = self.d[leading_comp]
 
@@ -75,11 +74,16 @@ class Params:
 
         if len(path_comps) > 1:
             # not final item, recurse
-            if result is None:
-                raise RuntimeError('Failed to find path component \'{}\''.format(leading_comp))
-            result = Params(result).get(path_comps[1], default=default)
+            try:
+                result
+            except NameError as exc:
+                raise ValueError('Failed to find path component \'{}\''.format(leading_comp)) from exc
+            result = Params(result, cur_iter=self.cur_iter).get(path_comps[1], default=default)
         else:
-            # final item
-            if result is None:
+            # final item return (or default)
+            try:
+                result
+            except NameError:
                 result = default
+
         return result
