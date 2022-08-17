@@ -792,18 +792,23 @@ that are nearby in compositions/volume space</p>
 <span id="wfl-select-simple-module"></span><h2>wfl.select.simple module<a class="headerlink" href="#module-wfl.select.simple" title="Permalink to this headline">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.select.simple.by_bool_func">
-<span class="sig-prename descclassname"><span class="pre">wfl.select.simple.</span></span><span class="sig-name descname"><span class="pre">by_bool_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at_filter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.simple.by_bool_func" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">wfl.select.simple.</span></span><span class="sig-name descname"><span class="pre">by_bool_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.select.simple.by_bool_func" title="Permalink to this definition">#</a></dt>
 <dd><p>apply a filter to a sequence of configs</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – input configurations</p></li>
-<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – corresponding output configurations</p></li>
+<li><p><strong>inputs</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em><em>, </em><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – input quantities of type Atoms</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>inputs</strong> – input configurations</p></li>
 <li><p><strong>at_filter</strong> (<em>callable</em>) – callable that takes an Atoms and returns a bool indicating if it should be selected</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoparaInfo</em><em>, </em><em>default None</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ConfigSet pointing to selected configurations</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
 </dd>
 </dl>
 </dd></dl>
