@@ -211,7 +211,7 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
     assert "QE_stress" in si2.info
     print(si2.info["QE_stress"])
     assert si2.info["QE_stress"] == approx(
-        abs=1e-5,
+        abs=1e-3,
         expected = np.array([-0.03510667, -0.03507546, -0.03507546, -0.00256625, -0., -0.,]),
     )
     assert "QE_forces" in si2.arrays
