@@ -693,7 +693,7 @@ index of the model in the committee of models</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>list</em><em>(</em><em>Atoms</em><em>) </em><em>/ Configset</em>) – input atomic configs, needs to be iterable</p></li>
 <li><p><strong>outputs</strong> (<em>list</em><em>(</em><em>Atoms</em><em>) </em><em>/ Configset_out</em>) – output atomic configs</p></li>
-<li><p><strong>calculator_name</strong> (<em>str {&quot;CASTEP&quot;</em><em>, </em><em>&quot;VASP&quot;</em><em>, </em><em>&quot;QE&quot;}</em>) – name of Plane Wave DFT calculator, options are: “CASTEP”, “VASP”, “QE”</p></li>
+<li><p><strong>calculator_name</strong> (<em>str {&quot;CASTEP&quot;</em><em>, </em><em>&quot;VASP&quot;}</em>) – name of Plane Wave DFT calculator, options are: “CASTEP”, “VASP”</p></li>
 <li><p><strong>workdir_root</strong> (<em>path-like</em><em>, </em><em>default os.getcwd</em><em>(</em><em>)</em>) – directory to put calculation directories into</p></li>
 <li><p><strong>dir_prefix</strong> (<em>str</em><em>, </em><em>default 'DFT_'</em>) – directory name prefix for calculations</p></li>
 <li><p><strong>calculator_command</strong> (<em>str</em>) – command for calculator, only MPI and the executable
@@ -728,64 +728,69 @@ only implemented for VASP: potcar_top_dir, potcar_rel_dir</p></li>
 <div class="section" id="module-wfl.calculators.espresso">
 <span id="wfl-calculators-espresso-module"></span><h2>wfl.calculators.espresso module<a class="headerlink" href="#module-wfl.calculators.espresso" title="Permalink to this headline">#</a></h2>
 <p>Quantum Espresso interface</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.calculators.espresso.evaluate_autopara_wrappable">
-<span class="sig-prename descclassname"><span class="pre">wfl.calculators.espresso.</span></span><span class="sig-name descname"><span class="pre">evaluate_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'run_QE_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'QE_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.evaluate_autopara_wrappable" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate a configuration with Quantum Espresso</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>Atoms / list</em><em>(</em><em>Atoms</em><em>)</em>) – input atomic configs</p></li>
-<li><p><strong>workdir_root</strong> (<em>path-like</em><em>, </em><em>default os.getcwd</em><em>(</em><em>)</em>) – directory to put calculation directories into</p></li>
-<li><p><strong>dir_prefix</strong> (<em>str</em><em>, </em><em>default 'QE-run_'</em>) – directory name prefix for calculations</p></li>
-<li><p><strong>calculator_command</strong> (<em>str</em>) – command for QE, without any prefix or redirection set.
-for example: “mpirun -n 4 /path/to/pw.x”</p></li>
-<li><p><strong>calculator_kwargs</strong> (<em>dict</em>) – </p></li>
-<li><p><strong>output_prefix</strong> (<em>str / None</em><em>, </em><em>default 'QE_'</em>) – prefix for info/arrays keys, None for SinglePointCalculator</p></li>
-<li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default None</em>) – ase-compatible property names, None for default list (energy, forces, stress)</p></li>
-<li><p><strong>keep_files</strong> (<em>bool / None / &quot;default&quot; / list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default &quot;default&quot;</em>) – <dl class="simple">
-<dt>what kind of files to keep from the run</dt><dd><ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.calculators.espresso.</span></span><span class="sig-name descname"><span class="pre">Espresso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'run_QE_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratch_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.Espresso" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ase.calculators.espresso.Espresso</span></code></p>
+<p>Extension of ASE’s Espresso calculator</p>
+<dl class="simple">
+<dt>dir_prefix: str, default ‘QE-run_’</dt><dd><p>directory name prefix for calculations</p>
+</dd>
+<dt>keep_files: bool / None / “default” / list(str), default “default”</dt><dd><dl class="simple">
+<dt>what kind of files to keep from the run</dt><dd><ul class="simple">
 <li><p>True : everything kept</p></li>
 <li><p>None, False : nothing kept, unless calculation fails</p></li>
-<li><p>”default”   : only ones needed for NOMAD uploads (‘*.pwo’)</p></li>
+<li><p>“default”   : only ones needed for NOMAD uploads (‘*.pwo’)</p></li>
 <li><p>list(str)   : list of file globs to save</p></li>
 </ul>
 </dd>
 </dl>
-</p></li>
-</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Atoms or list(Atoms) with calculated properties</p>
+<dt>scratch_path: str, default None</dt><dd><p>temporary directory to execute calculations in and delete
+or copy back results if needed (set by “keep_files”).
+For example, directory on an SSD with fast file io.</p>
+</dd>
+<dt>calculator_command: str</dt><dd><p>command for QE, without any prefix or redirection set.
+for example: “mpirun -n 4 /path/to/pw.x”</p>
 </dd>
 </dl>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: arguments for ase.calculators.espresso.Espresso</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.calculate">
+<span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['energy',</span> <span class="pre">'forces',</span> <span class="pre">'stress']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_changes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['positions',</span> <span class="pre">'numbers',</span> <span class="pre">'cell',</span> <span class="pre">'pbc',</span> <span class="pre">'initial_charges',</span> <span class="pre">'initial_magmoms']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.Espresso.calculate" title="Permalink to this definition">#</a></dt>
+<dd><p>Does the calculation. Handles the working directories in addition to regular
+ASE calculation operations (writing input, executing, reading_results)
+Reimplements &amp; extends GenericFileIOCalculator.calculate() for the development version of ASE
+or FileIOCalculator.calculate() for the v3.22.1</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.calculators.espresso.qe_kpoints_and_kwargs">
-<span class="sig-prename descclassname"><span class="pre">wfl.calculators.espresso.</span></span><span class="sig-name descname"><span class="pre">qe_kpoints_and_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ase.atoms.Atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.qe_kpoints_and_kwargs" title="Permalink to this definition">#</a></dt>
-<dd><p>Handle K-Points in QE for any periodicity</p>
-<ul class="simple">
-<li><p>stress is only calculated if all directions are periodic</p></li>
-<li><p>gamma point is used if none of the directions are periodic</p></li>
-<li><p>single K-Point is used in any direction which is not periodic</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>Atoms</em>) – </p></li>
-<li><p><strong>kwargs</strong> (<em>dict</em>) – QE calculator’s intended keyword arguments</p></li>
-<li><p><strong>properties</strong> (<em>list</em>) – ASE-compatible property name list for calculation</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>modified_kwargs</strong> (<em>dict</em>)</p></li>
-<li><p><strong>properties_use</strong> (<em>list</em>)</p></li>
-</ul>
-</p>
-</dd>
-</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.Espresso.cleanup" title="Permalink to this definition">#</a></dt>
+<dd><p>Clean all (empty) directories that could not have been removed
+immediately after the calculation, for example, because other parallel
+process might be using them.
+Done because <cite>self.workdir_root</cite> gets created upon initialisation, but we
+can’t ever be sure it’s not needed anymore, so let’s not do it automatically.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.default_parameters">
+<span class="sig-name descname"><span class="pre">default_parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#wfl.calculators.espresso.Espresso.default_parameters" title="Permalink to this definition">#</a></dt>
+<dd><p>Default parameters</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.implemented_properties">
+<span class="sig-name descname"><span class="pre">implemented_properties</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['energy',</span> <span class="pre">'forces',</span> <span class="pre">'stress']</span></em><a class="headerlink" href="#wfl.calculators.espresso.Espresso.implemented_properties" title="Permalink to this definition">#</a></dt>
+<dd><p>Properties calculator can handle (energy, forces, …)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.setup_params_for_this_calc">
+<span class="sig-name descname"><span class="pre">setup_params_for_this_calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.Espresso.setup_params_for_this_calc" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -801,10 +806,11 @@ for example: “mpirun -n 4 /path/to/pw.x”</p></li>
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
 <li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
-<li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>'energy'</em><em>, </em><em>'forces'</em><em>, </em><em>stress'</em><em>]</em>) – properties to request from calculator</p></li>
-<li><p><strong>output_prefix</strong> (<em>str</em><em>, </em><em>default _auto_</em>) – string to prefix info/arrays key names where results will be stored.
+<li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>'energy'</em><em>, </em><em>'forces'</em><em>, </em><em>stress'</em><em>]</em>) – Properties to request from calculator. If any are not present after calculation (e.g.
+stress for nonperiodic configurations), a warning will be printed.</p></li>
+<li><p><strong>output_prefix</strong> (<em>str</em><em>, </em><em>default _auto_</em>) – String to prefix info/arrays key names where results will be stored.
 ‘_auto_’ for automatically determining name of calculator constructor, and
-None for SinglePointCalculator instead of info/arrays</p></li>
+None for SinglePointCalculator instead of info/arrays.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em>) – verbose output</p></li>
 <li><p><strong>autopara_info</strong> (<em>AutoparaInfo</em><em>, </em><em>default None</em>) – information for automatic parallelization</p></li>
 </ul>
@@ -826,10 +832,11 @@ None for SinglePointCalculator instead of info/arrays</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
-<li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>'energy'</em><em>, </em><em>'forces'</em><em>, </em><em>stress'</em><em>]</em>) – properties to request from calculator</p></li>
-<li><p><strong>output_prefix</strong> (<em>str</em><em>, </em><em>default _auto_</em>) – string to prefix info/arrays key names where results will be stored.
+<li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>'energy'</em><em>, </em><em>'forces'</em><em>, </em><em>stress'</em><em>]</em>) – Properties to request from calculator. If any are not present after calculation (e.g.
+stress for nonperiodic configurations), a warning will be printed.</p></li>
+<li><p><strong>output_prefix</strong> (<em>str</em><em>, </em><em>default _auto_</em>) – String to prefix info/arrays key names where results will be stored.
 ‘_auto_’ for automatically determining name of calculator constructor, and
-None for SinglePointCalculator instead of info/arrays</p></li>
+None for SinglePointCalculator instead of info/arrays.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em>) – verbose output</p></li>
 </ul>
 </dd>
