@@ -32,8 +32,6 @@ default_properties = ["energy", "forces", "stress"]           # done as "impleme
 class Espresso(ase.calculators.espresso.Espresso):
     """Extension of ASE's Espresso calculator
 
-    workdir_root: path-like, default os.getcwd()
-        directory to put calculation directories into
     dir_prefix: str, default 'QE-run\_'
         directory name prefix for calculations
     keep_files: bool / None / "default" / list(str), default "default"
