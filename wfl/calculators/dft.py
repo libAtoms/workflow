@@ -7,8 +7,7 @@ Currently implemented codes:
 - Quantum Espresso
 """
 from wfl.autoparallelize.base import _autoparallelize_ll
-from wfl.calculators import castep, vasp, espresso
-
+from wfl.calculators import castep, vasp 
 
 def evaluate_dft(
     inputs,
@@ -31,8 +30,8 @@ def evaluate_dft(
         input atomic configs, needs to be iterable
     outputs: list(Atoms) / Configset_out
         output atomic configs
-    calculator_name: str {"CASTEP", "VASP", "QE"}
-        name of Plane Wave DFT calculator, options are: "CASTEP", "VASP", "QE"
+    calculator_name: str {"CASTEP", "VASP"}
+        name of Plane Wave DFT calculator, options are: "CASTEP", "VASP"
     workdir_root: path-like, default os.getcwd()
         directory to put calculation directories into
     dir_prefix: str, default 'DFT\_'
@@ -73,7 +72,7 @@ def evaluate_dft(
     elif calculator_name == "VASP":
         op = vasp.evaluate_autopara_wrappable
     elif calculator_name == "QE":
-        op = espresso.evaluate_autopara_wrappable
+        raise ValueError(f"wfl.calculators.espresso.Espresso is compatible with wfl.calculators.generic.run.")
     else:
         raise ValueError(f"Calculator name `{calculator_name}` not understood")
 
