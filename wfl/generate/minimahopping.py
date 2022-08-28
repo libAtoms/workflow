@@ -41,7 +41,7 @@ def atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, fmax
         return traj
 
 # run that operation on ConfigSet, for multiprocessing
-def run(inputs, outputs, calculator, num_inputs_per_python_subprocess=10,
+def run(inputs, outputs, calculator, num_inputs_per_python_subprocess=1,
         Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2, fmax=1, timestep=1,
         totalsteps=10, skip_failures=True, **opt_kwargs):
     
