@@ -11,7 +11,7 @@ from wfl.configset import ConfigSet, OutputSpec
 @pytest.fixture
 def cu_slab():
 
-    atoms = bulk("Cu", "fcc", a=3.6, cubic=True)
+    atoms = bulk("Cu", "fcc", a=3.8, cubic=True)
     atoms *= (2, 2, 2)
     atoms.rattle(stdev=0.01, seed=159)
 
@@ -44,9 +44,17 @@ def test_relax(cu_slab):
     inputs = ConfigSet(input_configs = cu_slab)
     outputs = OutputSpec()
 
-    atoms_opt = minimahopping.run(inputs, outputs, calc, fmax=1, totalsteps=3)
+    fmax = 1
+    totalsteps = 3
+
+    atoms_opt = minimahopping.run(inputs, outputs, calc, fmax=fmax, totalsteps=totalsteps)
     
-    atoms_opt = list(atoms_opt)[-1]
+    atoms_opt = list(atoms_opt)
 
-    assert atoms_opt.info['config_type'] == 'hopping_traj'
+    assert len(atoms_opt) <= totalsteps and len(atoms_opt) >= 1
 
+    assert all([at.info['config_type'] == 'hopping_traj' for at in atoms_opt])
+
+    for at in atoms_opt:
+    	for force_n in at.get_forces():
+    		assert all([abs(force_n[i]) <= fmax for i in range(len(force_n))])
