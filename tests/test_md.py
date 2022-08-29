@@ -137,7 +137,7 @@ def test_subselector_function(cu_slab):
     assert len(atoms_traj) == 31 
 
 
-def test_md_ABortBase(cu_slab):
+def test_md_abortion_function(cu_slab):
 
     calc = EMT()
 
