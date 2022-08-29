@@ -1,4 +1,3 @@
-from .base import _autoparallelize_ll, autoparallelize, autoparallelize_docstring
-assert _autoparallelize_ll
+from .base import autoparallelize, autoparallelize_docstring
 assert autoparallelize
 assert autoparallelize_docstring
