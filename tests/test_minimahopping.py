@@ -12,7 +12,6 @@ from wfl.configset import ConfigSet, OutputSpec
 def cu_slab():
 
     atoms = bulk("Cu", "fcc", a=3.8, cubic=True)
-    atoms *= (2, 2, 2)
     atoms.rattle(stdev=0.01, seed=159)
 
     atoms.info['config_type'] = 'cu_slab'
@@ -33,7 +32,7 @@ def test_mult_files(cu_slab, tmp_path):
 
     n1 = len(ase.io.read(tmp_path / infiles[0].replace('.xyz', '.out.xyz'), ':'))
     n2 = len(ase.io.read(tmp_path / infiles[1].replace('.xyz', '.out.xyz'), ':'))
-    
+
     assert n1 == n2 * 2
 
 
@@ -48,7 +47,7 @@ def test_relax(cu_slab):
     totalsteps = 3
 
     atoms_opt = minimahopping.run(inputs, outputs, calc, fmax=fmax, totalsteps=totalsteps)
-    
+
     atoms_opt = list(atoms_opt)
 
     assert len(atoms_opt) <= totalsteps and len(atoms_opt) >= 1
