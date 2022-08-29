@@ -7,7 +7,7 @@ import numpy as np
 from ase.optimize.minimahopping import MinimaHopping
 from ase.io.trajectory import Trajectory
 
-from wfl.autoparallelize import _autoparallelize_ll
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
 
@@ -40,25 +40,8 @@ def atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, fmax
         shutil.rmtree(rundir)
         return traj
 
-# run that operation on ConfigSet, for multiprocessing
-def run(inputs, outputs, calculator, num_inputs_per_python_subprocess=1,
-        Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2, fmax=1, timestep=1,
-        totalsteps=10, skip_failures=True, **opt_kwargs):
-    
-    # Normally each thread needs to call np.random.seed so that it will generate a different
-    # set of random numbers.  This env var overrides that to produce deterministic output,
-    # for purposes like testing
-    if 'WFL_DETERMINISTIC_HACK' in os.environ:
-        initializer = (None, [])
-    else:
-        initializer = (np.random.seed, [])
-
-    return _autoparallelize_ll(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, 
-                           calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold, mdmin=mdmin, fmax=fmax, timestep=timestep, totalsteps=totalsteps, 
-                           skip_failures=skip_failures, initializer=initializer, hash_ignore=['initializer'], **opt_kwargs)
-
 def run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2, fmax=1, timestep=1, totalsteps=10, skip_failures=True, **opt_kwargs):
-    """runs a structure optimization 
+    """runs a structure optimization
     Parameters
     ----------
     atoms: list(Atoms)
@@ -80,22 +63,39 @@ def run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshol
     totalsteps: int, default 10
         number of steps
     skip_failures: bool, default True
-        just skip optimizations that raise an exception     
+        just skip optimizations that raise an exception
     opt_kwargs
         keyword arguments for MinimaHopping
     Returns
     -------
         list(Atoms) trajectories
     """
-    
+
     calculator = construct_calculator_picklesafe(calculator)
     all_trajs = []
 
     for at in atoms_to_list(atoms):
         traj = []
-        traj = atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold, mdmin=mdmin, 
+        traj = atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold, mdmin=mdmin,
                                 fmax=fmax, timestep=timestep, totalsteps=totalsteps, skip_failures=skip_failures, **opt_kwargs)
         if traj is not None:
             all_trajs.append(traj)
 
     return all_trajs
+
+# run that operation on ConfigSet, for multiprocessing
+def run(*args, **kwargs):
+    # Normally each thread needs to call np.random.seed so that it will generate a different
+    # set of random numbers.  This env var overrides that to produce deterministic output,
+    # for purposes like testing
+    if 'WFL_DETERMINISTIC_HACK' in os.environ:
+        initializer = (None, [])
+    else:
+        initializer = (np.random.seed, [])
+    def_autopara_info={"initializer":initializer, "num_inputs_per_python_subprocess":10,
+            "hash_ignore":["initializer"]}
+
+    return autoparallelize(run_autopara_wrappable, *args,
+        def_autopara_info=def_autopara_info, **kwargs)
+run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")
+
