@@ -42,6 +42,7 @@ def atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, fmax
 
 def run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2, fmax=1, timestep=1, totalsteps=10, skip_failures=True, **opt_kwargs):
     """runs a structure optimization
+
     Parameters
     ----------
     atoms: list(Atoms)
@@ -66,6 +67,7 @@ def run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshol
         just skip optimizations that raise an exception
     opt_kwargs
         keyword arguments for MinimaHopping
+
     Returns
     -------
         list(Atoms) trajectories
