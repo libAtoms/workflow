@@ -13,7 +13,7 @@ from wfl.utils.at_copy_save_results import at_copy_save_results
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
 from wfl.utils.pressure import sample_pressure
-from .utils import config_type_append
+from ..utils import config_type_append
 
 bar = 1.0e-4 * GPa
 
@@ -21,7 +21,7 @@ bar = 1.0e-4 * GPa
 def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
               traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False, update_config_type=True, traj_subsampling_fun=None,
-              traj_validity_checker_fn=None, invalid_tolerance=10):
+              abort_check=None):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for
     sampling configs
 
@@ -63,10 +63,9 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
     traj_subsampling_fun: None
         Function to sub-select configs from the first trajectory. 
         Takes in list of configs and returns list of configs.
-    traj_validity_checker_fn: None
-        Function evaluated at every trajectory snapshot (every `traj_step_interval` steps). If evaluates `False` for `invalid_tolerance` steps in a row, the trajectory is interpreted as faulty and RuntimeError is raised. 
-    invalid_tolerance: int, default=10
-        number of steps in a row for `traj_validity_checker_fn` to be evaluated as `False` before throwing a RuntimeError. 
+    abort_check: default None,
+        wfl.generate.md.abort_base.AbortBase - derived class that
+        checks the MD snapshots and aborts the simulation on some condition. 
 
     Returns
     -------
@@ -174,27 +173,17 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
         traj = []
         cur_step = 1
         first_step_of_later_stage = False
-        invalid_counter = 0
-        previous_step_is_valid = True
 
         def process_step(interval):
             nonlocal cur_step, first_step_of_later_stage
-            nonlocal invalid_counter, previous_step_is_valid
 
             if not first_step_of_later_stage and cur_step % interval == 0:
                 at.info['MD_time_fs'] = cur_step * dt
                 traj.append(at_copy_save_results(at, results_prefix=results_prefix))
 
-                if traj_validity_checker_fn is not None:
-                    is_valid = traj_validity_checker_fn(at)
-                    if not is_valid:
-                        invalid_counter += 1
-                        if invalid_counter == invalid_tolerance:
-                            raise RuntimeError(f"{invalid_tolerance} md trajectory snapshots in a row were determined as invalid, stopping the MD.")
-                        previous_step_is_valid = False 
-                    else:
-                        previous_step_is_valid = True
-                        invalid_counter = 0 
+                if abort_check is not None:
+                    if abort_check.should_stop_md(at):
+                        raise RuntimeError(f"MD was stopped by the MD checker function {abort_check.__class__.__name__}")
 
             first_step_of_later_stage = False
             cur_step += 1

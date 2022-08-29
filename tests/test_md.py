@@ -7,11 +7,13 @@ from ase import Atoms
 import ase.io
 from ase.build import bulk
 from ase.calculators.emt import EMT
+from wfl.autoparallelize import autoparainfo
 
 from wfl.generate import md
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate.md import select_every_10_fs_for_tests
 from wfl.generate.md import check_validity_for_tests
+from wfl.generate.md.abortbase import AbortOnCollision
 
 
 @pytest.fixture
@@ -144,3 +146,19 @@ def test_validity_checker_fun(cu_slab):
     atoms_final = atoms_traj[-1]
 
     assert atoms_traj[-1].info["MD_time_fs"] == 54
+
+def test_md_ABortBase(cu_slab):
+
+    calc = EMT()
+
+    inputs = ConfigSet(input_configs = cu_slab)
+    outputs = OutputSpec(output_files='tmp_out.xyz')
+
+    md_stopper = AbortOnCollision(clash_radius=2.25)
+    autopara_info = autoparainfo.AutoparaInfo(skip_failed=False)
+
+    # why doesn't this throw an raise a RuntimeError even if md failed and `skip_failed` is False?
+    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=500, dt=10.0,
+                           temperature = 2000.0, abort_check=md_stopper, autopara_info=autopara_info) 
+
+    assert len(list(atoms_traj)) < 501
