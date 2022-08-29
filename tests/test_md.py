@@ -11,10 +11,16 @@ from wfl.autoparallelize import autoparainfo
 
 from wfl.generate import md
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate.md import select_every_10_fs_for_tests
-from wfl.generate.md import check_validity_for_tests
 from wfl.generate.md.abortbase import AbortOnCollision
 
+
+def select_every_10_fs_for_tests(traj):
+    return [at for at in traj if at.info["MD_time_fs"] % 10 == 0]
+
+def check_validity_for_tests(at):
+    if "5" in str(at.info["MD_time_fs"]):
+        return False
+    return True
 
 @pytest.fixture
 def cu_slab():
@@ -130,22 +136,6 @@ def test_subselector_function(cu_slab):
 
     assert len(atoms_traj) == 31 
 
-
-def test_validity_checker_fun(cu_slab):
-
-    calc = EMT()
-
-    inputs = ConfigSet(input_configs = cu_slab)
-    outputs = OutputSpec()
-
-    # should fail at 55th fs
-    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
-                           temperature = 500.0, traj_validity_checker_fn=check_validity_for_tests, invalid_tolerance=5)
-
-    atoms_traj = list(atoms_traj)
-    atoms_final = atoms_traj[-1]
-
-    assert atoms_traj[-1].info["MD_time_fs"] == 54
 
 def test_md_ABortBase(cu_slab):
 

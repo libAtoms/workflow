@@ -247,12 +247,3 @@ def sample(*args, **kwargs):
 sample.__doc__ = autoparallelize_docstring(sample_autopara_wrappable.__doc__, "Atoms")
 
 
-# for tests, can't pickle if defined as a fixture
-def select_every_10_fs_for_tests(traj):
-    return [at for at in traj if at.info["MD_time_fs"] % 10 == 0]
-
-
-def check_validity_for_tests(at):
-    if "5" in str(at.info["MD_time_fs"]):
-        return False
-    return True
