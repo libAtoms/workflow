@@ -11,7 +11,7 @@ from wfl.autoparallelize import autoparainfo
 
 from wfl.generate import md
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate.md.abortbase import AbortOnCollision
+from wfl.generate.md.abort import AbortOnCollision
 
 
 def select_every_10_fs_for_tests(traj):
