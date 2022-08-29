@@ -142,7 +142,7 @@ def test_md_abortion_function(cu_slab):
     calc = EMT()
 
     inputs = ConfigSet(input_configs = cu_slab)
-    outputs = OutputSpec(output_files='tmp_out.xyz')
+    outputs = OutputSpec()
 
     md_stopper = AbortOnCollision(clash_radius=2.25)
     autopara_info = autoparainfo.AutoparaInfo(skip_failed=False)
