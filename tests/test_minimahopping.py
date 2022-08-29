@@ -1,4 +1,5 @@
 import pytest
+import numpy as np
 
 from ase import Atoms
 import ase.io
@@ -50,10 +51,9 @@ def test_relax(cu_slab):
 
     atoms_opt = list(atoms_opt)
 
-    assert len(atoms_opt) <= totalsteps and len(atoms_opt) >= 1
-
+    assert 1 <= len(atoms_opt) <= totalsteps
     assert all([at.info['config_type'] == 'hopping_traj' for at in atoms_opt])
 
     for at in atoms_opt:
-    	for force_n in at.get_forces():
-    		assert all([abs(force_n[i]) <= fmax for i in range(len(force_n))])
+        force_norms = np.linalg.norm(at.get_forces(), axis=1)
+        assert all(force_norms <= fmax)
