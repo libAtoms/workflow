@@ -77,7 +77,6 @@ def run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshol
     all_trajs = []
 
     for at in atoms_to_list(atoms):
-        traj = []
         traj = atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold, mdmin=mdmin,
                                 fmax=fmax, timestep=timestep, totalsteps=totalsteps, skip_failures=skip_failures, **opt_kwargs)
         if traj is not None:
