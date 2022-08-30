@@ -13,14 +13,16 @@ from wfl.utils.parallel import construct_calculator_picklesafe
 
 
 # perform MinimaHopping on one ASE.atoms object
-def atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, fmax, timestep, totalsteps, skip_failures, **opt_kwargs):
+def atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
+                     fmax, timestep, totalsteps, skip_failures, **opt_kwargs):
     workdir = os.getcwd()
     rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_')
     os.chdir(rundir)
     atom.calc = calculator
     try:
-        opt = MinimaHopping(atom, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold, mdmin=mdmin, fmax=fmax, timestep=timestep, **opt_kwargs)
-        opt(totalsteps = totalsteps)
+        opt = MinimaHopping(atom, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold,
+                            mdmin=mdmin, fmax=fmax, timestep=timestep, **opt_kwargs)
+        opt(totalsteps=totalsteps)
     except Exception as exc:
         # optimization may sometimes fail to converge.
         if skip_failures:
@@ -34,13 +36,15 @@ def atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, fmax
     else:
         traj = []
         for hop_traj in Trajectory('minima.traj'):
-            hop_traj.info['config_type']='hopping_traj'
+            hop_traj.info['config_type'] = 'hopping_traj'
             traj.append(hop_traj)
         os.chdir(workdir)
         shutil.rmtree(rundir)
         return traj
 
-def run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2, fmax=1, timestep=1, totalsteps=10, skip_failures=True, **opt_kwargs):
+
+def run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2,
+                           fmax=1, timestep=1, totalsteps=10, skip_failures=True, **opt_kwargs):
     """runs a structure optimization
 
     Parameters
@@ -77,12 +81,14 @@ def run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshol
     all_trajs = []
 
     for at in atoms_to_list(atoms):
-        traj = atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold, mdmin=mdmin,
-                                fmax=fmax, timestep=timestep, totalsteps=totalsteps, skip_failures=skip_failures, **opt_kwargs)
+        traj = atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold,
+                                mdmin=mdmin, fmax=fmax, timestep=timestep, totalsteps=totalsteps,
+                                skip_failures=skip_failures, **opt_kwargs)
         if traj is not None:
             all_trajs.append(traj)
 
     return all_trajs
+
 
 # run that operation on ConfigSet, for multiprocessing
 def run(*args, **kwargs):
@@ -93,10 +99,11 @@ def run(*args, **kwargs):
         initializer = (None, [])
     else:
         initializer = (np.random.seed, [])
-    def_autopara_info={"initializer":initializer, "num_inputs_per_python_subprocess":10,
-            "hash_ignore":["initializer"]}
+    def_autopara_info = {"initializer": initializer, "num_inputs_per_python_subprocess": 10,
+                         "hash_ignore": ["initializer"]}
 
     return autoparallelize(run_autopara_wrappable, *args,
-        def_autopara_info=def_autopara_info, **kwargs)
-run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")
+                           def_autopara_info=def_autopara_info, **kwargs)
 
+
+run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")

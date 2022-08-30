@@ -1,13 +1,13 @@
 import pytest
 import numpy as np
 
-from ase import Atoms
 import ase.io
 from ase.build import bulk
 from ase.calculators.emt import EMT
 
 from wfl.generate import minimahopping
 from wfl.configset import ConfigSet, OutputSpec
+
 
 @pytest.fixture
 def cu_slab():
@@ -41,7 +41,7 @@ def test_relax(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet(input_configs = cu_slab)
+    inputs = ConfigSet(input_configs=cu_slab)
     outputs = OutputSpec()
 
     fmax = 1
