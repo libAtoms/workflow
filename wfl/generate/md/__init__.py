@@ -182,7 +182,7 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
                 traj.append(at_copy_save_results(at, results_prefix=results_prefix))
 
                 if abort_check is not None:
-                    if abort_check.should_stop_md(at):
+                    if abort_check.stop_md(at):
                         raise RuntimeError(f"MD was stopped by the MD checker function {abort_check.__class__.__name__}")
 
             first_step_of_later_stage = False

@@ -137,14 +137,14 @@ def test_subselector_function(cu_slab):
     assert len(atoms_traj) == 31 
 
 
-def test_md_abortion_function(cu_slab):
+def test_md_abort_function(cu_slab):
 
     calc = EMT()
 
     inputs = ConfigSet(input_configs = cu_slab)
     outputs = OutputSpec()
 
-    md_stopper = AbortOnCollision(clash_radius=2.25)
+    md_stopper = AbortOnCollision(collision_radius=2.25)
     autopara_info = autoparainfo.AutoparaInfo(skip_failed=False)
 
     # why doesn't this throw an raise a RuntimeError even if md failed and `skip_failed` is False?
