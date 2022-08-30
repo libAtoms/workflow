@@ -6,7 +6,7 @@ In Workflow the generation of corresponding structures can be performed with the
 The example below illustrates its application to a system containing hydrogen and oxygen atoms. 
 At first, we define an `OutputSpec` that will be used to handle the output, i.e. the structural data we are going to generate.
 For the generation itself the `prepare()` function is executed where the `atomic_numbers` arguments specifies which combinations 
-of species to consider (here all combinations between H and O, i.e. H-H, H-O and O-O). The `bond_lengths` argument allows us to specify 
+of species to consider (here all combinations among H and O, i.e. H-H, H-O and O-O). The `bond_lengths` argument allows us to specify 
 a characteristic length that is used to sample a range of dimer distances. While isolated atoms are another source of information frequently
 added to a training set, in this example we are interested in dimers only and, thus, set `do_isolated_atoms=False`.
 
