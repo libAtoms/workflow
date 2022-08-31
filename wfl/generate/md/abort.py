@@ -1,39 +1,33 @@
-from abc import ABC, abstractmethod
-import numpy as np
+"""Communly used and/or examples of classes that can be used to abort an MD sampling
+run under specified conditions
+"""
 
-class AbortBase(ABC):
-    """Base class used for checking and aborting MD simulation of `wfl.generate.md.sample()`"""
-    def __init__(self, n_failed_steps=1):
-        self.history = []
-        self.n_failed_steps = n_failed_steps
-
-    @abstractmethod
-    def check_if_atoms_ok(self, at):
-        """Method to check whether this trajectory step is acceptable. 
-           Must return a boolean. 
-           All derived classes must implement this method."""
-        ...
-    
-    def stop_md(self, at):
-        """Returns a boolean based of which `wfl.generate.md.sample()`
-        aborts the simulation. Defaults to aborting if `n_failed_steps` in a row `check_if_atoms_ok()` 
-        are evaluated to False. Derrived classes may overwrite this."""
-        self.history.append(self.check_if_atoms_ok(at))
-        return np.all(np.array(self.history[-self.n_failed_steps:]) == False)
+from .abort_base import AbortSimBase
+from ase.neighborlist import neighbor_list
 
 
-class AbortOnCollision(AbortBase):
-    def __init__(self, collision_radius=0.5, n_failed_steps=3):
+class AbortOnCollision(AbortSimBase):
+    """Abort an MD run if a collision (two atoms closer than some distance) happens
+    for a number of steps in a row
+
+    Parameters
+    ----------
+    collision_radius: float
+        distance for atoms to be considered a collision
+
+    n_failed_steps: int, default 1
+        how many steps in a row any atom pairs have to be too cloe
+    """
+
+    def __init__(self, collision_radius, n_failed_steps=3):
         super().__init__(n_failed_steps)        
         self.collision_radius = collision_radius
 
-    def check_if_atoms_ok(self, at):
-        distances = at.get_all_distances()
-        distances[distances == 0] = np.nan
-        clashes = distances[distances < self.collision_radius] 
-        
-        if len(clashes) > 0:
+
+    def atoms_ok(self, at):
+        i = neighbor_list('i', at, self.collision_radius)
+
+        if len(i) > 0:
             return False
         else:
             return True
-

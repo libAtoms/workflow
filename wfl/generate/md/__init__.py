@@ -20,8 +20,8 @@ bar = 1.0e-4 * GPa
 
 def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
-              traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False, update_config_type=True, traj_subsampling_fun=None,
-              abort_check=None):
+              traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False, update_config_type=True,
+              traj_select_during_func=None, traj_select_after_func=None, abort_check=None):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for
     sampling configs
 
@@ -60,9 +60,12 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
         MD logs are not printed unless this is True
     update_config_type: bool, default True
         append "MD" to at.info['config_type']
-    traj_subsampling_fun: None
+    traj_select_during_func: func(Atoms), default None
         Function to sub-select configs from the first trajectory. 
-        Takes in list of configs and returns list of configs.
+        Used during MD loop with one config at a time, returning True/False
+    traj_select_after_func: func(list(Atoms)), default None
+        Function to sub-select configs from the first trajectory. 
+        Used at end of MD loop with entire trajectory as list, returns subset
     abort_check: default None,
         wfl.generate.md.abort_base.AbortBase - derived class that
         checks the MD snapshots and aborts the simulation on some condition. 
@@ -179,7 +182,11 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
 
             if not first_step_of_later_stage and cur_step % interval == 0:
                 at.info['MD_time_fs'] = cur_step * dt
-                traj.append(at_copy_save_results(at, results_prefix=results_prefix))
+                at.info['MD_step'] = cur_step
+                at_save = at_copy_save_results(at, results_prefix=results_prefix)
+
+                if traj_select_during_func is None or traj_select_during_func(at):
+                    traj.append(at_save)
 
                 if abort_check is not None:
                     if abort_check.stop_md(at):
@@ -218,8 +225,8 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
             at.info['MD_time_fs'] = cur_step * dt
             traj.append(at_copy_save_results(at, results_prefix=results_prefix))
 
-        if traj_subsampling_fun is not None:
-            traj = traj_subsampling_fun(traj)
+        if traj_select_after_func is not None:
+            traj = traj_select_after_func(traj)
 
         if update_config_type:
             # save config_type
