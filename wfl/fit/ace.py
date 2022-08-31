@@ -19,9 +19,8 @@ from wfl.autoparallelize.utils import get_remote_info
 from expyre import ExPyRe
 import wfl.scripts
 
-def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
-        skip_if_present=False, run_dir='.',
-        ace_fit_exec=str((Path(wfl.scripts.__file__).parent / 'ace_fit.jl').resolve()), dry_run=False,
+def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None, 
+        ref_property_prefix='REF_', skip_if_present=False, run_dir='.', dry_run=False,
         verbose=True, remote_info=None, remote_label=None, wait_for_results=True):
     """Runs ace_fit on a set of fitting configs
 
@@ -36,14 +35,16 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
         Any file names (ACE, fitting configs) already present will be updated,
         property keys to fit to will be prepended with `ref_property_prefix` and e0
         set up, if needed.
+    ace_fit_command: str, default None
+        executable for ace_fit. 
+        e.g. `julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl` or similar. 
+        Alternatively set by WFL_ACE_FIT_COMMAND.
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
     skip_if_present: bool, default False
         skip fitting if output is already present
     run_dir: str or Path, default '.'
         directory to run in
-    ace_fit_exec: str, default "wfl/scripts/ace_fit.jl"
-        executable for ace_fit
     dry_run: bool, default False
         do a dry run, which returns the matrix size, rather than the potential name
     verbose: bool, default True
@@ -71,13 +72,14 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ref_property_prefix='REF_',
         contructor to be used to run fitting in separate queued job
     WFL_ACE_FIT_JULIA_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will use julia multithreading (LSQ assembly)
     WFL_ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
+    WFL_ACE_FIT_COMMAND: command to execute ace_fit.jl, e.g. "julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl"
     """
 
     ace_fit_params = prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir, ref_property_prefix)
     fitting_configs = prepare_configs(fitting_configs, ref_property_prefix)
 
     return run_ace_fit(fitting_configs, ace_fit_params,
-                skip_if_present=skip_if_present, run_dir=run_dir, ace_fit_exec=ace_fit_exec, dry_run=dry_run,
+                skip_if_present=skip_if_present, run_dir=run_dir, ace_fit_command=ace_fit_command, dry_run=dry_run,
                 verbose=verbose, remote_info=remote_info, remote_label=remote_label, wait_for_results=wait_for_results)
 
 
@@ -141,7 +143,7 @@ def prepare_configs(fitting_configs, ref_property_prefix='REF_'):
 
 
 def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir='.',
-        ace_fit_exec=str((Path(wfl.scripts.__file__).parent / 'ace_fit.jl').resolve()), dry_run=False,
+        ace_fit_command=None, dry_run=False,
         verbose=True, remote_info=None, remote_label=None, wait_for_results=True):
     """Runs ace_fit on a a set of fitting configs
 
@@ -156,8 +158,10 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
         skip fitting if output is already present
     run_dir: str or Path, default '.'
         directory to run in
-    ace_fit_exec: str, default "wfl/scripts/ace_fit.jl"
-        executable for ace_fit
+    ace_fit_command: str, default None. 
+        executable for ace_fit. 
+        e.g. `julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl` or similar. 
+        Alternatively set by WFL_ACE_FIT_COMMAND.
     dry_run: bool, default False
         do a dry run, which returns the matrix size, rather than the potential file path
     verbose: bool, default True
@@ -185,7 +189,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
         contructor to be used to run fitting in separate queued job
     WFL_ACE_FIT_JULIA_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will use julia multithreading (LSQ assembly)
     WFL_ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
-
+    WFL_ACE_FIT_COMMAND: path to ace_fit.jl, e.g. "julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl".
     """
     run_dir = Path(run_dir)
 
@@ -225,7 +229,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                       env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=run_ace_fit,
                       kwargs= {'fitting_configs': fitting_configs, 'ace_fit_params': ace_fit_params,
-                               'run_dir': run_dir, 'ace_fit_exec': ace_fit_exec,
+                               'run_dir': run_dir, 'ace_fit_command': ace_fit_command,
                                'dry_run': dry_run, 'verbose': verbose, 'remote_info': '_IGNORE'})
 
         xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
@@ -252,9 +256,27 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
     with open(ace_fit_params_filename, "w") as f:
         f.write(json.dumps(ace_fit_params, indent=4))
 
-    cmd = f"{ace_fit_exec} --fit-params {ace_fit_params_filename} "
+    if ace_fit_command is None:
+        if "WFL_ACE_FIT_COMMAND" in os.environ:
+           ace_fit_command = os.environ["WFL_ACE_FIT_COMMAND"]
+        else:
+            raise ValueError("Executable and path to ace_fit.jl must be given either as a `ace_fit_command` argument "\
+                "to `run_ace_fit()` or via WFL_ACE_FIT_COMMAND environment variable ")
+    
+
+    orig_julia_num_threads = (os.environ.get('JULIA_NUM_THREADS', None))
+    if 'WFL_ACE_FIT_JULIA_THREADS' in os.environ:
+        os.environ['JULIA_NUM_THREADS'] = os.environ['WFL_ACE_FIT_JULIA_THREADS']
+
+
+    cmd = f"{ace_fit_command} --params {ace_fit_params_filename} "
     if dry_run:
         cmd += "--dry-run "
+
+    ace_fit_blas_threads= os.environ.get("WFL_ACE_FIT_BLAS_THREADS", None)
+    if ace_fit_blas_threads is not None:
+        cmd += f"--num-blas-threads {int(ace_fit_blas_threads)} "
+
     cmd +=  f"> {ace_file_base}.stdout 2> {ace_file_base}.stderr "
 
     if verbose:
