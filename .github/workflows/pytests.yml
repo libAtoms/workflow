@@ -6,7 +6,6 @@ name: Python Package and tests
 
 # on all push actions AND can be triggered manually as well
 on:
-  push:
   workflow_dispatch:
   pull_request:
 
