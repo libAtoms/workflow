@@ -6,8 +6,8 @@ First we define a `ConfigSet` for the inputs and `OutputSpec` to specify how the
 
 ```
 from wfl.configset import ConfigSet, OuptutSpec
-inputs = ConfigSet(input_files="structures.xyz")
-outputs = OutputSpec(output_files="structures.mace.xyz")
+inputs = ConfigSet("structures.xyz")
+outputs = OutputSpec("structures.mace.xyz")
 ```
 
 Normally, a MACE calculator would be setup like this: 
@@ -70,8 +70,8 @@ from wfl.configset import ConfigSet, OuptutSpec
 
 from mace.calculators.mace import MACECalculator 
 
-inputs = ConfigSet(input_files="structures.xyz")
-outputs = OutputSpec(output_files="structures.mace.xyz")
+inputs = ConfigSet("structures.xyz")
+outputs = OutputSpec("structures.mace.xyz")
 
 
 # change the following as appropriate

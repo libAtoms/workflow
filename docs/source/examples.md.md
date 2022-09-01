@@ -84,9 +84,7 @@ def run_md_test(workdir_root, in_ats, temp, calc, info_label, steps, sampling_in
     workdir_root = Path(workdir_root) 
     workdir_root.mkdir(exist_ok=True)
 
-    tags = {"temp":int(str(temp))}
-
-    ci, co = prepare_inputs(in_ats, info_label, workdir_root, tags)
+    ci, co = prepare_inputs(in_ats, info_label, workdir_root)
 
     os.environ["WFL_DETERMINISTIC_HACK"] = "true"
 
@@ -107,7 +105,7 @@ def run_md_test(workdir_root, in_ats, temp, calc, info_label, steps, sampling_in
         **md_params
         )
 
-def prepare_inputs(ats, info_label, workdir_root, tags):
+def prepare_inputs(ats, info_label, workdir_root):
 
     input_files = []
     output_files = {}
@@ -120,11 +118,8 @@ def prepare_inputs(ats, info_label, workdir_root, tags):
         output_files[fname_in] = fname_out
         write(fname_in, at)
 
-    ci = ConfigSet(input_files=input_files)
-    co = OutputSpec(
-        output_files=output_files,
-        all_or_none=True, 
-        set_tags=tags)
+    ci = ConfigSet(input_files)
+    co = OutputSpec(output_files)
     return ci, co
 
 #creates unique hash for a matrix of numbers

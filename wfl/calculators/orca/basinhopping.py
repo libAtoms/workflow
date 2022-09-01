@@ -44,7 +44,7 @@ def evaluate_basin_hopping(inputs, outputs,
     Returns
     -------
     results : ConfigSet
-        outputs.to_ConfigSet()
+        ConfigSet(outputs)
     """
     return _autoparallelize_ll(iterable=inputs, OutputSpec=outputs,
                          op=orca.evaluate_op,

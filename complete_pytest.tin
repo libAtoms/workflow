@@ -3,12 +3,13 @@
 # should include both tin and tin_ssh - not as good as real remote machine, but maybe close enough
 export EXPYRE_PYTEST_SYSTEMS='tin'
 
-echo  "GIT VERSION " $( git describe --always --tags --dirty ) > pytest_complete_test.out 
-echo "" >> pytest_complete_test.out 
+echo  "GIT VERSION " $( git describe --always --tags --dirty ) > complete_pytest.tin.out 
+echo "" >> complete_pytest.tin.out 
 
 # buildcell
 export WFL_PYTEST_BUILDCELL=$HOME/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
 # VASP
+module load vasp
 export VASP_COMMAND=vasp.serial
 export VASP_COMMAND_GAMMA=vasp.gamma_serial
 export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
@@ -17,20 +18,27 @@ module load pwscf
 # no ORCA
 
 rm -rf $HOME/pytest_wfl
-pytest -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs >> pytest_complete_test.out 2>&1
+pytest -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs $* >> complete_pytest.tin.out 2>&1
 
-l=`egrep 'passed.*xfailed' pytest_complete_test.out`
+l=$(egrep '^=.* (passed|failed)' complete_pytest.tin.out | sed -E -e 's/^=* //' -e 's/(,\s+[0-9]+\s+warnings)?\s+in .*===$//')
 
-# ===== 99 passed, 8 skipped, 1 xfailed, 213 warnings in 3593.75s (0:59:53) ======
+# ===== 107 passed, 8 skipped, 2 xfailed, 214 warnings in 3402.72s (0:56:42) =====
 
-results=("passed 99" "skipped 8" "xfailed 1")
-for r in "${results[@]}"; do
-    label=$( echo $r | awk '{print $1}' )
-    n=$( echo $r | awk '{print $2}' )
-    echo $l | grep -q " $n $label" pytest_complete_test.out
-    if [ $? != 0 ]; then
-        echo "Unexpected number $label not $n '$l'" 1>&2
+declare -A expected_n=( ["passed"]="107" ["skipped"]="8" ["xfailed"]="2" )
+echo $l | sed -E 's/\s*,\s*/\n/g' | while read out; do
+    out_n=$(echo $out | sed -e 's/ .*//' -e 's/,//')
+    out_cat=$(echo $out | sed -e 's/.* //' -e 's/,//')
+    if [[ -z ${expected_n[$out_cat]} ]]; then
+        echo "Unexpected result '$out_cat' num $out_n"
+    else
+        if [[ ${expected_n[$out_cat]} != $out_n ]]; then
+            echo "Unexpected number $out_n for result '$out_cat', expected ${expected_n[$out_cat]}"
+        fi
+    fi
+    if [[ $out_cat == "failed" ]]; then
+        echo "FAILURE"
         exit 1
     fi
 done
-echo "No failures"
+
+echo "SUCCESSS"

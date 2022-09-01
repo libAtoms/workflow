@@ -118,7 +118,7 @@ def configs_from_smiles(ctx, smiles, output, info):
 
     verbose = ctx.obj["verbose"]
 
-    outputspec = OutputSpec(output_files=output)
+    outputspec = OutputSpec(output)
 
     if info is not None:
         info = key_val_str_to_dict(info)
@@ -147,15 +147,16 @@ def file_gather(ctx, inputs, output, force, index):
     if not verbose:
         warnings.filterwarnings("ignore", category=UserWarning, module="ase.io.extxyz")
 
-    configset = ConfigSet(input_files=inputs, default_index=index)
-    outputspec = OutputSpec(output_files=output, force=force)
+    configset = ConfigSet(inputs)
+    outputspec = OutputSpec(output)
 
     if verbose:
         print(configset)
         print(outputspec)
 
-    outputspec.write(configset)
-    outputspec.end_write()
+    for at in configset:
+        outputspec.store(at, at.info.pop("_ConfigSet_loc"))
+    outputspec.close()
 
 
 @subcli_file_operations.command("strip")
@@ -187,8 +188,8 @@ def strip(ctx, inputs, keep_info, keep_array, cell, output, force):
                 "at least")
         output = inputs
 
-    configset = ConfigSet(input_files=inputs)
-    outputspec = OutputSpec(output_files=output, force=force, all_or_none=True)
+    configset = ConfigSet(inputs)
+    outputspec = OutputSpec(output)
 
     # iterate, used for both progressbar and without the same way
     for at in configset:
@@ -208,9 +209,9 @@ def strip(ctx, inputs, keep_info, keep_array, cell, output, force):
                 if key in keep_array:
                     new_at.arrays[key] = val
 
-        outputspec.write(new_at, configset.get_current_input_file())
+        outputspec.store(new_at, at.info.get("_ConfigSet_loc"))
 
-    outputspec.end_write()
+    outputspec.close()
 
 
 @subcli_processing.command("committee")
@@ -220,10 +221,10 @@ def strip(ctx, inputs, keep_info, keep_array, cell, output, force):
               default="committee.")
 @click.option("--gap-fn", "-g", type=click.STRING, help="gap filenames, globbed", required=True,
               multiple=True)
-@click.option("--stride", "-s", "-n", help="Take every Nth frame only", type=click.STRING,
-              required=False)
+# @click.option("--stride", "-s", "-n", help="Take every Nth frame only", type=click.STRING,
+#               required=False)
 @click.option("--force", "-f", help="force writing", is_flag=True)
-def calc_ef_committee(ctx, inputs, prefix, gap_fn, stride, force):
+def calc_ef_committee(ctx, inputs, prefix, gap_fn, force):
     """Calculated energy and force with a committee of models.
     Uses a prefix on the filenames, this can be later changed
     does not support globbed filenames as xyz input
@@ -237,8 +238,8 @@ def calc_ef_committee(ctx, inputs, prefix, gap_fn, stride, force):
     outputs = {fn: os.path.join(os.path.dirname(fn), f"{prefix}{os.path.basename(fn)}") for fn in
                inputs}
 
-    configset = ConfigSet(input_files=inputs, default_index=stride)
-    outputspec = OutputSpec(output_files=outputs, force=force)
+    configset = ConfigSet(inputs)
+    outputspec = OutputSpec(outputs)
 
     if verbose:
         print(configset)
@@ -252,17 +253,16 @@ def calc_ef_committee(ctx, inputs, prefix, gap_fn, stride, force):
 
     # calculate E,F
     for at in configset:
-        at = committee.calculate_committee(at, gap_model_list)
-        outputspec.write(at, configset.get_current_input_file())
+        at_out = committee.calculate_committee(at, gap_model_list)
+        outputspec.store(at_out, at.info.get["_ConfigSet_loc"])
 
-    outputspec.end_write()
+    outputspec.close()
 
 
 
 @subcli_generate_configs.command("repeat-buildcell")
 @click.pass_context
 @click.option("--output-file", type=click.STRING)
-@click.option("--output-all-or-none", is_flag=True)
 @click.option("--buildcell-input", type=click.STRING, required=True, help="buildcell input file")
 @click.option("--buildcell-exec", type=click.STRING, required=True,
               help="buildcell executable including path")
@@ -272,7 +272,7 @@ def calc_ef_committee(ctx, inputs, prefix, gap_fn, stride, force):
               help="dict of information to store in Atoms.info")
 @click.option("--perturbation", type=click.FLOAT, default=0.0,
               help="magnitude of random perturbation to atomic positions")
-def _repeat_buildcell(ctx, output_file, output_all_or_none, buildcell_input, buildcell_exec,
+def _repeat_buildcell(ctx, output_file, buildcell_input, buildcell_exec,
                       n_configs,
                       extra_info, perturbation):
     """Repeatedly runs buildcell (from Pickard's AIRSS distribution) to generate random configs with
@@ -297,7 +297,7 @@ def _repeat_buildcell(ctx, output_file, output_all_or_none, buildcell_input, bui
         buildcell_input_txt = bc_f.read()
 
     wfl.generate.buildcell.run(
-        outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none),
+        outputs=OutputSpec(output_file),
         config_is=range(n_configs),
         buildcell_cmd=buildcell_exec,
         buildcell_input=buildcell_input_txt,
@@ -311,7 +311,6 @@ def _repeat_buildcell(ctx, output_file, output_all_or_none, buildcell_input, bui
 @click.pass_context
 @click.argument("inputs", nargs=-1)
 @click.option("--output-file", type=click.STRING, required=True)
-@click.option("--output-all-or-none", is_flag=True)
 @click.option("--n-configs", "-N", type=click.INT, required=True,
               help="number of configs to select")
 @click.option("--descriptor-key", type=click.STRING, help="Atoms.info key for descriptor vector")
@@ -320,7 +319,7 @@ def _repeat_buildcell(ctx, output_file, output_all_or_none, buildcell_input, bui
 @click.option("--kernel_exponent", type=click.FLOAT, help="exponent of dot-product for kernel")
 @click.option("--deterministic", is_flag=True,
               help="use deterministic (not stochastic) CUR selection")
-def _CUR_global(ctx, inputs, output_file, output_all_or_none, n_configs,
+def _CUR_global(ctx, inputs, output_file, n_configs,
                 descriptor_key, descriptor, keep_descriptor,
                 kernel_exponent, deterministic):
     if descriptor is None:
@@ -331,13 +330,13 @@ def _CUR_global(ctx, inputs, output_file, output_all_or_none, n_configs,
         # calculate descriptor
         if descriptor_key is None:
             descriptor_key = '_CUR_desc'
-        _do_calc_descriptor(inputs, '_tmp_desc.xyz', output_all_or_none, descriptor, descriptor_key, local=False, force=True)
+        _do_calc_descriptor(inputs, '_tmp_desc.xyz', descriptor, descriptor_key, local=False, force=True)
         inputs = ['_tmp_desc.xyz']
         clean_tmp_files = True
 
     wfl.select.by_descriptor.CUR_conf_global(
-        inputs=ConfigSet(input_files=inputs),
-        outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none),
+        inputs=ConfigSet(inputs),
+        outputs=OutputSpec(output_file),
         num=n_configs,
         at_descs_info_key=descriptor_key, kernel_exp=kernel_exponent, stochastic=not deterministic,
         keep_descriptor_info=keep_descriptor)
@@ -351,20 +350,19 @@ def _CUR_global(ctx, inputs, output_file, output_all_or_none, n_configs,
 @click.pass_context
 @click.argument("inputs", nargs=-1)
 @click.option("--output-file", type=click.STRING, required=True)
-@click.option("--output-all-or-none", is_flag=True)
 @click.option("--descriptor", type=click.STRING, required=True, help="quippy.Descriptor arg string")
 @click.option("--key", type=click.STRING, required=True,
               help="key to store in Atoms.info (global) or Atoms.arrays(local)")
 @click.option("--local", is_flag=True, help="calculate a local (per-atom) descriptor")
 @click.option("--force", is_flag=True, help="overwrite existing info or arrays item if present")
-def _calc_descriptor(ctx, inputs, output_file, output_all_or_none, descriptor, key, local, force):
-    _do_calc_descriptor(inputs, output_file, output_all_or_none, descriptor, key, local, force)
+def _calc_descriptor(ctx, inputs, output_file, descriptor, key, local, force):
+    _do_calc_descriptor(inputs, output_file, descriptor, key, local, force)
 
 
-def _do_calc_descriptor(inputs, output_file, output_all_or_none, descriptor, key, local, force):
+def _do_calc_descriptor(inputs, output_file, descriptor, key, local, force):
     wfl.descriptors.quippy.calc(
-        inputs=ConfigSet(input_files=inputs),
-        outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none, force=force),
+        inputs=ConfigSet(inputs),
+        outputs=OutputSpec(output_file),
         descs=descriptor,
         key=key,
         local=local,
@@ -376,7 +374,6 @@ def _do_calc_descriptor(inputs, output_file, output_all_or_none, descriptor, key
 @click.pass_context
 @click.argument("inputs", nargs=-1)
 @click.option("--output-file", type=click.STRING, required=True)
-@click.option("--output-all-or-none", is_flag=True)
 @click.option("--base-rundir", type=click.STRING, help='directory to run jobs in')
 @click.option("--directory-prefix", type=click.STRING, default='run_VASP_')
 @click.option("--output-prefix", type=click.STRING)
@@ -388,15 +385,15 @@ def _do_calc_descriptor(inputs, output_file, output_all_or_none, descriptor, key
                    '"pp", which is normallly XC-based dir to put between VASP_PP_PATH and POTCAR dirs defaults to ".". Key VASP_PP_PATH will be '
                    'used to set corresponding env var, which is used as dir above <chem_symbol>/POTCAR')
 @click.option("--vasp-command", type=click.STRING)
-def _vasp_eval(ctx, inputs, output_file, output_all_or_none, workdir_root, directory_prefix,
+def _vasp_eval(ctx, inputs, output_file, workdir_root, directory_prefix,
                output_prefix, properties,
                incar, kpoints, vasp_kwargs, vasp_command):
     vasp_kwargs = key_val_str_to_dict(vasp_kwargs)
     vasp_kwargs['INCAR_file'] = incar
     vasp_kwargs['KPOINTS_file'] = kpoints
     evaluate_dft(
-        inputs=ConfigSet(input_files=inputs),
-        outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none),
+        inputs=ConfigSet(inputs),
+        outputs=OutputSpec(output_file),
         calculator_name="VASP",
         workdir_root=workdir_root,
         dir_prefix=directory_prefix,
@@ -410,7 +407,6 @@ def _vasp_eval(ctx, inputs, output_file, output_all_or_none, workdir_root, direc
 @click.pass_context
 @click.argument("inputs", nargs=-1)
 @click.option("--output-file", type=click.STRING, required=True)
-@click.option("--output-all-or-none", is_flag=True)
 @click.option("--output-prefix", type=click.STRING, help="prefix in info/arrays for results")
 @click.option("--base-rundir", type=click.STRING, help="directory to put all calculation directories into")
 @click.option("--directory-prefix", type=click.STRING, default='run_CASTEP_')
@@ -420,14 +416,14 @@ def _vasp_eval(ctx, inputs, output_file, output_all_or_none, workdir_root, direc
 @click.option("--castep-kwargs", type=click.STRING, help="CASTEP keywords, passed as dict")
 @click.option("--keep-files", type=click.STRING, default="default",
               help="How much of files to keep, default is NOMAD compatible subset")
-def _castep_eval(ctx, inputs, output_file, output_all_or_none, workdir_root, directory_prefix, properties,
+def _castep_eval(ctx, inputs, output_file, workdir_root, directory_prefix, properties,
                  castep_command, castep_kwargs, keep_files, output_prefix):
     if castep_kwargs is not None:
         castep_kwargs = key_val_str_to_dict(castep_kwargs)
 
     evaluate_dft(
-        inputs=ConfigSet(input_files=inputs),
-        outputs=OutputSpec(output_files=output_file, all_or_none=output_all_or_none),
+        inputs=ConfigSet(inputs),
+        outputs=OutputSpec(output_file),
         calculator_name="CASTEP",
         workdir_root=workdir_root,
         dir_prefix=directory_prefix,
@@ -443,7 +439,6 @@ def _castep_eval(ctx, inputs, output_file, output_all_or_none, workdir_root, dir
 @click.pass_context
 @click.argument("inputs", nargs=-1)
 @click.option("--output-file", type=click.STRING, required=True)
-@click.option("--output-all-or-none", is_flag=True)
 @click.option("--output-prefix", type=click.STRING, help="prefix in info/arrays for results")
 @click.option("--base-rundir", type=click.STRING,
               help="directory to put all calculation directories into")
@@ -465,7 +460,7 @@ def _castep_eval(ctx, inputs, output_file, output_all_or_none, workdir_root, dir
                    "is recPBE with settings tested for radicals")
 @click.option("--orca-additional-blocks", type=click.STRING,
               help="orca blocks to be added, default is None")
-def orca_eval(ctx, inputs, workdir_root, output_file, output_all_or_none, directory_prefix,
+def orca_eval(ctx, inputs, workdir_root, output_file, directory_prefix,
               orca_command, calc_kwargs, keep_files, output_prefix, scratch_path, n_run, n_hop,
               orca_simple_input, orca_additional_blocks):
     verbose = ctx.obj["verbose"]
@@ -497,8 +492,8 @@ def orca_eval(ctx, inputs, workdir_root, output_file, output_all_or_none, direct
         if val is not None:
             calc_kwargs[key] = val
 
-    configset = ConfigSet(input_files=inputs)
-    outputspec = OutputSpec(output_files=output_file, all_or_none=output_all_or_none)
+    configset = ConfigSet(inputs)
+    outputspec = OutputSpec(output_file)
 
     if verbose:
         print(configset)
@@ -515,7 +510,6 @@ def orca_eval(ctx, inputs, workdir_root, output_file, output_all_or_none, direct
 @click.pass_context
 @click.argument("inputs", nargs=-1)
 @click.option("--output-file", type=click.STRING, required=True)
-@click.option("--output-all-or-none", is_flag=True)
 @click.option("--output-prefix", type=click.STRING, help="prefix in info/arrays for results")
 @click.option("--base-rundir", type=click.STRING, help="directory to put all calculation directories into")
 @click.option("--directory-prefix", type=click.STRING, default='ORCA')
@@ -529,7 +523,7 @@ def orca_eval(ctx, inputs, workdir_root, output_file, output_all_or_none, direct
 @click.option("--orca-simple-input", type=click.STRING, help="orca simple input line, make sure it is correct, default "
                                                              "is recPBE with settings tested for radicals")
 @click.option("--orca-additional-blocks", type=click.STRING, help="orca blocks to be added, default is None")
-def orca_eval(ctx, inputs, workdir_root, output_file, output_all_or_none, directory_prefix,
+def orca_eval(ctx, inputs, workdir_root, output_file, directory_prefix,
               orca_command, calc_kwargs, keep_files, output_prefix, scratch_path,
               orca_simple_input, orca_additional_blocks):
     verbose = ctx.obj["verbose"]
@@ -559,8 +553,8 @@ def orca_eval(ctx, inputs, workdir_root, output_file, output_all_or_none, direct
         if val is not None:
             calc_kwargs[key] = val
 
-    configset = ConfigSet(input_files=inputs)
-    outputspec = OutputSpec(output_files=output_file, all_or_none=output_all_or_none)
+    configset = ConfigSet(inputs)
+    outputspec = OutputSpec(output_file)
 
     if verbose:
         print(configset)
@@ -601,7 +595,7 @@ def ref_error(ctx, inputs, pre_calc, calc, calc_args, calc_kwargs, ref_prefix, p
               category_keys, outfile, intermed_file):
     verbose = ctx.obj["verbose"]
 
-    cs_out = OutputSpec(output_files=intermed_file)
+    cs_out = OutputSpec(intermed_file)
 
     if pre_calc is not None:
         exec(pre_calc)
@@ -610,13 +604,13 @@ def ref_error(ctx, inputs, pre_calc, calc, calc_args, calc_kwargs, ref_prefix, p
         # copy from SinglePointCalculator to info/arrays so calculator results won't overwrite
         # will do this by keeping copy of configs in memory, maybe should have an optional way to do
         # this via a file instead.
-        inputs = list(ConfigSet(input_files=inputs))
+        inputs = list(ConfigSet(inputs))
         ref_property_keys = wfl.fit.utils.copy_properties(inputs, ref_property_keys=ref_prefix)
-        inputs = ConfigSet(input_configs=inputs)
+        inputs = ConfigSet(inputs)
     else:
         ref_property_keys = {p: ref_prefix + p for p in
                              ['energy', 'forces', 'stress', 'virial']}
-        inputs = ConfigSet(input_files=inputs)
+        inputs = ConfigSet(inputs)
 
     errs = wfl.fit.ref_error.calc(inputs, cs_out,
                                   calculator=(
@@ -658,9 +652,9 @@ def multistage_gap(ctx, inputs, gap_name, params_file, property_prefix, database
         fit_params = json.load(fin)
 
     if testing_configs is not None:
-        testing_configs = ConfigSet(input_files=testing_configs.split())
+        testing_configs = ConfigSet(testing_configs.split())
 
-    GAP, fit_err, test_err = fit_gap.multistage.fit(ConfigSet(input_files=inputs),
+    GAP, fit_err, test_err = fit_gap.multistage.fit(ConfigSet(inputs),
                                                     GAP_name=gap_name, params=fit_params,
                                                     ref_property_prefix=property_prefix,
                                                     database_modify_mod=database_modify_mod,
@@ -705,7 +699,7 @@ def simple_gap_fit(ctx, gap_file, atoms_filename, param_file,
             raise RuntimeError('atoms_filename given in params file and as '
                                'command line input')
 
-    fitting_ci = ConfigSet(input_files=atoms_filename)
+    fitting_ci = ConfigSet(atoms_filename)
 
     if gap_file != 'GAP.xml':
         if params.get('gap_file', False):

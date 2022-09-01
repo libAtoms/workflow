@@ -532,9 +532,9 @@ def sample_normal_modes(inputs, outputs, temp, sample_size, prop_prefix,
                                             sample_size=sample_size,
                                             info_to_keep=info_to_keep,
                                             arrays_to_keep=arrays_to_keep)
-        outputs.write(sample)
+        outputs.store(sample)
 
-    outputs.end_write()
+    outputs.close()
 
 
 def generate_normal_modes_autopara_wrappable(inputs, calculator, prop_prefix,
@@ -586,5 +586,5 @@ def generate_normal_modes_parallel_hessian(inputs, outputs, calculator,
                                          prop_prefix=prop_prefix,
                                          parallel_hessian=parallel_hessian)
 
-    outputs.write(atoms_out)
-    outputs.end_write()
+    outputs.store(atoms_out)
+    outputs.close()

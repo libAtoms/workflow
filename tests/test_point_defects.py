@@ -7,7 +7,7 @@ from wfl.generate.supercells import vacancy
 def test_vacancy_mono():
     at = Atoms('Po', cell=np.eye(3), pbc=[True]*3)
 
-    ci = ConfigSet(input_configs=[at.copy() for _ in range(10)])
+    ci = ConfigSet([at.copy() for _ in range(10)])
     co = OutputSpec()
     vacs = vacancy(ci, co, 64)
 
@@ -17,7 +17,7 @@ def test_vacancy_mono():
 def test_vacancy_di():
     at = Atoms('Po', cell=np.eye(3), pbc=[True]*3)
 
-    ci = ConfigSet(input_configs=[at.copy() for _ in range(10)])
+    ci = ConfigSet([at.copy() for _ in range(10)])
     co = OutputSpec()
     vacs = vacancy(ci, co, 64, n_vac=2)
 
@@ -28,7 +28,7 @@ def test_vacancy_di():
 def test_vacancy_cluster_di():
     at = Atoms('Po', cell=2.0 * np.eye(3), pbc=[True]*3)
 
-    ci = ConfigSet(input_configs=[at.copy() for _ in range(10)])
+    ci = ConfigSet([at.copy() for _ in range(10)])
     co = OutputSpec()
     vacs = vacancy(ci, co, 64, n_vac=2, cluster_r=1.5)
 
@@ -47,7 +47,7 @@ def test_vacancy_not_enough():
     at = Atoms('Po', cell=2.0 * np.eye(3), pbc=[True]*3)
     at *= 2
 
-    ci = ConfigSet(input_configs=[at.copy() for _ in range(10)])
+    ci = ConfigSet([at.copy() for _ in range(10)])
     co = OutputSpec()
     vacs = vacancy(ci, co, 8, n_vac=8, cluster_r=1.5)
 
@@ -56,7 +56,7 @@ def test_vacancy_not_enough():
         assert len(at) == 8
         assert 'vacancy_Z' not in at.info
 
-    ci = ConfigSet(input_configs=[at.copy() for _ in range(10)])
+    ci = ConfigSet([at.copy() for _ in range(10)])
     co = OutputSpec()
     vacs = vacancy(ci, co, 64, n_vac=8, cluster_r=1.1)
 

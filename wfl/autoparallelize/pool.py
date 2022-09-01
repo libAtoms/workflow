@@ -95,13 +95,10 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
         num_python_subprocesses = int(os.environ.get('WFL_NUM_PYTHON_SUBPROCESSES', 0))
 
     # actually do the work locally
-    if outputspec is not None:
-        outputspec.pre_write()
-
     did_no_work = True
 
     if isinstance(iterable, ConfigSet):
-        items_inputs_generator = grouper(num_inputs_per_python_subprocess, ((item, iterable.get_current_input_file()) for item in iterable))
+        items_inputs_generator = grouper(num_inputs_per_python_subprocess, ((item, item.info.get("_ConfigSet_loc")) for item in iterable))
     else:
         items_inputs_generator = grouper(num_inputs_per_python_subprocess, ((item, None) for item in iterable))
 
@@ -139,11 +136,11 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
         # always loop over results to trigger lazy imap()
         for result_group in results:
             if outputspec is not None:
-                for at, from_input_file in result_group:
+                for at, from_input_loc in result_group:
                     if skip_failed and at is None:
                         continue
                     did_no_work = False
-                    outputspec.write(at, from_input_file=from_input_file)
+                    outputspec.store(at, from_input_loc)
 
         if not wfl_mpipool:
             # call join pool (prevent pytest-cov deadlock as per https://pytest-cov.readthedocs.io/en/latest/subprocess-support.html)
@@ -151,21 +148,24 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
             pool.join()
 
     else:
-        # do directly, still not trivial because of num_inputs_per_python_subprocess
+        # do directly: still not trivial because of num_inputs_per_python_subprocess
+        # NOTE: this does not pickle configs to send to the remote processes, so called function
+        # can change configs in-place, which is different from Pool.map().  Should we pickle and 
+        # unpickle to better reproduce the behavior of Pool.map() ?
         for items_inputs_group in items_inputs_generator:
             result_group = _wrapped_autopara_wrappable(op, iterable_arg, args, kwargs, items_inputs_group)
 
             if outputspec is not None:
-                for at, from_input_file in result_group:
+                for at, from_input_loc in result_group:
                     if skip_failed and at is None:
                         continue
                     did_no_work = False
-                    outputspec.write(at, from_input_file=from_input_file)
+                    outputspec.store(at, from_input_loc)
 
     if outputspec is not None:
-        outputspec.end_write()
+        outputspec.close()
         if did_no_work:
-            return ConfigSet()
+            return ConfigSet(None)
         else:
             return outputspec.to_ConfigSet()
     else:

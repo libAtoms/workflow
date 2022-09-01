@@ -3,7 +3,9 @@ import os
 import subprocess
 from pathlib import Path
 from copy import deepcopy
-import warnings
+import tempfile
+
+import ase.io
 
 from wfl.configset import ConfigSet
 from wfl.utils.quip_cli_strings import dict_to_quip_str
@@ -61,7 +63,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None
         # the code below needs to know an unfortunate amount about the inner workings of gap_fit
 
         # put configs in memory so they can be staged out easily
-        fitting_configs = fitting_configs.in_memory()
+        fitting_configs = ConfigSet(list(fitting_configs))
 
         # here we rely on knowledge of the default gap_file and the correpsonding output files
 
@@ -108,11 +110,18 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None
 
         return results
 
-    # convert fitting configs to a single file
+    # default to having no scratch file, and check if fitting_configs is exactly one file
     fitting_configs_scratch_filename = None
-    fitting_configs_filename = fitting_configs.is_one_file()
+    fitting_configs_filename = fitting_configs.one_file()
     if not fitting_configs_filename:
-        fitting_configs_scratch_filename = fitting_configs.to_file('_GAP_fitting_configs.xyz', scratch=True)
+        # not one file, must write scratch file with all configs
+        fd_scratch, filename = tempfile.mkstemp(prefix="_GAP_fitting_configs.", suffix=".xyz")
+        os.close(fd_scratch)
+
+        ase.io.write(filename, fitting_configs)
+        # remember, so it can be deleted later
+        fitting_configs_scratch_filename = filename
+        # use in actual fit
         fitting_configs_filename = fitting_configs_scratch_filename
     
     # kwargs overwrite the fitting_dict given

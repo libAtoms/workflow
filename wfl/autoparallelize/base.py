@@ -4,7 +4,7 @@ import json
 import warnings
 import re
 
-from wfl.configset import OutputSpec
+from wfl.configset import ConfigSet, OutputSpec
 from .pool import do_in_pool
 from .remote import do_remotely
 from .autoparainfo import AutoparaInfo
@@ -219,7 +219,7 @@ def _autoparallelize_ll(num_python_subprocesses=None, num_inputs_per_python_subp
     if outputspec is not None:
         if not isinstance(outputspec, OutputSpec):
             raise RuntimeError('autoparallelize requires outputspec be None or OutputSpec')
-        if outputspec.is_done():
+        if outputspec.done():
             sys.stderr.write(f'Returning before {op} since output is done\n')
             return outputspec.to_ConfigSet()
 

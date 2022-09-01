@@ -2,6 +2,8 @@ import numpy as np
 from ase import data
 from ase.atoms import Atoms
 
+from wfl.configset import ConfigSet
+
 
 def prepare(outputs, atomic_numbers, bond_lengths=None, dimer_n_steps=41, dimer_factor_range=(0.65, 2.5),
             dimer_box_scale=6.0, extra_info=None, do_isolated_atoms=True, max_cutoff=None, fixed_cell=False):
@@ -57,7 +59,7 @@ def prepare(outputs, atomic_numbers, bond_lengths=None, dimer_n_steps=41, dimer_
             at = Atoms(numbers=[z], cell=_make_cell(bond_lengths[z], max_cutoff), pbc=[False] * 3)
             at.info['config_type'] = 'isolated_atom'
             at.info.update(extra_info)
-            outputs.write(at)
+            outputs.store(at)
 
     for z1 in atomic_numbers:
         for z2 in atomic_numbers:
@@ -71,9 +73,9 @@ def prepare(outputs, atomic_numbers, bond_lengths=None, dimer_n_steps=41, dimer_
                 at.positions[1, 0] = dimer_separation
                 at.info['config_type'] = 'dimer'
                 at.info.update(extra_info)
-                outputs.write(at)
+                outputs.store(at)
 
-    outputs.end_write()
+    outputs.close()
     return outputs.to_ConfigSet()
 
 
@@ -108,6 +110,6 @@ def isolated_atom_from_e0(outputs, e0_dict, cell_size, energy_key="energy", extr
         at.info[energy_key] = energy
         at.info['config_type'] = 'isolated_atom'
         at.info.update(extra_info)
-        outputs.write(at)
+        outputs.store(at)
 
-    outputs.end_write()
+    outputs.close()

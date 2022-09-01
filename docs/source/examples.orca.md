@@ -163,8 +163,8 @@ num_cores = 4
 max_time = "48h"
 
 # structures
-ci = ConfigSet(input_files=input_fname)
-co = OutputSpec(output_files=output_fname, force=True, all_or_none=True)
+ci = ConfigSet(input_fname)
+co = OutputSpec(output_fname)
 
 expyre_dir = Path("_expyre")
 expyre_dir.mkdir(exist_ok=True)

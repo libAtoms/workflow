@@ -66,7 +66,7 @@ def by_index(inputs, outputs, indices):
     so perhaps belongs as a use case of autoparallelize, but since it can return
     multiple outputs for a single input, this cannot be done right now
     """
-    if outputs.is_done():
+    if outputs.done():
         sys.stderr.write(f'Returning before by_index since output is done\n')
         return outputs.to_ConfigSet()
 
@@ -84,7 +84,7 @@ def by_index(inputs, outputs, indices):
         if cur_i >= len(indices):
             break
         if indices[cur_i] == at_i:
-            outputs.write(at, from_input_file=inputs.get_current_input_file())
+            outputs.store(at, at.info.pop("_ConfigSet_loc"))
             cur_i += 1
         else:
             try:
@@ -92,5 +92,5 @@ def by_index(inputs, outputs, indices):
             except StopIteration:
                 break
 
-    outputs.end_write()
+    outputs.close()
     return outputs.to_ConfigSet()

@@ -40,7 +40,7 @@ def ref_atoms():
         if at_i < 6:
             at.info['category'] = at_i // 3
 
-    ci = ConfigSet(input_configs=ats)
+    ci = ConfigSet(ats)
 
     ats_eval = calc_run(ci, OutputSpec(), LennardJones(sigma=1.0), output_prefix='REF_')
 
@@ -48,7 +48,7 @@ def ref_atoms():
 
 
 def test_ref_error(tmp_path, ref_atoms):
-    co = OutputSpec(file_root=tmp_path, output_files='ref_err_eval.xyz')
+    co = OutputSpec("ref_err_eval.xyz", file_root=tmp_path)
     ref_err_dict = ref_err_calc(ref_atoms, co, LennardJones(sigma=0.75), ref_property_prefix='REF_',
                                 category_keys='category')
 

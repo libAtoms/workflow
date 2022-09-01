@@ -51,7 +51,7 @@ def test_atoms_list():
 
 def test_run(tmp_path):
     mol_in = [molecule("CH4"), molecule("CH4")]
-    mol_out = generic.run(mol_in, OutputSpec(output_files=join(tmp_path, "run.xyz")), LennardJones(),
+    mol_out = generic.run(mol_in, OutputSpec(tmp_path / "run.xyz"), LennardJones(),
                           properties=["energy", "forces"], output_prefix="_auto_")
     assert isinstance(mol_out, ConfigSet)
     for at in mol_out:

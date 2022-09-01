@@ -63,8 +63,8 @@ def test_mult_files(cu_slab, tmp_path):
     ase.io.write(tmp_path / 'f1.xyz', [cu_slab] * 2)
     ase.io.write(tmp_path / 'f2.xyz', cu_slab)
     infiles = [str(tmp_path / 'f1.xyz'), str(tmp_path / 'f2.xyz')]
-    inputs = ConfigSet(input_files=infiles)
-    outputs = OutputSpec(output_files={f: f.replace('.xyz', '.out.xyz') for f in infiles})
+    inputs = ConfigSet(infiles)
+    outputs = OutputSpec([f.replace('.xyz', '.out.xyz') for f in infiles])
 
     calc = EMT()
 
@@ -81,7 +81,7 @@ def test_relax(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet(input_configs = cu_slab)
+    inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
     atoms_opt = optimize.run(inputs, outputs, calc, fmax=1e-2, precon=None,
@@ -100,7 +100,7 @@ def test_relax_fixed_vol(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet(input_configs = cu_slab)
+    inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
 
@@ -182,7 +182,7 @@ def test_subselect_from_traj(cu_slab):
     assert atoms_opt[0] is None
 
     # check that iterable_loop handles Nones as expected
-    inputs = ConfigSet(input_configs = [cu_slab.copy(), cu_slab_optimised.copy()] )
+    inputs = ConfigSet([cu_slab.copy(), cu_slab_optimised.copy()])
     outputs = OutputSpec()
     atoms_opt = optimize.run(inputs, outputs, calc, fmax=1e-2, precon=None,
                           logfile='-', verbose=True, pressure=-1.1215, 
