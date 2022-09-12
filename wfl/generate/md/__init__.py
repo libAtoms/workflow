@@ -13,14 +13,15 @@ from wfl.utils.at_copy_save_results import at_copy_save_results
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
 from wfl.utils.pressure import sample_pressure
-from .utils import config_type_append
+from ..utils import config_type_append
 
 bar = 1.0e-4 * GPa
 
 
 def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
-              traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False):
+              traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False, update_config_type=True,
+              traj_select_during_func=None, traj_select_after_func=None, abort_check=None):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for
     sampling configs
 
@@ -36,7 +37,6 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
         number of steps
     temperature: float or (float, float, [int]]), or list of dicts  default None
         temperature control (Kelvin)
-
         - float: constant T
         - tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp
         - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with
@@ -58,6 +58,17 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
     verbose: bool, default False
         verbose output
         MD logs are not printed unless this is True
+    update_config_type: bool, default True
+        append "MD" to at.info['config_type']
+    traj_select_during_func: func(Atoms), default None
+        Function to sub-select configs from the first trajectory. 
+        Used during MD loop with one config at a time, returning True/False
+    traj_select_after_func: func(list(Atoms)), default None
+        Function to sub-select configs from the first trajectory. 
+        Used at end of MD loop with entire trajectory as list, returns subset
+    abort_check: default None,
+        wfl.generate.md.abort_base.AbortBase - derived class that
+        checks the MD snapshots and aborts the simulation on some condition. 
 
     Returns
     -------
@@ -171,7 +182,15 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
 
             if not first_step_of_later_stage and cur_step % interval == 0:
                 at.info['MD_time_fs'] = cur_step * dt
-                traj.append(at_copy_save_results(at, results_prefix=results_prefix))
+                at.info['MD_step'] = cur_step
+                at_save = at_copy_save_results(at, results_prefix=results_prefix)
+
+                if traj_select_during_func is None or traj_select_during_func(at):
+                    traj.append(at_save)
+
+                if abort_check is not None:
+                    if abort_check.stop_md(at):
+                        raise RuntimeError(f"MD was stopped by the MD checker function {abort_check.__class__.__name__}")
 
             first_step_of_later_stage = False
             cur_step += 1
@@ -180,7 +199,7 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
             if verbose:
                 print('run stage', stage_kwargs, run_kwargs)
 
-            # avoid double counbing of steps and end of each stage and beginning of next
+            # avoid double counting of steps and end of each stage and beginning of next
             cur_step -= 1
 
             if temperature_tau is not None:
@@ -206,9 +225,13 @@ def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, te
             at.info['MD_time_fs'] = cur_step * dt
             traj.append(at_copy_save_results(at, results_prefix=results_prefix))
 
-        # save config_type
-        for at in traj:
-            config_type_append(at, 'MD')
+        if traj_select_after_func is not None:
+            traj = traj_select_after_func(traj)
+
+        if update_config_type:
+            # save config_type
+            for at in traj:
+                config_type_append(at, 'MD')
 
         all_trajs.append(traj)
 
@@ -229,3 +252,5 @@ def sample(*args, **kwargs):
     return autoparallelize(sample_autopara_wrappable, *args, 
         def_autopara_info=def_autopara_info, **kwargs)
 sample.__doc__ = autoparallelize_docstring(sample_autopara_wrappable.__doc__, "Atoms")
+
+

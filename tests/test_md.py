@@ -7,10 +7,23 @@ from ase import Atoms
 import ase.io
 from ase.build import bulk
 from ase.calculators.emt import EMT
+from wfl.autoparallelize import autoparainfo
 
 from wfl.generate import md
 from wfl.configset import ConfigSet, OutputSpec
+from wfl.generate.md.abort import AbortOnCollision
 
+
+def select_every_10_steps_for_tests_during(at):
+    return at.info.get("MD_step", 1) % 10 == 0
+
+def select_every_10_steps_for_tests_after(traj):
+    return [at for at in traj if at.info["MD_step"] % 10 == 0]
+
+def check_validity_for_tests(at):
+    if "5" in str(at.info["MD_step"]):
+        return False
+    return True
 
 @pytest.fixture
 def cu_slab():
@@ -109,3 +122,48 @@ def test_NVT_complex_ramp(cu_slab):
         # print(at_i, at.info['MD_time_fs'], 'MD', at.info['MD_temperature_K'], 'test', Ts[at_i])
 
     assert all(np.isclose(Ts, [at.info['MD_temperature_K'] for at in atoms_traj]))
+
+
+def test_subselector_function_after(cu_slab):
+
+    calc = EMT()
+
+    inputs = ConfigSet(input_configs = cu_slab)
+    outputs = OutputSpec()
+
+    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
+                           temperature = 500.0, traj_select_after_func=select_every_10_steps_for_tests_after)
+
+    atoms_traj = list(atoms_traj)
+    assert len(atoms_traj) == 31
+
+
+def test_subselector_function_during(cu_slab):
+
+    calc = EMT()
+
+    inputs = ConfigSet(input_configs = cu_slab)
+    outputs = OutputSpec()
+
+    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
+                           temperature = 500.0, traj_select_during_func=select_every_10_steps_for_tests_during)
+
+    atoms_traj = list(atoms_traj)
+    assert len(atoms_traj) == 31
+
+
+def test_md_abort_function(cu_slab):
+
+    calc = EMT()
+
+    inputs = ConfigSet(input_configs = cu_slab)
+    outputs = OutputSpec()
+
+    md_stopper = AbortOnCollision(collision_radius=2.25)
+    autopara_info = autoparainfo.AutoparaInfo(skip_failed=False)
+
+    # why doesn't this throw an raise a RuntimeError even if md failed and `skip_failed` is False?
+    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=500, dt=10.0,
+                           temperature = 2000.0, abort_check=md_stopper, autopara_info=autopara_info) 
+
+    assert len(list(atoms_traj)) < 501
