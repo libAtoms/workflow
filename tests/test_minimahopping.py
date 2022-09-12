@@ -41,17 +41,34 @@ def test_relax(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet(input_configs=cu_slab)
+    input_configs = [cu_slab, cu_slab]
+    inputs = ConfigSet(input_configs=input_configs)
     outputs = OutputSpec()
 
     fmax = 1
     totalsteps = 3
+    num_input_configs = len(input_configs)
 
-    atoms_opt = minimahopping.run(inputs, outputs, calc, fmax=fmax, totalsteps=totalsteps)
+    # Although its highly unlikely, we can't fully guarantee that the situation
+    # where are trajectories fail is excluded. Thus, let's give it some trials to avoid this situation.
+    # Failed trajectories for which None is returned are filtered out by the
+    # autoparallelize framework. In case only None values are returned the autoparallelize-framework
+    # returns an empty ConfigSet with self.input_configs = None, which consequently has no length
+    # and can't be tested properly.
+    trial = 0
+    while trial < 10:
+        atoms_opt = minimahopping.run(inputs, outputs, calc, fmax=fmax, totalsteps=totalsteps)
+        if atoms_opt.input_configs is not None:
+            break
+        trial += 1
+    else:
+        raise RuntimeError
+
+    assert 1 <= len(atoms_opt.input_configs) <= num_input_configs
+    for ats in atoms_opt.input_configs:
+        assert 1 <= len(ats) <= totalsteps
 
     atoms_opt = list(atoms_opt)
-
-    assert 1 <= len(atoms_opt) <= totalsteps
     assert all([at.info['config_type'] == 'hopping_traj' for at in atoms_opt])
 
     for at in atoms_opt:
