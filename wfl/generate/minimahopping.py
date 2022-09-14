@@ -9,6 +9,7 @@ from ase.io.trajectory import Trajectory
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.misc import atoms_to_list
+from wfl.generate.utils import config_type_append
 from wfl.utils.parallel import construct_calculator_picklesafe
 
 
@@ -36,7 +37,7 @@ def atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
     else:
         traj = []
         for hop_traj in Trajectory('minima.traj'):
-            hop_traj.info['config_type'] = 'hopping_traj'
+            config_type_append(hop_traj, 'hopping_traj')
             traj.append(hop_traj)
         os.chdir(workdir)
         shutil.rmtree(rundir)

@@ -69,7 +69,7 @@ def test_relax(cu_slab):
         assert 1 <= len(ats) <= totalsteps
 
     atoms_opt = list(atoms_opt)
-    assert all([at.info['config_type'] == 'hopping_traj' for at in atoms_opt])
+    assert all(['hopping_traj' in at.info['config_type'] for at in atoms_opt])
 
     for at in atoms_opt:
         force_norms = np.linalg.norm(at.get_forces(), axis=1)
