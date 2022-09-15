@@ -437,7 +437,7 @@ class OutputSpec:
                 # write to a file, preserving all location info
 
                 # test for inconsistent sequence of provided/absent input_CS_loc
-                if len(input_CS_loc) == 0:
+                if input_CS_loc is None or len(input_CS_loc) == 0:
                     # nothing provided, make sure this is consistent with previous calls and if so increment loc
                     if self.first_store_call:
                         self.cur_store_loc = 0
