@@ -5,12 +5,12 @@ from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 
 try:
     import phonopy
-except:
+except ModuleNotFoundError:
     phonopy = None
 
 try:
     import phono3py
-except:
+except ModuleNotFoundError:
     phono3py = None
 
 
