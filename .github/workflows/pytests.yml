@@ -40,7 +40,7 @@ jobs:
 
       - name: Install h5py from Conda forge (will be needed by phono3py)
         run: |
-          conda install -c conda-forge h5py
+          conda install -c conda-forge h5py=3.7.0
           python3 -c "import h5py; print(h5py.__file__)"
 
       - name: Install phono3py from Conda forge
