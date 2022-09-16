@@ -156,23 +156,28 @@ def autoparallelize(func, *args, def_autopara_info={}, **kwargs):
             # outputs is also positional, remote it from func args as well
             outputs = args.pop(0)
 
+    # create autopara_info from explicitly passed AutoparaInfo object, otherwise an empty object
     autopara_info = kwargs.pop("autopara_info", AutoparaInfo())
+    # update values, if any are not set, with defaults that were set by decorating code
     autopara_info.update_defaults(def_autopara_info)
 
-    return _autoparallelize_ll(autopara_info.num_python_subprocesses, autopara_info.num_inputs_per_python_subprocess, inputs, outputs, func,
-                               autopara_info.iterable_arg, autopara_info.skip_failed, autopara_info.initializer,
-                               autopara_info.remote_info, autopara_info.remote_label, autopara_info.hash_ignore,
+    return _autoparallelize_ll(autopara_info.num_python_subprocesses, autopara_info.num_inputs_per_python_subprocess,
+                               inputs, outputs, func, autopara_info.iterable_arg,
+                               autopara_info.skip_failed, autopara_info.initializer, autopara_info.remote_info,
+                               autopara_info.remote_label, autopara_info.hash_ignore,
                                *args, **kwargs)
 
-# do we want to allow for ops that only take singletons, not iterables, as input, maybe with num_inputs_per_python_subprocess=0?
+# do we want to allow for ops that only take singletons, not iterables, as input, maybe with num_inputs_per_python_subprocess=0 ?
 # that info would have to be passed down to _wrapped_autopara_wrappable so it passes a singleton rather than a list into op
 #
 # some ifs (int positional vs. str keyword) could be removed if we required that the iterable be passed into a kwarg.
 
-def _autoparallelize_ll(num_python_subprocesses=None, num_inputs_per_python_subprocess=1, iterable=None, outputspec=None,
-                        op=None, iterable_arg=0, skip_failed=True, initializer=(None, ()), remote_info=None,
-                        remote_label=None, hash_ignore=[], *args, **kwargs):
-    """parallelize some operation over an iterable
+def _autoparallelize_ll(num_python_subprocesses, num_inputs_per_python_subprocess,
+                        iterable, outputspec, op, iterable_arg,
+                        skip_failed, initializer, remote_info,
+                        remote_label, hash_ignore,
+                        *args, **kwargs):
+    """Parallelize some operation over an iterable
 
     Parameters
     ----------
