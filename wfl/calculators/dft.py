@@ -24,12 +24,13 @@ def evaluate_dft(*args, **kwargs):
     -------
     ConfigSet of configurations with calculated properties
     """
-    # defaults
-    if kwargs.get("dir_prefix") is None:
-        kwargs["dir_prefix"] = f"run_{calculator_name}_"
 
     if "calculator_name" not in kwargs:
         raise ValueError("evaluate_dft requires 'calculator_name' kwargs")
+
+    # defaults
+    if kwargs.get("dir_prefix") is None:
+        kwargs["dir_prefix"] = f"run_{kwargs['calculator_name']}_"
 
     # choose the calculator
     if kwargs["calculator_name"] == "CASTEP":
