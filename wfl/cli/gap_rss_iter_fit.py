@@ -284,11 +284,10 @@ def create_all_buildcell(cur_iter, run_dir, Zs, compositions, N_configs_tot,
             else:
                 extra_info['gap_rss_group'] = label_str
             extra_info['gap_rss_iter'] = cur_iter
-            structs = wfl.generate.buildcell.run(c_out,
-                                                         range(config_i_start, config_i_start + N_configs),
-                                                         buildcell_cmd=buildcell_cmd, buildcell_input=buildcell_input,
-                                                         extra_info=extra_info, perturbation=buildcell_pert,
-                                                         verbose=verbose)
+            structs = wfl.generate.buildcell.run(range(config_i_start, config_i_start + N_configs), c_out,
+                                                 buildcell_cmd=buildcell_cmd, buildcell_input=buildcell_input,
+                                                 extra_info=extra_info, perturbation=buildcell_pert,
+                                                 verbose=verbose)
 
             compos_structs.append(structs)
             config_i_start += N_configs
