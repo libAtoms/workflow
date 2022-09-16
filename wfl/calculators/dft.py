@@ -25,22 +25,24 @@ def evaluate_dft(*args, **kwargs):
     ConfigSet of configurations with calculated properties
     """
 
-    if "calculator_name" not in kwargs:
-        raise ValueError("evaluate_dft requires 'calculator_name' kwargs")
+    try:
+        calculator_name = kwargs.pop("calculator_name")
+    except KeyError as exc:
+        raise ValueError("evaluate_dft requires 'calculator_name' in kwargs") from exc
 
     # defaults
     if kwargs.get("dir_prefix") is None:
-        kwargs["dir_prefix"] = f"run_{kwargs['calculator_name']}_"
+        kwargs["dir_prefix"] = f"run_{calculator_name}_"
 
     # choose the calculator
-    if kwargs["calculator_name"] == "CASTEP":
+    if calculator_name == "CASTEP":
         op = castep.evaluate_autopara_wrappable
-    elif kwargs["calculator_name"] == "VASP":
+    elif calculator_name == "VASP":
         op = vasp.evaluate_autopara_wrappable
-    elif kwargs["calculator_name"] == "QE":
+    elif calculator_name == "QE":
         raise ValueError(f"wfl.calculators.espresso.Espresso is compatible with wfl.calculators.generic.run.")
     else:
-        raise ValueError(f"Calculator name `{kwargs['calculator_name']}` not understood")
+        raise ValueError(f"Calculator name `{calculator_name}` not understood")
 
     # run the calculation in parallel
     return autoparallelize(op, *args, def_autopara_info={"num_inputs_per_python_subprocess": 1}, **kwargs)
