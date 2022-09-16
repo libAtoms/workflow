@@ -14,7 +14,7 @@ export WFL_PYTEST_BUILDCELL=$HOME/src/work/AIRSS/airss-0.9.1/src/buildcell/src/b
 # VASP
 module load dft/vasp
 export VASP_COMMAND=vasp.serial
-export VASP_COMMAND_GAMMA=vasp.gamma_serial
+export VASP_COMMAND_GAMMA=vasp.gamma.serial
 export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
 # QE
 module load dft/pwscf
@@ -25,7 +25,7 @@ export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1
 
 rm -rf $HOME/pytest_wfl
-pytest -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs >> pytest_complete_test.out 2>&1
+pytest -v -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs >> pytest_complete_test.out 2>&1
 
 l=`egrep '^=.*(passed|failed)' pytest_complete_test.out`
 
