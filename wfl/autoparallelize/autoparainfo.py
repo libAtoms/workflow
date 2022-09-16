@@ -31,7 +31,7 @@ class AutoparaInfo:
         string label to match to keys in remote_info dict
     """
 
-    _kwargs = {"num_inputs_per_python_subprocess": None,
+    _kwargs = {"num_inputs_per_python_subprocess": 1,
                "iterable_arg": 0,
                "skip_failed": True,
                "initializer": (None, []),

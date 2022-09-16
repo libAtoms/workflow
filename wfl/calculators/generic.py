@@ -71,5 +71,7 @@ def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_a
 
 
 def run(*args, **kwargs):
+    # NOTE: the default number of inputs is probably not what people want for DFT calculators
+    # can we handle it automatically somehow?
     return autoparallelize(run_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
 run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")

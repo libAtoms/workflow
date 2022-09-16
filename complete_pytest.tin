@@ -1,5 +1,8 @@
 #!/bin/bash
 
+module purge
+module load compiler/gnu python/system python_extras/quippy
+
 # should include both tin and tin_ssh - not as good as real remote machine, but maybe close enough
 export EXPYRE_PYTEST_SYSTEMS='tin'
 
@@ -9,24 +12,29 @@ echo "" >> complete_pytest.tin.out
 # buildcell
 export WFL_PYTEST_BUILDCELL=$HOME/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
 # VASP
-module load vasp
+module load dft/vasp
 export VASP_COMMAND=vasp.serial
-export VASP_COMMAND_GAMMA=vasp.gamma_serial
+export VASP_COMMAND_GAMMA=vasp.gamma.serial
 export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
 # QE
-module load pwscf
+module load dft/pwscf
 # no ORCA
 
-rm -rf $HOME/pytest_wfl
-pytest -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs $* >> complete_pytest.tin.out 2>&1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+# required for descriptor calc to not hang
+export OMP_NUM_THREADS=1
 
-l=$(egrep '^=.* (passed|failed)' complete_pytest.tin.out | sed -E -e 's/^=* //' -e 's/(,\s+[0-9]+\s+warnings)?\s+in .*===$//')
+rm -rf $HOME/pytest_wfl
+pytest -v -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs >> pytest_complete_test.out 2>&1
+
+l=`egrep '^=.*(passed|failed)' pytest_complete_test.out`
 
 # ===== 107 passed, 8 skipped, 2 xfailed, 214 warnings in 3402.72s (0:56:42) =====
 
 declare -A expected_n=( ["passed"]="107" ["skipped"]="8" ["xfailed"]="2" )
-echo $l | sed -E 's/\s*,\s*/\n/g' | while read out; do
-    out_n=$(echo $out | sed -e 's/ .*//' -e 's/,//')
+echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' | while read out; do
+    out_n=$(echo $out | sed -e 's/^==* //' -e 's/ .*//' -e 's/,//')
     out_cat=$(echo $out | sed -e 's/.* //' -e 's/,//')
     if [[ -z ${expected_n[$out_cat]} ]]; then
         echo "Unexpected result '$out_cat' num $out_n"
