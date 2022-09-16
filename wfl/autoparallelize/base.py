@@ -223,7 +223,7 @@ def _autoparallelize_ll(num_python_subprocesses, num_inputs_per_python_subproces
 
     if outputspec is not None:
         if not isinstance(outputspec, OutputSpec):
-            raise RuntimeError('autoparallelize requires outputspec be None or OutputSpec')
+            raise RuntimeError(f'autoparallelize requires outputspec be None or OutputSpec, got {type(outputspec)}')
         if outputspec.is_done():
             sys.stderr.write(f'Returning before {op} since output is done\n')
             return outputspec.to_ConfigSet()
