@@ -20,9 +20,10 @@ export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
 module load dft/pwscf
 # no ORCA
 
-export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1
+# required for descriptor calc to not hang
+export OMP_NUM_THREADS=1
 
 rm -rf $HOME/pytest_wfl
 pytest -v -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs >> pytest_complete_test.out 2>&1
