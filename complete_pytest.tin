@@ -27,7 +27,7 @@ export MKL_NUM_THREADS=1
 rm -rf $HOME/pytest_wfl
 pytest -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs >> pytest_complete_test.out 2>&1
 
-l=`egrep 'passed.*xfailed' pytest_complete_test.out`
+l=`egrep '^=.*(passed|failed)' pytest_complete_test.out`
 
 # ===== 99 passed, 8 skipped, 1 xfailed, 213 warnings in 3593.75s (0:59:53) ======
 
@@ -37,7 +37,7 @@ for r in "${results[@]}"; do
     n=$( echo $r | awk '{print $2}' )
     echo $l | grep -q " $n $label" pytest_complete_test.out
     if [ $? != 0 ]; then
-        echo "Unexpected number $label not $n '$l'" 1>&2
+        echo "Unexpected number of $label, not $n '$l'" 1>&2
         exit 1
     fi
 done

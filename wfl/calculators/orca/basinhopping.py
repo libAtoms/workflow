@@ -43,8 +43,9 @@ def evaluate_basin_hopping(*args, **kwargs):
     results : ConfigSet
         outputs.to_ConfigSet()
     """
-    return autoparallelize_ll(orca.evaluate_op, *args, basin_hopping=True, **kwargs)
-evaluate_basin_hopping.__doc__ = autoparallelize_docstring(orca.evaluate_op, "Atoms")
+    raise RuntimeError("implemented in terms of wfl.calculators.orca.evaluate_op, which does not exist")
+    # return autoparallelize(orca.evaluate_op, *args, basin_hopping=True, **kwargs)
+# evaluate_basin_hopping.__doc__ = autoparallelize_docstring(orca.evaluate_op, "Atoms")
 
 
 class BasinHoppingORCA(Calculator):
