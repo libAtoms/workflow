@@ -485,6 +485,11 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.generate.minimahopping">
+   wfl.generate.minimahopping module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.generate.optimize">
    wfl.generate.optimize module
   </a>
@@ -556,6 +561,11 @@ title="Print to PDF"
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.generate.md">
    wfl.generate.md module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.generate.minimahopping">
+   wfl.generate.minimahopping module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -840,6 +850,80 @@ Used during MD loop with one config at a time, returning True/False</p></li>
 Used at end of MD loop with entire trajectory as list, returns subset</p></li>
 <li><p><strong>abort_check</strong> (<em>default None</em><em>,</em>) – wfl.generate.md.abort_base.AbortBase - derived class that
 checks the MD snapshots and aborts the simulation on some condition.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) trajectories</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-wfl.generate.minimahopping">
+<span id="wfl-generate-minimahopping-module"></span><h2>wfl.generate.minimahopping module<a class="headerlink" href="#module-wfl.generate.minimahopping" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.minimahopping.atom_opt_hopping">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.minimahopping.</span></span><span class="sig-name descname"><span class="pre">atom_opt_hopping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ediff0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minima_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">totalsteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_failures</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">opt_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.minimahopping.atom_opt_hopping" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.minimahopping.run">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.minimahopping.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.minimahopping.run" title="Permalink to this definition">#</a></dt>
+<dd><p>runs a structure optimization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input configs</p></li>
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
+<li><p><strong>Ediff0</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>eV</em><em>)</em>) – initial energy acceptance threshold</p></li>
+<li><p><strong>T0</strong> (<em>float</em><em>, </em><em>default 1000</em><em> (</em><em>K</em><em>)</em>) – initial MD ‘temperature’</p></li>
+<li><p><strong>minima_threshold</strong> (<em>float</em><em>, </em><em>default 0.5</em><em> (</em><em>Å</em><em>)</em>) – threshold for identical configs</p></li>
+<li><p><strong>mdmin</strong> (<em>int</em><em>, </em><em>default 2</em>) – criteria to stop MD simulation (number of minima)</p></li>
+<li><p><strong>fmax</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>eV/Å</em><em>)</em>) – max force for optimizations</p></li>
+<li><p><strong>timestep</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>fs</em><em>)</em>) – timestep for MD simulations</p></li>
+<li><p><strong>totalsteps</strong> (<em>int</em><em>, </em><em>default 10</em>) – number of steps</p></li>
+<li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip optimizations that raise an exception</p></li>
+<li><p><strong>opt_kwargs</strong> – keyword arguments for MinimaHopping</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) trajectories</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>autopara_info: AutoparaInfo, default None</dt><dd><p>information for automatic parallelization</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.minimahopping.run_autopara_wrappable">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.minimahopping.</span></span><span class="sig-name descname"><span class="pre">run_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ediff0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minima_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">totalsteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_failures</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">opt_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.minimahopping.run_autopara_wrappable" title="Permalink to this definition">#</a></dt>
+<dd><p>runs a structure optimization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input configs</p></li>
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
+<li><p><strong>Ediff0</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>eV</em><em>)</em>) – initial energy acceptance threshold</p></li>
+<li><p><strong>T0</strong> (<em>float</em><em>, </em><em>default 1000</em><em> (</em><em>K</em><em>)</em>) – initial MD ‘temperature’</p></li>
+<li><p><strong>minima_threshold</strong> (<em>float</em><em>, </em><em>default 0.5</em><em> (</em><em>Å</em><em>)</em>) – threshold for identical configs</p></li>
+<li><p><strong>mdmin</strong> (<em>int</em><em>, </em><em>default 2</em>) – criteria to stop MD simulation (number of minima)</p></li>
+<li><p><strong>fmax</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>eV/Å</em><em>)</em>) – max force for optimizations</p></li>
+<li><p><strong>timestep</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>fs</em><em>)</em>) – timestep for MD simulations</p></li>
+<li><p><strong>totalsteps</strong> (<em>int</em><em>, </em><em>default 10</em>) – number of steps</p></li>
+<li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip optimizations that raise an exception</p></li>
+<li><p><strong>opt_kwargs</strong> – keyword arguments for MinimaHopping</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
