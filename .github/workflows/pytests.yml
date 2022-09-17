@@ -38,21 +38,38 @@ jobs:
       - name: Install pip from Conda
         run: conda install pip
 
-      - name: Install phono3py from Conda forge
-        run: conda install -c conda-forge phono3py h5py
-
       - name: Install dependencies from pip (some will already be taken care of by conda's phonop3py and its dependencies)
-        run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib phonopy phono3py rdkit-pypi flake8 pytest pytest-cov
+        run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib rdkit-pypi flake8 pytest pytest-cov
+
+      - name: Install intel-mkl-full for phono3py
+        run: |
+          wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
+          sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
+          sudo sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list'
+          sudo apt-get update
+          sudo apt-get install intel-mkl-64bit-2018.2-046
+
+      - name: Install phono3py from source
+        run: |
+            source /opt/intel/compilers_and_libraries_2018.2.199/linux/mkl/bin/mklvars.sh intel64
+
+            git clone https://github.com/phonopy/phonopy
+            cd phonopy
+            python3 setup.py build
+            python3 -m pip install .
+            cd ..
+
+            git clone https://github.com/phonopy/phono3py
+            cd phono3py
+            python3 setup.py build
+            python3 setup.py install
+            cd ..
 
       - name: Install Quippy from PyPI
         run: pip install quippy-ase
 
       - name: Install wfl (expyre and universalSOAP are dependencies)
         run: pip install .
-
-      - name: Update apt-get for various later package instralls
-        run: |
-          sudo apt-get update
 
       - name: Install Quantum Espresso
         run: |
