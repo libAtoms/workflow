@@ -54,6 +54,10 @@ class Espresso(ase.calculators.espresso.Espresso):
 
     default_parameters = {} 
 
+    # default value of wfl_num_inputs_per_python_subprocess for calculators.generic,
+    # to override that function's built-in default of 10
+    wfl_generic_num_inputs_per_python_subprocess = 1
+
     def __init__(self, atoms=None, keep_files="default", 
                  dir_prefix="run_QE_", scratch_path=None,
                  calculator_command=None, **kwargs):
