@@ -1,0 +1,65 @@
+# This is testing the python versions *other than* the
+#   one in the QUIP Docker, which is 3.7.10 at the time
+#   of writing this. Coverage is disabled.
+
+name: Build docs
+
+# on all push actions AND can be triggered manually as well
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ 3.8 ]
+      max-parallel: 5
+    env:
+      coverage-on-version: 3.8
+      use-mpi: True
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Add conda to system path
+        run: |
+          # $CONDA is an environment variable pointing to the root of the miniconda directory
+          echo $CONDA/bin >> $GITHUB_PATH
+
+      # - name: Install Dependencies from Conda
+        # run: conda env update --file=devtools/conda-envs/environment.yml --name=base
+
+      - name: Install pip from Conda
+        run: conda install pip
+
+      - name: Install phono3py from Conda forge
+        run: conda install -c conda-forge phono3py h5py
+
+      - name: Install dependencies from pip (some will already be taken care of by conda's phonop3py and its dependencies)
+        run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib phonopy phono3py rdkit-pypi flake8 pytest pytest-cov
+
+      - name: Install Quippy from PyPI
+        run: pip install quippy-ase
+
+      - name: Install wfl (expyre and universalSOAP are dependencies)
+        run: pip install .
+
+      - name: Build documentation
+        run: |
+          pip install sphinx sphinx-book-theme docutils==0.16 sphinx-click myst-parser
+          pip install --upgrade jinja2
+          cd docs
+          make html
+      - name: Deploy documentation
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/build/html

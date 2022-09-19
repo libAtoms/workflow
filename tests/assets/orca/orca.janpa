@@ -1,0 +1,367 @@
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    janpa: A cross-platform open-source implementation of NPA        * 
+ *    and other electronic structure analysis methods with Java        * 
+ *        A part of JANPA package,   http://janpa.sourceforge.net      * 
+ *                    Version:    2.02 (13-01-2019)                    * 
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ (c) Tymofii Nikolaienko, 2014-2019
+
+ If any results obtained with this program are published,
+ or for any other reasons, please, cite this work as: 
+ 1) T.Y.Nikolaienko, L.A.Bulavin; Int. J. Quantum Chem. (2019), 
+    Vol.119, page e25798, DOI: 10.1002/qua.25798
+ 2) T.Y.Nikolaienko, L.A.Bulavin, D.M.Hovorun; Comput.Theor.Chem.(2014),
+    Vol.1050, pages 15-22, DOI: 10.1016/j.comptc.2014.10.002
+
+                          * * *                                         
+
+Settings used in this run:
+
+ -i: orca.molden.output
+ -npacharges: (empty)
+ -NAO_Molden_File: (empty)
+ -LHO_Molden_File: (empty)
+ -CLPO_Molden_File: (empty)
+ -PrintGeom: false
+ -WibergBondOrders_File: (empty)
+ -D_Matrix_File: (empty)
+ -S_Matrix_File: (empty)
+ -SDS_Matrix_File: (empty)
+ -PNAO_OverlapMatrix_File: (empty)
+ -PNAO_SDS_Matrix_File: (empty)
+ -NMB_old_Overlap_Matrix_File: (empty)
+ -NMB_old_SDS_Matrix_File: (empty)
+ -NRB_old_Overlap_Matrix_File: (empty)
+ -NRB_new_Overlap_Matrix_File: (empty)
+ -S_Matrix_after_ON2_File: (empty)
+ -SDS_Matrix_after_ON2_File: (empty)
+ -NRB_Overlap_after_OW_heavy_File: (empty)
+ -NRB_Overlap_after_Schmidt2_File: (empty)
+ -NRB_Overlap_after_OW2_final_File: (empty)
+ -OW2_File: (empty)
+ -S_Matrix_after_OW2_File: (empty)
+ -SDS_Matrix_after_OW2_File: (empty)
+ -SDS_NAO_File: (empty)
+ -NAO2AO_File: (empty)
+ -PNAO2AO_File: (empty)
+ -CLPO2LHO_File: (empty)
+ -LHO2NAO_File: (empty)
+ -LPO2AHO_File: (empty)
+ -AHO2NAO_File: (empty)
+ -doFock: false
+ -Fock_AO_File: (empty)
+ -Fock_NAO_File: (empty)
+ -printnmbfock: false
+ -PNAO_Molden_File: (empty)
+ -AHO_Molden_File: (empty)
+ -LPO_Molden_File: (empty)
+ -MatrixMaxValuesPerLine: 0
+ -MatrixFloatNumberFormat: %.5f
+ -maximumBondIonicity: 9.00E-01
+ -RyOccPrintThreshold: 1.00E-03
+ -HybrOptOccConvThresh: 1.00E-05
+ -HybrOptMaxIter: 1000
+ -verboseprint: false
+ -directNRBwsw: false
+ -heavyNRBthreshold: 1.00E-04
+ -overlap_straightforward: false
+ -p: (empty)
+
+                          * * *                                         
+
+Loading MOLDEN from orca.molden.output
+Basis functions are spherical: true
+Total number of basis functions: 18
+Total number of different contractions (radial parts): 10
+Highest angular momentum: d (Lmax = 2)
+Total number of MO: 36
+
+Data loaded successfully
+ Number of basis functions: 18; number of molecular orbitals: 36 
+
+Building overlap S and dipole matrices...
+Overlap & dipole integrals evaluated in 0.005 seconds
+Checking whether the basis functions are unity-normalized...
+ Maximum deviation of the basis function norm2 from unity: BFN 6 (0-based num.), max|norm2-1| = 4.000E-10 
+Checking for the eigenvalues (linear (in)dependency) of the basis function overlap matrix...
+The smallest eigenvalue of the basis function overlap matrix: 6.082E-02 
+Checking whether the orbitals are unity-normalized...
+Checking MO overlap matrix...
+ Maximum of MO |norm2-1|: 3.398E-10 (MO   12)
+ Maximum absolute value of off-diagonal MO overlap element: 3.445E-10 (< MO    3 | MO   12 >)
+First-order reduced density matrix is OK.
+
+Building density matrix D... done.
+Building D.S... done.
+Total number of electrons: 10.000000
+Sum of electrons charges and the nuclei charges: -0.00000 
+
+Performing Mulliken and Lowdin population analyses...
+   Atom	Mulliken  	Lowdin    	Mulliken	Lowdin
+       	Population	Population	Charge  	Charge
+     O1	 8.59695	 8.56117	-0.59695	-0.56117
+     H2	 0.70152	 0.71941	 0.29848	 0.28059
+     H3	 0.70152	 0.71941	 0.29848	 0.28059
+
+Building S.D.S... done.
+
+                          * * *                                         
+
+Creating NAOs
+
+
+STEP 1. Produce PNAOs
+
+ Total number of natural functions produced: 18
+Sorting PNAOs...
+
+STEP 2. Split PNAOs into NMB / NRB sets
+
+ Number of basis functions in teh Natural Minimal Basis (NMB) set for each center: 
+center   1:   2 of s |  3 of p |  0 of d |  0 of f |  0 of g |
+center   2:   1 of s |  0 of p |  0 of d |  0 of f |  0 of g |
+center   3:   1 of s |  0 of p |  0 of d |  0 of f |  0 of g |
+In total: NMB set has 7 functions, NRB set has 11 functions; 
+
+Trace of the PNAO overlap matrix: 18.0000000 (should be equal to 18, the total number of PNAOs)
+ The trace of SDS matrix in PNAO basis = 13.071296130526846
+
+STEP 3. Weighted orthogonalization of NMB PNAOs
+
+ min weight of NMB PNAO = 1.4036623658512402
+
+STEP 4. Schmidt orthogonalization of NRBs to new NMBs
+
+
+STEP 5. Intracenter naturalization of new NRBs
+
+ Total number of natural functions produced: 11
+
+STEP 6. Weighted orthogonalization of naturalized NRBs
+
+Maximum weight of NRB function = 1.65951E-02
+ min weight = 0.0023783138337209256
+ |S_NRB - 1| = 2.04201E-14 (Should be VERY close to zero!)
+
+STEP 7. Final Intracenter Natural Transformation withing the full set of functions
+
+ Total number of natural functions produced: 18
+ SQRT{ SUM[(NaoOverlap_ij - delta_ij)^2] } = 2.19e-14 (should be VERY close to zero) 
+ max_offdiag = 2.71e-15 (should be VERY close to zero) 
+                          * * *                                         
+
+ Final NAO occupancies and leading AO terms:
+
+NAO #                 Name  Occupancy                             Leading term
+    1         A1*: R1*s(0)  0.0024542              (-3.01)*BF[3 = A1: R3*s(0)]
+    2          A1: R2*s(0)  1.7558718               (0.78)*BF[2 = A1: R2*s(0)]
+    3          A1: R3*s(0)  1.9998774              (-1.01)*BF[1 = A1: R1*s(0)]
+    4         A1*: R4*p(0)  0.0013550              (-1.05)*BF[7 = A1: R5*p(0)]
+    5         A1*: R4*p(1)  0.0029709              (-1.65)*BF[8 = A1: R5*p(1)]
+    6        A1*: R4*p(-1)  0.0005523             (-1.38)*BF[9 = A1: R5*p(-1)]
+    7          A1: R5*p(0)  1.9973254               (0.66)*BF[4 = A1: R4*p(0)]
+    8          A1: R5*p(1)  1.4098880               (0.76)*BF[5 = A1: R4*p(1)]
+    9         A1: R5*p(-1)  1.6853647              (0.72)*BF[6 = A1: R4*p(-1)]
+   10         A1*: R6*d(0)  0.0013929              (1.00)*BF[10 = A1: R6*d(0)]
+   11         A1*: R6*d(1)  0.0012636              (1.00)*BF[11 = A1: R6*d(1)]
+   12        A1*: R6*d(-1)  0.0025597             (1.10)*BF[12 = A1: R6*d(-1)]
+   13         A1*: R6*d(2)  0.0007765              (1.05)*BF[13 = A1: R6*d(2)]
+   14        A1*: R6*d(-2)  0.0000000             (1.00)*BF[14 = A1: R6*d(-2)]
+   15         A2*: R7*s(0)  0.0021878              (1.87)*BF[16 = A2: R8*s(0)]
+   16          A2: R8*s(0)  0.5669859              (1.20)*BF[15 = A2: R7*s(0)]
+   17         A3*: R9*s(0)  0.0021878             (1.87)*BF[18 = A3: R10*s(0)]
+   18         A3: R10*s(0)  0.5669859              (1.20)*BF[17 = A3: R9*s(0)]
+ trace = 10.00000000065587
+
+Final electron populations and NPA charges:
+
+Center	Nuclear	 Electron  	  NMB       	NPA   
+      	 charge	 population	  population	charge
+   O1	    8.0	  8.8616525	   8.8483273	-0.8616525437
+   H2	    1.0	  0.5691737	   0.5669859	 0.4308262720
+   H3	    1.0	  0.5691737	   0.5669859	 0.4308262710
+
+Angular momentum contributions of the total atomic population:
+
+   Cntr           s           p           d           f           g
+     O1   3.7582034   5.0974564   0.0059927   0.0000000   0.0000000
+     H2   0.5691737   0.0000000   0.0000000   0.0000000   0.0000000
+     H3   0.5691737   0.0000000   0.0000000   0.0000000   0.0000000
+
+
+                          * * *                                         
+
+Wiberg-Mayer bond indices (based on density matrix in NAO basis):
+Centr. A/B         1         2         3
+      1    ( 1.6315)    0.8158    0.8158
+      2              ( 0.8168)    0.0010
+      3                        ( 0.8168)
+
+                          * * *                                         
+
+Creating  LPOs (Localized Property-optimized Orbitals)
+
+
+Creating initial guess...
+Optimizing LPOs...
+
+Finding an optimal hybrid pairing...
+    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17
+   14   16   -1   -1   -1   -1   -1   17   15   -1   -1   -1   -1   -1    0    8    1    7
+LPO iteration  1: hybrids reconnected, target function =   19.9869759
+Iterative optimization of atomic hybrids
+           Target                 Total        max.atomic       Total        max.atomic     Nxt.step
+  Itr.    function    new-old  ||Unew-U||^2   ||unew-u||^2   ||Dnew-D||^2   ||dnew-d||^2     lambda 
+    1      19.9870   +2.0e+01    0.289966      0.0206545      0.00084        0.0003849       (none)
+    2      19.9870   +6.5e-06    << Converged! (threshold = 1.00e-05) >>
+Optimization of hybrids finished
+LPO iteration  1: hybrids optimized, target function =   19.9869823
+Finding an optimal hybrid pairing...
+    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17
+   14   16   -1   -1   -1   -1   -1   17   15   -1   -1   -1   -1   -1    0    8    1    7
+LPO iteration  2: hybrids reconnected, target function =   19.9869823
+Done! (in 1 iterations)
+
+
+*** Summary of LPO  results
+
+  LPO 	         D e s c r i p t i o n     	Occupancy	Composition
+    1	(BD) O1-H2, Io = 1.0000            	0.00219  	h1@O1 * ( 0.0007) + h15@H2 * ( 1.0000)	
+    2	     O1-H2, antibonding (NB)       	  0.00000	h1@O1 * (-1.0000) + h15@H2 * ( 0.0007)	
+    3	(BD) O1-H3, Io = 0.9985            	1.99850  	h2@O1 * ( 0.9996) + h17@H3 * (-0.0274)	
+    4	     O1-H3, antibonding (NB)       	  0.00069	h2@O1 * (-0.0274) + h17@H3 * (-0.9996)	
+    5	(LP)  O1                           	2.00000  	1.0 * h3@O1
+    9	(LP)  O1                           	1.99994  	1.0 * h7@O1
+   10	(BD) O1-H3, Io = 0.4329            	1.99915  	h8@O1 * ( 0.8464) + h18@H3 * (-0.5325)	
+   11	     O1-H3, antibonding (NB)       	  0.00019	h8@O1 * (-0.5325) + h18@H3 * (-0.8464)	
+   12	(BD) O1-H2, Io = 0.4329            	1.99915  	h9@O1 * ( 0.8464) + h16@H2 * (-0.5325)	
+   13	     O1-H2, antibonding (NB)       	  0.00019	h9@O1 * (-0.5325) + h16@H2 * (-0.8464)	
+
+Note: 8 one-center RY orbitals, each having occupancy below 1.00e-03,
+      were not printed (use the program option -RyOccPrintThreshold to change this behavior)
+      Total occupancy of these RY orbitals is 0.00000
+
+
+Number of two-center(2C) BD orbitals for each pair of atoms
+Centr. A/B         1         2         3
+      1    (      4)         2         2
+      2              (      2)         0
+      3                        (      2)
+
+>> LPO  occupancy summary >>
+       bonding (BD):      5.99899 in    4 oribtals
+  anti-bonding (NB):      0.00107 in    4 oribtals
+ 1c-lone pairs (LP):      3.99994 in    2 oribtals
+ 1c-unoccupied (RY):      0.00000 in    8 oribtals
+
+Method        BD+LP....in      NB+RY     BD+NB+LP  BD+NB+LP+RY      trace(D)   Sum[Bd^2+Lp^2]    ||D||^2
+  LPO       9.99893     6    0.00107     10.00000     10.00000       10.000        19.9870       19.9998
+
+
+                          * * *                                         
+
+Creating CLPOs (Chemist's Localized Property-optimized Orbitals)
+
+
+Optimizing CLPOs...
+Finding an optimal hybrid pairing...
+    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20   21   22   23   24   25   26   27   28   29   30   31   32   33   34   35
+   18   19   20   -1   -1   -1   24   17   15   -1   -1   -1   -1   -1   32    8   34    7    0    1    2   -1   -1   -1    6   -1   -1   -1   -1   -1   -1   -1   14   -1   16   -1
+CLPO iteration  1: hybrids reconnected, target function =   19.9809949
+Iterative optimization of atomic hybrids
+           Target                 Total        max.atomic       Total        max.atomic     Nxt.step
+  Itr.    function    new-old  ||Unew-U||^2   ||unew-u||^2   ||Dnew-D||^2   ||dnew-d||^2     lambda 
+    1      19.9810   +2.0e+01    0.827184      0.0590739      0.00025        0.0001617       (none)
+    2      19.9810   +1.1e-06    << Converged! (threshold = 1.00e-05) >>
+Optimization of hybrids finished
+CLPO iteration  1: hybrids optimized, target function =   19.9809960
+Finding an optimal hybrid pairing...
+    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20   21   22   23   24   25   26   27   28   29   30   31   32   33   34   35
+   18   19   20   -1   -1   -1   24   17   15   -1   -1   -1   -1   -1   32    8   34    7    0    1    2   -1   -1   -1    6   -1   -1   -1   -1   -1   -1   -1   14   -1   16   -1
+CLPO iteration  2: hybrids reconnected, target function =   19.9809960
+Done! (in 1 iterations)
+
+
+*** Summary of CLPO results
+
+  CLPO	         D e s c r i p t i o n     	Occupancy	Composition
+    2	(LP)  O1                           	1.99700  	1.0 * h2@O1
+    3	(LP)  O1                           	2.00000  	1.0 * h3@O1
+    7	(LP)  O1                           	1.99994  	1.0 * h7@O1
+    8	(BD) O1-H3, Io = 0.4329            	1.99915  	h8@O1 * ( 0.8464) + h18@H3 * (-0.5325)	
+    9	     O1-H3, antibonding (NB)       	  0.00019	h8@O1 * (-0.5325) + h18@H3 * (-0.8464)	
+   10	(BD) O1-H2, Io = 0.4329            	1.99915  	h9@O1 * ( 0.8464) + h16@H2 * (-0.5325)	
+   11	     O1-H2, antibonding (NB)       	  0.00019	h9@O1 * (-0.5325) + h16@H2 * (-0.8464)	
+   17	                            H2 (RY)	  0.00219	1.0 * h15@H2
+   18	                            H3 (RY)	  0.00219	1.0 * h17@H3
+
+Note: 9 one-center RY orbitals, each having occupancy below 1.00e-03,
+      were not printed (use the program option -RyOccPrintThreshold to change this behavior)
+      Total occupancy of these RY orbitals is 0.00000
+
+
+Number of two-center(2C) BD orbitals for each pair of atoms
+Centr. A/B         1         2         3
+      1    (      2)         1         1
+      2              (      1)         0
+      3                        (      1)
+VAL: 	  O 	 2 
+VAL: 	  H 	 1 
+VAL: 	  H 	 1 
+
+>> CLPO occupancy summary >>
+       bonding (BD):      3.99830 in    2 oribtals
+  anti-bonding (NB):      0.00038 in    2 oribtals
+ 1c-lone pairs (LP):      5.99694 in    3 oribtals
+ 1c-unoccupied (RY):      0.00438 in   11 oribtals
+
+Method        BD+LP....in      NB+RY     BD+NB+LP  BD+NB+LP+RY      trace(D)   Sum[Bd^2+Lp^2]    ||D||^2
+  CLPO      9.99524     5    0.00476      9.99562     10.00000       10.000        19.9810       19.9998
+
+                          * * *                                         
+
+Atomic connectivity analysis based on CLPO bonding graph:
+
+There are 1 molecule(s) in the system
+(the 'molecule' is defined as the set of atoms linked with BD orbitals)
+
+Molecule   TotalNPA    NumberOf   ListOf 
+id         charge      atoms      atoms...
+   1       -0.00000        3      O1 H2 H3
+
+Note: The total NPA charge is computed as the sum of NPA charge of atoms belonging to each molecule
+
+                          * * *                                         
+
+Approximate charge transfer analysis in CLPO basis
+NOTE: this is an experimental feature AND IS SUBJECT TO CHANGE!
+ We expect to have the underlying theory published soon...
+
+Threshold for printing: 0.01000 
+
+IntrAfragment charge transfers (conjugation analysis, etc.)
+CT within fragment 1
+
+ orb.num.   description  occup.  -->  charge, e  -->   occup.   description  orb.num.
+
+65 orbital pairs with total charge transfer of 0.00470 were not printed
+
+
+IntErfragment charge transfers (donor-acceptor analysis, etc.)
+
+Inter-molecular charge transfer summary (NEW):
+Mol  Accepted -Donated  =  got_electrons
+  1  +0.00000 -0.00000  =   +0.00000
+
+                          * * *                                         
+
+
+
+0 warning(s)
+
+Total run time: 0 min, 0.1 sec
+
+
+                          * * *                                         
+

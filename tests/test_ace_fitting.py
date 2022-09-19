@@ -6,9 +6,10 @@ from pathlib import Path
 
 import pytest
 
-from wfl.configset import ConfigSet_in
+from wfl.configset import ConfigSet
 from wfl.fit.ace import fit, prepare_params, prepare_configs
 
+@pytest.mark.skipif("WFL_ACE_FIT_COMMAND" not in os.environ, reason="No WFL_ACE_FIT_COMMAND set")
 def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
 
     have_julia_with_modules = os.system("julia -e  'using ACE1pack'") == 0
@@ -27,13 +28,13 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     # Only mandatory params
     params = {
         "basis": {
-            "rpi": {"type": "rpi", "species": ["B"], "N": 3, "maxdeg": 6},
+            "ace": {"type": "ace", "species": ["B"], "N": 3, "maxdeg": 6},
             "pair": {"type": "pair", "species": ["B"], "maxdeg": 4}},
-        "solver": {"solver": "lsqr"}}
+        "solver": {"type": "lsqr"}}
 
     t0 = time.time()
     ACE_size = fit(
-        fitting_configs=ConfigSet_in(input_files=fit_config_file),
+        fitting_configs=ConfigSet(input_files=fit_config_file),
         ACE_name="ACE.B_test",
         ace_fit_params=params, 
         ref_property_prefix="REF_",
@@ -49,7 +50,7 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
 
     t0 = time.time()
     ACE_size_rerun = fit(
-        fitting_configs=ConfigSet_in(input_files=fit_config_file),
+        fitting_configs=ConfigSet(input_files=fit_config_file),
         ACE_name="ACE.B_test",
         ace_fit_params=params, 
         ref_property_prefix="REF_",
@@ -63,7 +64,7 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     # rerun should reuse files, be much faster
     assert time_rerun < time_actual / 10
 
-
+@pytest.mark.skipif("WFL_ACE_FIT_COMMAND" not in os.environ, reason="No WFL_ACE_FIT_COMMAND set")
 def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
 
     have_julia_with_modules = os.system("julia -e  'using ACE1pack'") == 0
@@ -84,14 +85,14 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     params = {
         "data": {},
         "basis": {
-            "rpi": {"type": "rpi", "species": ["B"], "N": 3, "maxdeg": 6},
+            "ace": {"type": "ace", "species": ["B"], "N": 3, "maxdeg": 6},
             "pair": {"type": "pair", "species": ["B"], "maxdeg": 4}},
-        "solver": {"solver": "lsqr"}}
+        "solver": {"type": "lsqr"}}
 
 
     t0 = time.time()
     ACE = fit(
-        fitting_configs=ConfigSet_in(input_files=fit_config_file),
+        fitting_configs=ConfigSet(input_files=fit_config_file),
         ACE_name="ACE.B_test",
         ace_fit_params=params, 
         ref_property_prefix="REF_",
@@ -106,7 +107,7 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
 
     t0 = time.time()
     ACE = fit(
-        fitting_configs=ConfigSet_in(input_files=fit_config_file),
+        fitting_configs=ConfigSet(input_files=fit_config_file),
         ACE_name="ACE.B_test",
         ace_fit_params=params, 
         ref_property_prefix="REF_",
@@ -117,12 +118,14 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     # rerun should reuse files, be much faster
     assert time_rerun < time_actual / 10
 
-
+@pytest.mark.skipif("WFL_ACE_FIT_COMMAND" not in os.environ, reason="No WFL_ACE_FIT_COMMAND set")
 @pytest.mark.remote
-def test_ace_fit_remote(request, tmp_path, expyre_systems, monkeypatch):
-    ri = {'resources' : {'max_time': '10m', 'n': [1, 'nodes']},
+def test_ace_fit_remote(request, tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
+    ace_fit_command = os.environ["WFL_ACE_FIT_COMMAND"]
+    ri = {'resources' : {'max_time': '10m', 'num_nodes': 1},
           'pre_cmds': [ f'export PYTHONPATH={Path(__file__).parent.parent}:$PYTHONPATH'],
-          'env_vars' : ['ACE_FIT_JULIA_THREADS=$( [ $EXPYRE_NCORES_PER_NODE -gt 2 ] && echo 2 || echo $(( $EXPYRE_NCORES_PER_NODE )) )', 'ACE_FIT_BLAS_THREADS=$EXPYRE_NCORES_PER_NODE' ]}
+          'env_vars' : ['WFL_ACE_FIT_JULIA_THREADS=$( [ $EXPYRE_NUM_CORES_PER_NODE -gt 2 ] && echo 2 || echo $(( $EXPYRE_NUM_CORES_PER_NODE )) )', 'WFL_ACE_FIT_BLAS_THREADS=$EXPYRE_NUM_CORES_PER_NODE' ,
+          f'WFL_ACE_FIT_COMMAND="{ace_fit_command}"']}
 
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
@@ -131,12 +134,7 @@ def test_ace_fit_remote(request, tmp_path, expyre_systems, monkeypatch):
         ri['sys_name'] = sys_name
         ri['job_name'] = 'pytest_ace_fit_'+sys_name
 
-        if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-            ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
-            if 'resources' in ri_extra:
-                ri['resources'].update(ri_extra['resources'])
-                del ri_extra['resources']
-            ri.update(ri_extra)
+        remoteinfo_env(ri)
 
-        monkeypatch.setenv('WFL_ACE_FIT_REMOTEINFO', json.dumps(ri))
+        monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
         test_ace_fit(request, tmp_path, monkeypatch, run_dir=f'run_dir_{sys_name}')

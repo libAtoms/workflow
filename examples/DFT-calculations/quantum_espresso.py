@@ -8,7 +8,7 @@ from pprint import pprint
 import requests
 
 from wfl.calculators.dft import evaluate_dft
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.utils.logging import print_log
 
 PSPOT_DOWNLOAD_MAP = [
@@ -66,12 +66,12 @@ def main(verbose=True):
     # replace this with your local configuration in productions
     pspot_dir = os.path.join(os.getcwd(), "QE-pseudo-potentials")
     pspot_map = download_pseudo_potentials(pspot_dir, verbose=verbose)
-    base_rundir = "QE-calculations"
+    workdir_root = "QE-calculations"
     qe_command = "mpirun -n 2 pw.x"  # local command for pw.x, with MPI if needed
 
     # IO
-    configs_in = ConfigSet_in(input_files="periodic_structures.xyz")
-    configs_out = ConfigSet_out(
+    configs_in = ConfigSet(input_files="periodic_structures.xyz")
+    configs_out = OutputSpec(
         output_files="DFT_evaluated.QuantumEspresso.periodic_structures.xyz",
         force=True,
         all_or_none=True,
@@ -89,7 +89,7 @@ def main(verbose=True):
         print_log("Quantum Espresso example calculation")
         print(configs_in)
         print(configs_out)
-        print(f"base_rundir: {base_rundir}")
+        print(f"workdir_root: {workdir_root}")
         print(f"qe_command: {qe_command}")
         pprint(settings)
 
@@ -98,7 +98,7 @@ def main(verbose=True):
         calculator_name="QE",
         inputs=configs_in,
         outputs=configs_out,
-        base_rundir=base_rundir,  # directory where to put the calculation directories
+        workdir_root=workdir_root,  # directory where to put the calculation directories
         calculator_command=qe_command,  # local command for pw.x, with MPI if needed
         calculator_kwargs=settings,
         keep_files="default",  # keeps the .pwo file only

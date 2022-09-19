@@ -15,51 +15,48 @@ import pytest
 
 pytestmark = pytest.mark.remote
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.calculators import generic
-from wfl.generate_configs import minim
+from wfl.generate import optimize
 from wfl.calculators.dft import evaluate_dft
 
-
-def test_generic_calc(tmp_path, expyre_systems, monkeypatch):
+def test_generic_calc(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
-        do_generic_calc(tmp_path, sys_name, monkeypatch)
+        do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env)
 
 
 # do we need this tested remotely as well?
-def test_minim_local(tmp_path, expyre_systems, monkeypatch):
+def test_minim_local(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
-        do_minim(tmp_path, sys_name, monkeypatch)
+        do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env)
 
 
-def test_vasp_fail(tmp_path, expyre_systems, monkeypatch):
+def test_vasp_fail(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
         if sys_name.startswith('_'):
             continue
 
-        do_vasp_fail(tmp_path, sys_name, monkeypatch)
+        do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env)
 
 
-def do_vasp_fail(tmp_path, sys_name, monkeypatch):
-    ri = {'sys_name': sys_name, 'job_name': 'test_vasp_'+sys_name,
+def do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env):
+    ri = {'sys_name': sys_name, 'job_name': 'pytest_vasp_'+sys_name,
           'env_vars' : ['VASP_COMMAND=NONE', 'VASP_COMMAND_GAMMA=NONE'],
           'input_files' : ['POTCARs'],
-          'resources': {'max_time': '5m', 'n': (1, 'nodes')},
-          'job_chunksize': 1, 'check_interval': 10}
+          'resources': {'max_time': '5m', 'num_nodes': 1},
+          'num_inputs_per_queued_job': 1, 'check_interval': 10}
 
-    if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-        ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
-        ri.update(ri_extra)
+    remoteinfo_env(ri)
 
     ri = {'test_remote_run.py::do_vasp_fail,calculators/dft.py::evaluate_dft': ri}
     print('RemoteInfo', ri)
-    monkeypatch.setenv('WFL_AUTOPARA_REMOTEINFO', json.dumps(ri))
+    monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
 
     nconfigs = 2
     nat = 8
@@ -70,8 +67,8 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch):
     ase.io.write(tmp_path / f'ats_i_{sys_name}.xyz', ats)
 
     # calculate values via iterable loop with real jobs
-    ci = ConfigSet_in(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
-    co = ConfigSet_out(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
+    ci = ConfigSet(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
+    co = OutputSpec(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
 
     # cd to test dir, so that things like relative paths for POTCARs work
     # NOTE: very cumbersome with VASP, maybe need more sophisticated control of staging files?
@@ -84,7 +81,7 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch):
 
     # jobs should fail because of bad executable
     results = evaluate_dft(inputs=ci, outputs=co, calculator_name='VASP',
-                           base_rundir='.', calculator_kwargs={'encut': 200, 'VASP_PP_PATH': 'POTCARs'},
+                           workdir_root='.', calculator_kwargs={'encut': 200, 'VASP_PP_PATH': 'POTCARs'},
                            output_prefix='TEST_')
 
     for at in ase.io.read(tmp_path / f'ats_o_{sys_name}.xyz', ':'):
@@ -93,21 +90,16 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch):
             assert not k.startswith('TEST_')
 
 
-def do_generic_calc(tmp_path, sys_name, monkeypatch):
-    ri = {'sys_name': sys_name, 'job_name': 'test_'+sys_name,
-          'resources': {'max_time': '1h', 'n': (1, 'nodes')},
-          'job_chunksize': -36, 'check_interval': 10}
+def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
+    ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
+          'resources': {'max_time': '1h', 'num_nodes': 1},
+          'num_inputs_per_queued_job': -36, 'check_interval': 10}
 
-    if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-        ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
-        if 'resources' in ri_extra:
-            ri['resources'].update(ri_extra['resources'])
-            del ri_extra['resources']
-        ri.update(ri_extra)
+    remoteinfo_env(ri)
 
     ri = {'test_remote_run.py::do_generic_calc,calculators/generic.py::run': ri}
     print('RemoteInfo', ri)
-    monkeypatch.setenv('WFL_AUTOPARA_REMOTEINFO', json.dumps(ri))
+    monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
 
     nconfigs = 1000
     nat = 40
@@ -134,18 +126,18 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch):
     print('len(ref_Es)', len(ref_Es))
 
     # calculate values via iterable loop with real jobs
-    ci = ConfigSet_in(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
-    co = ConfigSet_out(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
+    ci = ConfigSet(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
+    co = OutputSpec(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
 
     # do not mark as processed so next call can reuse
-    monkeypatch.setenv('WFL_AUTOPARA_REMOTE_NO_MARK_PROCESSED', '1')
+    monkeypatch.setenv('WFL_EXPYRE_NO_MARK_PROCESSED', '1')
 
     t0 = time.time()
     results = generic.run(inputs=ci, outputs=co, calculator=calc)
     dt = time.time() - t0
     print('remote parallel calc_time', dt)
 
-    monkeypatch.delenv('WFL_AUTOPARA_REMOTE_NO_MARK_PROCESSED')
+    monkeypatch.delenv('WFL_EXPYRE_NO_MARK_PROCESSED')
 
     dev = [ (np.abs(at.info['EMT_energy'] - ref_E)) / np.maximum(np.abs(ref_E), 1.0e-3) for at, ref_E in zip(results, ref_Es) ]
     print('max deviation', max(dev))
@@ -153,29 +145,28 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch):
 
     # pretend to run again, as though it was interrupted
     (tmp_path / f'ats_o_{sys_name}.xyz').unlink()
-    ci = ConfigSet_in(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
-    co = ConfigSet_out(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
+    ci = ConfigSet(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
+    co = OutputSpec(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
 
     t0 = time.time()
     results = generic.run(inputs=ci, outputs=co, calculator=calc)
-    dt = time.time() - t0
-    print('remote parallel calc_time', dt)
+    dt_rerun = time.time() - t0
+    print('remote parallel calc_time', dt_rerun)
 
     dev = [ (np.abs(at.info['EMT_energy'] - ref_E)) / np.maximum(np.abs(ref_E), 1.0e-3) for at, ref_E in zip(results, ref_Es) ]
     print('max deviation', max(dev))
     assert max(dev) < 1.0e-8
 
     # maybe can do the test without being so sensitive to timing?
-    assert dt < 20
+    assert dt_rerun < 20
 
 
-def do_minim(tmp_path, sys_name, monkeypatch):
-    ri = {'sys_name': sys_name, 'job_name': 'test_'+sys_name,
-          'resources': {'max_time': '1h', 'n': (1, 'nodes')},
-          'job_chunksize': -36, 'check_interval': 10}
-    if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-        ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
-        ri.update(ri_extra)
+def do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env):
+    ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
+          'resources': {'max_time': '1h', 'num_nodes': 1},
+          'num_inputs_per_queued_job': -36, 'check_interval': 10}
+
+    remoteinfo_env(ri)
 
     ri = {'test_remote_run.py::do_minim,generate_configs/minim.py::run': ri}
     print('RemoteInfo', ri)
@@ -199,18 +190,18 @@ def do_minim(tmp_path, sys_name, monkeypatch):
     ase.io.write(tmp_path / f'ats_i_{sys_name}_2.xyz', ats_2)
 
     infiles = [str(tmp_path / f'ats_i_{sys_name}_1.xyz'), str(tmp_path / f'ats_i_{sys_name}_2.xyz')]
-    ci = ConfigSet_in(input_files=infiles)
+    ci = ConfigSet(input_files=infiles)
 
     # run locally
-    co = ConfigSet_out(output_files={f: f.replace('_i_', '_o_local_') for f in infiles})
-    results = minim.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
+    co = OutputSpec(output_files={f: f.replace('_i_', '_o_local_') for f in infiles})
+    results = optimize.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
 
     # run remotely
-    monkeypatch.setenv('WFL_AUTOPARA_REMOTEINFO', json.dumps(ri))
+    monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
 
-    co = ConfigSet_out(output_files={f: f.replace('_i_', '_o_') for f in infiles})
+    co = OutputSpec(output_files={f: f.replace('_i_', '_o_') for f in infiles})
     t0 = time.time()
-    results = minim.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
+    results = optimize.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
     dt = time.time() - t0
     print('remote parallel calc_time', dt)
 
@@ -218,8 +209,8 @@ def do_minim(tmp_path, sys_name, monkeypatch):
     for at_local, at in zip(ase.io.read(tmp_path / f'ats_o_local_{sys_name}_1.xyz', ':'), ase.io.read(tmp_path / f'ats_o_{sys_name}_1.xyz', ':')):
         assert at_local.info['orig_file'] == at.info['orig_file']
         assert at_local.info['orig_file_seq_no'] == at.info['orig_file_seq_no']
-        assert np.abs((at_local.info['minim_energy'] - at.info['minim_energy']) / at_local.info['minim_energy']) < 1.0e-8
+        assert np.abs((at_local.info['optimize_energy'] - at.info['optimize_energy']) / at_local.info['optimize_energy']) < 1.0e-8
     for at_local, at in zip(ase.io.read(tmp_path / f'ats_o_local_{sys_name}_2.xyz', ':'), ase.io.read(tmp_path / f'ats_o_{sys_name}_2.xyz', ':')):
         assert at_local.info['orig_file'] == at.info['orig_file']
         assert at_local.info['orig_file_seq_no'] == at.info['orig_file_seq_no']
-        assert np.abs((at_local.info['minim_energy'] - at.info['minim_energy']) / at_local.info['minim_energy']) < 1.0e-8
+        assert np.abs((at_local.info['optimize_energy'] - at.info['optimize_energy']) / at_local.info['optimize_energy']) < 1.0e-8

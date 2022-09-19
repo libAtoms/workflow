@@ -11,8 +11,8 @@ import pytest
 
 import ase.io
 
-from wfl.configset import ConfigSet_in
-from wfl.fit.gap_multistage import prep_params, fit
+from wfl.configset import ConfigSet
+from wfl.fit.gap.multistage import prep_params, fit
 
 params_template = {
     "stages": [
@@ -81,7 +81,7 @@ def test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir='run
     # database_modify_mod='wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull',
 
     t0 = time.time()
-    GAP = fit(ConfigSet_in(input_files=fit_config_file),
+    GAP = fit(ConfigSet(input_files=fit_config_file),
               run_dir=run_dir,
               GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
               num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25])
@@ -101,7 +101,7 @@ def test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir='run
     assert os.path.exists(os.path.join(tmp_path, run_dir, f'GAP.B_test.committee_{i}.xml'))
 
     t0 = time.time()
-    GAP = fit(ConfigSet_in(input_files=fit_config_file),
+    GAP = fit(ConfigSet(input_files=fit_config_file),
               run_dir=run_dir,
               GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
               num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25], skip_if_present=True)
@@ -112,8 +112,8 @@ def test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir='run
 
 @pytest.mark.skipif(not shutil.which("gap_fit"), reason="gap_fit not in PATH")  # skips it if gap_fit not in path
 @pytest.mark.remote
-def test_gap_multistage_fit_remote(request, tmp_path, quippy, expyre_systems, monkeypatch):
-    ri = {'resources' : {'max_time': '10m', 'n': [1, 'nodes']},
+def test_gap_multistage_fit_remote(request, tmp_path, quippy, expyre_systems, monkeypatch, remoteinfo_env):
+    ri = {'resources' : {'max_time': '10m', 'num_nodes': 1},
           'pre_cmds': [ f'export PYTHONPATH={Path(__file__).parent.parent}:$PYTHONPATH']}
 
     for sys_name in expyre_systems:
@@ -123,14 +123,9 @@ def test_gap_multistage_fit_remote(request, tmp_path, quippy, expyre_systems, mo
         ri['sys_name'] = sys_name
         ri['job_name'] = 'pytest_gap_fit_'+sys_name
 
-        if 'WFL_PYTEST_REMOTEINFO' in os.environ:
-            ri_extra = json.loads(os.environ['WFL_PYTEST_REMOTEINFO'])
-            if 'resources' in ri_extra:
-                ri['resources'].update(ri_extra['resources'])
-                del ri_extra['resources']
-            ri.update(ri_extra)
+        remoteinfo_env(ri)
 
-        monkeypatch.setenv('WFL_GAP_MULTISTAGE_FIT_REMOTEINFO', json.dumps(ri))
+        monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
         test_gap_multistage_fit(request, tmp_path, quippy, monkeypatch, run_dir=f'run_dir_{sys_name}')
 
 
@@ -147,7 +142,7 @@ def test_gap_multistage_fit_interrupt(request, tmp_path, quippy):
     normal_fit_path = os.path.join(tmp_path, 'normal_fit')
     os.mkdir(normal_fit_path)
     print('getting fitting data from ', request.fspath)
-    GAP = fit(ConfigSet_in(input_files=fit_config_file),
+    GAP = fit(ConfigSet(input_files=fit_config_file),
               run_dir=normal_fit_path,
               GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
               num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25],
@@ -167,7 +162,7 @@ def test_gap_multistage_fit_interrupt(request, tmp_path, quippy):
     print('getting fitting data from ', request.fspath)
 
     try:
-        GAP = fit(ConfigSet_in(input_files=fit_config_file),
+        GAP = fit(ConfigSet(input_files=fit_config_file),
                   run_dir=interrupted_stage_path,
                   GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
                   num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25],
@@ -180,7 +175,7 @@ def test_gap_multistage_fit_interrupt(request, tmp_path, quippy):
     os.system(f'ls -l {interrupted_stage_path}')
 
     try:
-        GAP = fit(ConfigSet_in(input_files=fit_config_file),
+        GAP = fit(ConfigSet(input_files=fit_config_file),
                   run_dir=interrupted_stage_path,
                   GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
                   num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25],
@@ -193,7 +188,7 @@ def test_gap_multistage_fit_interrupt(request, tmp_path, quippy):
     os.system(f'ls -l {interrupted_stage_path}')
 
     # final run
-    GAP = fit(ConfigSet_in(input_files=fit_config_file),
+    GAP = fit(ConfigSet(input_files=fit_config_file),
               run_dir=interrupted_stage_path,
               GAP_name='GAP.B_test', params=params, ref_property_prefix='REF_',
               num_committee=3, seeds=[5, 10], committee_extra_seeds=[20, 25],

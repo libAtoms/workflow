@@ -4,7 +4,7 @@ import numpy as np
 
 from ase.constraints import voigt_6_to_full_3x3_stress
 
-from wfl.pipeline.utils import RemoteInfo
+from wfl.autoparallelize.remoteinfo import RemoteInfo
 
 
 def fix_stress_virial(configs, ref_property_keys, stress_key):
@@ -108,19 +108,3 @@ def copy_properties(configs, ref_property_keys, stress_to_virial=True, force=Tru
         fix_stress_virial(configs, ref_property_keys, stress_key)
 
     return ref_property_keys
-
-
-def get_RemoteInfo(remote_info, env_var):
-    if remote_info is None and env_var in os.environ:
-        try:
-            # interpret as JSON string
-            remote_info = json.loads(os.environ[env_var])
-        except:
-            # interpret as name of file with JSON in it
-            with open(os.environ[env_var]) as fin:
-                remote_info = json.load(fin)
-
-    if isinstance(remote_info, dict):
-        remote_info = RemoteInfo(**remote_info)
-
-    return remote_info

@@ -5,10 +5,10 @@ import pytest
 from ase.atoms import Atoms
 from pytest import approx
 
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 
 try:
-    from wfl.calc_descriptor import calc
+    from wfl.descriptors.quippy import calc
     from quippy.descriptors import Descriptor
 except ModuleNotFoundError:
     pytestmark = pytest.mark.skip(reason='no quippy')
@@ -21,9 +21,9 @@ def get_ats():
 
 def test_calc_descriptor_average_any_atomic_number():
     ats = get_ats()
-    ci = ConfigSet_in(input_configs=ats)
+    ci = ConfigSet(input_configs=ats)
 
-    ats_desc = calc(ci, ConfigSet_out(),
+    ats_desc = calc(ci, OutputSpec(),
                     'soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 average n_species=2 species_Z={6 14}', 'desc')
 
     d = Descriptor(
@@ -38,14 +38,31 @@ def test_calc_descriptor_average_any_atomic_number():
     assert d == approx(list(ats_desc)[0].info['desc'])
 
 
+def test_calc_descriptor_average_any_atomic_number_normalization():
+    ats = get_ats()
+    ci = ConfigSet(input_configs=ats)
+
+    ats_desc = calc(ci, OutputSpec(), 
+                    ['soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 average n_species=2 species_Z={6 14}', 
+                     'soap n_max=3 l_max=3 cutoff=5.0 atom_sigma=0.5 average n_species=2 species_Z={6 14}'], 'desc')
+
+    assert 1.0 == approx(np.linalg.norm(list(ats_desc)[0].info['desc']))
+
+    ats[0].info.pop("desc", None)
+    ats_desc = calc(ci, OutputSpec(),
+                    ['soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 average n_species=2 species_Z={6 14}', 
+                     'soap n_max=3 l_max=3 cutoff=5.0 atom_sigma=0.5 average n_species=2 species_Z={6 14}'], 'desc', normalize=False)
+    assert np.sqrt(2) == approx(np.linalg.norm(list(ats_desc)[0].info['desc']))
+
+
 def test_calc_descriptor_average_z_specific():
     ats = get_ats()
-    ci = ConfigSet_in(input_configs=ats)
+    ci = ConfigSet(input_configs=ats)
 
     descs = {6: 'soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 average Z=6 n_species=2 species_Z={6 14}',
              14: 'soap n_max=4 l_max=3 cutoff=5.0 atom_sigma=0.5 average Z=14 n_species=2 species_Z={6 14}'}
 
-    ats_desc = calc(ci, ConfigSet_out(), descs, 'desc')
+    ats_desc = calc(ci, OutputSpec(), descs, 'desc')
 
     d6 = Descriptor(descs[6]).calc(ats[0])['data'][0]
     d14 = Descriptor(descs[14]).calc(ats[0])['data'][0]
@@ -61,3 +78,72 @@ def test_calc_descriptor_average_z_specific():
     desc_manual /= np.linalg.norm(desc_manual)
 
     assert desc_manual == approx(list(ats_desc)[0].info['desc'])
+
+
+def test_calc_descriptor_any_atomic_number():
+    ats = get_ats()
+    ci = ConfigSet(input_configs=ats)
+
+    ats_desc = calc(ci, OutputSpec(),
+                    'soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 n_species=2 species_Z={6 14}', 'desc', local=True)
+
+    d = Descriptor(
+        'soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 n_species=2 species_Z={6 14}').calc(ats[0])['data']
+    print("d.shape", d.shape)
+    assert d.shape == (4, 181)
+
+    # check shapes
+    for at in ats_desc:
+        assert 'desc' in at.arrays and at.arrays['desc'].shape == (len(at), 181)
+
+    # check one manually
+    assert d == approx(list(ats_desc)[0].arrays['desc'])
+
+
+def test_calc_descriptor_any_atomic_number_normalization():
+    ats = get_ats()
+    ci = ConfigSet(input_configs=ats)
+
+    ats_desc = calc(ci, OutputSpec(), 
+                    ['soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 n_species=2 species_Z={6 14}', 
+                     'soap n_max=3 l_max=3 cutoff=5.0 atom_sigma=0.5 n_species=2 species_Z={6 14}'], 'desc', local=True)
+
+    at = list(ats_desc)[0]
+    assert 1.0 == approx(np.linalg.norm(at.arrays['desc'], axis=1))
+
+    del at.arrays["desc"]
+
+    ats_desc = calc(ci, OutputSpec(), 
+                    ['soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 n_species=2 species_Z={6 14}', 
+                     'soap n_max=3 l_max=3 cutoff=5.0 atom_sigma=0.5 n_species=2 species_Z={6 14}'], 'desc', local=True, normalize=False)
+
+    at = list(ats_desc)[0]
+    assert np.sqrt(2.0) == approx(np.linalg.norm(at.arrays['desc'], axis=1))
+
+
+def test_calc_descriptor_z_specific():
+    ats = get_ats()
+    ci = ConfigSet(input_configs=ats)
+
+    descs = {6: 'soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 Z=6 n_species=2 species_Z={6 14}',
+             14: 'soap n_max=4 l_max=3 cutoff=5.0 atom_sigma=0.5 Z=14 n_species=2 species_Z={6 14}'}
+
+    ats_desc = calc(ci, OutputSpec(), descs, 'desc', local=True)
+
+    d6 = Descriptor(descs[6]).calc(ats[0])['data']
+    d14 = Descriptor(descs[14]).calc(ats[0])['data']
+    assert d6.shape == (1, 181)
+    assert d14.shape == (3, 145)
+
+    # check shape
+    for at in ats_desc:
+        assert 'desc_Z_6' in at.arrays
+        assert at.arrays['desc_Z_6'].shape == (len(at),181)
+        assert 'desc_Z_14' in at.arrays
+        assert at.arrays['desc_Z_14'].shape == (len(at),145)
+
+    # check against manually computed vectors
+
+    at = list(ats_desc)[0]
+    assert d6 == approx(at.arrays['desc_Z_6'][at.numbers == 6])
+    assert d14 == approx(at.arrays['desc_Z_14'][at.numbers == 14])

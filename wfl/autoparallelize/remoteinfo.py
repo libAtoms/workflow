@@ -1,0 +1,69 @@
+import copy
+
+
+class RemoteInfo:
+    """Create a RemoteInfo object
+
+    Parameters
+    ----------
+    sys_name: str
+        name of system to run on
+    job_name: str
+        name for job (unique within this project)
+    resources: dict or Resources
+        expyre.resources.Resources or kwargs for its constructor
+    num_inputs_per_queued_job: int, default -100
+        num_inputs_per_python_subprocess for each job. If negative will be multiplied by iterable_autopara_wrappable num_inputs_per_python_subprocess
+    pre_cmds: list(str)
+        commands to run before starting job
+    post_cmds: list(str)
+        commands to run after finishing job
+    env_vars: list(str)
+        environment variables to set before starting job
+    input_files: list(str)
+        input_files to stage in starting job
+    output_files: list(str)
+        output_files to stage out when job is done
+    header_extra: list(str), optional
+        extra lines to add to queuing system header
+    exact_fit: bool, default True
+        require exact fit to node size
+    partial_node: bool, default True
+        allow jobs that take less than a whole node, overrides exact_fit
+    timeout: int
+        time to wait in get_results before giving up
+    check_interval: int
+        check_interval arg to pass to get_results
+    skip_failures: bool, default False
+        skip failures in remote jobs
+    """
+    def __init__(self, sys_name, job_name, resources, num_inputs_per_queued_job=-100, pre_cmds=[], post_cmds=[],
+                 env_vars=[], input_files=[], output_files=[], header_extra=[],
+                 exact_fit=True, partial_node=False, timeout=3600, check_interval=30,
+                 skip_failures=False):
+
+        self.sys_name = sys_name
+        self.job_name = job_name
+        self.resources = copy.deepcopy(resources)
+        self.num_inputs_per_queued_job = num_inputs_per_queued_job
+        self.pre_cmds = pre_cmds.copy()
+        self.post_cmds = post_cmds.copy()
+        self.env_vars = []
+        if all([not var.startswith("WFL_NUM_PYTHON_SUBPROCESSES=") for var in env_vars]):
+            # user didn't explicitly set WFL_NUM_PYTHON_SUBPROCESSES, so set it to default
+            # equal to number of cores per node
+            self.env_vars += ["WFL_NUM_PYTHON_SUBPROCESSES=${EXPYRE_NUM_CORES_PER_NODE}"]
+        self.env_vars += env_vars
+        self.input_files = input_files.copy()
+        self.output_files = output_files.copy()
+        self.header_extra = header_extra.copy()
+
+        self.exact_fit = exact_fit
+        self.partial_node = partial_node
+        self.timeout = timeout
+        self.check_interval = check_interval
+        self.skip_failures = skip_failures
+
+
+    def __str__(self):
+        return f'{self.sys_name} {self.job_name} {self.resources} {self.num_inputs_per_queued_job} {self.exact_fit} {self.partial_node} {self.timeout} {self.check_interval}'

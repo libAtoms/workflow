@@ -7,7 +7,7 @@ def construct_calculator_picklesafe(calculator):
     Trick: pass a recipe only and create the calculator in the thread created, instead of trying to pickle the entire
     object when creating the pool.
 
-    Taken from minim.py:run_op
+    Taken from optimize.py:run_autopara_wrappable
 
     Parameters
     ----------

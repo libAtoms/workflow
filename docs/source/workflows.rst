@@ -11,6 +11,5 @@ Here complex workflows will be docummented. Check out the :doc:`operations` for 
 	:caption: Contents:
 
 	workflows.rss.rst
-	workflows.collisions.rst
-
+	workflows.mlip_fitting.md
 
