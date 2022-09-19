@@ -283,6 +283,7 @@ def test_relax_with_constraints(cu_slab):
     assert (
         np.sum(diff_pos[fix_indices]) < 1e-10
     ), "Fixed atoms should not move during relaxation"
-    assert (
-        output[-1].constraints == org_constraints
-    ), "Constraints on atoms should be the same before and after relaxation"
+
+    assert len(output[-1].constraints) == len(
+        org_constraints
+    ), "Number of constraints on atoms should be the same before and after relaxation"
