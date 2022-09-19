@@ -24,7 +24,7 @@ def test_mult_files(cu_slab, tmp_path):
     ase.io.write(tmp_path / 'f1.xyz', [cu_slab] * 2)
     ase.io.write(tmp_path / 'f2.xyz', cu_slab)
     infiles = [str(tmp_path / 'f1.xyz'), str(tmp_path / 'f2.xyz')]
-    inputs = ConfigSet(input_files=infiles)
+    inputs = ConfigSet(infiles)
     outputs = OutputSpec(output_files={f: f.replace('.xyz', '.out.xyz') for f in infiles})
 
     calc = EMT()
@@ -42,7 +42,7 @@ def test_relax(cu_slab):
     calc = EMT()
 
     input_configs = [cu_slab, cu_slab]
-    inputs = ConfigSet(input_configs=input_configs)
+    inputs = ConfigSet(input_configs)
     outputs = OutputSpec()
 
     fmax = 1
