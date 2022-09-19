@@ -25,7 +25,7 @@ def test_mult_files(cu_slab, tmp_path):
     ase.io.write(tmp_path / 'f2.xyz', cu_slab)
     infiles = [str(tmp_path / 'f1.xyz'), str(tmp_path / 'f2.xyz')]
     inputs = ConfigSet(infiles)
-    outputs = OutputSpec(output_files={f: f.replace('.xyz', '.out.xyz') for f in infiles})
+    outputs = OutputSpec([f.replace('.xyz', '.out.xyz') for f in infiles])
 
     calc = EMT()
 
