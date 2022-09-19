@@ -268,7 +268,7 @@ def test_relax_with_constraints(cu_slab):
 
     # Rattle such that the relaxation takes a few steps
     ats.rattle(0.1, seed=0)
-    inputs = ConfigSet(input_configs=ats)
+    inputs = ConfigSet(ats)
     outputs = OutputSpec()
 
     atoms_opt = optimize.run(
