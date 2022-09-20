@@ -4,7 +4,8 @@ import os
 import ase.io
 import pytest
 from ase.atoms import Atoms
-from wfl.calculators.dft import evaluate_dft
+from wfl.calculators.vasp import Vasp
+from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 
 pytestmark = pytest.mark.skipif('VASP_COMMAND' not in os.environ or
@@ -16,14 +17,12 @@ pytestmark = pytest.mark.skipif('VASP_COMMAND' not in os.environ or
 def test_vasp_gamma(tmp_path):
     ase.io.write(os.path.join(tmp_path, 'vasp_in.xyz'), Atoms('Si', cell=(2, 2, 2), pbc=[False] * 3), format='extxyz')
 
-    configs_eval = evaluate_dft(
+    configs_eval = generic.run(
         inputs=ConfigSet(os.path.join(tmp_path, 'vasp_in.xyz')),
         outputs=OutputSpec('vasp_out.gamma.xyz', file_root=tmp_path),
-        calculator_name="VASP",
-        workdir_root=tmp_path,
-        calculator_kwargs={'encut': 200, 'VASP_PP_PATH': os.environ['PYTEST_VASP_POTCAR_DIR']},
-        output_prefix='TEST_',
-        keep_files=True
+        calculator=Vasp(workdir_root=tmp_path, encut=200, VASP_PP_PATH=os.environ['PYTEST_VASP_POTCAR_DIR'],
+                        keep_files=True),
+        output_prefix='TEST_', 
     )
 
     run_dir = glob.glob(os.path.join(tmp_path, 'run_VASP_*'))

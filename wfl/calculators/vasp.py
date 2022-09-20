@@ -4,21 +4,22 @@ VASP calculator
 """
 
 import os
-import pathlib
+from pathlib import Path
 import tempfile
-import warnings
 import json
+from copy import deepcopy
 
 import numpy as np
 
 from ase.atoms import Atoms
+from ase.calculators.calculator import all_changes
 import ase.calculators.vasp.vasp
 
-from .utils import clean_rundir, handle_nonperiodic, save_results
+from .utils import clean_rundir, handle_nonperiodic
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
-__default_keep_files = ["POSCAR", "INCAR", "KPOINTS", "OUTCAR", "vasprun.xml", "vasp.out"]
-__default_properties = ["energy", "forces", "stress"]
+_default_keep_files = ["POSCAR", "INCAR", "KPOINTS", "OUTCAR", "vasprun.xml", "vasp.out"]
+_default_properties = ["energy", "forces", "stress"]
 
 
 class Vasp(ase.calculators.vasp.vasp.Vasp):
@@ -26,9 +27,7 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
 
     Parameters
     ----------
-    workdir_root: path-like, default os.getcwd()
-        directory to put calculation directories into
-    dir_prefix: str, default 'VASP_run\_'
+    dir_prefix: str, default 'run\_VASP\_'
         directory name prefix for calculations
     keep_files: bool / None / "default" / list(str), default "default"
         what kind of files to keep from the run
@@ -37,41 +36,70 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
             "default"   : only ones needed for NOMAD uploads ('POSCAR', 'INCAR', 'KPOINTS', 'OUTCAR', 'vasprun.xyz')
             list(str)   : list of file globs to save
     calculator_command: str
-        command to run for vasp (overrides VASP_COMMAND and VASP_COMMAND_GAMMA)
+        command to run for vasp (overrides ASE_VASP_COMMAND and ASE_VASP_COMMAND_GAMMA)
 
     **kwargs: arguments for ase.calculators.vasp.vasp.Vasp
-        May include optional additional keys 'INCAR_file' and 'KPOINTS_file'.  Normal VASP calculator
-        keys override contents of INCAR and KPOINTS.  To avoid ASE Vasp's annoying default POTCAR path
-        heuristics, key VASP\_PP\_PATH will be used to set corresponding env var (directory above <chem_symbol>/POTCAR),
-        and if 'pp' (extra path below VASP\_PP\_PATH) is not specified it will default to '.', rather than to guess
-        based on XC.
+        To avoid ASE Vasp's annoying default POTCAR path heuristics, key VASP\_PP\_PATH will be
+        used to set corresponding env var (directory above <chem_symbol>/POTCAR), and if 'pp'
+        (extra path below VASP\_PP\_PATH) is not specified it will default to '.', rather than
+        to guess based on XC.
     """
 
-    implemented_properties = ["energy", "forces", "stress", "free_energy", "magmom", "magmoms"]
-
-    default_parameters = {}
+    implemented_properties = ["energy", "forces", "stress", "free_energy", "magmom", "magmoms", "charges"]
 
     # default value of wfl_num_inputs_per_python_subprocess for calculators.generic,
     # to override that function's built-in default of 10
     wfl_generic_num_inputs_per_python_subprocess = 1
 
+    __vasp_kwargs_def = {
+        "isif": 2,
+        "isym": 0,
+        "nelm": 300,
+        "ismear": 0,
+        "sigma": 0.05,
+        "ediff": 1.0e-7,
+        "lwave": False,
+        "lcharg": False,
+        "pp": "."
+    }
 
-    def __init__(self, atoms=None, keep_files="default", dir_prefix="run_VASP_",
-                 calculator_command=None, **kwargs):
-        super(Vasp, self).__init__(**kwargs):
+    def __init__(self, atoms=None, keep_files="default",
+                 dir_prefix="run_VASP_", workdir_root=None,
+                 calculator_command=None, VASP_PP_PATH=None,
+                 **kwargs):
+
+        kwargs_use = deepcopy(kwargs)
+
+        # get params from env var if not explicitly passed in
+        if 'WFL_VASP_KWARGS' in os.environ:
+            try:
+                env_kwargs = json.loads(os.environ['WFL_VASP_KWARGS'])
+            except:
+                with open(os.environ['WFL_VASP_KWARGS']) as fin:
+                    env_kwargs = json.load(fin)
+            for k, v in env_kwargs.items():
+                if k not in kwargs_use:
+                    kwargs_use[k] = v
+
+        # get params from our defaults if not set yet
+        for k, v in self.__vasp_kwargs_def.items():
+            if k not in kwargs_use:
+                kwargs_use[k] = v
+
+        if calculator_command is not None:
+            if "command" in kwargs_use:
+                raise ValueError("Got calculator_command and command arguments")
+            kwargs_use["command"] = calculator_command
+
+        super(Vasp, self).__init__(**kwargs_use)
 
         self.keep_files = keep_files
         self.dir_prefix = dir_prefix
-        self.workdir_root = workdir_root
-        self.workdir_root.mkdir(parents=True, exist_ok=True)
-
-        if calculator_command is not None:
-            self.parameters["command"] = calculator_command
-
-        self.initial_parameters = deepcopy(self.parameters)
+        self.workdir_root = Path(workdir_root) if workdir_root is not None else None
+        self.VASP_PP_PATH = VASP_PP_PATH
 
 
-    def calculate(self, atoms=None, properties=__default_properties, system_changes=all_changes):
+    def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
         """Do the calculation. Handles the working directories in addition to regular 
         ASE calculation operations (writing input, executing, reading_results)"""
 
@@ -85,78 +113,50 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
         orig_world_comm = world.comm
         world.comm = DummyMPI()
 
-        # override Vasp's annoying PAW path heuristics
-        VASP_PP_PATH = kwargs.pop("VASP_PP_PATH", None)
-        if VASP_PP_PATH is not None:
-            os.environ["VASP_PP_PATH"] = VASP_PP_PATH
-        if "pp" not in kwargs:
-            kwargs["pp"] = "."
+        orig_VASP_PP_PATH = os.environ.get("VASP_PP_PATH")
+        if self.VASP_PP_PATH is not None:
+            os.environ["VASP_PP_PATH"] = self.VASP_PP_PATH
 
-        vasp_kwargs_def = {
-            "isif": 2,
-            "isym": 0,
-            "nelm": 300,
-            "ediff": 1.0e-7,
-            "ismear": 0,
-            "sigma": 0.05,
-            "lwave": False,
-            "lcharg": False,
-        }
-        vasp_kwargs_def.update(calculator_kwargs)
-        calculator_kwargs = vasp_kwargs_def
-        if 'WFL_VASP_KWARGS' in os.environ:
-            try:
-                env_kwargs = json.loads(os.environ['WFL_VASP_KWARGS'])
-            except:
-                with open(os.environ['WFL_VASP_KWARGS']) as fin:
-                    env_kwargs = json.load(fin)
-            calculator_kwargs.update(env_kwargs)
-
-        if workdir_root is None:
-            # using the current directory
-            workdir_root = os.getcwd()
+        if self.workdir_root is None:
+            workdir_root = Path.cwd()
         else:
-            pathlib.Path(workdir_root).mkdir(parents=True, exist_ok=True)
+            workdir_root = self.workdir_root
+
+        workdir_root.mkdir(parents=True, exist_ok=True)
 
         # VASP requires periodic cells with non-zero cell vectors
-        assert atoms.get_volume() > 0.0
+        if atoms.get_volume() < 0.0:
+            (at.cell[0], at.cell[1]) = (at.cell[1], at.cell[0])
+            permuted_a0_a1 = True
+        else:
+            permuted_a0_a1 = False
 
         nonperiodic, properties_use = handle_nonperiodic(at, properties)
         # VASP cannot handle nonperiodic, and current Vasp calculator complains if pbc=F
         orig_pbc = atoms.pbc.copy()
         atoms.pbc = [True] * 3
-        # VASP requires positive triple scalar product - maybe we should just fix this?
-        assert atoms.get_volume() > 0.0
 
-        rundir = tempfile.mkdtemp(dir=workdir_root, prefix=dir_prefix)
-
-        # remove parameters that ase.calculators.vasp.Vasp doesn't know about
-        incar_file = calculator_kwargs.pop("INCAR_file", None)
-        kpoints_file = calculator_kwargs.pop("KPOINTS_file", None)
+        self.directory = tempfile.TemporaryDirectory(dir=workdir_root, prefix=self.dir_prefix)
 
         # create calc
-        atoms.calc = Vasp(directory=rundir, **calculator_kwargs)
-        if calculator_command is None and nonperiodic:
-            calculator_command = os.environ.get("VASP_COMMAND_GAMMA", None)
-        if calculator_command is None:
-            assert "VASP_COMMAND" in os.environ
-        atoms.calc.command = calculator_command
+        orig_command = self.command
+        if self.command is None:
+            if nonperiodic:
+                self.command = os.environ.get("ASE_VASP_COMMAND_GAMMA", None)
+            elif "ASE_VASP_COMMAND" not in os.environ:
+                raise RuntimeError("Need env var ASE_VASP_COMMAND for periodic systems if command is not explicitly passed to constructor")
 
         # read from INCAR, KPOINTS if provided
-        if incar_file is not None:
-            atoms.calc.read_incar(incar_file)
         if nonperiodic:
-            calculator_kwargs["kspacing"] = 100000.0
-            calculator_kwargs["kgamma"] = True
-        elif kpoints_file is not None:
-            atoms.calc.read_kpoints(kpoints_file)
-        # override with original kwargs
-        atoms.calc.set(**calculator_kwargs)
+            orig_kspacing = self.float_keys["kspacing"]
+            orig_kgamma = self.float_keys["kgamma"]
+            self.float_keys["kspacing"] = 100000.0
+            self.bool_keys["kgamma"] = True
 
         atoms.info["vasp_rundir"] = rundir
 
         # should we require anything else?
-        if atoms.calc.float_params["encut"] is None:
+        if self.float_params["encut"] is None:
             raise RuntimeError("Refusing to run without explicit ENCUT")
 
         try:
@@ -169,12 +169,23 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
             calculation_succceeded = False
             raise exc
         finally:
-            clean_rundir(rundir, self.keep_files, __default_keep_files, calculation_succeeded)
+            clean_rundir(rundir, self.keep_files, _default_keep_files, calculation_succeeded)
 
-            self.parameters = deepcopy(self.initial_parameters)
-
-            # must reset pbcs here, because save_results will trigger a pbc check
-            # inside Vasp.calculate, which will otherwise fail for nonperiodic systems
+            # undo pbc change
             atoms.pbc[:] = orig_pbc
 
+            # undo cell vector permutation
+            if permuted_a0_a1:
+                (at.cell[0], at.cell[1]) = (at.cell[1], at.cell[0])
+
+            # undo nonperiodic related changes
+            self.command = orig_command
+            self.float_keys["kspacing"] = orig_kspacing
+            self.bool_keys["kgamma"] = orig_kgamma
+
+            # undo env VASP_PP_PATH
+            if orig_VASP_PP_PATH is not None:
+                os.environ["VASP_PP_PATH"] = orig_VASP_PP_PATH
+
+            # undo communicator mangling
             world.comm = orig_world_comm

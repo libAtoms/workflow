@@ -13,7 +13,7 @@ from pathlib import Path
 import numpy as np
 
 from ase import Atoms
-from ase.calculators.calculator import all_changes, CalculationFailed, Calculator
+from ase.calculators.calculator import all_changes
 import ase.calculators.espresso
 try:
     from ase.calculators.espresso import EspressoProfile
@@ -25,14 +25,14 @@ from .utils import clean_rundir, handle_nonperiodic, save_results
 from ..utils.misc import atoms_to_list
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
-__default_keep_files = ["*.pwo"]
-__default_properties = ["energy", "forces", "stress"]           # done as "implemented_propertie"
+_default_keep_files = ["*.pwo"]
+_default_properties = ["energy", "forces", "stress"]           # done as "implemented_propertie"
 
 
 class Espresso(ase.calculators.espresso.Espresso):
     """Extension of ASE's Espresso calculator that can be used by wfl.calculators.generic
 
-    dir_prefix: str, default 'QE-run\_'
+    dir_prefix: str, default 'run\_QE\_'
         directory name prefix for calculations
     keep_files: bool / None / "default" / list(str), default "default"
         what kind of files to keep from the run
@@ -83,7 +83,7 @@ class Espresso(ase.calculators.espresso.Espresso):
         self.initial_parameters = deepcopy(self.parameters)
 
 
-    def calculate(self, atoms=None, properties=__default_properties, system_changes=all_changes):
+    def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
         """Do the calculation. Handles the working directories in addition to regular 
         ASE calculation operations (writing input, executing, reading_results) 
         Reimplements & extends GenericFileIOCalculator.calculate() for the development version of ASE
@@ -104,14 +104,16 @@ class Espresso(ase.calculators.espresso.Espresso):
         try:
             super().calculate(atoms=atoms, properties=properties, system_changes=system_changes) 
             calculation_succeeded=True
-        except Exception as e:
+            if 'DFT_FAILED_ESPRESSO' in atoms.info:
+                del atoms.info['DFT_FAILED_ESPRESSO']
+        except Exception as exc:
             atoms.info['DFT_FAILED_ESPRESSO'] = True
             calculation_succeeded=False
-            raise e
+            raise exc
         finally:
             # when exception is raised, `calculation_succeeded` is set to False, 
             # the following code is executed and exception is re-raised. 
-            clean_rundir(directory, self.keep_files, __default_keep_files, calculation_succeeded)
+            clean_rundir(directory, self.keep_files, _default_keep_files, calculation_succeeded)
             if self.scratch_path is not None and Path(directory).exists():
                 shutil.move(directory, self.workdir_root)
 

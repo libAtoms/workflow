@@ -79,7 +79,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     properties = ["energy", "stress"] 
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    calc.setup_params_for_this_calc(properties)
+    calc.setup_calc_params(properties)
 
     assert "tstress" in calc.parameters
     assert calc.parameters['kpts'] == (2, 3, 4)
@@ -89,7 +89,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     properties = ["energy", "stress", "forces"] 
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    properties = calc.setup_params_for_this_calc(properties)
+    properties = calc.setup_calc_params(properties)
 
     assert "tstress" in calc.parameters
     assert not calc.parameters["tstress"]
@@ -108,7 +108,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     kw["koffset"] = True
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    properties = calc.setup_params_for_this_calc(properties)
+    properties = calc.setup_calc_params(properties)
 
     assert "tstress" in calc.parameters
     assert not calc.parameters["tstress"]
@@ -129,7 +129,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     kw["koffset"] = False 
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    properties = calc.setup_params_for_this_calc(properties)
+    properties = calc.setup_calc_params(properties)
 
     assert calc.parameters["koffset"] is False
 
@@ -141,7 +141,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     kw["koffset"] = (0, 1, 0)
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    properties = calc.setup_params_for_this_calc(properties)
+    properties = calc.setup_calc_params(properties)
 
     assert "tstress" in calc.parameters
     assert not calc.parameters["tstress"]
