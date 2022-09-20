@@ -87,6 +87,7 @@ def test_generic_autopara_defaults():
     # try default
     l_stderr = StringIO()
     sys.stderr = l_stderr
+    os = OutputSpec()
     at_proc = generic.run(ci, os, EMT())
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=10" in l_stderr.getvalue()
@@ -94,6 +95,7 @@ def test_generic_autopara_defaults():
     # try with class that overrides default
     l_stderr = StringIO()
     sys.stderr = l_stderr
+    os = OutputSpec()
     at_proc = generic.run(ci, os, EMT_override_def_autopara())
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=5" in l_stderr.getvalue()
@@ -103,6 +105,7 @@ def test_generic_autopara_defaults():
     # try default
     l_stderr = StringIO()
     sys.stderr = l_stderr
+    os = OutputSpec()
     at_proc = generic.run(ci, os, calculator=EMT())
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=10" in l_stderr.getvalue()
@@ -110,6 +113,7 @@ def test_generic_autopara_defaults():
     # try with class that overrides default
     l_stderr = StringIO()
     sys.stderr = l_stderr
+    os = OutputSpec()
     at_proc = generic.run(ci, os, calculator=EMT_override_def_autopara())
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=5" in l_stderr.getvalue()
@@ -117,6 +121,7 @@ def test_generic_autopara_defaults():
     # try with class that overrides default, and override manually
     l_stderr = StringIO()
     sys.stderr = l_stderr
+    os = OutputSpec()
     at_proc = generic.run(ci, os, calculator=EMT_override_def_autopara(), autopara_info=AutoparaInfo(num_inputs_per_python_subprocess=3))
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=3" in l_stderr.getvalue()
