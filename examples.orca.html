@@ -733,8 +733,8 @@ wfl -v ref-method orca-eval -tmp ${tmp_dir} --base-rundir $base_rundir --output-
 <span class="n">max_time</span> <span class="o">=</span> <span class="s2">&quot;48h&quot;</span>
 
 <span class="c1"># structures</span>
-<span class="n">ci</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_files</span><span class="o">=</span><span class="n">input_fname</span><span class="p">)</span>
-<span class="n">co</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_files</span><span class="o">=</span><span class="n">output_fname</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">all_or_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ci</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_fname</span><span class="p">)</span>
+<span class="n">co</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_fname</span><span class="p">)</span>
 
 <span class="n">expyre_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;_expyre&quot;</span><span class="p">)</span>
 <span class="n">expyre_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

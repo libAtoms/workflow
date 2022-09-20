@@ -471,8 +471,8 @@ title="Print to PDF"
 <p>MACE calculator can be parallelized with the <code class="docutils literal notranslate"><span class="pre">wfl.calculators.generic.run</span></code> routine.</p>
 <p>First we define a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> for the inputs and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> to specify how the outputs are handled:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OuptutSpec</span>
-<span class="n">inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_files</span><span class="o">=</span><span class="s2">&quot;structures.xyz&quot;</span><span class="p">)</span>
-<span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_files</span><span class="o">=</span><span class="s2">&quot;structures.mace.xyz&quot;</span><span class="p">)</span>
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="s2">&quot;structures.xyz&quot;</span><span class="p">)</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;structures.mace.xyz&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Normally, a MACE calculator would be setup like this:</p>
@@ -523,8 +523,8 @@ title="Print to PDF"
 
 <span class="kn">from</span> <span class="nn">mace.calculators.mace</span> <span class="kn">import</span> <span class="n">MACECalculator</span> 
 
-<span class="n">inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_files</span><span class="o">=</span><span class="s2">&quot;structures.xyz&quot;</span><span class="p">)</span>
-<span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_files</span><span class="o">=</span><span class="s2">&quot;structures.mace.xyz&quot;</span><span class="p">)</span>
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="s2">&quot;structures.xyz&quot;</span><span class="p">)</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;structures.mace.xyz&quot;</span><span class="p">)</span>
 
 
 <span class="c1"># change the following as appropriate</span>

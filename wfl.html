@@ -631,7 +631,7 @@ title="Print to PDF"
 <li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.md">wfl.generate.md module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.minimahopping">wfl.generate.minimahopping module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.optimize">wfl.generate.optimize module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.phonopy">wfl.generate.phonopy module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#wfl-generate-phonopy-module">wfl.generate.phonopy module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.smiles">wfl.generate.smiles module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.supercells">wfl.generate.supercells module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.utils">wfl.generate.utils module</a></li>
@@ -685,108 +685,62 @@ title="Print to PDF"
 <span id="wfl-configset-module"></span><h2>wfl.configset module<a class="headerlink" href="#module-wfl.configset" title="Permalink to this headline">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="wfl.configset.ConfigSet">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.configset.</span></span><span class="sig-name descname"><span class="pre">ConfigSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abcd_conn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">':'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_queries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_configs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_configsets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_io</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.ConfigSet" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.configset.</span></span><span class="sig-name descname"><span class="pre">ConfigSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_open_reader</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cur_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_file_loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.ConfigSet" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Thin input layer for Set of atomic configurations, files or ABCD queries or list of Atoms.</p>
-<p class="rubric">Notes</p>
-<p>The input sources are mutually exclusive.</p>
+<p>Abstraction layer for storing and looping through collections of
+atomic configurations, either in memory or in files. Ignores existing
+Atom.info[“_ConfigSet_loc”] fields in Atoms objects that are passed in</p>
+<p>If created from a list of Atoms, potentially nested, the stored nested structure
+(which is returned by the iterators) is that of the nested lists. If created from one
+file (str or Path), the top level of nesting returned by the iterators corresponds
+to individual Atoms or sub-lists within the file.  If created from a list of files
+(even of length 1), the top level of nesting returned by the iterators corresponds
+to each file.</p>
+<p>Iterating over the ConfigSet returns a flattened list of configurations in the object,
+with information about the nested structure (necessary for reproducing it in the
+output, see OutputSpec.store() below) available from the ConfigSet’s cur_loc
+property or in the returned returned objects in Atoms.info[“_ConfigSet_loc”].</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>abcd_conn</strong> (<em>str / AbstractABCD</em><em>, </em><em>default None</em>) – ABCD connection URL or ABCD object</p></li>
-<li><p><strong>file_root</strong> (<em>str</em><em>, </em><em>default ``</em>) – path to prepend to every file name</p></li>
-<li><p><strong>input_files</strong> (<em>str / iterable</em><em>(</em><em>str</em><em>) </em><em>/ 2-tuple</em><em>(</em><em>str</em><em>) </em><em>/ iterable</em><em>(</em><em>2-tuple</em><em>(</em><em>str</em><em>)</em><em>)</em>) – Input file name globs, optionally as 2-tuples of (filename_glob, index).
-The latter only works with more than one tuple.
-Index here overrides separate default_index arg.
-pathlib.Path may be used instead of str.</p></li>
-<li><p><strong>default_index</strong> (str, default <cite>:</cite>) – default indexing, applied to all files unless overridden by indexing specified in input_files argument</p></li>
-<li><p><strong>input_queries</strong> (<em>dict/str / iterable</em><em>(</em><em>dict/str</em><em>)</em>) – ABCD queries, iterated over to form list of input configs</p></li>
-<li><p><strong>input_configs</strong> (<em>ase.Atoms / iterable</em><em>(</em><em>Atoms</em><em>) </em><em>/ iterable</em><em>(</em><em>iterable</em><em>(</em><em>Atoms</em><em>)</em><em>)</em>) – Atoms structures given directly</p></li>
-<li><p><strong>input_configsets</strong> (<em>iterable</em><em>(</em><a class="reference internal" href="#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a><em>)</em>) – ConfigSet objects to be merged</p></li>
-<li><p><strong>parallel_io</strong> (<em>bool</em><em>, </em><em>default False</em>) – parallel ASE atomic config input</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output</p></li>
+<li><p><strong>items</strong> (<em>Atoms / list</em><em>(</em><em>Atoms</em><em>) </em><em>/ list</em><em>(</em><em>list</em><em>...</em><em>(</em><em>Atoms</em><em>)</em><em>) </em><em>/ str / Path / list</em><em>(</em><em>str</em><em>) </em><em>/ list</em><em>(</em><em>Path</em><em>)</em>) – configurations to store, or list of file name globs for the configurations.</p></li>
+<li><p><strong>file_root</strong> (<em>str / Path. default None</em>) – path component to prepend to all file names</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.ConfigSet.get_current_input_file">
-<span class="sig-name descname"><span class="pre">get_current_input_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.ConfigSet.get_current_input_file" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.ConfigSet.get_input_files">
-<span class="sig-name descname"><span class="pre">get_input_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.ConfigSet.get_input_files" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.ConfigSet.get_input_type">
-<span class="sig-name descname"><span class="pre">get_input_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.ConfigSet.get_input_type" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns (bool, bool, bool), each corresponding to an input from an ABCD database, file or suplied as Atoms.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="wfl.configset.ConfigSet.cur_loc">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cur_loc</span></span><a class="headerlink" href="#wfl.configset.ConfigSet.cur_loc" title="Permalink to this definition">#</a></dt>
+<dd><p>When looping over ConfigSet, which returns a flattened list of configurations,
+current location string, which can be passed to OutputSpec.store() to
+ensure that outputs retain same nesting structure as inputs. Alternative to
+Atoms.info[“_ConfigSet_loc”] in the most recently-returned Atoms object</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.ConfigSet.group_iter">
-<span class="sig-name descname"><span class="pre">group_iter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.ConfigSet.group_iter" title="Permalink to this definition">#</a></dt>
-<dd><p>Iterate over configs in class in groups. Groups returned depend on how the configs were suplied on initialization.</p>
-<ul class="simple">
-<li><p>If the class was initialized with queries for an ABCD database: single group correponds to single input query.</p></li>
-<li><p>If multiple input files were given: <code class="docutils literal notranslate"><span class="pre">list(Atoms)</span></code> from a single input file are yielded.</p></li>
-<li><p>Otherwise yield elements from <code class="docutils literal notranslate"><span class="pre">self.input_configs</span></code>.</p></li>
-</ul>
+<dt class="sig sig-object py" id="wfl.configset.ConfigSet.groups">
+<span class="sig-name descname"><span class="pre">groups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.ConfigSet.groups" title="Permalink to this definition">#</a></dt>
+<dd><p>Generator returning a sequence of Atoms, or a sequence of
+ConfigSets, one for each sub-list.  Nesting structure reflects the
+input, as described in the ConfigSet class/constructor docstring.
+If items argument to constructor was a single file, iterator
+will return individual configs, or ConfigSets for sub-lists.
+If argument was a list of files, iterator will return a sequence
+of ConfigSets, one for the content of each file.  If argument
+was an Atoms or (nested) list of Atoms, iterator will reconstruct
+top level of initial nested structure.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.ConfigSet.in_memory">
-<span class="sig-name descname"><span class="pre">in_memory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.ConfigSet.in_memory" title="Permalink to this definition">#</a></dt>
-<dd><p>Create a ConfigSet containing the same configs, but in memory (i.e. as <code class="docutils literal notranslate"><span class="pre">self.input_configs</span></code>)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.ConfigSet.is_one_file">
-<span class="sig-name descname"><span class="pre">is_one_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.ConfigSet.is_one_file" title="Permalink to this definition">#</a></dt>
-<dd><p>Test if <code class="docutils literal notranslate"><span class="pre">self</span></code> is only one file with a trivial index</p>
+<dt class="sig sig-object py" id="wfl.configset.ConfigSet.one_file">
+<span class="sig-name descname"><span class="pre">one_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.ConfigSet.one_file" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns info on whether ConfigSet consists of exactly one file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Filename as string, False otherwhise</p>
+<dd class="field-odd"><p><strong>one_file_name</strong></p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str or False</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.ConfigSet.merge">
-<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.ConfigSet.merge" title="Permalink to this definition">#</a></dt>
-<dd><p>Merge <code class="docutils literal notranslate"><span class="pre">configset</span></code> to the configurations already held in the class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>configset</strong> (<a class="reference internal" href="#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – Where to add configurations from.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.ConfigSet.to_file">
-<span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.ConfigSet.to_file" title="Permalink to this definition">#</a></dt>
-<dd><p>Create a ConfigSet containing the same configs, but in one file, optionally with a unique temporary name</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em><em> or </em><em>Path</em>) – filename, optionally used as template for mkstemp</p></li>
-<li><p><strong>scratch</strong> (<em>bool</em><em>, </em><em>default false</em>) – use filename as template to tempfile.mkstemp</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>filename</strong> – Name of created file</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-even"><p>Path of the one file, or False otherwise</p>
 </dd>
 </dl>
 </dd></dl>
@@ -795,77 +749,77 @@ pathlib.Path may be used instead of str.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="wfl.configset.OutputSpec">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.configset.</span></span><span class="sig-name descname"><span class="pre">OutputSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abcd_conn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_abcd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_or_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_io</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.configset.</span></span><span class="sig-name descname"><span class="pre">OutputSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Thin output layer for configurations into files, ABCD, or atomic configs</p>
-<p class="rubric">Notes</p>
-<p>output_files and output_abcd may not both be set (but both many be unset to save to list(atoms))</p>
+<p>Abstraction for writing to a ConfigSet, preserving tree structure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>abcd_conn</strong> (<em>str / AbstractABCD</em><em>, </em><em>default None</em>) – ABCD connection URL or ABCD object</p></li>
-<li><p><strong>set_tags</strong> (<em>dict</em>) – dict of tags and value to set in every config</p></li>
-<li><p><strong>file_root</strong> (<em>str</em><em>, </em><em>default ``</em>) – path to prepend to every file name</p></li>
-<li><p><strong>output_files</strong> (<em>str / pathlib.Path / dict / list</em><em>(</em><em>len=1</em><em>) </em><em>/ tuple</em><em>(</em><em>len=1</em><em>)</em><em>, </em><em>default=None</em>) – output file, or dict mapping from input to output files</p></li>
-<li><p><strong>output_abcd</strong> (<em>bool</em><em>, </em><em>default False</em>) – write output to ABCD</p></li>
-<li><p><strong>force</strong> (<em>bool</em><em>, </em><em>default False</em>) – write even if doing so will overwrite (file) or some config with set_tags already exist (ABCD)</p></li>
-<li><p><strong>all_or_none</strong> (<em>bool</em><em>, </em><em>default True</em>) – write to temporary filename/tags and rename at the end, to ensure that files/tags only exist
-when output is complete</p></li>
-<li><p><strong>parallel_io</strong> (<em>bool</em><em>, </em><em>default False</em>) – parallel ASE atomic config output</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output</p></li>
+<li><p><strong>files</strong> (<em>str / Path / iterable</em><em>(</em><em>str / Path</em><em>)</em><em>, </em><em>default None</em>) – list of files to store configs in, or store in memory if None</p></li>
+<li><p><strong>file_root</strong> (<em>str / Path</em><em>, </em><em>default None</em>) – root directory relative to which all files will be taken</p></li>
+<li><p><strong>overwrite</strong> (<em>str</em><em>, </em><em>default True</em>) – Overwrite already existing files.  Defaults to True so that object creation
+doesn’t fail if write loop has been completed (detectable with <cite>OutputSpec.done()</cite>).</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.OutputSpec.end_write">
-<span class="sig-name descname"><span class="pre">end_write</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.end_write" title="Permalink to this definition">#</a></dt>
-<dd><p>Finalize writing to outputs: close files, rename temporary files.</p>
+<dt class="sig sig-object py" id="wfl.configset.OutputSpec.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.close" title="Permalink to this definition">#</a></dt>
+<dd><p>Finishes OutputSpec writing, closing all open files and renaming temporaries</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.OutputSpec.fail_if_output_exists">
-<span class="sig-name descname"><span class="pre">fail_if_output_exists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.fail_if_output_exists" title="Permalink to this definition">#</a></dt>
-<dd><p>Check for non-unique tags for abcd output and existing files for file output.</p>
+<dt class="sig sig-object py" id="wfl.configset.OutputSpec.done">
+<span class="sig-name descname"><span class="pre">done</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.done" title="Permalink to this definition">#</a></dt>
+<dd><p>Determine if all output has been created and writing operation is done from
+a previous run, even before any configurations have been written.  Never true
+for in-memory storage.</p>
+<p>Since files are initially written to under temporary names and renamed to
+their final names only after OutpuSpec.close(), this will only return true if
+close has been called.</p>
+<p>NOTE: This will return false if a file specified in the constructor does not exist,
+which might happen if no input_CS_loc passed to OutputSpec.store() specified
+that file.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.OutputSpec.is_done">
-<span class="sig-name descname"><span class="pre">is_done</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">even_if_not_all_or_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.is_done" title="Permalink to this definition">#</a></dt>
-<dd><p>Check if output is done and saved in the correct format (file, list(Atoms), uploaded to ABCD).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.OutputSpec.pre_write">
-<span class="sig-name descname"><span class="pre">pre_write</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.pre_write" title="Permalink to this definition">#</a></dt>
-<dd><p>Cleans outputs held in the class, if any.</p>
+<dt class="sig sig-object py" id="wfl.configset.OutputSpec.store">
+<span class="sig-name descname"><span class="pre">store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_CS_loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.store" title="Permalink to this definition">#</a></dt>
+<dd><p>Store Atoms or iterable containing Atoms or other iterables in a form that can be
+used to create a ConfigSet.  If output ConfigSet is to have same structure as input
+ConfigSet, configs must come in the same order as the input ConfigSet’s flat iterator,
+with the store loc containing the _ConfigSet_loc values returned by that iterator.</p>
+<p>This function is generally called by wfl’s built-in autoparallelization functions.
+An example that does the same thing is shown in the following construction:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">([</span><span class="s2">&quot;in0.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;in1.xyz&quot;</span><span class="p">])</span>
+<span class="n">os</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">([</span><span class="s2">&quot;out0.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;out1.xyz&quot;</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">at_in</span> <span class="ow">in</span> <span class="n">cs</span><span class="p">:</span>
+    <span class="c1"># define at_out, either an Atoms or a (nested) list of Atoms, based on at_in</span>
+    <span class="o">.</span>
+    <span class="o">.</span>
+    <span class="c1"># the next line can also use at_in.info[&quot;_ConfigSet_loc&quot;] instead of cs.get_loc()</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">at_out</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">get_loc</span><span class="p">())</span>
+<span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>configs</strong> (<em>Atoms / iterable</em><em>(</em><em>Atoms / iterable</em><em>)</em>) – configurations to store</p></li>
+<li><p><strong>input_CS_loc</strong> (<em>str</em><em>, </em><em>default &quot;&quot;</em>) – location in input iterable (source ConfigSet) so that output iterable has same structure as source
+ConfigSet. Available from the ConfigSet that is’s being iterated over via ConfigSet.cur_loc
+or the ConfigSet iterator’s returned Atoms.info[“_ConfigSet_loc”]. Required when writing
+to multiple files (since top level of location indicates which file), otherwise defaults
+to appending to single file or top level list of configs.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wfl.configset.OutputSpec.to_ConfigSet">
 <span class="sig-name descname"><span class="pre">to_ConfigSet</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.to_ConfigSet" title="Permalink to this definition">#</a></dt>
-<dd><p>Re-package configs held in this class to a ConfigSet to be used later in the workflow.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.OutputSpec.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_input_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.write" title="Permalink to this definition">#</a></dt>
-<dd><p>Iteratively write to place corresponding to config input iterator last returned.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ats</strong> (<em>Atoms / list</em><em>(</em><em>Atoms</em><em>)</em>) – Atoms to write</p></li>
-<li><p><strong>from_input_file</strong> (<em>str</em><em> or </em><em>Path</em><em>, </em><em>default None</em>) – If OutputSpec was initialised with dict(input_file=output_file, …):
-input file based on which the corresponding output file is selected.</p></li>
-<li><p><strong>flush_interval</strong> (<em>int</em><em>, </em><em>default 10</em>) – Interval (s) for writing to files.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 </dd></dl>
 

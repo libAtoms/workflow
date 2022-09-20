@@ -527,8 +527,8 @@ title="Print to PDF"
 
     <span class="kn">from</span> <span class="nn">xtb.ase.calculator</span> <span class="kn">import</span> <span class="n">XTB</span>
 
-    <span class="n">ConfigSet</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_files</span><span class="o">=</span><span class="n">input_fname</span><span class="p">)</span>
-    <span class="n">OutputSpec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_files</span><span class="o">=</span><span class="n">output_fname</span><span class="p">)</span>
+    <span class="n">ConfigSet</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_fname</span><span class="p">)</span>
+    <span class="n">OutputSpec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_fname</span><span class="p">)</span>
 
     <span class="n">calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">XTB</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span><span class="s1">&#39;GFN2-xTB&#39;</span><span class="p">})</span>
 
@@ -586,9 +586,10 @@ title="Print to PDF"
                                             <span class="n">temp</span><span class="o">=</span><span class="n">temp</span><span class="p">,</span> 
                                             <span class="n">info_to_keep</span><span class="o">=</span><span class="n">info_to_keep</span><span class="p">,</span>
                                             <span class="n">arrays_to_keep</span><span class="o">=</span><span class="n">arrays_to_keep</span><span class="p">)</span>
+        <span class="n">outputs</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
 
-    <span class="n">outputs</span><span class="o">.</span><span class="n">end_write</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">outputs</span><span class="o">.</span><span class="n">to_ConfigSet</span><span class="p">()</span>
+    <span class="n">outputs</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Elena: I have <a class="reference external" href="https://github.com/gelzinyte/scripties/blob/main/util/normal_modes.py">this script</a> that randomly displaces atoms along different normal modes and down-weights the very shallow noisy ones. Is it worth merging into workflow and/or describing here?</p>

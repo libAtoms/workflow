@@ -547,9 +547,7 @@ title="Print to PDF"
     <span class="n">workdir_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">workdir_root</span><span class="p">)</span> 
     <span class="n">workdir_root</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="n">tags</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;temp&quot;</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">temp</span><span class="p">))}</span>
-
-    <span class="n">ci</span><span class="p">,</span> <span class="n">co</span> <span class="o">=</span> <span class="n">prepare_inputs</span><span class="p">(</span><span class="n">in_ats</span><span class="p">,</span> <span class="n">info_label</span><span class="p">,</span> <span class="n">workdir_root</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span>
+    <span class="n">ci</span><span class="p">,</span> <span class="n">co</span> <span class="o">=</span> <span class="n">prepare_inputs</span><span class="p">(</span><span class="n">in_ats</span><span class="p">,</span> <span class="n">info_label</span><span class="p">,</span> <span class="n">workdir_root</span><span class="p">)</span>
 
     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;WFL_DETERMINISTIC_HACK&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span>
 
@@ -570,7 +568,7 @@ title="Print to PDF"
         <span class="o">**</span><span class="n">md_params</span>
         <span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">prepare_inputs</span><span class="p">(</span><span class="n">ats</span><span class="p">,</span> <span class="n">info_label</span><span class="p">,</span> <span class="n">workdir_root</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">prepare_inputs</span><span class="p">(</span><span class="n">ats</span><span class="p">,</span> <span class="n">info_label</span><span class="p">,</span> <span class="n">workdir_root</span><span class="p">):</span>
 
     <span class="n">input_files</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">output_files</span> <span class="o">=</span> <span class="p">{}</span>
@@ -583,11 +581,8 @@ title="Print to PDF"
         <span class="n">output_files</span><span class="p">[</span><span class="n">fname_in</span><span class="p">]</span> <span class="o">=</span> <span class="n">fname_out</span>
         <span class="n">write</span><span class="p">(</span><span class="n">fname_in</span><span class="p">,</span> <span class="n">at</span><span class="p">)</span>
 
-    <span class="n">ci</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_files</span><span class="o">=</span><span class="n">input_files</span><span class="p">)</span>
-    <span class="n">co</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span>
-        <span class="n">output_files</span><span class="o">=</span><span class="n">output_files</span><span class="p">,</span>
-        <span class="n">all_or_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
-        <span class="n">set_tags</span><span class="o">=</span><span class="n">tags</span><span class="p">)</span>
+    <span class="n">ci</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_files</span><span class="p">)</span>
+    <span class="n">co</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_files</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ci</span><span class="p">,</span> <span class="n">co</span>
 
 <span class="c1">#creates unique hash for a matrix of numbers</span>
