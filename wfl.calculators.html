@@ -691,36 +691,14 @@ index of the model in the committee of models</p></li>
 - Quantum Espresso</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.calculators.dft.evaluate_dft">
-<span class="sig-prename descclassname"><span class="pre">wfl.calculators.dft.</span></span><span class="sig-name descname"><span class="pre">evaluate_dft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'DFT_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.dft.evaluate_dft" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">wfl.calculators.dft.</span></span><span class="sig-name descname"><span class="pre">evaluate_dft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.dft.evaluate_dft" title="Permalink to this definition">#</a></dt>
 <dd><p>evaluate configurations with a DFT calculator</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<em>list</em><em>(</em><em>Atoms</em><em>) </em><em>/ Configset</em>) – input atomic configs, needs to be iterable</p></li>
-<li><p><strong>outputs</strong> (<em>list</em><em>(</em><em>Atoms</em><em>) </em><em>/ Configset_out</em>) – output atomic configs</p></li>
-<li><p><strong>calculator_name</strong> (<em>str {&quot;CASTEP&quot;</em><em>, </em><em>&quot;VASP&quot;}</em>) – name of Plane Wave DFT calculator, options are: “CASTEP”, “VASP”</p></li>
-<li><p><strong>workdir_root</strong> (<em>path-like</em><em>, </em><em>default os.getcwd</em><em>(</em><em>)</em>) – directory to put calculation directories into</p></li>
-<li><p><strong>dir_prefix</strong> (<em>str</em><em>, </em><em>default 'DFT_'</em>) – directory name prefix for calculations</p></li>
-<li><p><strong>calculator_command</strong> (<em>str</em>) – command for calculator, only MPI and the executable
-eg. “mpirun -n 4 /path-to/castep.mpi”</p></li>
-<li><p><strong>calculator_kwargs</strong> (<em>dict</em>) – all keyword arguments for the calculator object</p></li>
-<li><p><strong>output_prefix</strong> (<em>str / None</em>) – prefix for info/arrays keys, None for SinglePointCalculator
-default is the calculator name</p></li>
-<li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default None</em>) – ase-compatible property names,
-None for default list (energy, forces, stress)</p></li>
-<li><p><strong>keep_files</strong> (<em>bool / None / &quot;default&quot; / list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default &quot;default&quot;</em>) – <dl class="simple">
-<dt>what kind of files to keep from the run</dt><dd><ul>
-<li><p>True : everything kept</p></li>
-<li><p>None, False : nothing kept, unless calculation fails</p></li>
-<li><p>”default”   : only ones needed for NOMAD uploads depending on calculator</p></li>
-<li><p>list(str)   : list of file globs to save</p></li>
-</ul>
-</dd>
-</dl>
-</p></li>
-<li><p><strong>kwargs</strong> – any other keyword arguments that need to be passed to the
-evaluation operation function.
-only implemented for VASP: potcar_top_dir, potcar_rel_dir</p></li>
+<li><p><strong>*args</strong> – positional arguments for actual DFT calculator</p></li>
+<li><p><strong>**kwargs</strong> – keyword args for actual DFT calculator
+must include calculator_name in [“CASTEP”, “VASP”]</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -780,12 +758,6 @@ can’t ever be sure it’s not needed anymore, so let’s not do it automatical
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.default_parameters">
-<span class="sig-name descname"><span class="pre">default_parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#wfl.calculators.espresso.Espresso.default_parameters" title="Permalink to this definition">#</a></dt>
-<dd><p>Default parameters</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.implemented_properties">
 <span class="sig-name descname"><span class="pre">implemented_properties</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['energy',</span> <span class="pre">'forces',</span> <span class="pre">'stress']</span></em><a class="headerlink" href="#wfl.calculators.espresso.Espresso.implemented_properties" title="Permalink to this definition">#</a></dt>
 <dd><p>Properties calculator can handle (energy, forces, …)</p>
@@ -794,6 +766,11 @@ can’t ever be sure it’s not needed anymore, so let’s not do it automatical
 <dl class="py method">
 <dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.setup_params_for_this_calc">
 <span class="sig-name descname"><span class="pre">setup_params_for_this_calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.Espresso.setup_params_for_this_calc" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.wfl_generic_def_autopara_info">
+<span class="sig-name descname"><span class="pre">wfl_generic_def_autopara_info</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'num_inputs_per_python_subprocess':</span> <span class="pre">1}</span></em><a class="headerlink" href="#wfl.calculators.espresso.Espresso.wfl_generic_def_autopara_info" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -805,6 +782,9 @@ can’t ever be sure it’s not needed anymore, so let’s not do it automatical
 <dt class="sig sig-object py" id="wfl.calculators.generic.run">
 <span class="sig-prename descclassname"><span class="pre">wfl.calculators.generic.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.generic.run" title="Permalink to this definition">#</a></dt>
 <dd><p>evaluates configs using an arbitrary calculator and store results in SinglePointCalculator</p>
+<p>Defaults to wfl_num_inputs_per_python_subprocess=10, to avoid recreating the calculator for
+each configuration, unless calculator class defines a wfl_generic_def_autopara_info
+attribute in which case that value is used for the default.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -833,6 +813,9 @@ None for SinglePointCalculator instead of info/arrays.</p></li>
 <dt class="sig sig-object py" id="wfl.calculators.generic.run_autopara_wrappable">
 <span class="sig-prename descclassname"><span class="pre">wfl.calculators.generic.</span></span><span class="sig-name descname"><span class="pre">run_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_auto_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_calc_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.generic.run_autopara_wrappable" title="Permalink to this definition">#</a></dt>
 <dd><p>evaluates configs using an arbitrary calculator and store results in SinglePointCalculator</p>
+<p>Defaults to wfl_num_inputs_per_python_subprocess=10, to avoid recreating the calculator for
+each configuration, unless calculator class defines a wfl_generic_def_autopara_info
+attribute in which case that value is used for the default.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
