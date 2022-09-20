@@ -41,7 +41,7 @@ def evaluate_basin_hopping(*args, **kwargs):
     Returns
     -------
     results : ConfigSet
-        outputs.to_ConfigSet()
+        ConfigSet(outputs)
     """
     raise RuntimeError("implemented in terms of wfl.calculators.orca.evaluate_op, which does not exist")
     # return autoparallelize(orca.evaluate_op, *args, basin_hopping=True, **kwargs)

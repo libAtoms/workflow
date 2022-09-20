@@ -67,8 +67,8 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ase.io.write(tmp_path / f'ats_i_{sys_name}.xyz', ats)
 
     # calculate values via iterable loop with real jobs
-    ci = ConfigSet(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
-    co = OutputSpec(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
+    ci = ConfigSet(tmp_path / f'ats_i_{sys_name}.xyz')
+    co = OutputSpec(tmp_path / f'ats_o_{sys_name}.xyz')
 
     # cd to test dir, so that things like relative paths for POTCARs work
     # NOTE: very cumbersome with VASP, maybe need more sophisticated control of staging files?
@@ -126,8 +126,8 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     print('len(ref_Es)', len(ref_Es))
 
     # calculate values via iterable loop with real jobs
-    ci = ConfigSet(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
-    co = OutputSpec(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
+    ci = ConfigSet(tmp_path / f'ats_i_{sys_name}.xyz')
+    co = OutputSpec(tmp_path / f'ats_o_{sys_name}.xyz')
 
     # do not mark as processed so next call can reuse
     monkeypatch.setenv('WFL_EXPYRE_NO_MARK_PROCESSED', '1')
@@ -145,8 +145,8 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
 
     # pretend to run again, as though it was interrupted
     (tmp_path / f'ats_o_{sys_name}.xyz').unlink()
-    ci = ConfigSet(input_files=str(tmp_path / f'ats_i_{sys_name}.xyz'))
-    co = OutputSpec(output_files=str(tmp_path / f'ats_o_{sys_name}.xyz'))
+    ci = ConfigSet(tmp_path / f'ats_i_{sys_name}.xyz')
+    co = OutputSpec(tmp_path / f'ats_o_{sys_name}.xyz')
 
     t0 = time.time()
     results = generic.run(inputs=ci, outputs=co, calculator=calc)
@@ -190,16 +190,16 @@ def do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ase.io.write(tmp_path / f'ats_i_{sys_name}_2.xyz', ats_2)
 
     infiles = [str(tmp_path / f'ats_i_{sys_name}_1.xyz'), str(tmp_path / f'ats_i_{sys_name}_2.xyz')]
-    ci = ConfigSet(input_files=infiles)
+    ci = ConfigSet(infiles)
 
     # run locally
-    co = OutputSpec(output_files={f: f.replace('_i_', '_o_local_') for f in infiles})
+    co = OutputSpec([f.replace('_i_', '_o_local_') for f in infiles])
     results = optimize.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
 
     # run remotely
     monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
 
-    co = OutputSpec(output_files={f: f.replace('_i_', '_o_') for f in infiles})
+    co = OutputSpec([f.replace('_i_', '_o_') for f in infiles])
     t0 = time.time()
     results = optimize.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
     dt = time.time() - t0

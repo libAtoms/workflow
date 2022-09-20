@@ -1,11 +1,12 @@
 import sys
 
+from wfl.configset import ConfigSet
 from wfl.select.selection_space import composition_space_Zs, composition_space_coord
 from wfl.utils.convex_hull import find_hull
 
 
 def select(inputs, outputs, info_field, Zs=None, verbose=False):
-    if outputs.is_done():
+    if outputs.done():
         sys.stderr.write('Returning from {__name__} since output is done\n')
         return outputs.to_ConfigSet()
 
@@ -29,10 +30,10 @@ def select(inputs, outputs, info_field, Zs=None, verbose=False):
     for at_i, at in enumerate(inputs):
         try:
             if avail_inds[at_i] in selected_indices:
-                outputs.write(at)
+                outputs.store(at)
         except KeyError:
             # skip configs that are not in avail_inds
             pass
 
-    outputs.end_write()
+    outputs.close()
     return outputs.to_ConfigSet()

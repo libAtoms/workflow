@@ -177,12 +177,7 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
     calc = (wfl.calculators.espresso.Espresso, [], kw)
 
     # output container
-    c_out = OutputSpec(
-        file_root=tmp_path,
-        output_files="qe_results.xyz",
-        force=True,
-        all_or_none=True,
-    )
+    c_out = OutputSpec("qe_results.xyz", file_root=tmp_path)
 
     results = generic.run(
         inputs=[at0, at],
@@ -260,7 +255,7 @@ def test_wfl_Espresso_calc_via_generic(tmp_path, qe_cmd_and_pseudo):
     calc = (wfl.calculators.espresso.Espresso, [], kw)
 
     cfgs = [atoms]*3 + [Atoms("Cu", cell=(2, 2, 2), pbc=[True]*3)]
-    ci = ConfigSet(input_configs=cfgs)
+    ci = ConfigSet(cfgs)
     co = OutputSpec()
     autoparainfo = AutoparaInfo(
         num_python_subprocesses=0

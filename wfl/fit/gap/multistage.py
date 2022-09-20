@@ -10,7 +10,7 @@ import ase.io
 import numpy as np
 import yaml
 
-from wfl.configset import ConfigSet, OutputSpec
+from wfl.configset import ConfigSet
 from wfl.descriptor_heuristics import descriptor_2brn_uniform_file, descriptors_from_length_scales
 from wfl.fit.gap.simple import run_gap_fit
 from wfl.utils.quip_cli_strings import dict_to_quip_str
@@ -185,7 +185,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         input_files = remote_info.output_files.copy()
         output_files = remote_info.output_files.copy() + [str(run_dir)]
 
-        fitting_configs = fitting_configs.in_memory()
+        fitting_configs = ConfigSet(list(fitting_configs))
 
         # set number of threads in queued job, only if user hasn't set them
         if not any([var.split('=')[0] == 'WFL_GAP_FIT_OMP_NUM_THREADS' for var in remote_info.env_vars]):
@@ -223,7 +223,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
     max_seed = np.iinfo(np.int32).max
 
     # read configs into a list in memory
-    fitting_configs = fitting_configs.in_memory()
+    fitting_configs = ConfigSet(list(fitting_configs))
 
     # delete calculators so as to not confuse the issue
     for at in fitting_configs:
@@ -334,7 +334,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         database_file = run_dir / f'fitting_database.combined.{GAP_name}.stage_{i_stage}.extxyz'
         ase.io.write(database_file, fitting_configs)
-        database_ci = ConfigSet(input_files=str(database_file))
+        database_ci = ConfigSet(database_file)
 
         # compute number of descriptors for i_stage'th one
         count_descs = []

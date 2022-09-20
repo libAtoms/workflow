@@ -6,32 +6,35 @@
 ```python
 from wfl.configset import ConfigSet, OutputSpec
 ```
-`ConfigSet` can encapsulate one or multiple lists of `ase.atoms.Atoms` objects,
-or reference to stored sets of configuration in files or ABCD databases.
+`ConfigSet` can encapsulate one or multiple (possibly nested) lists of `ase.atoms.Atoms` objects,
+or reference to stored sets of configuration in files (CURRENTLY UNSUPPORTED: or ABCD databases).
 It can function as an iterator over all configs in the input, or iterate over groups of them
-according to the input definition with the `ConfigSet().group_iter()` method.
-The `ConfigSet` must be initialized with its inputs and indices for them.
+according to the input definition with the `ConfigSet().groups()` method.  The regular
+iterator provides enough information to write a corresponding set of output configurations
+with the same nested structure.  The `ConfigSet` must be initialized with all of its input 
+configurations or files.
 
-`OutputSpec` works as the output layer, can be used for writing results into it during
-iterations, but the actual writing is only happening when the operation is closed with
-`OutputSpec.end_write()`. Input mapping can be added to output into multiple files,
-based on the input. This is not fully functional for putting configs into the different
-outputs in a random order and repeatedly touching one.
+`OutputSpec` works as the output layer, and can be used for writing results into it during
+iterations, but the actual writing is only guaranteed to happen when the operation is closed with
+`OutputSpec.close()`.  The `OutputSpec` can specify multiple files, in which case their
+number needs to correspond to the number of top level sub-lists (or files, for file-based iput)
+in the corresponding input `ConfigSet`.
 
 For example, to read from two files and write corresponding configs to
 two other files, use
 ```python
-s_in = ConfigSet(input_files=['in1.xyz','dir/in2.xyz'])
-s_out = OutputSpec(output_files={"in1.xyz": "out1.xyz", "in2.xyz": "out2.xyz"})
+s_in = ConfigSet(["in1.xyz", "dir/in2.xyz"])
+s_out = OutputSpec(["out1.xyz",  "out2.xyz"])
 for at in s_in:
     do_some_operation(at)
-    s_out.write(at, from_input_file=s_in.get_current_input_file())
-s_out.end_write()
+    s_out.store(at, input_CS_loc=s_in.cur_loc)
+s_out.close()
 ```
 In this case the inputs is a list of files, and the outputs is either a single file (many -> 1)
 or a mapping between equal number of input and output categories (multiple 1 -> 1).
 This will not overwrite unless you also pass `force=True`.
 
+[CURRENTLY UNSUPPORTED]
 To read from and write to ABCD database records, you can do
 ```python
 output_tags = {'output_tag' : 'some unique value'}
@@ -49,7 +52,6 @@ passing to the next stage in the pipeline).  The outputs can be retrieved by
 abcd.get_atoms(output_tags)
 ```
 ## running wfl functions as independently queued jobs
-
 
 Operations that have been wrapped in `autoparallelize` can be split into independent jobs with minimal
 coding.  A `config.json` file must describe the available queuing sytem resources (see
@@ -80,8 +82,8 @@ from wfl.generate_configs.minim import run
 from ase.calculators.vasp import Vasp
 
 infile = "structures.xyz"
-ci = ConfigSet(input_files=infile)
-co = OutputSpec(output_files='relaxed.' + infile, force=True, all_or_none=True)
+ci = ConfigSet(infile)
+co = OutputSpec('relaxed.' + infile)
 
 vasp_kwargs = { 'encut': 400.0, 'ismear': 0, 'sigma': 0.1, 'ediff': 1.0d-7, 'kspacing': 0.15, 'kgamma': True }
 
@@ -127,7 +129,7 @@ to separate the jobs database from any other project.
 
 Restarts are supposed to be handled automatically - if the workflow script is
 interrupted, just rerun it.  If the entire `autoparallelize` call is complete,
-the default of `force=True, all_or_none=True` for `OutputSpec()` will allow
+The default behavior of `OutputSpec` will allow
 it to skip the operation entirely.  If the operation is not entirely done,
 the remote running package will detect an attempt to compute a previously
 initiated call (based on a hash of pickles of the function and all of its

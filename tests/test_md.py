@@ -41,7 +41,7 @@ def cu_slab():
 def test_NVE(cu_slab):
     calc = EMT()
 
-    inputs = ConfigSet(input_configs = cu_slab)
+    inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
     atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
@@ -57,7 +57,7 @@ def test_NVT_const_T(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet(input_configs = cu_slab)
+    inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
     atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
@@ -74,7 +74,7 @@ def test_NVT_simple_ramp(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet(input_configs = cu_slab)
+    inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
     atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
@@ -96,7 +96,7 @@ def test_NVT_complex_ramp(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet(input_configs = cu_slab)
+    inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
     atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
@@ -128,7 +128,7 @@ def test_subselector_function_after(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet(input_configs = cu_slab)
+    inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
     atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
@@ -142,7 +142,7 @@ def test_subselector_function_during(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet(input_configs = cu_slab)
+    inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
     atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
@@ -156,7 +156,7 @@ def test_md_abort_function(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet(input_configs = cu_slab)
+    inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
     md_stopper = AbortOnCollision(collision_radius=2.25)

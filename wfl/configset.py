@@ -1,639 +1,599 @@
-import glob
-import os
-import time
-import traceback
-
 from pathlib import Path
-import tempfile
+import glob
 
+from ase.atoms import Atoms
 import ase.io
-from ase import Atoms, Atom
-from ase.io.formats import filetype as ase_filetype
-
-try:
-    from abcd import ABCD
-    from abcd.database import AbstractABCD
-except ModuleNotFoundError:
-    ABCD = None
-
-
-def _fmt(title, obj):
-    # writes str or iterable and apply formatting
-    if isinstance(obj, str):
-        ss = obj
-    else:
-        ss = ", ".join(obj)
-    return f'\n   {title}: {ss}'
-
-
-def _parse_abcd(abcd_conn):
-    if isinstance(abcd_conn, str):
-        return ABCD.from_url(abcd_conn)
-    elif abcd_conn is None or isinstance(abcd_conn, AbstractABCD):
-        return abcd_conn
-    else:
-        raise RuntimeError('Got abcd_conn type {}, not None or ABCD or URL string'.format(type(abcd_conn)))
-
+import ase.io.formats
 
 class ConfigSet:
-    """Thin input layer for Set of atomic configurations, files or ABCD queries or list of Atoms.
+    """Abstraction layer for storing and looping through collections of
+    atomic configurations, either in memory or in files. Ignores existing
+    Atom.info["_ConfigSet_loc"] fields in Atoms objects that are passed in
 
-    Notes
-    -----
-    The input sources are mutually exclusive.
+    If created from a list of Atoms, potentially nested, the stored nested structure
+    (which is returned by the iterators) is that of the nested lists. If created from one
+    file (str or Path), the top level of nesting returned by the iterators corresponds
+    to individual Atoms or sub-lists within the file.  If created from a list of files
+    (even of length 1), the top level of nesting returned by the iterators corresponds
+    to each file.
+
+    Iterating over the ConfigSet returns a flattened list of configurations in the object, 
+    with information about the nested structure (necessary for reproducing it in the
+    output, see OutputSpec.store() below) available from the ConfigSet's cur_loc
+    property or in the returned returned objects in Atoms.info["_ConfigSet_loc"].
 
     Parameters
     ----------
-    abcd_conn: str / AbstractABCD, default None
-        ABCD connection URL or ABCD object
-    file_root: str, default ``
-        path to prepend to every file name
-    input_files: str / iterable(str) / 2-tuple(str) / iterable(2-tuple(str))
-        Input file name globs, optionally as 2-tuples of (filename_glob, index).
-        The latter only works with more than one tuple. 
-        Index here overrides separate default_index arg. 
-        pathlib.Path may be used instead of str. 
-    default_index: str, default `:`
-        default indexing, applied to all files unless overridden by indexing specified in input_files argument
-    input_queries: dict/str / iterable(dict/str)
-        ABCD queries, iterated over to form list of input configs
-    input_configs: ase.Atoms / iterable(Atoms) / iterable(iterable(Atoms))
-        Atoms structures given directly
-    input_configsets: iterable(ConfigSet)
-        ConfigSet objects to be merged
-    parallel_io: bool, default False
-        parallel ASE atomic config input
-    verbose: bool, default False
-        verbose output
+
+    items: Atoms / list(Atoms) / list(list...(Atoms)) / str / Path / list(str) / list(Path)
+        configurations to store, or list of file name globs for the configurations.
+
+    file_root: str / Path. default None
+        path component to prepend to all file names
     """
 
-    def __init__(self, abcd_conn=None,
-                 file_root='', input_files=None, default_index=':',
-                 input_queries=None, input_configs=None, input_configsets=None,
-                 parallel_io=False, verbose=False):
+    _loc_sep = " / "
 
-        # is there a nicer way of testing this?
-        assert sum([i is not None for i in [input_files, input_queries, input_configs, input_configsets]]) <= 1
+    def __init__(self, items, *, file_root=None, _open_reader=None, _cur_at=None, _file_loc=None):
+        # deal with private arguments
+        if sum([_open_reader is None, _cur_at is None, _file_loc is None]) not in (0, 3):
+            raise ValueError(f"Need either both or neither of _open_reader {_open_reader} _file_loc {_file_loc}")
+        self._open_reader = _open_reader
+        self._cur_at = _cur_at if _cur_at is not None else [None]
+        self._file_loc = _file_loc if _file_loc is not None else ""
+        file_root = Path(file_root) if file_root is not None else Path("")
 
-        self.debug = False
 
-        self.verbose = verbose
-        self.parallel_io = parallel_io
+        # self.items can be
+        #   Path or list(Path) or list(...(list(Atoms)))
+        if items is None or (isinstance(items, (list, tuple)) and len(items) == 0):
+            self.items = None
+        elif isinstance(items, OutputSpec):
+            # previously supported, so give explicit error message
+            raise RuntimeError("ConfigSet(OutputSpec) not supported - use OutputSpec.to_ConfigSet()")
+        elif isinstance(items, ConfigSet):
+            if items._file_loc != "":
+                raise ValueError("ConfigSet from ConfigSet cannot have _file_loc set")
+            self.items = items.items
+        elif isinstance(items, Atoms):
+            self.items = [items]
+        elif isinstance(items, (str, Path)):
+            if file_root != Path("") and Path(items).is_absolute():
+                raise ValueError(f"Got file_root but file {items} is an absolute path")
+            self.items = file_root / items
+        elif isinstance(items[0], (str, Path)):
+            self.items = []
+            for file_path in items:
+                if file_root != Path("") and Path(file_path).is_absolute():
+                    raise ValueError(f"Got file_root but file {file_path} is an absolute path")
+                self.items.append(file_root / file_path)
+        elif isinstance(items[0], ConfigSet):
+            self.items = []
+            for item in items:
+                if item._file_loc != "":
+                    raise ValueError("ConfigSet from ConfigSet cannot have _file_loc set")
+                if isinstance(item.items, (str, Path)) or isinstance(item.items[0], (str, Path)):
+                    if len(self.items) > 0 and not isinstance(self.items[-1], Path):
+                        raise ValueError("Got ConfigSet containing Path after one that does not")
 
-        # parse ABCD URL if provided
-        self.abcd = _parse_abcd(abcd_conn)
-
-        # copy input args to self attributes
-        self.input_files = None
-        self.input_queries = input_queries
-        self.input_configs = input_configs
-        self.default_index = default_index
-        self.file_root = Path(file_root)
-
-        # properties needed elsewhere
-        self.current_input_file = None
-
-        if self.input_queries is not None:
-            # fix up queries
-            if self.abcd is None:
-                raise RuntimeError('Got input_queries, but abcd_conn was not specified')
-
-            if isinstance(self.input_queries, (dict, str)):
-                self.input_queries = [self.input_queries]
-            if self.verbose:
-                print('added queries', self.input_queries)
-        elif input_files is not None:
-            # fix up files
-            self.input_files = []
-            if isinstance(input_files, str) or isinstance(input_files, Path):
-                # single string, one glob
-                # can't accept one 2-tuple of (file, index) because there's no perfect way of distinguishing it from
-                #    2-tuple of filenames (unless we want to test whether second file is in form of an index and assume
-                #    it is if it matches.  The index argument can still be used in this case.
-                input_files = [input_files]
-
-            for glob_index in input_files:
-                if isinstance(glob_index, str) or isinstance(glob_index, Path):
-                    glob_index = (glob_index, self.default_index)
-                if isinstance(glob_index[0], Path):
-                    glob_index = (str(glob_index[0]), glob_index[1])
-                try:
-                    if len(glob_index) != 2:
-                        raise RuntimeError(
-                            'Got input_files item \'{}\' len = {} != 2'.format(glob_index, len(glob_index)))
-                    if self.verbose:
-                        print('adding files in ', glob_index)
-                    self.input_files.extend(
-                        [(Path(f), glob_index[1]) for f in sorted(glob.glob(str(self.file_root / glob_index[0])))])
-
-                except Exception as exc:
-                    raise RuntimeError(('Got input_files \'{}\' with some contents type '
-                                        'not str/Path or 2-tuple of str/Path').format(input_files)) from exc
-            if len(self.input_files) == 0:
-                raise RuntimeError('input glob(s) \'{}\' did not match any files'.format(input_files))
-        elif self.input_configs is not None:
-            # fix up configs
-            try:
-                check = "outer iterator"
-                first_config = next(iter(self.input_configs))
-                if isinstance(first_config, Atom):
-                    # Atoms, store as one group with one config
-                    self.input_configs = [[self.input_configs]]
-                elif isinstance(first_config, Atoms):
-                    # iterable(Atoms), store as 1 group
-                    self.input_configs = [list(self.input_configs)]
+                    if isinstance(item.items, (str, Path)):
+                        self.items.append(item.items)
+                    else:
+                        self.items.extend(item.items)
                 else:
-                    input_configs_orig = self.input_configs
-                    self.input_configs = []
-                    # check for iterable(iterable(Atoms))
-                    for sub_iter in input_configs_orig:
-                        check = "inner iterator is iterable"
-                        try:
-                            first_subconfig = next(iter(sub_iter))
-                        except StopIteration:
-                            # empty inner iterators are OK
-                            pass
-                        if not isinstance(first_subconfig, Atoms):
-                            check = "inner iterator contains Atoms"
-                            raise TypeError
-                        self.input_configs.append(list(sub_iter))
-            except StopIteration:
-                # empty iterable
-                self.input_configs = [[]]
-            except TypeError as exc:
-                raise TypeError('input_configs check {}'.format(check)) from exc
+                    if len(self.items) > 0 and isinstance(self.items[0], Path):
+                        raise ValueError("Got ConfigSet containing Atoms after one that contains Path")
+                    self.items.append(item.items)
+        else:
+            # WARNING: expecting list(list(... (Atoms))), and all lists same depth,
+            # but no error checking here
+            self.items = items
 
-            if self.verbose:
-                print('added configs #s', [len(ats) for ats in self.input_configs])
-        elif input_configsets is not None:
-            if isinstance(input_configsets, ConfigSet):
-                input_configsets = [input_configsets]
-            for configset in input_configsets:
-                if configset is None:
-                    # allow for list that includes None, so it's easy to handle
-                    # combining things that include optional arguments which may be none
-                    continue
-                self.merge(configset)
-        # else no inputs, consider as empty
+        self._cur_loc = None
 
 
-    def get_input_type(self):
-        """ Returns (bool, bool, bool), each corresponding to an input from an ABCD database, file or suplied as Atoms.
+    @property
+    def cur_loc(self):
+        """When looping over ConfigSet, which returns a flattened list of configurations,
+        current location string, which can be passed to OutputSpec.store() to
+        ensure that outputs retain same nesting structure as inputs. Alternative to
+        Atoms.info["_ConfigSet_loc"] in the most recently-returned Atoms object"""
+
+        return self._cur_loc
+
+
+    def __str__(self):
+        """Convert to string
         """
-        return self.input_queries is not None, self.input_files is not None, self.input_configs is not None
+        code = { Path: "F", Atoms : "A" }
+        out = f"ConfigSet with"
+
+        if isinstance(self.items, Path):
+            out += f" single file {self.items} {self._file_loc}"
+        else:
+            if self.items is None:
+                out += " no content"
+            elif isinstance(self.items[0], Path):
+                out += f" {len(self.items)} files"
+            elif isinstance(self.items[0], Atoms):
+                out += f" {len(self.items)} Atoms"
+            else:
+                out += f" {len(self.items)} sub-lists"
+
+        return out
 
 
-    def merge(self, configset):
-        """ Merge ``configset`` to the configurations already held in the class. 
-        
-        Parameters
-        ----------
-        configset: ConfigSet
-            Where to add configurations from. 
-
-        """ 
-        assert isinstance(configset, ConfigSet)
-
-        if not any(configset.get_input_type()):
-            # empty
+    def __iter__(self):
+        if self.items is None:
             return
 
-        if not any(self.get_input_type()):
-            self.abcd = configset.abcd
-            if configset.input_files is not None:
-                self.input_files = configset.input_files.copy()
-            if configset.input_queries is not None:
-                self.input_queries = configset.input_queries.copy()
-            if configset.input_configs is not None:
-                self.input_configs = configset.input_configs.copy()
+        if isinstance(self.items, Path):
+            # yield Atoms from one file
+            ## print("DEBUG __iter__ one file", self.items)
+            for at_i, at in enumerate(ase.io.iread(self.items, ":")):
+                loc = at.info.get("_ConfigSet_loc", ConfigSet._loc_sep + str(at_i))
+                if loc.startswith(self._file_loc):
+                    ## print("DEBUG matching loc", loc, "file_loc", self._file_loc)
+                    loc = loc.replace(self._file_loc, "", 1)
+                    ## print("DEBUG stripped loc", loc)
+                    at.info["_ConfigSet_loc"] = loc
+                    self._cur_loc = at.info.get("_ConfigSet_loc")
+                    yield at
+        elif isinstance(self.items[0], Path):
+            # yield Atoms from each file, prepending number of file to current loc
+            for file_i, filepath in enumerate(self.items):
+                for at_i, at in enumerate(ase.io.iread(filepath, ":")):
+                    loc = ConfigSet._loc_sep + str(file_i) + at.info.get("_ConfigSet_loc", ConfigSet._loc_sep + str(at_i))
+                    if loc.startswith(self._file_loc):
+                        loc = loc.replace(self._file_loc, "", 1)
+                        at.info["_ConfigSet_loc"] = loc
+                        self._cur_loc = at.info.get("_ConfigSet_loc")
+                        yield at
+        else:
+            # list of Atoms or of lists of ... Atoms
+            # yield atoms from ConfigSet._flat_iter
+            for at in ConfigSet._flat_iter(self.items):
+                self._cur_loc = at.info.get("_ConfigSet_loc")
+                yield at
 
-        elif self.get_input_type() == configset.get_input_type():
-            if self.abcd != configset.abcd:
-                raise RuntimeError('mismatched ABCD connections {} {}'.format(self.abcd, configset.abcd))
-            if self.input_files is not None:
-                self.input_files.extend(configset.input_files)
-            if self.input_queries is not None:
-                self.input_queries.extend(configset.input_queries)
-            if self.input_configs is not None:
-                self.input_configs.extend(configset.input_configs)
+        self._cur_loc = None
+
+
+    def groups(self):
+        """Generator returning a sequence of Atoms, or a sequence of
+        ConfigSets, one for each sub-list.  Nesting structure reflects the
+        input, as described in the ConfigSet class/constructor docstring.
+        If items argument to constructor was a single file, iterator
+        will return individual configs, or ConfigSets for sub-lists.
+        If argument was a list of files, iterator will return a sequence
+        of ConfigSets, one for the content of each file.  If argument
+        was an Atoms or (nested) list of Atoms, iterator will reconstruct
+        top level of initial nested structure.
+        """
+
+        if self.items is None:
+            return
+
+        # Need to keep track of cur_at_i only if looping through file without Atoms.info["_ConfigSet_loc"]
+        # fields, which can never happen on more deeply nested data, so there's no need to be
+        # able to transfer that to nested iterators. Therefore, keep in a local variable.
+        cur_at_i = 0
+
+        def advance(at_i=None):
+            self._cur_at[0] = next(self._open_reader)
+            return self._cur_at[0].info.get("_ConfigSet_loc", ConfigSet._loc_sep + str(at_i) if at_i is not None else None)
+
+        if isinstance(self.items, Path):
+            ## print("DEBUG groups() for one file self._open_reader", self._open_reader, "self._cur_at", self._cur_at)
+            # one file, return a ConfigSet for each group, or a sequence of individual Atoms
+            if self._open_reader is None or self._cur_at[0] is None:
+                # initialize reading of file
+                ## print("DEBUG initializing reader", self.items)
+                self._open_reader = ase.io.iread(self.items, ":")
+                self._cur_at = [None]
+                ## print("DEBUG setting initial self._cur_at = [None]")
+                try:
+                    ## print("DEBUG advancing, getting at_loc with cur_at_i", cur_at_i)
+                    at_loc = advance(cur_at_i)
+                    ## print("DEBUG got at_loc", at_loc)
+                except StopIteration:
+                    ## print("DEBUG got EOF, returning")
+                    # indicate EOF
+                    self._cur_at = [None]
+                    return
+            else:
+                # just get at_loc from current atoms object
+                at_loc = self._cur_at[0].info.get("_ConfigSet_loc")
+
+            try:
+                # Skip any that don't match self._file_loc
+                ## print("DEBUG first skipping non-matching, at_loc", at_loc, "self._file_loc", self._file_loc)
+                while not at_loc.startswith(self._file_loc):
+                    at_loc = advance()
+                ## print("DEBUG after first skipping non-matching, new at_loc", at_loc)
+            except StopIteration:
+                ## print("DEBUG starting second skipping")
+                # Failed to find config that matches self._file_loc from current position of reader.
+                # Search again from start (in case we're doing something out of order)
+                self._open_reader = ase.io.iread(self.items, ":")
+                try:
+                    at_loc = advance()
+                    # Skip any that don't match self._file_loc
+                    while not at_loc.startswith(self._file_loc):
+                        at_loc = advance()
+                except StopIteration as exc:
+                    # got to EOF after restaring at beginning of file, must not have
+                    # any matching configs
+                    raise RuntimeError(f"No matching configs in file {self.items} for location {self._file_loc}") from exc
+
+            ## print("DEBUG after possibly skipping, now should be at right place, at_loc", at_loc, "self._file_loc", self._file_loc, "cur_at_i", cur_at_i, "self._cur_at.numbers", self._cur_at[0].numbers)
+            # now self._cur_at should be first config that matches self._file_loc
+            requested_depth = len(self._file_loc.split(ConfigSet._loc_sep))
+            ## print("DEBUG requested_depth", requested_depth)
+            if len(at_loc.split(ConfigSet._loc_sep)) == requested_depth + 1:
+                ## print("DEBUG in right container, starting to yield atoms")
+                # in right container, yield Atoms
+                while at_loc.startswith(self._file_loc):
+                    if "_ConfigSet_loc" in self._cur_at[0].info:
+                        del self._cur_at[0].info["_ConfigSet_loc"]
+                    ## print("DEBUG   in loop, yielding Atoms")
+                    yield self._cur_at[0]
+                    cur_at_i += 1
+                    try:
+                        at_loc = advance(cur_at_i)
+                    except StopIteration:
+                        ## print("DEBUG   EOF while yielding atoms")
+                        # indicate EOF
+                        self._cur_at[0] = None
+                        return
+                return
+            else:
+                ## print("DEBUG right place, but need to go deeper")
+                # at first config that matches self._file_loc, but there are deeper levels to nest into
+
+                while at_loc.startswith(self._file_loc):
+                    # get location of deeper iterator from at_loc down to one deeper than requested at this level
+                    new_file_loc = ConfigSet._loc_sep.join(at_loc.split(ConfigSet._loc_sep)[0:requested_depth + 1])
+                    ## print("DEBUG making and yielding ConfigSet with new _file_loc", new_file_loc)
+                    t = ConfigSet(self.items, _open_reader = self._open_reader, _cur_at = self._cur_at, _file_loc = new_file_loc)
+                    ## print("DEBUG yielding ConfigSet", t, "_open_reader", t._open_reader, "_cur_at", self._cur_at)
+                    yield t
+                    ## print("DEBUG after yield, got self._cur_at", self._cur_at[0].numbers if self._cur_at[0] is not None else None)
+                    if self._cur_at[0] is None:
+                        ## print("DEBUG got EOF, returning")
+                        # got EOF deeper inside, exit
+                        return
+                    # self._cur_at could have advanced when calling function iterated over yielded
+                    # iterator, so update local at_loc
+                    at_loc = self._cur_at[0].info.get("_ConfigSet_loc")
+                    # if the iterator that was returned wasn't immediately (or at least not completely) used, at_loc
+                    # will still point to the same config, skip all the ones that should have been used
+                    while at_loc.startswith(new_file_loc):
+                        try:
+                            at_loc = advance()
+                        except StopIteration:
+                            ## print("DEBUG past yielded iterator got EOF")
+                            self._cur_at[0] = None
+                            return
+                    # now we should be past configs that could have been consumed by previously yielded iterator
+
+                    ## print("DEBUG end of loop, now at_loc is", at_loc)
 
         else:
-            raise RuntimeError(
-                'input_type {} tried to merge input_type {}'.format(self.get_input_type(), configset.get_input_type))
+            # self.items is list(Atoms) or list(...list(Atoms)) or list(Path)
+            for item in self.items:
+                if isinstance(item, Atoms):
+                    # yield each Atoms object
+                    if "_ConfigSet_loc" in item.info:
+                        del item.info["_ConfigSet_loc"]
+                    yield item
+                else: # item must be sublist or Path
+                    # yield a ConfigSet for each file or sublist
+                    yield ConfigSet(item)
 
 
-    # iterator over all configurations in inputs
-    def __iter__(self):
-        self.current_input_file = None
-
-        if self.input_queries is not None:
-            for q in self.input_queries:
-                for at in self.abcd.get_atoms(q):
-                    yield at
-        elif self.input_files is not None:
-            for fin in self.input_files:
-                self.current_input_file = fin[0]
-                for at in ase.io.iread(fin[0], index=fin[1], parallel=self.parallel_io):
-                    yield at
-            self.current_input_file = None
-        elif self.input_configs is not None:
-            for at_group in self.input_configs:
-                for at in at_group:
-                    yield at
-
-
-    def group_iter(self):
-        """Iterate over configs in class in groups. Groups returned depend on how the configs were suplied on initialization. 
-
-       * If the class was initialized with queries for an ABCD database: single group correponds to single input query. 
-       * If multiple input files were given: ``list(Atoms)`` from a single input file are yielded. 
-       * Otherwise yield elements from ``self.input_configs``. 
-        
-        """
-        self.current_input_file = None
-
-        if self.input_queries is not None:
-            for q in self.input_queries:
-                yield self.abcd.get_atoms(q)
-        elif self.input_files is not None:
-            for fin in self.input_files:
-                self.current_input_file = fin[0]
-                yield ase.io.read(fin[0], index=fin[1])
-            self.current_input_file = None
-        elif self.input_configs is not None:
-            for at_group in self.input_configs:
-                yield at_group
-
-
-    def get_input_files(self):
-        return [fin[0] for fin in self.input_files]
-
-
-    def get_current_input_file(self):
-        return self.current_input_file
-
-
-    def in_memory(self):
-        """Create a ConfigSet containing the same configs, but in memory (i.e. as ``self.input_configs``)
+    def one_file(self):
+        """Returns info on whether ConfigSet consists of exactly one file
 
         Returns
         -------
-        ConfigSet
+
+        one_file_name: Path of the one file, or False otherwise
         """
-
-        if self.input_configs is not None:
-            # keep nesting in case the configs are stored as list of lists of Atoms
-            return ConfigSet(input_configs=self.input_configs)
-        else:
-            return ConfigSet(input_configs=list(self))
-
-
-    def is_one_file(self):
-        """Test if ``self`` is only one file with a trivial index
-
-        Returns
-        -------
-        str or False
-            Filename as string, False otherwhise
-        """
-
-        if self.input_files is not None and len(self.input_files) == 1 and self.input_files[0][1] == ':':
-            return self.input_files[0][0]
+        if self.items is not None:
+            if isinstance(self.items, Path):
+                return self.items
+            elif len(self.items) == 1 and isinstance(self.items[0], Path):
+                return self.items[0]
+            else:
+                return False
         else:
             return False
 
 
-    def to_file(self, filename, scratch=False):
-        """Create a ConfigSet containing the same configs, but in one file, optionally with a unique temporary name
+    @staticmethod
+    def _flat_iter(items):
+        """Generator returning a flattened list of Atoms starting from a tree of nested lists
+        containing only Atoms as leaves. Stores original nested tree structure in 
+        Atoms.info["_ConfigSet_loc"].
 
         Parameters
         ----------
-        filename: str or Path
-            filename, optionally used as template for mkstemp
-        scratch: bool, default false
-            use filename as template to tempfile.mkstemp
 
-        Returns
-        -------
-        filename: str
-            Name of created file
+        items: list(...(list(Atoms)))
+            list, potentially nested, of Atoms
         """
+        for item_i, item in enumerate(items):
+            if item is None:
+                continue
 
-        filename = Path(filename)
-        if scratch:
-            fd_scratch, filename = tempfile.mkstemp(prefix=filename.stem + '.', suffix=filename.suffix, dir=filename.parent)
-            os.close(fd_scratch)
-        with open(filename, 'w') as fout:
-            for at in self:
-                ase.io.write(fout, at, format=ase.io.formats.filetype(filename, read=False))
-
-        return filename
-
-
-    def __str__(self):
-        s = 'ConfigSet:'
-        if self.input_configs is not None and len(self.input_configs) > 0:
-            s += _fmt("input configs #", [str(len(at_group)) for at_group in self.input_configs])
-        if self.input_files is not None and len(self.input_files) > 0:
-            s += _fmt("input files", [f"{str(fn)} @ {idx}" for fn, idx in self.input_files])
-        if self.input_queries is not None and len(self.input_queries) > 0:
-            s += _fmt("input queries", [str(q) for q in self.input_queries])
-
-        if self.abcd is not None:
-            s += _fmt('ABCD connection', str(self.abcd))
-        return s
+            if isinstance(item, Atoms):
+                # set location info and yield
+                item.info["_ConfigSet_loc"] = ConfigSet._loc_sep + str(item_i)
+                yield item
+            else:
+                # make flat iterator for contained Atoms
+                sub_configs = ConfigSet._flat_iter(item)
+                for at in sub_configs:
+                    # concatenate current location info to that already stored and yield
+                    at.info["_ConfigSet_loc"] = ConfigSet._loc_sep + str(item_i) + at.info["_ConfigSet_loc"]
+                    yield at
 
 
 class OutputSpec:
-    """Thin output layer for configurations into files, ABCD, or atomic configs
-
-    Notes
-    -----
-        output_files and output_abcd may not both be set (but both many be unset to save to list(atoms))
+    """Abstraction for writing to a ConfigSet, preserving tree structure.
 
     Parameters
     ----------
-    abcd_conn: str / AbstractABCD, default None
-        ABCD connection URL or ABCD object
-    set_tags: dict
-        dict of tags and value to set in every config
-    file_root: str, default ``
-        path to prepend to every file name
-    output_files: str / pathlib.Path / dict / list(len=1) / tuple(len=1), default=None
-        output file, or dict mapping from input to output files
-    output_abcd: bool, default False
-        write output to ABCD
-    force: bool, default False
-        write even if doing so will overwrite (file) or some config with set_tags already exist (ABCD)
-    all_or_none: bool, default True
-        write to temporary filename/tags and rename at the end, to ensure that files/tags only exist
-        when output is complete
-    parallel_io: bool, default False
-        parallel ASE atomic config output
-    verbose: bool, default False
-        verbose output
+
+    files: str / Path / iterable(str / Path), default None
+        list of files to store configs in, or store in memory if None
+
+    file_root: str / Path, default None
+        root directory relative to which all files will be taken
+
+    overwrite: str, default True
+        Overwrite already existing files.  Defaults to True so that object creation
+        doesn't fail if write loop has been completed (detectable with `OutputSpec.done()`).
     """
+    def __init__(self, files=None, *, file_root=None, overwrite=True):
+        self.files = files
+        self.configs = None
+        self.file_root = Path(file_root if file_root is not None else "")
 
-
-    def __init__(self, abcd_conn=None, set_tags=None,
-                 file_root='', output_files=None, output_abcd=False,
-                 force=None, all_or_none=True, parallel_io=False, verbose=False):
-        if all_or_none:
-            # make sure force is set correctly
-            if force is None:
-                force=True
-            elif not force:
-                raise RuntimeError(f'Cannot pass force={force} must evaluate to True with all_or_none=True')
-        elif force is None:
-            # default force to False
-            force = False
-
-        self.verbose = verbose
-        self.parallel_io = parallel_io
-
-        # properties needed elsewhere
-        self.current_output_file = None
-        self.tmp_output_files = None
-        self.last_flush = time.time()
-
-        # make sure output_files and output_abcd are not both set
-        assert output_files is None or not output_abcd
-
-        self.abcd = _parse_abcd(abcd_conn)
-
-        # set set_tags from arguments
-        if set_tags is not None and not isinstance(set_tags, dict):
-            raise RuntimeError('Got set_tags type {} not dict'.format(type(set_tags)))
-        self.set_tags = set_tags
-        if self.verbose:
-            print('setting tags', self.set_tags)
-
-        # set atomic operation (sort-of) mode
-        self.all_or_none = all_or_none
-
-        self.output_abcd = output_abcd
-        self.output_files = None
-        self.output_files_map = None
-        self.output_configs = None
-        self.file_root = Path(file_root)
-
-        if self.output_abcd:
-            if self.all_or_none:
-                raise RuntimeError('all-or-none for database output not implemented')
-            if self.abcd is None:
-                raise RuntimeError('Got output_abcd, but abcd_conn was not specified')
-            if self.verbose:
-                print('writing to ABCD')
-        elif output_files is not None:
-            if isinstance(output_files, dict):
-                output_files = {Path(k): Path(v) for k, v in output_files.items()}
-                self.output_files = [file_root/ fout for fout in output_files.values()]
-                self.output_files_map = lambda fin: file_root / output_files.get(Path(fin)) \
-                                                    if isinstance(fin, str) \
-                                                    else file_root / output_files.get(fin)
-
+        if self.files is not None:
+            # store in file(s)
+            if isinstance(self.files, (str, Path)):
+                self.single_file = True
+                self.files = [self.files]
             else:
-                if isinstance(output_files, str):
-                    output_files = Path(output_files)
+                self.single_file = False
 
-                if not isinstance(output_files, Path):
-                    try:
-                        if len(output_files) == 1: 
-                            entry = next(iter(output_files))
-                            if isinstance(entry, str) or isinstance(entry, Path):
-                                # extract single string from iterable
-                                output_files = Path(entry)
-                        else:
-                            raise ValueError(f'Got `output_files` of type {type(output_files)} and length {len(output_files)}, '
-                                             f'which either has more than one entry or its content is not one of: '
-                                             f'str, dict, pathlib.Path')
-                    except Exception as e:
-                        traceback.print_exc()
-                        raise RuntimeError(f'Got output_files of type {type(output_files)} which is not one of: '
-                                           f'str, dict, pathlib.Path or iterable with one str or pathlib.Path item.')
-                self.output_files = [file_root / output_files]
-                self.output_files_map = lambda fin: self.output_files[0]
-            if self.verbose:
-                print('writing to output_files', self.output_files)
-        # else:
-        # no file or ABCD output, will return a list of Atoms if requested
-
-        # overwrite if output exists
-        if not force:
-            self.fail_if_output_exists()
-
-        self.pre_write()
-
-
-    def is_done(self, even_if_not_all_or_none=False):
-        """Check if output is done and saved in the correct format (file, list(Atoms), uploaded to ABCD).
-        
-        """
-        if not even_if_not_all_or_none and not self.all_or_none:
-            # if not all_or_none, do not claim that output is done, because it may be incomplete
-            return False
-
-        if self.output_abcd:
-            # if any configs have requested tags, it must be done
-            # NB: why?  this only seems guaranteed if ABCD writing is atomic - is it?
-            return self.abcd.count(self.set_tags) > 0
-
-        if self.output_files is not None:
-            # if all files exist, it must be done, since all_or_none must be set
-            return all([fout.exists() for fout in self.output_files])
-
-        # fall through to here only if output is a list of configs, never already available
-        return False
-
-
-    def fail_if_output_exists(self):
-        """ Check for non-unique tags for abcd output and existing files for file output. """
-
-        if self.output_abcd:
-            if self.abcd.count(self.set_tags) > 0:
-                raise RuntimeError('Got non-unique set_tags, pass force to override')
-        if self.output_files is not None:
-            for fout in self.output_files:
-                if fout.exists():
-                    raise RuntimeError(('Will write to file \'{}\' that exists, '
-                                        'pass force to override').format(fout))
-
-
-    def pre_write(self):
-        """ Cleans outputs held in the class, if any."""
-        self.output_configs = None
-        self.current_output_file = None
-        self.tmp_output_files = None
-
-        if self.output_files is not None:
-            self.tmp_output_files = []
-        elif not self.output_abcd:
-            # output to config list
-            self.output_configs = []
-
-    def write(self, ats, from_input_file=None, flush_interval=10):
-        """ Iteratively write to place corresponding to config input iterator last returned. 
-        
-            Parameters
-            ----------
-            ats: Atoms / list(Atoms)
-                Atoms to write
-            from_input_file: str or Path, default None
-                If OutputSpec was initialised with dict(input_file=output_file, ...):
-                input file based on which the corresponding output file is selected.  
-            flush_interval: int, default 10
-                Interval (s) for writing to files. 
-        """
-
-        # promote to iterable(Atoms)
-        if isinstance(ats, Atoms):
-            ats = [ats]
-
-        # set tags
-        if self.set_tags is not None:
-            for at in ats:
-                at.info.update(self.set_tags)
-
-        if self.output_files is None and not self.output_abcd:
-            # save for later return as list(Atoms) or list(list(Atoms))
-            self.output_configs.append(ats)
-            if self.verbose:
-                print('write wrote {} configs to self.output_configs as group'.format(len(ats)))
-        elif self.output_abcd:
-            # save to database
-            self.abcd.push(ats)
-            if self.verbose:
-                print('write wrote {} to {}'.format(len(ats), self.abcd))
+            absolute_files = [f for f in self.files if Path(f).is_absolute()]
+            if len(absolute_files) > 0 and self.file_root != Path(""):
+                raise ValueError(f"Got file_root {file_root} but files {absolute_files} are absolute paths")
+            self.files = [Path(f) for f in self.files]
+            if not overwrite:
+                existing_files = [self.file_root / f for f in self.files if (self.file_root / f).exists()]
+                if len(existing_files) > 0:
+                    raise FileExistsError(f"OutputSpec.overwrite is false but output file(s) {existing_files} already exist")
         else:
-            # write to files
-            try:
-                real_output_filename = self.output_files_map(from_input_file)
-            except Exception as e:
-                traceback.print_exc(e)
-                raise RuntimeError('Failed to get output filename from map \'{}\' and input file \'{}\''.format(
-                    self.output_files_map, from_input_file))
+            # store in memory
+            self.configs = []
 
-            if self.all_or_none:
-                use_output_filename = real_output_filename.parent / ('tmp.' + str(real_output_filename.name))
-            else:
-                use_output_filename = real_output_filename
+        self.cur_file_ind = None
+        self.cur_file_type = None
+        self.cur_file = None
 
-            # this assumes each output file is hit only once
-            # should we think about how to deal with appending?
-            if self.current_output_file is None or self.current_output_file.name != str(use_output_filename):
-                if self.current_output_file:
-                    self.current_output_file.close()
-                self.current_output_file = open(use_output_filename, 'w')
+        self.closed = False
 
-                if self.all_or_none:
-                    self.tmp_output_files.append((real_output_filename, use_output_filename))
-
-            ase.io.write(self.current_output_file, ats, format=ase_filetype(self.current_output_file.name, read=False),
-                         parallel=self.parallel_io)
-
-            # flush if enough time has passed
-            cur_time = time.time()
-            if flush_interval >= 0 and cur_time >= self.last_flush + flush_interval:
-                self.current_output_file.flush()
-                self.last_flush = cur_time
-
-            if self.verbose:
-                print('OutputSpec.write wrote {} to {}'.format(len(ats), self.current_output_file.name))
+        self.first_store_call = True
+        self.cur_store_loc = None
 
 
-    def end_write(self):
-        """Finalize writing to outputs: close files, rename temporary files. """
-        # end writing
-        try:
-            self.current_output_file.close()
-        except AttributeError:
-            pass
+    def store(self, configs, input_CS_loc=""):
+        """Store Atoms or iterable containing Atoms or other iterables in a form that can be
+        used to create a ConfigSet.  If output ConfigSet is to have same structure as input
+        ConfigSet, configs must come in the same order as the input ConfigSet's flat iterator,
+        with the store loc containing the _ConfigSet_loc values returned by that iterator.
 
-        if self.output_configs is not None or self.output_abcd:
-            # configs are in array, nothing to do
+        This function is generally called by wfl's built-in autoparallelization functions.
+        An example that does the same thing is shown in the following construction:
+
+        .. code-block:: python
+
+            cs = ConfigSet(["in0.xyz", "in1.xyz"])
+            os = OutputSpec(["out0.xyz", "out1.xyz"])
+            for at_in in cs:
+                # define at_out, either an Atoms or a (nested) list of Atoms, based on at_in
+                .
+                .
+                # the next line can also use at_in.info["_ConfigSet_loc"] instead of cs.get_loc()
+                os.store(at_out, cs.get_loc())
+            os.close()
+
+
+        Parameters
+        ----------
+
+        configs: Atoms / iterable(Atoms / iterable)
+            configurations to store
+
+        input_CS_loc: str, default ""
+            location in input iterable (source ConfigSet) so that output iterable has same structure as source
+            ConfigSet. Available from the ConfigSet that is's being iterated over via ConfigSet.cur_loc
+            or the ConfigSet iterator's returned Atoms.info["_ConfigSet_loc"]. Required when writing
+            to multiple files (since top level of location indicates which file), otherwise defaults
+            to appending to single file or top level list of configs.
+        """
+        if self.closed:
+            raise ValueError("Cannot store after OutputSpec.close() has been called")
+
+        if configs is None:
             return
 
-        # rename files if needed for all-or-none
-        if self.tmp_output_files:
-            if self.verbose:
-                print('renaming', self.tmp_output_files)
-            for real_name, tmp_name in self.tmp_output_files:
-                os.rename(tmp_name, real_name)
-            self.tmp_output_files = None
+        if self.files is not None:
+            if self.single_file:
+                # write to a file, preserving all location info
 
+                # test for inconsistent sequence of provided/absent input_CS_loc
+                if input_CS_loc is None or len(input_CS_loc) == 0:
+                    # nothing provided, make sure this is consistent with previous calls and if so increment loc
+                    if self.first_store_call:
+                        self.cur_store_loc = 0
+                    else:
+                        # not the first call, cur_store_loc should be value from previous call
+                        if self.cur_store_loc is None:
+                            raise RuntimeError("got no input_CS_loc but previous calls did provide input_CS_loc")
+                        self.cur_store_loc += 1
+                else:
+                    # provided input_CS_loc, make sure previous calls didn't omit this info
+                    if self.cur_store_loc is not None:
+                        raise RuntimeError("store cannot get input_CS_loc after calls that did not provide it")
 
-    # get list(Atoms) or ConfigSet reference to output
-    def to_ConfigSet(self):
-        """ Re-package configs held in this class to a ConfigSet to be used later in the workflow.
-        
-        Returns 
-        -------
-        ConfigSet
-        
-        """
-        if self.output_configs is not None and len(self.output_configs) > 0:
-            return ConfigSet(input_configs=self.output_configs)
-        elif self.output_abcd:
-            if self.set_tags is None:
-                # no way to find written configs without (unique) tags
-                return None
-            else:
-                return ConfigSet(input_queries=self.set_tags, abcd_conn=self.abcd)
+                if self.cur_store_loc is not None:
+                    input_CS_loc = ConfigSet._loc_sep + str(self.cur_store_loc)
+
+                self._open_file(0)
+                OutputSpec._write_to_file(self.cur_file, self.cur_file_type, configs, input_CS_loc)
+                self.first_store_call = False
+                return
+
+            # write to multiple files, using top level location as index to file
+            if len(input_CS_loc) == 0:
+                raise ValueError("For OutputSpec with multiple files, store() requires input_CS_loc")
+            file_ind = int(input_CS_loc.split(ConfigSet._loc_sep)[1])
+            self._open_file(file_ind)
+            # write to file, stripping off leading component of input_CS_loc since that corresponds to
+            # which file
+            sub_loc = input_CS_loc.split(ConfigSet._loc_sep)[2:]
+            if len(sub_loc) > 0:
+                sub_loc = [""] + sub_loc
+            OutputSpec._write_to_file(self.cur_file, self.cur_file_type, configs,
+                                      ConfigSet._loc_sep.join(sub_loc))
         else:
-            return ConfigSet(input_files=self.output_files)
+            # store in self.configs
+            if len(input_CS_loc) == 0:
+                # no location, just write to top level list
+                self.configs.append(configs)
+                return
+
+            # store in correct location
+            input_CS_loc = input_CS_loc.split(ConfigSet._loc_sep)[1:]
+
+            # NOTE: this will create extra empty containers if indices skip.
+            # We should think about whether this is the best behavior.
+            cur_container = self.configs
+            for depth in range(len(input_CS_loc)):
+                ind = input_CS_loc[depth]
+                try:
+                    ind = int(ind)
+                    # append empty containers as needed
+                    cur_container += [[] for _ in range(ind + 1 - len(cur_container))]
+                    if depth < len(input_CS_loc) - 1:
+                        cur_container = cur_container[ind]
+                    else:
+                        cur_container[ind] = configs
+                except ValueError as exc:
+                    raise RuntimeError("ConfigSet_loc indices must be integers") from exc
 
 
-    def __str__(self):
-        s = 'OutputSpec:'
-        if self.set_tags is not None:
-            s += _fmt('output tags', str(self.set_tags))
+    def close(self):
+        """Finishes OutputSpec writing, closing all open files and renaming temporaries
+        """
+        self.closed = True
 
-        if self.output_abcd:
-            s += _fmt('output to ABCD', "")
-        elif self.output_files is not None:
-            s += _fmt('output files: ', [str(p) for p in self.output_files])
+        if self.files is not None:
+            if self.cur_file is not None:
+                self.cur_file.close()
+            for f in self.files:
+                tmp_f = self.file_root / f.parent / ("tmp." + f.name)
+                if tmp_f.exists():
+                    tmp_f.rename(self.file_root / f)
 
-        if self.abcd is not None:
-            s += _fmt('ABCD connection', str(self.abcd))
-        return s
 
+    def done(self):
+        """Determine if all output has been created and writing operation is done from
+        a previous run, even before any configurations have been written.  Never true
+        for in-memory storage.
+
+        Since files are initially written to under temporary names and renamed to
+        their final names only after OutpuSpec.close(), this will only return true if
+        close has been called.
+
+        NOTE: This will return false if a file specified in the constructor does not exist,
+        which might happen if no input_CS_loc passed to OutputSpec.store() specified
+        that file.
+        """
+        if self.files is not None:
+            return all([(self.file_root / f).exists() for f in self.files])
+        else:
+            return False
+
+
+    def to_ConfigSet(self):
+        if self.files is not None:
+            if self.single_file:
+                cs = ConfigSet(self.files[0], file_root = self.file_root)
+            else:
+                cs = ConfigSet(self.files, file_root = self.file_root)
+        else:
+            cs = ConfigSet(self.configs)
+        return cs
+
+
+    @staticmethod
+    def _write_to_file(fd, file_type, configs, store_loc_stem):
+        """Write one or more Atoms to a file, storing their locations
+
+        Parameters
+        ----------
+
+        fd: file object
+            file to write to
+
+        file_type: str
+            file type passed to ase.io.write(..., format=file_type)
+
+        configs: Atoms / iterable(Atoms / iterable(Atoms / iterable))
+            configurations to write
+
+        store_loc_stem: str
+            stem part of stored location to which relative location within this iterable
+            will be appended
+        """
+        if isinstance(configs, Atoms):
+            if store_loc_stem is not None and len(store_loc_stem) > 0:
+                configs.info["_ConfigSet_loc"] = store_loc_stem
+            ase.io.write(fd, configs, format=file_type)
+        else:
+            # iterable, possibly nested
+            for item_i, item in enumerate(configs):
+                # WARNING: this will fail if store_loc_stem is None.  Is this what we want?
+                item_loc = store_loc_stem + ConfigSet._loc_sep + str(item_i)
+                OutputSpec._write_to_file(fd, file_type, item, item_loc)
+
+
+    def _open_file(self, file_ind):
+        """Open a file, using a temporary name, if it's not already open
+
+        Parameters
+        ----------
+
+        file_ind: int
+            index into self.files list for file to open
+        """
+
+        if self.cur_file_ind == file_ind:
+            return
+
+        # open new file
+        if self.cur_file is not None:
+            self.cur_file.close()
+
+        self.cur_file_ind = file_ind
+
+        tmp_filename = self.file_root / self.files[self.cur_file_ind].parent / ("tmp." + self.files[self.cur_file_ind].name)
+
+        self.cur_file_type = ase.io.formats.filetype(tmp_filename, read=False)
+        self.cur_file = open(tmp_filename, "a")

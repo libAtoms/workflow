@@ -17,7 +17,7 @@ at = wfl.generate.smiles.smi_to_atoms("CCCCCC")
 
 Parallelised:
 ```
-outputspec = OutputSpec(output_files="compounds.xyz")
+outputspec = OutputSpec("compounds.xyz")
 smiles = ["CO", "CCCC", "c1ccccc1"]
 wfl.generate.smiles.run(outputs=outputspec, smiles=smiles)
 ```
