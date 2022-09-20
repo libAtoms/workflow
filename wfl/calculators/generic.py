@@ -51,6 +51,7 @@ def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_a
             if f'{output_prefix}calculation_failed' in at.info:
                 del at.info[f'{output_prefix}calculation_failed']
         except Exception as exc:
+            print("BOB exc", exc)
             if raise_calc_exceptions:
                 raise exc
             warnings.warn(f'calculation failed with exception {exc}')

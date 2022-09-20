@@ -145,9 +145,9 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
                 raise RuntimeError("Need env var ASE_VASP_COMMAND for periodic systems if command is not explicitly passed to constructor")
 
         # read from INCAR, KPOINTS if provided
+        orig_kspacing = self.float_params["kspacing"]
+        orig_kgamma = self.bool_params["kgamma"]
         if nonperiodic:
-            orig_kspacing = self.float_params["kspacing"]
-            orig_kgamma = self.bool_params["kgamma"]
             self.float_params["kspacing"] = 100000.0
             self.bool_params["kgamma"] = True
 
