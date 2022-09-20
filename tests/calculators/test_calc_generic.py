@@ -79,9 +79,9 @@ class EMT_override_def_autopara(EMT):
         super().__init__(*args, **kwargs)
 
 def test_generic_autopara_defaults():
-    at = [Atoms('Al2', positions=[[0,0,0], [1,1,1]], cell=[10]*3, pbc=[True]*3) for _ in range(50)]
+    ats = [Atoms('Al2', positions=[[0,0,0], [1,1,1]], cell=[10]*3, pbc=[True]*3) for _ in range(50)]
 
-    ci = ConfigSet(input_configs=at)
+    ci = ConfigSet(ats)
     os = OutputSpec()
 
     # try default
@@ -123,9 +123,9 @@ def test_generic_autopara_defaults():
 
 
 def test_generic_DFT_autopara_defaults(monkeypatch):
-    at = [Atoms('Al2', positions=[[0,0,0], [1,1,1]], cell=[10]*3, pbc=[True]*3) for _ in range(50)]
+    ats = [Atoms('Al2', positions=[[0,0,0], [1,1,1]], cell=[10]*3, pbc=[True]*3) for _ in range(50)]
 
-    ci = ConfigSet(input_configs=at)
+    ci = ConfigSet(ats)
     os = OutputSpec()
 
     l_stderr = StringIO()
