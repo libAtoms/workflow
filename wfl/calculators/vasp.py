@@ -45,8 +45,6 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
         to guess based on XC.
     """
 
-    implemented_properties = ["energy", "forces", "stress", "free_energy", "magmom", "magmoms", "charges"]
-
     # default value of wfl_num_inputs_per_python_subprocess for calculators.generic,
     # to override that function's built-in default of 10
     wfl_generic_num_inputs_per_python_subprocess = 1
@@ -169,7 +167,7 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
             calculation_succceeded = False
             raise exc
         finally:
-            clean_rundir(rundir, self._keep_files, _default_keep_files, calculation_succeeded)
+            clean_rundir(self.directory, self._keep_files, _default_keep_files, calculation_succeeded)
 
             # undo pbc change
             atoms.pbc[:] = orig_pbc
