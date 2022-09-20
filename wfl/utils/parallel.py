@@ -1,4 +1,4 @@
-from ase.calculators.calculator import Calculator
+from ase.calculators.calculator import BaseCalculator, Calculator
 
 
 def construct_calculator_picklesafe(calculator):
@@ -21,7 +21,9 @@ def construct_calculator_picklesafe(calculator):
 
     """
 
-    if isinstance(calculator, Calculator):
+    # some, like GenericFileIOCalculator from which Espresso is derived, are not actually
+    # derived from Calculator, but actually from BaseCalculator
+    if isinstance(calculator, (Calculator, BaseCalculator)):
         return calculator
     else:
         if len(calculator) != 3:
