@@ -93,10 +93,10 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
 
         super(Vasp, self).__init__(**kwargs_use)
 
-        self.keep_files = keep_files
-        self.dir_prefix = dir_prefix
-        self.workdir_root = Path(workdir_root) if workdir_root is not None else None
-        self.VASP_PP_PATH = VASP_PP_PATH
+        self._keep_files = keep_files
+        self._dir_prefix = dir_prefix
+        self._workdir_root = Path(workdir_root) if workdir_root is not None else None
+        self._override_VASP_PP_PATH = VASP_PP_PATH
 
 
     def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
@@ -114,29 +114,29 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
         world.comm = DummyMPI()
 
         orig_VASP_PP_PATH = os.environ.get("VASP_PP_PATH")
-        if self.VASP_PP_PATH is not None:
-            os.environ["VASP_PP_PATH"] = self.VASP_PP_PATH
+        if self._override_VASP_PP_PATH is not None:
+            os.environ["VASP_PP_PATH"] = str(self._override_VASP_PP_PATH)
 
-        if self.workdir_root is None:
+        if self._workdir_root is None:
             workdir_root = Path.cwd()
         else:
-            workdir_root = self.workdir_root
+            workdir_root = self._workdir_root
 
         workdir_root.mkdir(parents=True, exist_ok=True)
 
         # VASP requires periodic cells with non-zero cell vectors
         if atoms.get_volume() < 0.0:
-            (at.cell[0], at.cell[1]) = (at.cell[1], at.cell[0])
+            (atoms.cell[0], atoms.cell[1]) = (atoms.cell[1], atoms.cell[0])
             permuted_a0_a1 = True
         else:
             permuted_a0_a1 = False
 
-        nonperiodic, properties_use = handle_nonperiodic(at, properties)
+        nonperiodic, properties_use = handle_nonperiodic(atoms, properties)
         # VASP cannot handle nonperiodic, and current Vasp calculator complains if pbc=F
         orig_pbc = atoms.pbc.copy()
         atoms.pbc = [True] * 3
 
-        self.directory = tempfile.TemporaryDirectory(dir=workdir_root, prefix=self.dir_prefix)
+        self.directory = Path(tempfile.mkdtemp(dir=workdir_root, prefix=self._dir_prefix))
 
         # create calc
         orig_command = self.command
@@ -148,19 +148,19 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
 
         # read from INCAR, KPOINTS if provided
         if nonperiodic:
-            orig_kspacing = self.float_keys["kspacing"]
-            orig_kgamma = self.float_keys["kgamma"]
-            self.float_keys["kspacing"] = 100000.0
-            self.bool_keys["kgamma"] = True
+            orig_kspacing = self.float_params["kspacing"]
+            orig_kgamma = self.bool_params["kgamma"]
+            self.float_params["kspacing"] = 100000.0
+            self.bool_params["kgamma"] = True
 
-        atoms.info["vasp_rundir"] = rundir
+        atoms.info["vasp_rundir"] = str(self.directory)
 
         # should we require anything else?
         if self.float_params["encut"] is None:
             raise RuntimeError("Refusing to run without explicit ENCUT")
 
         try:
-            super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
+            super().calculate(atoms=atoms, properties=properties_use, system_changes=system_changes)
             calculation_succeeded = True
             if 'DFT_FAILED_VASP' in atoms.info:
                 del atoms.info['DFT_FAILED_VASP']
@@ -169,19 +169,19 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
             calculation_succceeded = False
             raise exc
         finally:
-            clean_rundir(rundir, self.keep_files, _default_keep_files, calculation_succeeded)
+            clean_rundir(rundir, self._keep_files, _default_keep_files, calculation_succeeded)
 
             # undo pbc change
             atoms.pbc[:] = orig_pbc
 
             # undo cell vector permutation
             if permuted_a0_a1:
-                (at.cell[0], at.cell[1]) = (at.cell[1], at.cell[0])
+                (atoms.cell[0], atoms.cell[1]) = (atoms.cell[1], atoms.cell[0])
 
             # undo nonperiodic related changes
             self.command = orig_command
-            self.float_keys["kspacing"] = orig_kspacing
-            self.bool_keys["kgamma"] = orig_kgamma
+            self.float_params["kspacing"] = orig_kspacing
+            self.bool_params["kgamma"] = orig_kgamma
 
             # undo env VASP_PP_PATH
             if orig_VASP_PP_PATH is not None:
