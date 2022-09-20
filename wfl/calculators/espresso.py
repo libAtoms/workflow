@@ -52,17 +52,24 @@ class Espresso(ase.calculators.espresso.Espresso):
     """
     implemented_properties = ["energy", "forces", "stress"]
 
-    default_parameters = {} 
-
-    # default value of wfl_num_inputs_per_python_subprocess for calculators.generic,
+    # new default value of num_inputs_per_python_subprocess for calculators.generic,
     # to override that function's built-in default of 10
-    wfl_generic_num_inputs_per_python_subprocess = 1
+    wfl_generic_def_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
     def __init__(self, atoms=None, keep_files="default", 
                  dir_prefix="run_QE_", scratch_path=None,
                  calculator_command=None, **kwargs):
-            
-        super(Espresso, self).__init__(**kwargs)
+
+        kwargs_command = deepcopy(kwargs)
+        if calculator_command is not None: 
+            if EspressoProfile is None:
+                # older syntax
+                kwargs_command["command"] = f"{calculator_command} -in PREFIX.pwi > PREFIX.pwo"
+            else:
+                # newer syntax
+                kwargs_command["profile"] = EspressoProfile(argv=calculator_command.split())
+
+        super(Espresso, self).__init__(**kwargs_command)
 
         self.keep_files = keep_files
         self.scratch_path = scratch_path
@@ -71,21 +78,12 @@ class Espresso(ase.calculators.espresso.Espresso):
         self.workdir_root = Path(self.directory) / (self.dir_prefix + 'FileIOCalc_files')
         self.workdir_root.mkdir(parents=True, exist_ok=True)
 
-        if calculator_command is not None: 
-            if EspressoProfile is None:
-                # older syntax
-                self.parameters["command"] = f"{calculator_command} -in PREFIX.pwi > PREFIX.pwo"
-            else:
-                # newer syntax
-                self.parameters['profile'] = EspressoProfile(argv=calculator_command.split())
-
-
         # we modify the parameters in self.calculate() based on the individual atoms object, 
         # so let's make a copy of the initial parameters
         self.initial_parameters = deepcopy(self.parameters)
 
 
-    def calculate(self, atoms=None, properties=__default_properties , system_changes=all_changes):
+    def calculate(self, atoms=None, properties=__default_properties, system_changes=all_changes):
         """Do the calculation. Handles the working directories in addition to regular 
         ASE calculation operations (writing input, executing, reading_results) 
         Reimplements & extends GenericFileIOCalculator.calculate() for the development version of ASE
@@ -94,6 +92,7 @@ class Espresso(ase.calculators.espresso.Espresso):
         if atoms is not None:
             self.atoms = atoms.copy()
 
+        # this may modify self.parameters, will reset them back to initial after calculation
         properties = self.setup_calc_params(properties)
 
         if self.scratch_path is not None:
