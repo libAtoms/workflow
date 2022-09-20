@@ -10,13 +10,10 @@ from ase.calculators.calculator import all_changes, CalculationFailed
 from ase.calculators.calculator import Calculator
 
 from wfl.calculators import orca
-from wfl.autoparallelize.base import _autoparallelize_ll
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 
 
-def evaluate_basin_hopping(inputs, outputs,
-                           workdir_root=None, dir_prefix="ORCA_",
-                           keep_files="default", orca_kwargs=None,
-                           output_prefix=None):
+def evaluate_basin_hopping(*args, **kwargs):
     """Evaluate with BasinHoppingORCA calculator
 
     Parameters
@@ -46,12 +43,9 @@ def evaluate_basin_hopping(inputs, outputs,
     results : ConfigSet
         outputs.to_ConfigSet()
     """
-    return _autoparallelize_ll(iterable=inputs, OutputSpec=outputs,
-                         op=orca.evaluate_op,
-                         workdir_root=workdir_root, dir_prefix=dir_prefix,
-                         keep_files=keep_files, orca_kwargs=orca_kwargs,
-                         output_prefix=output_prefix, basin_hopping=True)
-
+    raise RuntimeError("implemented in terms of wfl.calculators.orca.evaluate_op, which does not exist")
+    # return autoparallelize(orca.evaluate_op, *args, basin_hopping=True, **kwargs)
+# evaluate_basin_hopping.__doc__ = autoparallelize_docstring(orca.evaluate_op, "Atoms")
 
 
 class BasinHoppingORCA(Calculator):

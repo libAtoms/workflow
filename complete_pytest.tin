@@ -1,5 +1,8 @@
 #!/bin/bash
 
+module purge
+module load compiler/gnu python/system python_extras/quippy
+
 # should include both tin and tin_ssh - not as good as real remote machine, but maybe close enough
 export EXPYRE_PYTEST_SYSTEMS='tin'
 
@@ -9,17 +12,23 @@ echo "" >> pytest_complete_test.out
 # buildcell
 export WFL_PYTEST_BUILDCELL=$HOME/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
 # VASP
+module load dft/vasp
 export VASP_COMMAND=vasp.serial
-export VASP_COMMAND_GAMMA=vasp.gamma_serial
+export VASP_COMMAND_GAMMA=vasp.gamma.serial
 export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
 # QE
-module load pwscf
+module load dft/pwscf
 # no ORCA
 
-rm -rf $HOME/pytest_wfl
-pytest -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs >> pytest_complete_test.out 2>&1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+# required for descriptor calc to not hang
+export OMP_NUM_THREADS=1
 
-l=`egrep 'passed.*xfailed' pytest_complete_test.out`
+rm -rf $HOME/pytest_wfl
+pytest -v -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs >> pytest_complete_test.out 2>&1
+
+l=`egrep '^=.*(passed|failed)' pytest_complete_test.out`
 
 # ===== 99 passed, 8 skipped, 1 xfailed, 213 warnings in 3593.75s (0:59:53) ======
 
@@ -29,7 +38,7 @@ for r in "${results[@]}"; do
     n=$( echo $r | awk '{print $2}' )
     echo $l | grep -q " $n $label" pytest_complete_test.out
     if [ $? != 0 ]; then
-        echo "Unexpected number $label not $n '$l'" 1>&2
+        echo "Unexpected number of $label, not $n '$l'" 1>&2
         exit 1
     fi
 done

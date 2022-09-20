@@ -202,7 +202,7 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
     # single atoms tests
     assert "QE_stress" not in si_single.info
     assert "QE_energy" in si_single.info
-    assert si_single.info["QE_energy"] == approx(expected=-101.20487969465684, abs=1e-3)
+    assert si_single.info["QE_energy"] == approx(expected=-101.20487969465684, abs=1e-2)
     assert si_single.get_volume() == approx(6.0 ** 3)
 
     # bulk Si tests

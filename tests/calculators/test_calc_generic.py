@@ -1,4 +1,6 @@
+import sys
 from os.path import join
+from io import StringIO
 
 import numpy as np
 from ase import Atoms
@@ -9,6 +11,8 @@ from pytest import approx
 
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
+from wfl.calculators.espresso import Espresso
+from wfl.autoparallelize.autoparainfo import AutoparaInfo
 
 ref_lj_energy = -4.52573996914352
 ref_morse_energy = -3.4187397762024867
@@ -64,3 +68,70 @@ def test_default_properties():
     assert "dummy_energy" in mol_out.info.keys()
     assert "dummy_stress" in mol_out.info.keys()
     assert "dummy_forces" in mol_out.arrays.keys()
+
+
+####################################################################################################
+
+class EMT_override_def_autopara(EMT):
+    wfl_generic_def_autopara_info = {"num_inputs_per_python_subprocess": 5}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+def test_generic_autopara_defaults():
+    at = [Atoms('Al2', positions=[[0,0,0], [1,1,1]], cell=[10]*3, pbc=[True]*3) for _ in range(50)]
+
+    ci = ConfigSet(input_configs=at)
+    os = OutputSpec()
+
+    # try default
+    l_stderr = StringIO()
+    sys.stderr = l_stderr
+    at_proc = generic.run(ci, os, EMT())
+    sys.stderr = sys.__stderr__
+    assert "num_inputs_per_python_subprocess=10" in l_stderr.getvalue()
+
+    # try with class that overrides default
+    l_stderr = StringIO()
+    sys.stderr = l_stderr
+    at_proc = generic.run(ci, os, EMT_override_def_autopara())
+    sys.stderr = sys.__stderr__
+    assert "num_inputs_per_python_subprocess=5" in l_stderr.getvalue()
+
+    # again, but with calculator passed as kwargs
+
+    # try default
+    l_stderr = StringIO()
+    sys.stderr = l_stderr
+    at_proc = generic.run(ci, os, calculator=EMT())
+    sys.stderr = sys.__stderr__
+    assert "num_inputs_per_python_subprocess=10" in l_stderr.getvalue()
+
+    # try with class that overrides default
+    l_stderr = StringIO()
+    sys.stderr = l_stderr
+    at_proc = generic.run(ci, os, calculator=EMT_override_def_autopara())
+    sys.stderr = sys.__stderr__
+    assert "num_inputs_per_python_subprocess=5" in l_stderr.getvalue()
+
+    # try with class that overrides default, and override manually
+    l_stderr = StringIO()
+    sys.stderr = l_stderr
+    at_proc = generic.run(ci, os, calculator=EMT_override_def_autopara(), autopara_info=AutoparaInfo(num_inputs_per_python_subprocess=3))
+    sys.stderr = sys.__stderr__
+    assert "num_inputs_per_python_subprocess=3" in l_stderr.getvalue()
+
+
+def test_generic_DFT_autopara_defaults(monkeypatch):
+    at = [Atoms('Al2', positions=[[0,0,0], [1,1,1]], cell=[10]*3, pbc=[True]*3) for _ in range(50)]
+
+    ci = ConfigSet(input_configs=at)
+    os = OutputSpec()
+
+    l_stderr = StringIO()
+
+    # try with DFT calc that overrides default
+    sys.stderr = l_stderr
+    at_proc = generic.run(ci, os, Espresso(calculator_command="_DUMMY_"))
+    sys.stderr = sys.__stderr__
+    assert "num_inputs_per_python_subprocess=1" in l_stderr.getvalue()
