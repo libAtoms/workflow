@@ -525,13 +525,10 @@ class OutputSpec:
         which might happen if no input_CS_loc passed to OutputSpec.store() specified
         that file.
         """
-        if self.closed:
-            return True
-
         if self.files is not None:
             return all([(self.file_root / f).exists() for f in self.files])
-
-        return False
+        else:
+            return False
 
 
     def to_ConfigSet(self):
