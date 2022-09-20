@@ -12,6 +12,7 @@ from pytest import approx
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.calculators.espresso import Espresso
+from wfl.autoparallelize.autoparainfo import AutoparaInfo
 
 ref_lj_energy = -4.52573996914352
 ref_morse_energy = -3.4187397762024867
@@ -112,6 +113,13 @@ def test_generic_autopara_defaults():
     at_proc = generic.run(ci, os, calculator=EMT_override_def_autopara())
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=5" in l_stderr.getvalue()
+
+    # try with class that overrides default, and override manually
+    l_stderr = StringIO()
+    sys.stderr = l_stderr
+    at_proc = generic.run(ci, os, calculator=EMT_override_def_autopara(), autopara_info=AutoparaInfo(num_inputs_per_python_subprocess=3))
+    sys.stderr = sys.__stderr__
+    assert "num_inputs_per_python_subprocess=3" in l_stderr.getvalue()
 
 
 def test_generic_DFT_autopara_defaults(monkeypatch):
