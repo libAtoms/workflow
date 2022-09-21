@@ -47,7 +47,8 @@ from wfl.descriptor_heuristics import descriptors_from_length_scales
 from wfl.utils.params import Params
 from wfl.utils.version import get_wfl_version
 from wfl.utils.misc import dict_tuple_keys_to_str
-from wfl.calculators.dft import evaluate_dft
+from wfl.calculators import generic
+from wfl.calculators.vasp import Vasp
 
 
 @click.group()
@@ -355,14 +356,16 @@ def evaluate_ref(dft_in_configs, dft_evaluated_configs, params, run_dir, verbose
     else:
         keep_files = False
 
-    return evaluate_dft(
+    if params.dft_code == "VASP":
+        calculator = Vasp
+    else:
+        raise ValueError(f"Unsupported dft_code {params.dft_code}")
+
+    return generic.run(
         inputs=dft_in_configs,
         outputs=dft_evaluated_configs,
-        calculator_name=params.dft_code,
-        workdir_root=run_dir,
-        calculator_kwargs=params.dft_params.get("kwargs", {}),
-        output_prefix="REF_",
-        keep_files=keep_files
+        calculator=calculator(workdir_root=run_dir, keep_files=keep_files, **params.dft_params.get("kwargs", {})),
+        output_prefix="REF_"
     )
 
 
