@@ -413,7 +413,7 @@ def _vasp_eval(ctx, inputs, output_file, output_all_or_none, workdir_root, direc
 @click.option("--output-file", type=click.STRING, default="")
 @click.option("--output-all-or-none", is_flag=True)
 @click.option("--output-prefix", type=click.STRING, default="", help="prefix in info/arrays for results")
-@click.option("--base-rundir", type=click.STRING, help="directory to put all calculation directories into")
+@click.option("--workdir-root", type=click.STRING, help="directory to put all calculation directories into")
 @click.option("--directory-prefix", type=click.STRING, default='run_AIMs_')
 @click.option("--properties", type=click.STRING, default='energy',
               help="properties to calculate, string is split")
