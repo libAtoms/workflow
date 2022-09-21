@@ -442,12 +442,75 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Fitting a MLIP
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#table-of-contents">
+   Table of contents
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#general-workflow-and-setup-a-name-general">
+     General workflow and setup
+     <a name="general">
+     </a>
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#getting-started-parallelization-and-imports">
+     Getting started: Parallelization and Imports
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#fitting-the-initial-gap">
+     Fitting the initial GAP
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#preparing-the-iterative-process">
+     Preparing the iterative process
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-iterative-process">
+     The Iterative Process
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#keeping-track-of-training-and-test-errors">
+     Keeping track of training and test errors
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
 </div>
     </div>
     <div class="article row">
@@ -459,6 +522,58 @@ title="Print to PDF"
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Fitting a MLIP
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#table-of-contents">
+   Table of contents
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#general-workflow-and-setup-a-name-general">
+     General workflow and setup
+     <a name="general">
+     </a>
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#getting-started-parallelization-and-imports">
+     Getting started: Parallelization and Imports
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#fitting-the-initial-gap">
+     Fitting the initial GAP
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#preparing-the-iterative-process">
+     Preparing the iterative process
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-iterative-process">
+     The Iterative Process
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#keeping-track-of-training-and-test-errors">
+     Keeping track of training and test errors
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -468,6 +583,186 @@ title="Print to PDF"
                 
   <div class="section" id="fitting-a-mlip">
 <h1>Fitting a MLIP<a class="headerlink" href="#fitting-a-mlip" title="Permalink to this headline">#</a></h1>
+<p>The following serves as a basic example of how to fit MLIPs (in this case a GAP for Cu slabs) using the ground functionalities of the wfl package. In theory you need no other previous installations other than wfl, ase, and working versions of QUIP and quippy.</p>
+</div>
+<div class="section" id="table-of-contents">
+<h1>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">#</a></h1>
+<ol class="arabic simple">
+<li><p><span class="xref myst">General workflow and setup</span></p></li>
+<li><p><span class="xref myst">Fitting the initial GAP</span></p></li>
+<li><p><span class="xref myst">Preparing the iterative process</span></p></li>
+<li><p><span class="xref myst">The iterative Process</span></p></li>
+</ol>
+<div class="section" id="general-workflow-and-setup-a-name-general">
+<h2>General workflow and setup <a name="general"><a class="headerlink" href="#general-workflow-and-setup-a-name-general" title="Permalink to this headline">#</a></h2>
+<p>In the <code class="docutils literal notranslate"><span class="pre">examples/iterative_gap_fit</span></code> directory you will find the following files:</p>
+<ul class="simple">
+<li><p>batch_gap_fit.py</p></li>
+<li><p>EMT_atoms.xyz</p></li>
+<li><p>init_md.traj</p></li>
+<li><p>multistage_gap_params.json</p></li>
+</ul>
+<p>The iterative fitting workflow is in the file <code class="docutils literal notranslate"><span class="pre">batch_gap_fit</span></code>. In general, starting from an initial training set of structures with energies and forces, located in <code class="docutils literal notranslate"><span class="pre">EMT_atoms.xyz</span></code>, and a set of GAP-fit-hyperparameters, located in <code class="docutils literal notranslate"><span class="pre">multistage_gap_params.json</span></code>, we fit an inital GAP. Then we generate new configs, select a subset of them, and calculate their energies and forces with a <em>proper</em> calculator. The new, calculated structures are then added to the initial training set and we fit the second generation GAP. This iterative process is repeated until a maximum iteration.</p>
+</div>
+<div class="section" id="getting-started-parallelization-and-imports">
+<h2>Getting started: Parallelization and Imports<a class="headerlink" href="#getting-started-parallelization-and-imports" title="Permalink to this headline">#</a></h2>
+<p>Let’s take a look at <code class="docutils literal notranslate"><span class="pre">batch_gap_fit.py</span></code>. In the first lines we define the number of cores over which we parallelize.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;WFL_NUM_PYTHON_SUBPROCESSES&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;4&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;WFL_GAP_FIT_OMP_NUM_THREADS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;4&quot;</span>
+
+<span class="kn">import</span> <span class="nn">wfl.autoparallelize</span>
+<span class="n">wfl</span><span class="o">.</span><span class="n">autoparallelize</span><span class="o">.</span><span class="n">mpipool_support</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The “WFL_NUM_PYTHON_SUBPROCESSES” being the number of cores you provide the wfl package with, and “WFL_GAP_FIT_OMP_NUM_THREADS” being the number of cores the GAP fit can run in parallel. We initialize the parallelisation by running the <a class="reference internal" href="overview.parallelisation.html"><span class="doc std std-doc">mpipool_support</span></a>.</p>
+<p>Next we import all necessary functions. As you can see, for this example the only non-basic packages are quippy and ase.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
+<span class="kn">from</span> <span class="nn">ase.calculators.emt</span> <span class="kn">import</span> <span class="n">EMT</span>
+
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">quippy.potential</span> <span class="kn">import</span> <span class="n">Potential</span>
+
+<span class="kn">from</span> <span class="nn">wfl.calculators.generic</span> <span class="kn">import</span> <span class="n">run</span> <span class="k">as</span> <span class="n">generic_calc</span>
+<span class="kn">from</span> <span class="nn">wfl.descriptors.quippy</span> <span class="kn">import</span> <span class="n">from_any_to_Descriptor</span>
+<span class="kn">from</span> <span class="nn">wfl.descriptors.quippy</span> <span class="kn">import</span> <span class="n">calc</span> <span class="k">as</span> <span class="n">desc_calc</span>
+<span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
+<span class="kn">from</span> <span class="nn">wfl.fit.gap.multistage</span> <span class="kn">import</span> <span class="n">prep_params</span>
+<span class="kn">from</span> <span class="nn">wfl.fit.gap.multistage</span> <span class="kn">import</span> <span class="n">fit</span> <span class="k">as</span> <span class="n">gap_fit</span>
+<span class="kn">from</span> <span class="nn">wfl.fit.ref_error</span> <span class="kn">import</span> <span class="n">calc</span> <span class="k">as</span> <span class="n">ref_calc</span>
+<span class="kn">from</span> <span class="nn">wfl.generate.md</span> <span class="kn">import</span> <span class="n">sample</span> <span class="k">as</span> <span class="n">sample_md</span>
+<span class="kn">from</span> <span class="nn">wfl.generate.optimize</span> <span class="kn">import</span> <span class="n">run</span> <span class="k">as</span> <span class="n">optimize</span>
+<span class="kn">from</span> <span class="nn">wfl.select.by_descriptor</span> <span class="kn">import</span> <span class="n">greedy_fps_conf_global</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fitting-the-initial-gap">
+<h2>Fitting the initial GAP<a class="headerlink" href="#fitting-the-initial-gap" title="Permalink to this headline">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">main</span></code> function in <code class="docutils literal notranslate"><span class="pre">batch_gap_fit.py</span></code> begins with fitting an initial GAP for Cu structures:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">### GAP parameters</span>
+<span class="n">gap_params</span> <span class="o">=</span> <span class="s1">&#39;multistage_gap_params.json&#39;</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">gap_params</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+  <span class="n">gap_params</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="n">Zs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">29</span><span class="p">]</span>
+<span class="n">length_scales</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="mi">29</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;bond_len&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.6</span><span class="p">,</span> <span class="s2">&quot;NB VASP auto_length_scale&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;min_bond_len&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.2</span><span class="p">,</span> <span class="s2">&quot;NB VASP auto_length_scale&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;other links&quot;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s2">&quot;vol_per_atom&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="s2">&quot;NB VASP auto_length_scale&quot;</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">training</span> <span class="o">=</span> <span class="s1">&#39;EMT_atoms.xyz&#39;</span>
+</pre></div>
+</div>
+<p>The dictionary of located in <code class="docutils literal notranslate"><span class="pre">multistage_gap_params.json</span></code> contains all the necessary GAP hyperparameters for a <a class="reference internal" href="wfl.fit.gap.html"><span class="doc std std-doc">multistage fit</span></a>. As we are only investigating Cu, the list of unique atomic numbers only has one value, <code class="docutils literal notranslate"><span class="pre">Zs=[29]</span></code>. To include SOAP heuristics, we add a dictionary of length scales specific to the Cu atom. For more information, we refer to the <a class="reference external" href="https://github.com/libAtoms/universalSOAP">universalSOAP package</a>. To generalize this part of the code for other systems, we suggest using the previously VASP-calculated dictionary located there. The training data is located in the xyz-file <code class="docutils literal notranslate"><span class="pre">EMT_atoms.xyz</span></code>. This file can be any ase-readable type file, and includes one structure with only one Cu atom, no periodic boundary conditions, and the property <code class="docutils literal notranslate"><span class="pre">config_type=isolated_atom</span></code>. The energy of this structure being our default Cu energy.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">### Initial GAP training</span>
+<span class="n">fit_idx</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">gap_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;GAP_</span><span class="si">{</span><span class="n">fit_idx</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="n">GAP_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;GAP&#39;</span><span class="p">)</span>
+<span class="n">GAP_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+  <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fitting original GAP located in </span><span class="si">{</span><span class="n">GAP_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">gap_name</span><span class="si">}</span><span class="s2">.xml&quot;</span><span class="p">,</span>
+    <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">get_gap</span><span class="p">(</span><span class="n">training</span><span class="p">,</span> <span class="n">gap_name</span><span class="p">,</span> <span class="n">Zs</span><span class="p">,</span> <span class="n">length_scales</span><span class="p">,</span> <span class="n">gap_params</span><span class="p">,</span> <span class="n">run_dir</span><span class="o">=</span><span class="n">GAP_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next, we create a directory in which we will write all future files resulting from a GAP fit, naming them by the iteration in our process. The function <code class="docutils literal notranslate"><span class="pre">get_gap</span></code> represents a helper function that takes training_file, parameters, and output filenames and runs the <a class="reference internal" href="wfl.fit.html"><span class="doc std std-doc">multistage gap fit</span></a> function. This function will run locally. If you wish to run this or any other wfl-based function remotely, check out the <span class="xref myst">ExPyRe documentation</span> and add the remote information via the keyword <code class="docutils literal notranslate"><span class="pre">remote_info</span></code>.</p>
+</div>
+<div class="section" id="preparing-the-iterative-process">
+<h2>Preparing the iterative process<a class="headerlink" href="#preparing-the-iterative-process" title="Permalink to this headline">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">### MD info</span>
+<span class="n">calc</span> <span class="o">=</span> <span class="s1">&#39;md&#39;</span>
+<span class="n">MD_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;MD&#39;</span><span class="p">)</span>
+<span class="n">MD_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">md_in_file</span> <span class="o">=</span> <span class="s1">&#39;init_md.traj&#39;</span>
+<span class="n">md_configs</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">md_in_file</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span>
+<span class="n">md_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;steps&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span> <span class="s1">&#39;dt&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;temperature&#39;</span><span class="p">:</span> <span class="mi">300</span><span class="p">}</span>
+
+<span class="c1">### optimize Info</span>
+<span class="n">calc</span> <span class="o">=</span> <span class="s1">&#39;optimize&#39;</span>
+<span class="n">optimize_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;fmax&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="s2">&quot;steps&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;keep_symmetry&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;verbose&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="n">n_select</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">max_count</span> <span class="o">=</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p>Above are some examples for preparing the <a class="reference internal" href="wfl.generate.html"><span class="doc std std-doc">structure generation processes</span></a> <code class="docutils literal notranslate"><span class="pre">MD</span></code> and <code class="docutils literal notranslate"><span class="pre">optimize</span></code>. In this particular file, we define the type of structure generation process with the parameter <code class="docutils literal notranslate"><span class="pre">calc</span></code>, and set the maximum number of iterations to 5. The variable <code class="docutils literal notranslate"><span class="pre">n_select</span></code> determines how many structures get added to the training set each generation.</p>
+</div>
+<div class="section" id="the-iterative-process">
+<h2>The Iterative Process<a class="headerlink" href="#the-iterative-process" title="Permalink to this headline">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="n">fit_idx</span>  <span class="o">&lt;</span> <span class="n">max_count</span><span class="p">:</span>
+  <span class="n">files</span> <span class="o">=</span> <span class="n">get_file_names</span><span class="p">(</span><span class="n">GAP_dir</span><span class="p">,</span> <span class="n">MD_dir</span><span class="p">,</span> <span class="n">fit_idx</span><span class="p">,</span> <span class="n">calc</span> <span class="o">=</span> <span class="n">calc</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">calc</span> <span class="o">==</span> <span class="s1">&#39;md&#39;</span><span class="p">:</span>
+      <span class="c1"># Run an MD to create new structures</span>
+      <span class="n">run_md</span><span class="p">(</span><span class="n">md_configs</span><span class="p">,</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;calc_out&quot;</span><span class="p">],</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;gap&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">md_params</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="n">calc</span> <span class="o">==</span> <span class="s1">&#39;optimize&#39;</span><span class="p">:</span>
+      <span class="n">run_optimize</span><span class="p">(</span><span class="n">md_configs</span><span class="p">,</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;calc_out&quot;</span><span class="p">],</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;gap&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">optimize_params</span><span class="p">)</span>
+
+  <span class="c1"># Calculate the descriptors for the md output &amp; sample them via fps</span>
+  <span class="n">get_descriptors</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;calc_out&quot;</span><span class="p">],</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;desc&quot;</span><span class="p">],</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;gap_params&quot;</span><span class="p">])</span>
+  <span class="n">get_descriptors</span><span class="p">(</span><span class="n">training</span><span class="p">,</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;training_desc&quot;</span><span class="p">],</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;gap_params&quot;</span><span class="p">])</span>
+  <span class="n">run_fps</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;desc&quot;</span><span class="p">],</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;fps&quot;</span><span class="p">],</span> <span class="n">n_select</span><span class="p">,</span>
+      <span class="n">training_desc_file</span><span class="o">=</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;training_desc&quot;</span><span class="p">]</span>
+  <span class="p">)</span>
+  <span class="n">run_emt</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;fps&quot;</span><span class="p">],</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;dft&quot;</span><span class="p">])</span>
+
+  <span class="n">fit_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+  <span class="n">training_atoms</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">training</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">read</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;dft&quot;</span><span class="p">],</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span>
+  <span class="n">training</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">GAP_dir</span><span class="si">}</span><span class="s1">/training_</span><span class="si">{</span><span class="n">fit_idx</span><span class="si">}</span><span class="s1">.xyz&#39;</span>
+  <span class="n">gap_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;GAP_</span><span class="si">{</span><span class="n">fit_idx</span><span class="si">}</span><span class="s1">&#39;</span>
+  <span class="n">write</span><span class="p">(</span><span class="n">training</span><span class="p">,</span> <span class="n">training_atoms</span><span class="p">)</span>
+  <span class="n">get_gap</span><span class="p">(</span><span class="n">training</span><span class="p">,</span> <span class="n">gap_name</span><span class="p">,</span> <span class="n">Zs</span><span class="p">,</span> <span class="n">length_scales</span><span class="p">,</span> <span class="n">gap_params</span><span class="p">,</span>
+      <span class="n">run_dir</span><span class="o">=</span><span class="n">GAP_dir</span>
+  <span class="p">)</span>
+</pre></div>
+</div>
+<p>This is where the magic happens. Below we will go through each of the functions in more detail, here we will only discuss the general structure.</p>
+<p>After generating structures via MD or optimization, we calculate their global <a class="reference internal" href="wfl.descriptors.html"><span class="doc std std-doc">atomic descriptors</span></a> using <code class="docutils literal notranslate"><span class="pre">get_descriptors</span></code> for both the generated and the training structures. We use the descriptor hyperparameters from the previous GAP fit. Then we select <code class="docutils literal notranslate"><span class="pre">n_select</span></code> structures from the generated structures using <a class="reference internal" href="wfl.select.html"><span class="doc std std-doc">farthest point sampling</span></a>, adding the training descriptor vectors as reference descriptors.</p>
+<p>Next, we calculate the “real” energies and forces on the <code class="docutils literal notranslate"><span class="pre">n_select</span></code> structures. For real applications, you would add the <em>ab initio</em> code of your choice (see <a class="reference internal" href="wfl.calculators.html"><span class="doc std std-doc">calculators</span></a>), for simplicity’s sake we use <code class="docutils literal notranslate"><span class="pre">ase.emt</span></code> here. These structures then get added to the new training set for iteration <code class="docutils literal notranslate"><span class="pre">fit_idx</span> <span class="pre">+=</span> <span class="pre">1</span></code>, and we fit the next generation’s GAP.</p>
+</div>
+<div class="section" id="keeping-track-of-training-and-test-errors">
+<h2>Keeping track of training and test errors<a class="headerlink" href="#keeping-track-of-training-and-test-errors" title="Permalink to this headline">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">val_error</span>   <span class="o">=</span> <span class="n">get_ref_error</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;dft&quot;</span><span class="p">],</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;eval&quot;</span><span class="p">],</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;gap&quot;</span><span class="p">])</span>
+
+<span class="n">v_f</span><span class="p">,</span> <span class="n">v_e</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">val_error</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">],</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">val_error</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span>
+<span class="n">t_f</span><span class="p">,</span> <span class="n">t_e</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">train_error</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">],</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">train_error</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+  <span class="n">log_dict</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s2">&quot;fit_idx&quot;</span><span class="p">:</span> <span class="n">fit_idx</span><span class="p">,</span>
+      <span class="s2">&quot;Validation: RMSE_f&quot;</span><span class="p">:</span> <span class="n">v_f</span><span class="p">,</span> <span class="s2">&quot;Training: RMSE_f&quot;</span><span class="p">:</span> <span class="n">t_f</span><span class="p">,</span>
+      <span class="s2">&quot;Validation: RMSE_e&quot;</span><span class="p">:</span> <span class="n">v_e</span><span class="p">,</span> <span class="s2">&quot;Training: RMSE_e&quot;</span><span class="p">:</span> <span class="n">t_e</span>
+  <span class="p">}</span>
+
+  <span class="n">f_dev</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">v_f</span> <span class="o">-</span> <span class="n">t_f</span><span class="p">)</span><span class="o">/</span><span class="n">t_f</span><span class="p">)</span>
+  <span class="n">e_dev</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">v_e</span> <span class="o">-</span> <span class="n">t_e</span><span class="p">)</span><span class="o">/</span><span class="n">t_e</span><span class="p">)</span>
+
+  <span class="nb">print</span><span class="p">(</span>
+      <span class="sa">f</span><span class="s1">&#39;VALIDATION: RMSE Forces: </span><span class="si">{</span><span class="n">v_f</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">, RMSE Energy: </span><span class="si">{</span><span class="n">v_e</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+      <span class="sa">f</span><span class="s1">&#39;TRAINING:   RMSE Forces: </span><span class="si">{</span><span class="n">t_f</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">, RMSE Energy: </span><span class="si">{</span><span class="n">t_e</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+      <span class="sa">f</span><span class="s1">&#39;DEVIATIONS: Forces:</span><span class="si">{</span><span class="n">f_dev</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">%, Energy: </span><span class="si">{</span><span class="n">e_dev</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">%&#39;</span><span class="p">,</span>
+      <span class="n">flush</span><span class="o">=</span><span class="kc">True</span>
+  <span class="p">)</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;errors.json&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+      <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">log_dict</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+      <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
