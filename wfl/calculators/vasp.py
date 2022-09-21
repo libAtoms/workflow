@@ -6,6 +6,8 @@ VASP calculator
 import os
 from pathlib import Path
 import tempfile
+import shutil
+
 import json
 from copy import deepcopy
 
@@ -21,48 +23,62 @@ from .utils import clean_rundir, handle_nonperiodic
 _default_keep_files = ["POSCAR", "INCAR", "KPOINTS", "OUTCAR", "vasprun.xml", "vasp.out"]
 _default_properties = ["energy", "forces", "stress"]
 
+_vasp_kwargs_def = {
+    "isif": 2,
+    "isym": 0,
+    "nelm": 300,
+    "ismear": 0,
+    "sigma": 0.05,
+    "ediff": 1.0e-7,
+    "lwave": False,
+    "lcharg": False,
+    "pp": "."
+}
 
 class Vasp(ase.calculators.vasp.vasp.Vasp):
     """Extension of ASE's Vasp calculator that can be used by wfl.calculators.generic
 
+    Notes
+    -----
+    "directory" argument cannot be present. Use rundir and workdir instead.
+
     Parameters
     ----------
-    dir_prefix: str, default 'run\_VASP\_'
-        directory name prefix for calculations
     keep_files: bool / None / "default" / list(str), default "default"
         what kind of files to keep from the run
-            True : everything kept
+            True, "*" : everything kept
             None, False : nothing kept
-            "default"   : only ones needed for NOMAD uploads ('POSCAR', 'INCAR', 'KPOINTS', 'OUTCAR', 'vasprun.xyz')
+            "default"   : only ones needed for NOMAD uploads ('POSCAR', 'INCAR', 'KPOINTS', 'OUTCAR', 'vasprun.xml', 'vasp.out')
             list(str)   : list of file globs to save
+    rundir: str / Path, default 'run\_VASP\_'
+        Run directory name prefix (or full name - see reuse_rundir)
+    reuse_rundir: bool, default False
+        Treat rundir as a fixed directory, rather than a prefix to a unique dir name.
+        WARNING: Do not set rundir to an existing directory with other files, because they
+        may be deleted by clean_rundir() at the end of the calculation.
+    workdir: str / Path, default . at calculate time
+        Path in which rundir will be created.
+    scratchdir: str / Path, default None
+        temporary directory to execute calculations in and delete or copy back results (set by
+        "keep_files") if needed.  For example, directory on a local disk with fast file I/O.
     calculator_command: str
         command to run for vasp (overrides ASE_VASP_COMMAND and ASE_VASP_COMMAND_GAMMA)
-
+    VASP_PP_PATH: str, default None
+        Location for POTCAR files, overriding corresponding env var (to simplify ASE Vasp's annoying
+        default POTCAR path heuristics).  This argument will be used to set corresponding env var
+        (directory above <chem_symbol>/POTCAR), and if 'pp' (extra path below VASP\_PP\_PATH) is
+        not specified it will default to '.', rather than to guess based on XC, so element-named
+        directories will need to be in VASP_PP_PATH.
     **kwargs: arguments for ase.calculators.vasp.vasp.Vasp
-        To avoid ASE Vasp's annoying default POTCAR path heuristics, key VASP\_PP\_PATH will be
-        used to set corresponding env var (directory above <chem_symbol>/POTCAR), and if 'pp'
-        (extra path below VASP\_PP\_PATH) is not specified it will default to '.', rather than
-        to guess based on XC.
+        remaining arguments to ASE's Vasp calculator constructor
     """
 
     # default value of wfl_num_inputs_per_python_subprocess for calculators.generic,
     # to override that function's built-in default of 10
     wfl_generic_num_inputs_per_python_subprocess = 1
 
-    __vasp_kwargs_def = {
-        "isif": 2,
-        "isym": 0,
-        "nelm": 300,
-        "ismear": 0,
-        "sigma": 0.05,
-        "ediff": 1.0e-7,
-        "lwave": False,
-        "lcharg": False,
-        "pp": "."
-    }
-
     def __init__(self, atoms=None, keep_files="default",
-                 dir_prefix="run_VASP_", workdir_root=None,
+                 rundir="run_VASP_", reuse_rundir=False, workdir=".", scratchdir=None,
                  calculator_command=None, VASP_PP_PATH=None,
                  **kwargs):
 
@@ -80,7 +96,7 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
                     kwargs_use[k] = v
 
         # get params from our defaults if not set yet
-        for k, v in self.__vasp_kwargs_def.items():
+        for k, v in _vasp_kwargs_def.items():
             if k not in kwargs_use:
                 kwargs_use[k] = v
 
@@ -92,8 +108,13 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
         super(Vasp, self).__init__(**kwargs_use)
 
         self._keep_files = keep_files
-        self._dir_prefix = dir_prefix
-        self._workdir_root = Path(workdir_root) if workdir_root is not None else None
+        if "directory" in kwargs_use:
+            raise ValueError("Cannot pass directory argument")
+
+        self._rundir = Path(rundir)
+        self._reuse_rundir = reuse_rundir
+        self._workdir = Path(workdir)
+        self._scratchdir = Path(scratchdir)
         self._override_VASP_PP_PATH = VASP_PP_PATH
 
 
@@ -115,13 +136,6 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
         if self._override_VASP_PP_PATH is not None:
             os.environ["VASP_PP_PATH"] = str(self._override_VASP_PP_PATH)
 
-        if self._workdir_root is None:
-            workdir_root = Path.cwd()
-        else:
-            workdir_root = self._workdir_root
-
-        workdir_root.mkdir(parents=True, exist_ok=True)
-
         # VASP requires periodic cells with non-zero cell vectors
         if atoms.get_volume() < 0.0:
             (atoms.cell[0], atoms.cell[1]) = (atoms.cell[1], atoms.cell[0])
@@ -134,9 +148,18 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
         orig_pbc = atoms.pbc.copy()
         atoms.pbc = [True] * 3
 
-        self.directory = Path(tempfile.mkdtemp(dir=workdir_root, prefix=self._dir_prefix))
+        # set rundir to where we want final results to live
+        rundir_path = self._workdir / self._rundir.parent
+        rundir_path.mkdir(parents=True, exist_ok=True)
+        if reuse_rundir:
+            rundir = rundir_pth / self._rundir.name
+            rundir.mkdir(exist_ok=True)
+        else:
+            rundir = Path(tempfile.mkdtemp(dir=rundir_path, prefix=self._rundir.name))
 
-        # create calc
+        # set directory to where we want the calculation to actully run
+        self.directory = self._scratchdir / rundir.resolve() if self._scratchdir is not None else rundir
+
         orig_command = self.command
         if self.command is None:
             if nonperiodic:
@@ -144,18 +167,18 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
             elif "ASE_VASP_COMMAND" not in os.environ:
                 raise RuntimeError("Need env var ASE_VASP_COMMAND for periodic systems if command is not explicitly passed to constructor")
 
-        # read from INCAR, KPOINTS if provided
+        # set some things for nonperiodic systems
         orig_kspacing = self.float_params["kspacing"]
         orig_kgamma = self.bool_params["kgamma"]
         if nonperiodic:
             self.float_params["kspacing"] = 100000.0
             self.bool_params["kgamma"] = True
 
-        atoms.info["vasp_rundir"] = str(self.directory)
+        atoms.info["vasp_rundir"] = str(rundir)
 
-        # should we require anything else?
         if self.float_params["encut"] is None:
             raise RuntimeError("Refusing to run without explicit ENCUT")
+        # should we require anything except ENCUT?
 
         try:
             super().calculate(atoms=atoms, properties=properties_use, system_changes=system_changes)
@@ -168,6 +191,8 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
             raise exc
         finally:
             clean_rundir(self.directory, self._keep_files, _default_keep_files, calculation_succeeded)
+            if self._scratchdir is not None:
+                shutil.move(self._scratchdir, rundir.parent)
 
             # undo pbc change
             atoms.pbc[:] = orig_pbc

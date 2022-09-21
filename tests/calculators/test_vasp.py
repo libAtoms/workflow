@@ -20,7 +20,7 @@ def test_vasp_gamma(tmp_path):
     configs_eval = generic.run(
         inputs=ConfigSet(os.path.join(tmp_path, 'vasp_in.xyz')),
         outputs=OutputSpec('vasp_out.gamma.xyz', file_root=tmp_path),
-        calculator=Vasp(workdir_root=tmp_path, encut=200, VASP_PP_PATH=os.environ['PYTEST_VASP_POTCAR_DIR'],
+        calculator=Vasp(workdir=tmp_path, encut=200, VASP_PP_PATH=os.environ['PYTEST_VASP_POTCAR_DIR'],
                         keep_files=True),
         output_prefix='TEST_', 
     )
@@ -42,7 +42,7 @@ def test_vasp(tmp_path):
     configs_eval = generic.run(
         inputs=ConfigSet(os.path.join(tmp_path, 'vasp_in.xyz')),
         outputs=OutputSpec('vasp_out.regular.xyz', file_root=tmp_path),
-        calculator=Vasp(workdir_root=tmp_path, encut=200, kspacing=1.0, VASP_PP_PATH=os.environ['PYTEST_VASP_POTCAR_DIR'],
+        calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, VASP_PP_PATH=os.environ['PYTEST_VASP_POTCAR_DIR'],
                         keep_files=True),
         output_prefix='TEST_')
 
@@ -64,7 +64,7 @@ def test_vasp_keep_default(tmp_path):
     configs_eval = generic.run(
         inputs=ConfigSet(os.path.join(tmp_path, 'vasp_in.xyz')),
         outputs=OutputSpec('vasp_out.keep_default.xyz', file_root=tmp_path),
-        calculator=Vasp(workdir_root=tmp_path, encut=200, kspacing=1.0, VASP_PP_PATH=os.environ['PYTEST_VASP_POTCAR_DIR'],
+        calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, VASP_PP_PATH=os.environ['PYTEST_VASP_POTCAR_DIR'],
                              keep_files='default'),
         output_prefix='TEST_')
 
@@ -86,7 +86,7 @@ def test_vasp_keep_False(tmp_path):
     configs_eval = generic.run(
         inputs=ConfigSet(os.path.join(tmp_path, 'vasp_in.xyz')),
         outputs=OutputSpec('vasp_out.keep_False.xyz', file_root=tmp_path),
-        calculator=Vasp(workdir_root=tmp_path, encut=200, kspacing=1.0, VASP_PP_PATH=os.environ['PYTEST_VASP_POTCAR_DIR'],
+        calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, VASP_PP_PATH=os.environ['PYTEST_VASP_POTCAR_DIR'],
                         keep_files=False),
         output_prefix='TEST_')
 
@@ -106,7 +106,7 @@ def test_vasp_to_SPC(tmp_path):
     configs_eval = generic.run(
         inputs=ConfigSet(os.path.join(tmp_path, 'vasp_in.xyz')),
         outputs=OutputSpec('vasp_out.to_SPC.xyz', file_root=tmp_path),
-        calculator=Vasp(workdir_root=tmp_path, encut=200, kspacing=1.0, VASP_PP_PATH=os.environ['PYTEST_VASP_POTCAR_DIR']),
+        calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, VASP_PP_PATH=os.environ['PYTEST_VASP_POTCAR_DIR']),
         output_prefix=None)
 
     ats = list(configs_eval)
