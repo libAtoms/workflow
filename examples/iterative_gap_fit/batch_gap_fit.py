@@ -59,8 +59,8 @@ def get_ref_error(in_file, out_file, gap_file, **kwargs):
     errors: dict
         dictionary containing the errors for the respective properties
     """
-    in_config = ConfigSet(input_files=in_file)
-    out_config = OutputSpec(output_files=out_file)
+    in_config = ConfigSet(in_file)
+    out_config = OutputSpec(files=out_file)
     calculator = (Potential, None, {'param_filename': gap_file})
     ref_property_prefix = kwargs.get('ref_property_prefix', 'DFT_')
     category_keys = kwargs.get('category_keys', None)
@@ -86,8 +86,8 @@ def run_md(atoms, out_file, gap_file, **kwargs):
     parameters to set MD can be defined as arguments
     (NPT/NVT, temp, pressure, etc)
     """
-    in_config = ConfigSet(input_configs=atoms)
-    out_config = OutputSpec(output_files=out_file)
+    in_config = ConfigSet(atoms)
+    out_config = OutputSpec(files=out_file)
     calculator = (Potential, None, {'param_filename': gap_file})
     sample_md(in_config, out_config, calculator=calculator, **kwargs)
     return None
@@ -112,8 +112,8 @@ def run_optimize(atoms, out_file, gap_file, **kwargs):
         "fmax": float, the force convergence criteria for the relaxation
         "steps": int, maximum permissible number of steps during the relaxation
     """
-    in_config = ConfigSet(input_configs=atoms)
-    out_config = OutputSpec(output_files=out_file)
+    in_config = ConfigSet(atoms)
+    out_config = OutputSpec(files=out_file)
     calculator = (Potential, None, {'param_filename': gap_file})
     optimize(in_config, out_config, calculator=calculator, **kwargs)
     return None
@@ -139,8 +139,8 @@ def run_emt(in_file, out_file, **kwargs):
     Returns
     -------
     """
-    in_config = ConfigSet(input_files= in_file)
-    out_config = OutputSpec(output_files = out_file)
+    in_config = ConfigSet( in_file)
+    out_config = OutputSpec(files = out_file)
     calculator = (EMT, None, {"fixed_cutoff": True})
     properties = kwargs.pop("properties", ["energy", "forces"])
     output_prefix = kwargs.pop("output_prefix", "DFT_")
@@ -175,8 +175,8 @@ def get_descriptors(in_file, out_file, params_file, key='desc', **kwargs):
     -------
     None, the descriptors are going to be found in the out_file
     """
-    in_config = ConfigSet(input_files = in_file)
-    out_config = OutputSpec(output_files = out_file)
+    in_config = ConfigSet(in_file)
+    out_config = OutputSpec(files = out_file)
 
     try:
         with open(params_file, 'r') as f:
@@ -225,8 +225,8 @@ def run_fps(in_file, out_file, n_samples, **kwargs):
     -------
     None, the selected configs are written in the out_file
     """
-    in_config = ConfigSet(input_files = in_file)
-    out_config = OutputSpec(output_files = out_file)
+    in_config = ConfigSet(in_file)
+    out_config = OutputSpec(files = out_file)
 
     tdf = kwargs.pop('training_desc_file', False)
     if tdf:
@@ -272,7 +272,7 @@ def get_gap(in_file, gap_name, Zs, length_scales, params,
     -------
     None, the selected configs are written in the out_file
     """
-    in_config = ConfigSet(input_files=in_file)
+    in_config = ConfigSet(in_file)
     gap_params = prep_params(Zs, length_scales, params)
     gap_fit(in_config, gap_name, gap_params,
         run_dir=run_dir, ref_property_prefix=ref_property_prefix
