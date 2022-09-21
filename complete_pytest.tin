@@ -25,10 +25,8 @@ export MKL_NUM_THREADS=1
 # required for descriptor calc to not hang
 export OMP_NUM_THREADS=1
 
-export ACE_FIT_COMMAND="julia ${HOME}/.julia/packages/ACE1pack/rq4n0/scripts/ace_fit.jl"
-
 rm -rf $HOME/pytest_wfl
-pytest -v -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs >> complete_pytest.tin.out 2>&1
+pytest -v -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf --runacefit -rxXs "$@" >> complete_pytest.tin.out 2>&1
 
 l=`egrep '^=.*(passed|failed)' complete_pytest.tin.out`
 

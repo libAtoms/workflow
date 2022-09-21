@@ -258,11 +258,12 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
     if ace_fit_command is None:
         if "WFL_ACE_FIT_COMMAND" in os.environ:
-           ace_fit_command = os.environ["WFL_ACE_FIT_COMMAND"]
+            ace_fit_command = os.environ["WFL_ACE_FIT_COMMAND"]
         else:
-            raise ValueError("Executable and path to ace_fit.jl must be given either as a `ace_fit_command` argument "\
-                "to `run_ace_fit()` or via WFL_ACE_FIT_COMMAND environment variable ")
-    
+            julia = os.environ.get("WFL_JULIA_COMMAND", "julia")
+            ace_path = Path(subprocess.check_output(shlex.split(julia), text=True, input="import(ACE1pack)\nprint(pathof(ACE1pack)\n)")).parent.parent
+            ace_fit_command = julia + " " + str(ace_path / "scripts" / "ace_fit.jl")
+            warnings.warn(f"Automatically found ace fit command {ace_fit_command}")
 
     orig_julia_num_threads = (os.environ.get('JULIA_NUM_THREADS', None))
     if 'WFL_ACE_FIT_JULIA_THREADS' in os.environ:
