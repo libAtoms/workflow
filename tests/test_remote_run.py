@@ -82,7 +82,7 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env):
 
     # jobs should fail because of bad executable
     results = generic.run(inputs=ci, outputs=co,
-                          calculator=Vasp(encut= 200, VASP_PP_PATH='POTCARs'),
+                          calculator=Vasp(encut= 200, pp='POTCARs'),
                           output_prefix='TEST_')
 
     for at in ase.io.read(tmp_path / f'ats_o_{sys_name}.xyz', ':'):
