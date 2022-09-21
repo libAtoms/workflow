@@ -44,14 +44,13 @@ def test_flat_histo_to_nearby(tmp_path):
         ats.append(at)
 
     output_ats = val_relative_to_nearby_composition_volume_min(
-        ConfigSet(input_configs=ats),
-        OutputSpec(file_root=tmp_path, output_files='test_flat_histo_relative.xyz'),
+        ConfigSet(ats),
+        OutputSpec('test_flat_histo_relative.xyz', file_root=tmp_path),
         1.0, 0.25, 'energy', 'E_dist_to_nearby')
 
-    selected_ats = biased_select_conf(ConfigSet(input_configsets=output_ats),
-                                      OutputSpec(file_root=tmp_path,
-                                                    output_files='test_flat_histo_relative.selected.xyz'), 10,
-                                      'E_dist_to_nearby', kT=0.05)
+    selected_ats = biased_select_conf(output_ats,
+                                      OutputSpec('test_flat_histo_relative.selected.xyz', file_root=tmp_path),
+                                      10, 'E_dist_to_nearby', kT=0.05)
 
     print("selected_ats", [at.info['config_i'] for at in selected_ats])
     assert [at.info['config_i'] for at in selected_ats] == [134, 248, 278, 375, 377, 398, 685, 799, 851, 993]

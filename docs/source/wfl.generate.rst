@@ -28,6 +28,14 @@ wfl.generate.md module
    :undoc-members:
    :show-inheritance:
 
+wfl.generate.minimahopping module
+---------------------------------
+
+.. automodule:: wfl.generate.minimahopping
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 wfl.generate.optimize module
 ----------------------------
 

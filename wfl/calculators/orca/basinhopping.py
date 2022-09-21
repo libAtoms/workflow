@@ -10,13 +10,10 @@ from ase.calculators.calculator import all_changes, CalculationFailed
 from ase.calculators.calculator import Calculator
 
 from wfl.calculators import orca
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 
 
-def evaluate_basin_hopping(inputs, outputs,
-                           workdir_root=None, dir_prefix="ORCA_",
-                           keep_files="default", orca_kwargs=None,
-                           output_prefix=None):
+def evaluate_basin_hopping(*args, **kwargs):
     """Evaluate with BasinHoppingORCA calculator
 
     Parameters
@@ -31,10 +28,11 @@ def evaluate_basin_hopping(inputs, outputs,
         directory name prefix for calculations
     keep_files: "default" / bool
         what kind of files to keep from the run
-            - "default : .out, .inp, .ase, .engrad is kept -- ase can read
-              the results again
-            - True : all files kept
-            - False: none kept
+
+        - "default : .out, .inp, .ase, .engrad is kept -- ase can read
+          the results again
+        - True : all files kept
+        - False: none kept
     orca_kwargs: dict
         kwargs for BasinHoppingORCA calculator
     output_prefix : str, default None
@@ -43,29 +41,24 @@ def evaluate_basin_hopping(inputs, outputs,
     Returns
     -------
     results : ConfigSet
-        outputs.to_ConfigSet()
+        ConfigSet(outputs)
     """
-    return autoparallelize(iterable=inputs, OutputSpec=outputs,
-                         op=orca.evaluate_op,
-                         workdir_root=workdir_root, dir_prefix=dir_prefix,
-                         keep_files=keep_files, orca_kwargs=orca_kwargs,
-                         output_prefix=output_prefix, basin_hopping=True)
-
+    raise RuntimeError("implemented in terms of wfl.calculators.orca.evaluate_op, which does not exist")
+    # return autoparallelize(orca.evaluate_op, *args, basin_hopping=True, **kwargs)
+# evaluate_basin_hopping.__doc__ = autoparallelize_docstring(orca.evaluate_op, "Atoms")
 
 
 class BasinHoppingORCA(Calculator):
     """ORCA calculator with basin hopping in wavefunction space for
     smooth PES of radicals
 
-    Method
-    ------
-    call n_runs (3<= recommended) instances of calculation on each
-    frame, if all agree in energy within a given
-    margin, then it is a successful
+    Call n_runs (3 <= recommended) instances of calculation on each
+    frame. If all agree in energy within a given margin, then it is a successful.
 
-    calculation:
+    calculations:
+
     1. no rotation, only smearing calculation
-    2. n_hop - 1 number of calculations with random rotations
+    2. `n_hop - 1` number of calculations with random rotations
 
     Parameters
     ----------

@@ -2,6 +2,8 @@ import sys
 
 import numpy as np
 
+from wfl.configset import ConfigSet
+
 
 def _select_by_bin(weights, bin_edges, quantities, n, kT, replace=False, verbose=False):
     if verbose:
@@ -156,7 +158,7 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
     ConfigSet containing output configs
     """
 
-    if outputs.is_done():
+    if outputs.done():
         sys.stderr.write('Returning from {__name__} since output is done\n')
         return outputs.to_ConfigSet()
 
@@ -178,10 +180,10 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
     for at_i, at in enumerate(inputs):
         while selected_i < len(selected_indices) and selected_indices[selected_i] <= at_i:
             if selected_indices[selected_i] == at_i:
-                outputs.write(at)
+                outputs.store(at)
             selected_i += 1
         if selected_i >= len(selected_indices):
             break
 
-    outputs.end_write()
+    outputs.close()
     return outputs.to_ConfigSet()

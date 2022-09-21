@@ -14,10 +14,12 @@ rm -rf test_cli_rss_create_ref
 mkdir test_cli_rss_create_ref
 export GAP_RSS_TEST_SETUP=$PWD/test_cli_rss_create_ref
 
-module load vasp
+module purge
+module load compiler/gnu python/system python_extras/quippy dft/vasp
 # make sure it's not OpenMP enabled, so gap_fit is deterministic
-module unload quip_variant quip
-module load quip
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
 
 export VASP_COMMAND=vasp.serial
 export VASP_COMMAND_GAMMA=vasp.gamma_serial

@@ -3,16 +3,19 @@ import os
 import subprocess
 from pathlib import Path
 from copy import deepcopy
+import tempfile
+
+import ase.io
 
 from wfl.configset import ConfigSet
 from wfl.utils.quip_cli_strings import dict_to_quip_str
-from ..utils import get_RemoteInfo
+from wfl.autoparallelize.utils import get_remote_info
 from .relocate import gap_relocate
 
 from expyre import ExPyRe
 
-def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fit",
-                verbose=True, do_fit=True, remote_info=None, **kwargs):
+def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None,
+                verbose=True, do_fit=True, remote_info=None, remote_label=None, **kwargs):
     """Runs gap_fit
 
     Parameters
@@ -23,29 +26,36 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
         dict of keys to turn into command line for gap_fit
     stdout_file: str / Path
         filename to pass standard output to
-    gap_fit_exec: str, default "gap_fit"
-        executable for gap_fit
+    gap_fit_command: str, default "gap_fit"
+        executable for gap_fit.
+        Alternatively set by WFL_GAP_FIT_COMMAND environment variable, 
+        which overrides this `gap_fit_command` argument. 
     verbose: bool, default True
     do_fit: bool, default True
         carry out the fit, otherwise only print fitting command
     remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
-        will try to use env var WFL_GAP_SIMPLE_FIT_EXPYRE_INFO used (see below). '_IGNORE' is for
+        will try to use env var WFL_EXPYRE_INFO used (see below). '_IGNORE' is for
         internal use, to ensure that remotely running job does not itself attempt to spawn another
         remotely running job.
+    remote_label: str, default None
+        remote label to patch in WFL_EXPYRE_INFO
     kwargs
         any key:val pair will be added to the fitting str
 
     Environment Variables
     ---------------------
-    WFL_GAP_SIMPLE_FIT_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
+    WFL_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
         contructor to be used to run fitting in separate queued job
     WFL_GAP_FIT_OMP_NUM_THREADS: number of threads to set for OpenMP of gap_fit
+    WFL_GAP_FIT_COMMAND: executable for gap_fit. Overrides the `gap_fit_command` argument.
     """
     assert 'atoms_filename' not in fitting_dict and 'at_file' not in fitting_dict
 
-    remote_info = get_RemoteInfo(remote_info, 'WFL_GAP_SIMPLE_FIT_EXPYRE_INFO')
+    if remote_info != '_IGNORE':
+        remote_info = get_remote_info(remote_info, remote_label)
+
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.input_files.copy()
         output_files = remote_info.output_files.copy()
@@ -53,7 +63,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
         # the code below needs to know an unfortunate amount about the inner workings of gap_fit
 
         # put configs in memory so they can be staged out easily
-        fitting_configs = fitting_configs.in_memory()
+        fitting_configs = ConfigSet(list(fitting_configs))
 
         # here we rely on knowledge of the default gap_file and the correpsonding output files
 
@@ -78,7 +88,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
 
         remote_func_kwargs = {'fitting_configs': fitting_configs, 'fitting_dict': fitting_dict,
                               'stdout_file': use_stdout_file,
-                              'gap_fit_exec': gap_fit_exec, 'verbose': verbose, 'do_fit': do_fit,
+                              'gap_fit_command': gap_fit_command, 'verbose': verbose, 'do_fit': do_fit,
                               'remote_info': '_IGNORE'}
         remote_func_kwargs.update(kwargs)
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
@@ -100,11 +110,18 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
 
         return results
 
-    # convert fitting configs to a single file
+    # default to having no scratch file, and check if fitting_configs is exactly one file
     fitting_configs_scratch_filename = None
-    fitting_configs_filename = fitting_configs.is_one_file()
+    fitting_configs_filename = fitting_configs.one_file()
     if not fitting_configs_filename:
-        fitting_configs_scratch_filename = fitting_configs.to_file('_GAP_fitting_configs.xyz', scratch=True)
+        # not one file, must write scratch file with all configs
+        fd_scratch, filename = tempfile.mkstemp(prefix="_GAP_fitting_configs.", suffix=".xyz")
+        os.close(fd_scratch)
+
+        ase.io.write(filename, fitting_configs)
+        # remember, so it can be deleted later
+        fitting_configs_scratch_filename = filename
+        # use in actual fit
         fitting_configs_filename = fitting_configs_scratch_filename
     
     # kwargs overwrite the fitting_dict given
@@ -112,7 +129,12 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_exec="gap_fi
 
     fitting_line = dict_to_gap_fit_string(use_fitting_dict)
 
-    cmd = f'{gap_fit_exec} {fitting_line} 2>&1 > {stdout_file} '
+    if gap_fit_command is None:
+        gap_fit_command = os.environ.get("WFL_GAP_FIT_COMMAND", None)        
+        if gap_fit_command is None:
+            gap_fit_command = "gap_fit"
+
+    cmd = f'{gap_fit_command} {fitting_line} 2>&1 > {stdout_file} '
 
     if not do_fit or verbose:
         print('fitting command:\n', cmd)

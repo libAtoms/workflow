@@ -9,8 +9,8 @@ def test_select_lambda(tmp_path):
     for at_i, at in enumerate(ats):
         at.info['index'] = at_i
 
-    ci = ConfigSet(input_configs=ats)
-    co = OutputSpec(file_root=tmp_path, output_files='test_simple.info_in.xyz')
+    ci = ConfigSet(ats)
+    co = OutputSpec('test_simple.info_in.xyz', file_root=tmp_path)
     selected_ats = simple.by_bool_func(ci, co, lambda at : at.info['index'] in list(range(10, 20)))
 
     assert len(list(selected_ats)) == 20 - 10
@@ -27,8 +27,8 @@ def test_select_real_func(tmp_path):
     for at_i, at in enumerate(ats):
         at.info['index'] = at_i
 
-    ci = ConfigSet(input_configs=ats)
-    co = OutputSpec(file_root=tmp_path, output_files='test_simple.info_in.xyz')
+    ci = ConfigSet(ats)
+    co = OutputSpec('test_simple.info_in.xyz', file_root=tmp_path)
     selected_ats = simple.by_bool_func(ci, co, _pytest_select)
 
     assert len(list(selected_ats)) == 20 - 10
@@ -41,8 +41,8 @@ def test_by_index(tmp_path):
     for at_i, at in enumerate(ats):
         at.info['index'] = at_i
 
-    ci = ConfigSet(input_configs=ats)
-    co = OutputSpec(file_root=tmp_path, output_files='test_simple.indices.xyz')
+    ci = ConfigSet(ats)
+    co = OutputSpec('test_simple.indices.xyz', file_root=tmp_path)
     indices = [4, 0, 7, 12, 12, 25, 45, 45]
     selected_ats = simple.by_index(ci, co, indices)
 

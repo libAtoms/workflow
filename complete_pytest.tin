@@ -1,40 +1,55 @@
 #!/bin/bash
 
+module purge
+module load compiler/gnu python/system python_extras/quippy
+
 # should include both tin and tin_ssh - not as good as real remote machine, but maybe close enough
 export EXPYRE_PYTEST_SYSTEMS='tin'
 
-echo  "GIT VERSION " $( git describe --always --tags --dirty ) > pytest_complete_test.out 
-echo "" >> pytest_complete_test.out 
+echo  "GIT VERSION " $( git describe --always --tags --dirty ) > complete_pytest.tin.out 
+echo "" >> complete_pytest.tin.out 
 
 # buildcell
 export WFL_PYTEST_BUILDCELL=$HOME/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
 # VASP
+module load dft/vasp
 export VASP_COMMAND=vasp.serial
-export VASP_COMMAND_GAMMA=vasp.gamma_serial
+export VASP_COMMAND_GAMMA=vasp.gamma.serial
 export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
 # QE
-module load pwscf
+module load dft/pwscf
 # no ORCA
 
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+# required for descriptor calc to not hang
+export OMP_NUM_THREADS=1
+
+export ACE_FIT_COMMAND="julia ${HOME}/.julia/packages/ACE1pack/rq4n0/scripts/ace_fit.jl"
+
 rm -rf $HOME/pytest_wfl
-pytest -s --basetemp $HOME/pytest_wfl --runremote --runslow -rxXs >> pytest_complete_test.out 2>&1
+pytest -v -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs >> complete_pytest.tin.out 2>&1
 
-l=`egrep 'passed.*xfailed' pytest_complete_test.out`
+l=`egrep '^=.*(passed|failed)' complete_pytest.tin.out`
 
-# ========== 96 passed, 11 skipped, 212 warnings in 3522.83s (0:58:42) ===========
+# ===== 107 passed, 8 skipped, 2 xfailed, 214 warnings in 3402.72s (0:56:42) =====
 
-echo $l | grep -q ' 11 skipped'
-if [ $? != 0 ]; then
-    echo "Unexpected number skipped not 0 '$l'" 1>&2
-    exit 1
-fi
-echo $l | grep -q ' 96 passed'
-if [ $? != 0 ]; then
-    echo "Unexpected number passed not 22 '$l'" 1>&2
-    exit 1
-fi
-echo $l | grep -qv 'xfailed'
-if [ $? != 0 ]; then
-    echo "Unexpected number xfailed not 0 '$l'" 1>&2
-    exit 1
-fi
+declare -A expected_n=( ["passed"]="107" ["skipped"]="8" ["xfailed"]="2" )
+echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' | while read out; do
+    out_n=$(echo $out | sed -e 's/^=* //' -e 's/ .*//' -e 's/,//')
+    out_cat=$(echo $out | sed -e 's/.* //' -e 's/,//')
+    echo BOB $out_n $out_cat
+    if [[ -z ${expected_n[$out_cat]} ]]; then
+        echo "Unexpected result '$out_cat' num $out_n"
+    else
+        if [[ ${expected_n[$out_cat]} != $out_n ]]; then
+            echo "Unexpected number $out_n for result '$out_cat', expected ${expected_n[$out_cat]}"
+        fi
+    fi
+    if [[ $out_cat == "failed" ]]; then
+        echo "FAILURE"
+        exit 1
+    fi
+done
+
+echo "SUCCESSS"

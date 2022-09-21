@@ -59,10 +59,10 @@ First, one need a configuration (`config.json`) that specifies what "resources" 
     "local": { "host": null,
         "scheduler": "sge",
         "commands": [  "echo $(date)", "hostname"],
-        "header": ["#$ -pe smp {ncores_per_node}"],
+        "header": ["#$ -pe smp {num_cores_per_node}"],
         "rundir": "/data/eg475/run_expyre",
-        "partitions": {"any":        {"ncores": 32, "max_time": "168h", "max_mem": "50GB"},
-                       "any@node15": {"ncores": 16, "max_time": "168h", "max_mem": "47GB"},
+        "partitions": {"any":        {"num_cores": 32, "max_time": "168h", "max_mem": "50GB"},
+                       "any@node15": {"num_cores": 16, "max_time": "168h", "max_mem": "47GB"},
                     }
             }
 }}
@@ -84,7 +84,7 @@ remote_ifno = {
 * `sys_name` - queue/system/cluster name to execute the job on. One fo the entries in `config.json`
 * `job_name` - prefix for the job's name on the queue (converted to `#$ -N` bit of the header on SGE).
 * `resources` - how many resources the job should require from the queue.
-    * `"num_cores": 4` - ask for 4 cores. That's executed by `"header": ["#$ -pe smp {ncores_per_node}"]` of `config.json`. 
+    * `"num_cores": 4` - ask for 4 cores. That's executed by `"header": ["#$ -pe smp {num_cores_per_node}"]` of `config.json`. 
     * `partitions` - name of the queue, converted to `#$ -q any` in this example that uses SGE. ExPyRe uses RegEx to find matching partition names, so `any$` will only pick the first of the two partitions specified in `config.json`. 
     * `max_time` - time requirement for the job, converted to `#$ -l h_rt=4:00:00` in this example.
 * `partial_node` - assumes that the que works in "node non-exclusive" way, multiple jobs may be run on a given node and allows picking a partition (`any` in this case) even if it has more cores available (32 here) than the number of cores needed for the job (4 in this case). 
@@ -134,10 +134,10 @@ Below is an example of corresponding `config.json`
         "local": { "host": null,
             "scheduler": "sge",
             "commands": [  "echo $(date)", "hostname"],
-            "header": ["#$ -pe smp {ncores_per_node}"],
+            "header": ["#$ -pe smp {num_cores_per_node}"],
             "rundir": "/data/eg475/run_expyre",
-            "partitions": {"any":        {"ncores": 32, "max_time": "168h", "max_mem": "50GB"},
-                           "any@node15": {"ncores": 16, "max_time": "168h", "max_mem": "47GB"},
+            "partitions": {"any":        {"num_cores": 32, "max_time": "168h", "max_mem": "50GB"},
+                           "any@node15": {"num_cores": 16, "max_time": "168h", "max_mem": "47GB"},
                         }
                 }
     }}
@@ -163,8 +163,8 @@ num_cores = 4
 max_time = "48h"
 
 # structures
-ci = ConfigSet(input_files=input_fname)
-co = OutputSpec(output_files=output_fname, force=True, all_or_none=True)
+ci = ConfigSet(input_fname)
+co = OutputSpec(output_fname)
 
 expyre_dir = Path("_expyre")
 expyre_dir.mkdir(exist_ok=True)

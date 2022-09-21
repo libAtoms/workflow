@@ -1,6 +1,5 @@
 import numpy as np
 from ase.build import molecule
-from wfl.configset import OutputSpec, ConfigSet
 
 import pytest
 

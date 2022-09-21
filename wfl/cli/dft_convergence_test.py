@@ -41,11 +41,11 @@ def cli(verbose, configuration, buildcell_inputs, buildcell_cmd, n_per_config, p
     for filename in buildcell_inputs:
         with open(filename) as fin:
             buildcell_input = fin.read()
-        c_out = OutputSpec(file_root=run_dir, output_files=f'structs.{filename}.xyz'),
+        c_out = OutputSpec(f'structs.{filename}.xyz', file_root=run_dir),
         structs.append(run_buildcell(c_out, range(n_per_config), buildcell_cmd=buildcell_cmd,
                                      buildcell_input=buildcell_input, verbose=verbose))
     # merge
-    structs = ConfigSet(input_configsets=structs)
+    structs = ConfigSet(structs)
 
     # get ranges of various keyword arguments
     ranges = {}
@@ -67,7 +67,7 @@ def cli(verbose, configuration, buildcell_inputs, buildcell_cmd, n_per_config, p
             # set desired value
             run_kwargs[key] = param_val
 
-            evaluated_structs = OutputSpec(file_root=run_dir, output_files=f'DFT_evaluated.{key}_{param_val}.xyz')
+            evaluated_structs = OutputSpec(f'DFT_evaluated.{key}_{param_val}.xyz', file_root=run_dir)
 
             dft_evaluated[key][param_val] = evaluate_dft(
                     inputs=structs, outputs=evaluated_structs,

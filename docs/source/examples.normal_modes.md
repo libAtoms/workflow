@@ -13,8 +13,8 @@ def xtb_normal_modes(input_fname, output_fname, parallel_hessian):
 
     from xtb.ase.calculator import XTB
 
-    ConfigSet = ConfigSet(input_files=input_fname)
-    OutputSpec = OutputSpec(output_files=output_fname)
+    ConfigSet = ConfigSet(input_fname)
+    OutputSpec = OutputSpec(output_fname)
 
     calc = (XTB, [], {'method':'GFN2-xTB'})
 
@@ -73,9 +73,10 @@ def sample(inputs, outputs, temp, sample_size, prop_prefix,
                                             temp=temp, 
                                             info_to_keep=info_to_keep,
                                             arrays_to_keep=arrays_to_keep)
+        outputs.store(sample)
 
-    outputs.end_write()
-    return outputs.to_ConfigSet()
+    outputs.close()
+    return ConfigSet(outputs)
 ```
 
 Elena: I have [this script](https://github.com/gelzinyte/scripties/blob/main/util/normal_modes.py) that randomly displaces atoms along different normal modes and down-weights the very shallow noisy ones. Is it worth merging into workflow and/or describing here? 

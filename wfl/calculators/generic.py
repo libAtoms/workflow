@@ -1,46 +1,35 @@
 import warnings
+import functools
 
 from ase import Atoms
 from ase.calculators.calculator import all_changes
 
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
 from .utils import save_results
 
 
-# run that operates on ConfigSet, for multiprocessing
-def run(inputs, outputs, calculator, properties=None, output_prefix='_auto_', raise_calc_exceptions=False, 
-    num_inputs_per_python_subprocess=10, verbose=False, num_python_subprocesses=None, remote_info=None):
-    if properties is None:
-        properties = ['energy', 'forces', 'stress']
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
-                         calculator=calculator, properties=properties, output_prefix=output_prefix,
-                         verbose=verbose, num_python_subprocesses=num_python_subprocesses, remote_info=remote_info,
-                         raise_calc_exceptions=raise_calc_exceptions)
-
-
 def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_auto_', verbose=False, raise_calc_exceptions=False):
     """evaluates configs using an arbitrary calculator and store results in SinglePointCalculator
 
+    Defaults to wfl_num_inputs_per_python_subprocess=10, to avoid recreating the calculator for
+    each configuration, unless calculator class defines a wfl_generic_def_autopara_info
+    attribute in which case that value is used for the default.
+
     Parameters
     ----------
-    atoms: list(Atoms)
-        input configs
     calculator: Calculator / (initializer, args, kwargs)
         ASE calculator or routine to call to create calculator
-    properties: list(str), default ['energy']
-        properties to request from calculator
+    properties: list(str), default ['energy', 'forces', stress']
+        Properties to request from calculator. If any are not present after calculation (e.g.
+        stress for nonperiodic configurations), a warning will be printed.
     output_prefix: str, default _auto_
-        string to prefix info/arrays key names where results will be stored.
+        String to prefix info/arrays key names where results will be stored.
         '_auto_' for automatically determining name of calculator constructor, and
-        None for SinglePointCalculator instead of info/arrays
+        None for SinglePointCalculator instead of info/arrays.
     verbose : bool
-
-    Returns
-    -------
-    list(Atoms) 
-        Evaluated configurations
+        verbose output
     """
 
     if properties is None:
@@ -83,3 +72,14 @@ def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_a
         return at_out[0]
     else:
         return at_out
+
+
+def run(*args, **kwargs):
+    calculator = kwargs.get("calculator")
+    if calculator is None:
+        calculator = args[2]
+
+    def_autopara_info = getattr(calculator, "wfl_generic_def_autopara_info", {"num_inputs_per_python_subprocess": 10})
+
+    return autoparallelize(run_autopara_wrappable, *args, def_autopara_info=def_autopara_info, **kwargs)
+run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")

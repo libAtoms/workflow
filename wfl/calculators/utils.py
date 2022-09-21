@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 from ase.calculators.calculator import all_properties, PropertyNotImplementedError
 from ase.calculators.singlepoint import SinglePointCalculator
@@ -128,7 +129,11 @@ def save_results(atoms, properties, results_prefix=None):
         except PropertyNotImplementedError:
             config_results['energy'] = atoms.get_potential_energy()
     if 'stress' in properties:
-        config_results['stress'] = atoms.get_stress()
+        # Quantum Espresso doesn't calculate stress, even if asked for, if pbc=False.
+        try:
+            config_results['stress'] = atoms.get_stress()
+        except PropertyNotImplementedError:
+            warnings.warn(f'"stress" was asked for, but not found in results.')
     if 'dipole' in properties:
         config_results['dipole'] = atoms.get_dipole_moment()
     if 'magmom' in properties:

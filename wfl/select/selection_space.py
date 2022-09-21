@@ -2,6 +2,7 @@ import sys
 
 import numpy as np
 
+from wfl.configset import ConfigSet
 from wfl.utils.vol_composition_space import composition_space_Zs, composition_space_coord
 
 
@@ -77,7 +78,7 @@ def val_relative_to_nearby_composition_volume_min(inputs, outputs, vol_range, co
     ConfigSet
         ConfigSet pointing to configurations with the saved relative value field
     """
-    if outputs.is_done():
+    if outputs.done():
         sys.stderr.write(f'Returning from {__name__} since output is done\n')
         return outputs.to_ConfigSet()
 
@@ -114,7 +115,7 @@ def val_relative_to_nearby_composition_volume_min(inputs, outputs, vol_range, co
         if per_atom:
             v /= len(at)
         at.info[info_field_out] = v - minimum
-        outputs.write(at, from_input_file=inputs.get_current_input_file())
-    outputs.end_write()
+        outputs.store(at, at.info.pop("_ConfigSet_loc"))
+    outputs.close()
 
     return outputs.to_ConfigSet()

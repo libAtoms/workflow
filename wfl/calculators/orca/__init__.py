@@ -15,7 +15,6 @@ from ase.calculators.calculator import CalculationFailed, Calculator, \
 import ase.calculators.orca
 
 from wfl.calculators.utils import clean_rundir, save_results
-from wfl.autoparallelize import autoparallelize
 from wfl.utils.misc import atoms_to_list, chunks
 from wfl.calculators.orca.basinhopping import BasinHoppingORCA
 
@@ -410,8 +409,6 @@ def parse_npa_output(fname):
     electron_pop = []
     npa_charge = [] 
 
-    # import pdb; pdb.set_trace()
-    
     block = pattern_npa_block.findall(text)[0]
     for line in block.split('\n'):
         values = pattern_entry.search(line)
