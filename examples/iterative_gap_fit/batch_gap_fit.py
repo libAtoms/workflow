@@ -2,6 +2,7 @@
 iterative GAP fitting of energies for Cu bulk & slabs with EMT calculator
 '''
 import os
+
 os.environ['WFL_NUM_PYTHON_SUBPROCESSES'] = "4"
 os.environ['WFL_GAP_FIT_OMP_NUM_THREADS'] = "4"
 
@@ -303,8 +304,10 @@ def get_file_names(GAP_dir, MD_dir, fit_idx, calc='md'):
 
 
 def main(verbose=False):
+    workdir = os.path.join(os.path.dirname(__file__))
+
     ### GAP parameters
-    gap_params = 'multistage_gap_params.json'
+    gap_params = os.path.join(workdir, 'multistage_gap_params.json')
     with open(gap_params, 'r') as f:
         gap_params = json.loads(f.read())
     Zs = [29]
@@ -317,12 +320,12 @@ def main(verbose=False):
                 }
     }
 
-    training = 'EMT_atoms.xyz'
+    training = os.path.join(workdir, 'EMT_atoms.xyz')
 
     ### Initial GAP training
     fit_idx = 0
     gap_name = f'GAP_{fit_idx}'
-    GAP_dir = 'GAP'
+    GAP_dir = os.path.join(workdir, 'GAP')
     if not os.path.isdir(GAP_dir):
         os.mkdir(GAP_dir)
 
@@ -333,13 +336,14 @@ def main(verbose=False):
 
     ### MD info
     calc = 'md'
-    MD_dir = 'MD'
+    MD_dir = os.path.join(workdir, 'MD')
     if not os.path.isdir(MD_dir):
         os.mkdir(MD_dir)
-    md_in_file = 'init_md.traj'
+    md_in_file = os.path.join(workdir, 'init_md.traj')
     md_configs = read(md_in_file, ':')
-    md_params = {'steps': 2000, 'dt': 1, 'temperature': 300}
+    md_params = {'steps': 300, 'dt': 1, 'temperature': 450.}
 
+    '''
     ### optimize Info
     calc = 'optimize'
     optimize_params = {
@@ -349,8 +353,9 @@ def main(verbose=False):
             "keep_symmetry": False,
             "verbose": True,
         }
+    #'''
 
-    n_select = 20
+    n_select = 15
     max_count = 5
 
     if verbose:
@@ -398,7 +403,7 @@ def main(verbose=False):
                 f'DEVIATIONS: Forces:{f_dev:.2f}%, Energy: {e_dev:.2f}%',
                 flush=True
             )
-            with open('errors.json', 'a') as f:
+            with open(os.path.join(workdir, 'errors.json'), 'a') as f:
                 json.dump(log_dict, f)
                 f.write('\n')
 
