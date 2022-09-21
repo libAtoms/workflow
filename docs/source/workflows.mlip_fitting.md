@@ -43,6 +43,8 @@ import numpy as np
 from ase.io import read, write
 from ase.calculators.emt import EMT
 
+from pathlib import Path
+
 from quippy.potential import Potential
 
 from wfl.calculators.generic import run as generic_calc
@@ -84,9 +86,8 @@ The dictionary of located in ```multistage_gap_params.json``` contains all the n
 ### Initial GAP training
 fit_idx = 0
 gap_name = f'GAP_{fit_idx}'
-GAP_dir = 'GAP'
-if not os.path.isdir(GAP_dir):
-  os.mkdir(GAP_dir)
+GAP_dir = Path('GAP')
+GAP_dir.mkdir(exist_ok=True)
 
 if verbose:
   print(f"Fitting original GAP located in {GAP_dir}/{gap_name}.xml",
@@ -101,9 +102,8 @@ Next, we create a directory in which we will write all future files resulting fr
 ```python
 ### MD info
 calc = 'md'
-MD_dir = 'MD'
-if not os.path.isdir(MD_dir):
-    os.mkdir(MD_dir)
+MD_dir = Path('MD')
+MD_dir.mkdir(exist_ok=True)
 md_in_file = 'init_md.traj'
 md_configs = read(md_in_file, ':')
 md_params = {'steps': 2000, 'dt': 1, 'temperature': 300}

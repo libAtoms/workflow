@@ -16,6 +16,8 @@ import numpy as np
 from ase.io import read, write
 from ase.calculators.emt import EMT
 
+from pathlib import Path
+
 from quippy.potential import Potential
 
 from wfl.calculators.generic import run as generic_calc
@@ -178,11 +180,7 @@ def get_descriptors(in_file, out_file, params_file, key='desc', **kwargs):
     in_config = ConfigSet(in_file)
     out_config = OutputSpec(files = out_file)
 
-    try:
-        with open(params_file, 'r') as f:
-            params = json.loads(f.read())['_gap']
-    except:
-        params = yaml.safe_load(open(params_file, 'r'))
+    params = yaml.safe_load(open(params_file, 'r'))
     params = [i for i in params if 'soap' in i.keys()]
 
     for param in params:
@@ -325,9 +323,8 @@ def main(verbose=False):
     ### Initial GAP training
     fit_idx = 0
     gap_name = f'GAP_{fit_idx}'
-    GAP_dir = os.path.join(workdir, 'GAP')
-    if not os.path.isdir(GAP_dir):
-        os.mkdir(GAP_dir)
+    GAP_dir = Path(os.path.join(workdir, 'GAP'))
+    GAP_dir.mkdir(exist_ok=True)
 
     if verbose:
         print(f"Fitting original GAP located in {GAP_dir}/{gap_name}.xml",
@@ -336,9 +333,8 @@ def main(verbose=False):
 
     ### MD info
     calc = 'md'
-    MD_dir = os.path.join(workdir, 'MD')
-    if not os.path.isdir(MD_dir):
-        os.mkdir(MD_dir)
+    MD_dir = Path(os.path.join(workdir, 'MD'))
+    MD_dir.mkdir(exist_ok=True)
     md_in_file = os.path.join(workdir, 'init_md.traj')
     md_configs = read(md_in_file, ':')
     md_params = {'steps': 300, 'dt': 1, 'temperature': 450.}
