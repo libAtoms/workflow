@@ -107,15 +107,15 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
 
         super(Vasp, self).__init__(**kwargs_use)
 
-        self._keep_files = keep_files
+        self._wfl_keep_files = keep_files
         if "directory" in kwargs_use:
             raise ValueError("Cannot pass directory argument")
 
-        self._rundir = Path(rundir)
-        self._reuse_rundir = reuse_rundir
-        self._workdir = Path(workdir)
-        self._scratchdir = Path(scratchdir)
-        self._override_VASP_PP_PATH = VASP_PP_PATH
+        self._wfl_rundir = Path(rundir)
+        self._wfl_reuse_rundir = reuse_rundir
+        self._wfl_workdir = Path(workdir)
+        self._wfl_scratchdir = Path(scratchdir) if scratchdir is not None else None
+        self._wfl_override_VASP_PP_PATH = VASP_PP_PATH
 
 
     def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
@@ -133,8 +133,8 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
         world.comm = DummyMPI()
 
         orig_VASP_PP_PATH = os.environ.get("VASP_PP_PATH")
-        if self._override_VASP_PP_PATH is not None:
-            os.environ["VASP_PP_PATH"] = str(self._override_VASP_PP_PATH)
+        if self._wfl_override_VASP_PP_PATH is not None:
+            os.environ["VASP_PP_PATH"] = str(self._wfl_override_VASP_PP_PATH)
 
         # VASP requires periodic cells with non-zero cell vectors
         if atoms.get_volume() < 0.0:
@@ -149,16 +149,16 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
         atoms.pbc = [True] * 3
 
         # set rundir to where we want final results to live
-        rundir_path = self._workdir / self._rundir.parent
+        rundir_path = self._wfl_workdir / self._wfl_rundir.parent
         rundir_path.mkdir(parents=True, exist_ok=True)
-        if reuse_rundir:
-            rundir = rundir_pth / self._rundir.name
+        if self._wfl_reuse_rundir:
+            rundir = rundir_path / self._wfl_rundir.name
             rundir.mkdir(exist_ok=True)
         else:
-            rundir = Path(tempfile.mkdtemp(dir=rundir_path, prefix=self._rundir.name))
+            rundir = Path(tempfile.mkdtemp(dir=rundir_path, prefix=self._wfl_rundir.name))
 
         # set directory to where we want the calculation to actully run
-        self.directory = self._scratchdir / rundir.resolve() if self._scratchdir is not None else rundir
+        self.directory = self._wfl_scratchdir / rundir.resolve() if self._wfl_scratchdir is not None else rundir
 
         orig_command = self.command
         if self.command is None:
@@ -190,9 +190,9 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
             calculation_succceeded = False
             raise exc
         finally:
-            clean_rundir(self.directory, self._keep_files, _default_keep_files, calculation_succeeded)
-            if self._scratchdir is not None:
-                shutil.move(self._scratchdir, rundir.parent)
+            clean_rundir(self.directory, self._wfl_keep_files, _default_keep_files, calculation_succeeded)
+            if self._wfl_scratchdir is not None:
+                shutil.move(self._wfl_scratchdir, rundir.parent)
 
             # undo pbc change
             atoms.pbc[:] = orig_pbc
