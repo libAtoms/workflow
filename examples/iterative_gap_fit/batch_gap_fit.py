@@ -301,7 +301,7 @@ def get_file_names(GAP_dir, MD_dir, fit_idx, calc='md'):
     return files
 
 
-def main(verbose=False):
+def main(max_count=5, verbose=False):
     workdir = os.path.join(os.path.dirname(__file__))
 
     ### GAP parameters
@@ -351,8 +351,8 @@ def main(verbose=False):
         }
     #'''
 
-    n_select = 15
-    max_count = 5
+    n_select = 15 # The number of selected configs from each generation
+    print(f"Maximum number of generation iterations: {max_count}", flush=True)
 
     if verbose:
         print(f"Starting the iterative fitting process!", flush=True)
