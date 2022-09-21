@@ -123,10 +123,9 @@ def save_results(atoms, properties, results_prefix=None):
     config_results = {}
     atoms.calc.atoms = atoms
     if 'energy' in properties:
-        try:
-            config_results['energy'] = atoms.get_potential_energy(force_consistent=True)
-        except PropertyNotImplementedError:
-            config_results['energy'] = atoms.get_potential_energy()
+        config_results['energy'] = atoms.get_potential_energy()
+    if 'free_energy' in properties:
+        config_results['free_energy'] = atoms.get_potential_energy(force_consistent=True)
     if 'stress' in properties:
         config_results['stress'] = atoms.get_stress()
     if 'dipole' in properties:
