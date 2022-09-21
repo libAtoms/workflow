@@ -426,7 +426,6 @@ def evaluate_iter_and_fit_all(cur_iter, run_dir, params, step_params, cur_fittin
 
     print_log('evaluating with DFT')
     # evaluate fitting configs with DFT
-    print("BOB", type(cur_fitting_configs), type(cur_fitting_configs[0]))
     fitting_configs = ConfigSet(cur_fitting_configs)
     fitting_configs_out = OutputSpec('DFT_evaluated_fitting.ALL.xyz', file_root=run_dir)
     evaluated_configs = evaluate_ref(fitting_configs, fitting_configs_out, params, run_dir, verbose)
