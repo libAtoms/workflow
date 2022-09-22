@@ -1,23 +1,17 @@
 import numpy as np
 from ase.atoms import Atoms
 
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 
 try:
     import phonopy
-except:
+except ModuleNotFoundError:
     phonopy = None
 
 try:
     import phono3py
-except:
+except ModuleNotFoundError:
     phono3py = None
-
-
-def run(inputs, outputs, displacements, strain_displs, ph2_supercell, ph3_supercell=None, pair_cutoff=None, num_inputs_per_python_subprocess=10):
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess, 
-                         displacements=displacements, strain_displs=strain_displs, ph2_supercell=ph2_supercell,
-                         ph3_supercell=ph3_supercell, pair_cutoff=pair_cutoff)
 
 
 def run_autopara_wrappable(atoms, displacements, strain_displs, ph2_supercell, ph3_supercell=None, pair_cutoff=None):
@@ -126,3 +120,9 @@ def run_autopara_wrappable(atoms, displacements, strain_displs, ph2_supercell, p
                     ats_pert[-1].append(at_pert)
 
     return ats_pert
+
+
+def run(*args, **kwargs):
+    return autoparallelize(run_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess":10}, **kwargs)
+run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")
+

@@ -1,37 +1,40 @@
 # Workflow infrastructure
 
-## ConfigSet_in and Configset_out, thin I/O layers for input and output
+## ConfigSet and OutputSpec, thin I/O layers for input and output
 
-`ConfigSet_in` and `ConfigSet_out` are python classes defined in `configset.py`.
+`ConfigSet` and `OutputSpec` are python classes defined in `configset.py`.
 ```python
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 ```
-`ConfigSet_in` can encapsulate one or multiple lists of `ase.atoms.Atoms` objects,
-or reference to stored sets of configuration in files or ABCD databases.
+`ConfigSet` can encapsulate one or multiple (possibly nested) lists of `ase.atoms.Atoms` objects,
+or reference to stored sets of configuration in files (CURRENTLY UNSUPPORTED: or ABCD databases).
 It can function as an iterator over all configs in the input, or iterate over groups of them
-according to the input definition with the `ConfigSet_in().group_iter()` method.
-The `ConfigSet_in` must be initialized with its inputs and indices for them.
+according to the input definition with the `ConfigSet().groups()` method.  The regular
+iterator provides enough information to write a corresponding set of output configurations
+with the same nested structure.  The `ConfigSet` must be initialized with all of its input 
+configurations or files.
 
-`ConfigSet_out` works as the output layer, can be used for writing results into it during
-iterations, but the actual writing is only happening when the operation is closed with
-`ConfigSet_out.end_write()`. Input mapping can be added to output into multiple files,
-based on the input. This is not fully functional for putting configs into the different
-outputs in a random order and repeatedly touching one.
+`OutputSpec` works as the output layer, and can be used for writing results into it during
+iterations, but the actual writing is only guaranteed to happen when the operation is closed with
+`OutputSpec.close()`.  The `OutputSpec` can specify multiple files, in which case their
+number needs to correspond to the number of top level sub-lists (or files, for file-based iput)
+in the corresponding input `ConfigSet`.
 
 For example, to read from two files and write corresponding configs to
 two other files, use
 ```python
-s_in = ConfigSet_in(input_files=['in1.xyz','dir/in2.xyz'])
-s_out = ConfigSet_out(output_files={"in1.xyz": "out1.xyz", "in2.xyz": "out2.xyz"})
+s_in = ConfigSet(["in1.xyz", "dir/in2.xyz"])
+s_out = OutputSpec(["out1.xyz",  "out2.xyz"])
 for at in s_in:
     do_some_operation(at)
-    s_out.write(at, from_input_file=s_in.get_current_input_file())
-s_out.end_write()
+    s_out.store(at, input_CS_loc=s_in.cur_loc)
+s_out.close()
 ```
 In this case the inputs is a list of files, and the outputs is either a single file (many -> 1)
 or a mapping between equal number of input and output categories (multiple 1 -> 1).
 This will not overwrite unless you also pass `force=True`.
 
+[CURRENTLY UNSUPPORTED]
 To read from and write to ABCD database records, you can do
 ```python
 output_tags = {'output_tag' : 'some unique value'}
@@ -50,11 +53,10 @@ abcd.get_atoms(output_tags)
 ```
 ## running wfl functions as independently queued jobs
 
-
-Operations that have been wrapped in `iterable_loop` can be split into independent jobs with minimal
+Operations that have been wrapped in `autoparallelize` can be split into independent jobs with minimal
 coding.  A `config.json` file must describe the available queuing sytem resources (see
 [expyre README](https://github.com/libAtoms/ExPyRe#readme)), and a JSON file (content or path in
-env var `WFL_AUTOPARA_REMOTEINFO`) describes the resources needed by any `iterable_loop` call that
+env var `WFL_EXPYRE_INFO`) describes the resources needed by any `autoparallelize` call that
 should be executed this way.  Any remote machine to be used requires that the `wfl` python
 module be installed.  If needed, commands needed to make this module available (e.g. setting `PYTHONPATH`)
 can be set on a per-machine basis in the `config.json` file mentioned below.
@@ -74,14 +76,14 @@ it need its own level of remote job execution]
 
 The workflow (`do_workflow.py`) is essentially identical to what you'd otherwise construct:
 ```
-from wfl.configset import ConfigSet_in, ConfigSet_out
+from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate_configs.minim import run
 
 from ase.calculators.vasp import Vasp
 
 infile = "structures.xyz"
-ci = ConfigSet_in(input_files=infile)
-co = ConfigSet_out(output_files='relaxed.' + infile, force=True, all_or_none=True)
+ci = ConfigSet(infile)
+co = OutputSpec('relaxed.' + infile)
 
 vasp_kwargs = { 'encut': 400.0, 'ismear': 0, 'sigma': 0.1, 'ediff': 1.0d-7, 'kspacing': 0.15, 'kgamma': True }
 
@@ -96,17 +98,17 @@ ci_relaxed = minim_run(ci, co, calculator=(Vasp, [], vasp_kwargs), pressure=0.0)
 
 The interactive commands to prepare for running the workflow set up the env vars necessary to control the queued jobs:
 ```
-export WFL_AUTOPARA_REMOTEINFO=$PWD/remoteinfo.json
+export WFL_EXPYRE_INFO=$PWD/remoteinfo.json
 cat<<EOF > remoteinfo.json
 {
  "minim.py::run" : {
      "sys_name": "${sys_name}",
      "job_name": "vasp_minim",
-     "resources": { "n" : [1, "nodes"], "max_time": "24h" },
-     "job_chunksize" : 1,
+     "resources": { "num_nodes" : 1, "max_time": "24h" },
+     "num_inputs_per_queued_job" : 1,
      "input_files": ["POTCARs"],
      "env_vars": ["VASP_COMMAND=${vasp_path}", "VASP_PP_PATH=POTCARs",
-                  "WFL_AUTOPARA_NPOOL=\${EXPYRE_NTASKS_PER_NODE}",
+                  "WFL_NUM_PYTHON_SUBPROCESSES=\${EXPYRE_NCORES_PER_NODE}",
                   "WFL_VASP_KWARGS='{ \"ncore\": '\${EXPYRE_NCORES_PER_NODE}'}'" ]
    }
 }
@@ -126,8 +128,8 @@ the directory hierarchy level that indicates the scope of the project,
 to separate the jobs database from any other project.
 
 Restarts are supposed to be handled automatically - if the workflow script is
-interrupted, just rerun it.  If the entire `iterable_loop` call is complete,
-the default of `force=True, all_or_none=True` for `ConfigSet_out()` will allow
+interrupted, just rerun it.  If the entire `autoparallelize` call is complete,
+The default behavior of `OutputSpec` will allow
 it to skip the operation entirely.  If the operation is not entirely done,
 the remote running package will detect an attempt to compute a previously
 initiated call (based on a hash of pickles of the function and all of its
@@ -137,18 +139,18 @@ pickled deterministically (e.g. `wfl.generate_configs.minim.run` and the
 `initializer=np.random.seed` argument) need to specifically exclude that
 argument (obviously only if ignoring it for the purpose of detecting
 duplicate submission is indeed correct).  All functions already ignore the
-`outputs` `ConfigSet_out` argument.
+`outputs` `OutputSpec` argument.
 
 ### WFL\_AUTOPARA\_REMOTEINFO syntax
 
-The `WFL_AUTOPARA_REMOTEINFO` variable contains a JSON or the name of a file that contains a JSON.  The JSON encodes a dict with keys
+The `WFL_EXPYRE_INFO` variable contains a JSON or the name of a file that contains a JSON.  The JSON encodes a dict with keys
 indicating particular function calls, and values containing arguments for constructing [`RemoteInfo`](wfl/pipeline/utils.py) objects.
 
 #### keys
 
 Each key consist of a comma separated list of `"end_of_path_to_file::function_name"`.  The list needs to match the _end_ of the stack
 trace, i.e. the first item matches the outermost (of the `len(str.split(','))` comma separate items specified) calling function, the second item matches
-the function that was called by it, etc., down to the final item matching the innermost function (not including the actual `iterable_loop` call).
+the function that was called by it, etc., down to the final item matching the innermost function (not including the actual `autoparallelize` call).
 Each item in the list needs to match the _end_ of the file path, followed by a `:`, followed by the function name in that file.
 
 For example, to parallelize only the call to `minin.run(...)` from `gap_rss_iter_fit.py` `do_MD_bulk_defect_step(...)`, the key could be set to
@@ -160,17 +162,16 @@ Each value consists of a dict that will be passed to the `RemoteInfo` constructo
 
 ### Dividing items into and parallelising within jobs
 
-When using the iterable loop remote job functionality, the number
+When using the autoparallelized loop remote job functionality, the number
 of items from the iterable assigned to each job is set by the
-`job_chunksize` parameter of the `RemoteInfo` object (normally set by
-`WFL_AUTOPARA_REMOTEINFO`).  If positive, it directly specifies the
-number, but if negative, `-1 * job_chunksize * chunksize` items will be
-packaged, where `chunksize` is the value for the underlying pool-based
-(`WFL_AUTOPARA_NPOOL`) parallelization.
+`num_inputs_per_queued_job` parameter of the `RemoteInfo` object (normally set by
+`WFL_EXPYRE_INFO`).  If positive, it directly specifies the
+number, but if negative, `-1 * num_inputs_per_queued_job * num_inputs_per_python_subprocess` items will be
+packaged, where `num_inputs_per_python_subprocess` is the value for the underlying pool-based
+(`WFL_NUM_PYTHON_SUBPROCESSES`) parallelization.
 
 Note that by default the remote job will set
-- `WFL_AUTOPARA_NPOOL=${EXPYRE_NTASKS_PER_NODE}`
-- `OMP_NUM_THREADS=${EXPYRE_NCORES_PER_TASK}`
+- `WFL_NUM_PYTHON_SUBPROCESSES=${EXPYRE_NCORES_PER_NODE}`
 
 If this needs to be overridden, set the `env_vars` parameter of the `RemoteInfo` object
 
@@ -190,7 +191,7 @@ Optional env vars:
  - `EXPYRE_PYTEST_SYSTEMS`: regexp to filter systems in `$HOME/.expyre/config.json` that will
    be used for testing.
  - `WFL_PYTEST_EXPYRE_INFO`: dict of fields to _add_ to `RemoteInfo` object when doing high
-   level (`iterable_loop`, `gap_fit`) remote run tests.
+   level (`autoparallelize`, `gap_fit`) remote run tests.
 
 #### pytest with remote run example
 Running a maximally complete set of tests with somehwat verbose output (also need `pw.x`

@@ -21,7 +21,7 @@ def test_buildcell_remote(tmp_path, expyre_systems, monkeypatch, remoteinfo_env)
 
 
 def do_buildcell_remote(tmp_path, sys_name, monkeypatch, remoteinfo_env):
-    ri = {'sys_name': sys_name, 'job_name': 'test_'+sys_name,
+    ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
           'resources': {'max_time': '1h', 'num_nodes': 1},
           'num_inputs_per_queued_job': -36, 'check_interval': 10}
 
@@ -44,7 +44,8 @@ def do_buildcell(tmp_path, filename):
 #MINSEP=0.5 Li-Li=2.7
 ##EXTRA_INFO RSS_min_vol_per_atom=10.0"""
 
-    co = buildcell.run(OutputSpec(output_files=str(tmp_path / filename)), range(100),
-                      buildcell_cmd=os.environ['WFL_PYTEST_BUILDCELL'], buildcell_input=buildcell_input)
+    co = buildcell.run(range(100), OutputSpec(tmp_path / filename), 
+                       buildcell_cmd=os.environ['WFL_PYTEST_BUILDCELL'], buildcell_input=buildcell_input)
 
     assert len(list(co)) == 100
+

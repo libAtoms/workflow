@@ -17,8 +17,8 @@ def test_vasp_gamma(tmp_path):
     ase.io.write(os.path.join(tmp_path, 'vasp_in.xyz'), Atoms('Si', cell=(2, 2, 2), pbc=[False] * 3), format='extxyz')
 
     configs_eval = evaluate_dft(
-        inputs=ConfigSet(input_files=os.path.join(tmp_path, 'vasp_in.xyz')),
-        outputs=OutputSpec(file_root=tmp_path, output_files='vasp_out.gamma.xyz'),
+        inputs=ConfigSet(os.path.join(tmp_path, 'vasp_in.xyz')),
+        outputs=OutputSpec('vasp_out.gamma.xyz', file_root=tmp_path),
         calculator_name="VASP",
         workdir_root=tmp_path,
         calculator_kwargs={'encut': 200, 'VASP_PP_PATH': os.environ['PYTEST_VASP_POTCAR_DIR']},
@@ -41,8 +41,8 @@ def test_vasp(tmp_path):
     ase.io.write(os.path.join(tmp_path, 'vasp_in.xyz'), Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), format='extxyz')
 
     configs_eval = evaluate_dft(
-        inputs=ConfigSet(input_files=os.path.join(tmp_path, 'vasp_in.xyz')),
-        outputs=OutputSpec(file_root=tmp_path, output_files='vasp_out.regular.xyz'),
+        inputs=ConfigSet(os.path.join(tmp_path, 'vasp_in.xyz')),
+        outputs=OutputSpec('vasp_out.regular.xyz', file_root=tmp_path),
         calculator_name="VASP",
         workdir_root=tmp_path,
         calculator_kwargs={'encut': 200, 'kspacing': 1.0, 'VASP_PP_PATH': os.environ['PYTEST_VASP_POTCAR_DIR']},
@@ -65,8 +65,8 @@ def test_vasp_keep_default(tmp_path):
     ase.io.write(os.path.join(tmp_path, 'vasp_in.xyz'), Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), format='extxyz')
 
     configs_eval = evaluate_dft(
-        inputs=ConfigSet(input_files=os.path.join(tmp_path, 'vasp_in.xyz')),
-        outputs=OutputSpec(file_root=tmp_path, output_files='vasp_out.keep_default.xyz'),
+        inputs=ConfigSet(os.path.join(tmp_path, 'vasp_in.xyz')),
+        outputs=OutputSpec('vasp_out.keep_default.xyz', file_root=tmp_path),
         calculator_name="VASP",
         workdir_root=tmp_path,
         calculator_kwargs={'encut': 200, 'kspacing': 1.0, 'VASP_PP_PATH': os.environ['PYTEST_VASP_POTCAR_DIR']},
@@ -89,8 +89,8 @@ def test_vasp_keep_False(tmp_path):
     ase.io.write(os.path.join(tmp_path, 'vasp_in.xyz'), Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), format='extxyz')
 
     configs_eval = evaluate_dft(
-        inputs=ConfigSet(input_files=os.path.join(tmp_path, 'vasp_in.xyz')),
-        outputs=OutputSpec(file_root=tmp_path, output_files='vasp_out.keep_False.xyz'),
+        inputs=ConfigSet(os.path.join(tmp_path, 'vasp_in.xyz')),
+        outputs=OutputSpec('vasp_out.keep_False.xyz', file_root=tmp_path),
         calculator_name="VASP",
         workdir_root=tmp_path,
         calculator_kwargs={'encut': 200, 'kspacing': 1.0, 'VASP_PP_PATH': os.environ['PYTEST_VASP_POTCAR_DIR']},
@@ -111,8 +111,8 @@ def test_vasp_to_SPC(tmp_path):
     ase.io.write(os.path.join(tmp_path, 'vasp_in.xyz'), Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), format='extxyz')
 
     configs_eval = evaluate_dft(
-        inputs=ConfigSet(input_files=os.path.join(tmp_path, 'vasp_in.xyz')),
-        outputs=OutputSpec(file_root=tmp_path, output_files='vasp_out.to_SPC.xyz'),
+        inputs=ConfigSet(os.path.join(tmp_path, 'vasp_in.xyz')),
+        outputs=OutputSpec('vasp_out.to_SPC.xyz', file_root=tmp_path),
         calculator_name="VASP",
         workdir_root=tmp_path, calculator_kwargs={'encut': 200, 'kspacing': 1.0, 'VASP_PP_PATH': os.environ['PYTEST_VASP_POTCAR_DIR']},
         output_prefix=None)

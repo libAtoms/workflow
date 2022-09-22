@@ -3,6 +3,8 @@ import warnings
 import numpy as np
 from scipy.sparse.linalg import LinearOperator, svds
 
+from wfl.configset import ConfigSet
+
 
 def do_svd(at_descs, num, do_vectors='vh'):
     def mv(v):
@@ -146,12 +148,12 @@ def write_selected_and_clean(inputs, outputs, selected, at_descs_info_key=None, 
         if at_i in selected_s:
             if not keep_descriptor_info:
                 del at.info[at_descs_info_key]
-            outputs.write(at)
+            outputs.store(at)
             counter += 1
             if counter >= len(selected_s):
                 # skip remaining iterator if we've used entire selected list
                 break
-    outputs.end_write()
+    outputs.close()
 
 
 def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None, kernel_exp=None, stochastic=True,
@@ -191,7 +193,7 @@ def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
     -------
     ConfigSet corresponding to selected configs output
     """
-    if outputs.is_done():
+    if outputs.done():
         warnings.warn('output is done, returning')
         return outputs.to_ConfigSet()
 
@@ -254,8 +256,8 @@ def greedy_fps_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_ke
     selected_configs : ConfigSet
         corresponding to selected configs output
     """
-    if outputs.is_done():
-        warnings.warn('output is done, returning')
+    if outputs.done():
+        warnings.warn(f'output {outputs} is done, returning')
         return outputs.to_ConfigSet()
 
     if prev_selected_descs is not None and not isinstance(prev_selected_descs, np.ndarray):

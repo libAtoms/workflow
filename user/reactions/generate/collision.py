@@ -21,7 +21,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.optimize import BFGS
 
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.autoparallelize import iloop, iloop_docstring_post
+from wfl.autoparallelize import autoparallelize, iloop_docstring_post
 from wfl.reactions_processing import trajectory_processing
 from wfl.utils import vector_utils
 from wfl.utils.parallel import construct_calculator_picklesafe
@@ -286,7 +286,7 @@ def post_process_collision_autopara_wrappable(seed, calc,
         raise ValueError("TS+IRC cannot be performed without having done NEB as well")
 
 
-post_process_collision = functools.partial(iloop, post_process_collision_autopara_wrappable)
+post_process_collision = functools.partial(autoparallelize, post_process_collision_autopara_wrappable)
 post_process_collision.__doc__ = post_process_collision_autopara_wrappable.__doc__.format(iloop_docstring_post=iloop_docstring_post)
 
 
@@ -340,7 +340,7 @@ def run_collision_dir_management(indices, fragments, param_filename, rundir=None
         os.chdir(workdir)
 
 
-parallel_collision = functools.partial(iloop, run_collision_dir_management)
+parallel_collision = functools.partial(autoparallelize, run_collision_dir_management)
 
 
 def multi_run_all_with_all(fragments, param_filename, workdir=None, min_atoms=0, num_repeat=1, excluded_formulas=None,

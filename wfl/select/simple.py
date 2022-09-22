@@ -5,35 +5,21 @@ import numpy as np
 from ase import Atoms
 
 from wfl.configset import ConfigSet
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 
 
-def by_bool_func(inputs, outputs, at_filter):
+def _select_autopara_wrappable(inputs, at_filter):
     """apply a filter to a sequence of configs
 
     Parameters
     ----------
-    inputs: ConfigSet
+    inputs: list(Atoms), ConfigSet
         input configurations
-    outputs: OutputSpec
-        corresponding output configurations
     at_filter: callable
         callable that takes an Atoms and returns a bool indicating if it should be selected
 
-    Returns
-    -------
-    ConfigSet pointing to selected configurations
+
     """
-    # disable parallelization by passing num_python_subprocesses=0
-    if isinstance(at_filter, LambdaType) and at_filter.__name__ == "<lambda>":
-        # turn of autoparallelization for lambdas, which cannot be pickled
-        num_python_subprocesses = 0
-    else:
-        num_python_subprocesses = None
-    return autoparallelize(num_python_subprocesses=num_python_subprocesses, iterable=inputs, outputspec=outputs, at_filter=at_filter, op=_select_autopara_wrappable)
-
-
-def _select_autopara_wrappable(inputs, at_filter):
     outputs = []
     for at in inputs:
         if at_filter(at):
@@ -41,8 +27,20 @@ def _select_autopara_wrappable(inputs, at_filter):
 
     return outputs
 
+def by_bool_func(*args, **kwargs):
+    at_filter = args[2]
+    # disable parallelization by passing num_python_subprocesses=0
+    if isinstance(at_filter, LambdaType) and at_filter.__name__ == "<lambda>":
+        # turn of autoparallelization for lambdas, which cannot be pickled
+        num_python_subprocesses = 0
+    else:
+        num_python_subprocesses = None
+    def_autopara_info={"num_python_subprocesses":num_python_subprocesses}
+    return autoparallelize(_select_autopara_wrappable, *args,
+           def_autopara_info=def_autopara_info, **kwargs)
+by_bool_func.__doc__ = autoparallelize_docstring(_select_autopara_wrappable.__doc__, "Atoms")
 
-# NOTE this could probably be done with iterable_loop by returning a list with multiple
+# NOTE this could probably be done with autoparallelize by returning a list with multiple
 # copies when a single config needs to be returned multiple times, and either
 # None or [] when a config isn't selected
 def by_index(inputs, outputs, indices):
@@ -65,10 +63,10 @@ def by_index(inputs, outputs, indices):
     Notes
     -----
     This routine depends on details of ConfigSet and OutputSpec,
-    so perhaps belongs as a use case of iterable_loop, but since it can return
+    so perhaps belongs as a use case of autoparallelize, but since it can return
     multiple outputs for a single input, this cannot be done right now
     """
-    if outputs.is_done():
+    if outputs.done():
         sys.stderr.write(f'Returning before by_index since output is done\n')
         return outputs.to_ConfigSet()
 
@@ -86,7 +84,7 @@ def by_index(inputs, outputs, indices):
         if cur_i >= len(indices):
             break
         if indices[cur_i] == at_i:
-            outputs.write(at, from_input_file=inputs.get_current_input_file())
+            outputs.store(at, at.info.pop("_ConfigSet_loc"))
             cur_i += 1
         else:
             try:
@@ -94,5 +92,5 @@ def by_index(inputs, outputs, indices):
             except StopIteration:
                 break
 
-    outputs.end_write()
+    outputs.close()
     return outputs.to_ConfigSet()
