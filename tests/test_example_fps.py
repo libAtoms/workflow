@@ -1,4 +1,4 @@
-import os, shutil, sys
+import os, sys
 from ase.io import read
 
 def test_fps(n=10):
@@ -13,7 +13,7 @@ def test_fps(n=10):
     assert os.path.exists(os.path.join(example_dir, 'out_fps.xyz'))
     
     fps = read(os.path.join(example_dir, "out_fps.xyz"), ":")
-    assert len(fps) == 10
+    assert len(fps) == n
 
     os.remove(os.path.join(example_dir, 'md_desc.xyz'))
     os.remove(os.path.join(example_dir, 'out_fps.xyz'))

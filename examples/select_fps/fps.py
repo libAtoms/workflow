@@ -12,8 +12,8 @@ import yaml
 def main(nsamples):
     workdir = os.path.join(os.path.dirname(__file__))
     # Step 1: Assign descriptors to the database
-    md        = ConfigSet(input_files=os.path.join(workdir, "md.traj"))
-    md_desc   = OutputSpec(output_files=os.path.join(workdir, "md_desc.xyz"))
+    md        = ConfigSet(os.path.join(workdir, "md.traj"))
+    md_desc   = OutputSpec(files=os.path.join(workdir, "md_desc.xyz"))
     
     with open(os.path.join(workdir, 'gap_params.yaml'), 'r') as foo:
         desc_dict = yaml.safe_load(foo)
@@ -25,7 +25,7 @@ def main(nsamples):
     md_desc = calc_descriptors(inputs=md, outputs=md_desc, descs=desc_dicts, key='desc')
     
     # Step 2: Sampling
-    fps     = OutputSpec(output_files=os.path.join(workdir, "out_fps.xyz"))
+    fps     = OutputSpec(files=os.path.join(workdir, "out_fps.xyz"))
     get_fps(inputs=md_desc, outputs=fps, num=nsamples, at_descs_info_key='desc', keep_descriptor_info=False)
     return None
 
