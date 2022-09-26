@@ -23,18 +23,6 @@ from .utils import clean_rundir, handle_nonperiodic
 _default_keep_files = ["POSCAR", "INCAR", "KPOINTS", "OUTCAR", "vasprun.xml", "vasp.out"]
 _default_properties = ["energy", "forces", "stress"]
 
-_vasp_kwargs_def = {
-    "isif": 2,
-    "isym": 0,
-    "nelm": 300,
-    "ismear": 0,
-    "sigma": 0.05,
-    "ediff": 1.0e-7,
-    "lwave": False,
-    "lcharg": False,
-    "pp": "."
-}
-
 class Vasp(ase.calculators.vasp.vasp.Vasp):
     """Extension of ASE's Vasp calculator that can be used by wfl.calculators.generic
 
@@ -69,33 +57,46 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
 
     Defaults
     --------
-    """ + "\n".join([f"    {k}: {v}" for k, v in _vasp_kwargs_def.items()])
+    """
 
     # default value of wfl_num_inputs_per_python_subprocess for calculators.generic,
     # to override that function's built-in default of 10
     wfl_generic_num_inputs_per_python_subprocess = 1
 
+    # note that we also have a default for "pp", but that has to be handlded separately
+    default_parameters = ase.calculators.vasp.vasp.Vasp.default_parameters.copy()
+    default_parameters.update({
+        "isif": 2,
+        "isym": 0,
+        "nelm": 300,
+        "ismear": 0,
+        "sigma": 0.05,
+        "ediff": 1.0e-7,
+        "lwave": False,
+        "lcharg": False,
+    })
+
     def __init__(self, atoms=None, keep_files="default",
                  rundir="run_VASP_", reuse_rundir=False, workdir=".", scratchdir=None,
                  calculator_command=None, **kwargs):
 
-        kwargs_use = deepcopy(kwargs)
-
         # get params from env var if not explicitly passed in
         if 'WFL_VASP_KWARGS' in os.environ:
             try:
-                env_kwargs = json.loads(os.environ['WFL_VASP_KWARGS'])
+                kwargs_use = json.loads(os.environ['WFL_VASP_KWARGS'])
             except:
                 with open(os.environ['WFL_VASP_KWARGS']) as fin:
-                    env_kwargs = json.load(fin)
-            for k, v in env_kwargs.items():
-                if k not in kwargs_use:
-                    kwargs_use[k] = v
+                    kwargs_use = json.load(fin)
+        else:
+            kwargs_use = {}
 
-        # get params from our defaults if not set yet
-        for k, v in _vasp_kwargs_def.items():
-            if k not in kwargs_use:
-                kwargs_use[k] = v
+        # override with explicitly passed in values
+        kwargs_use.update(kwargs)
+
+        # pp is not handled by Vasp.default_parameters, because that is only includes
+        # parameters that are in INCAR
+        if "pp" not in kwargs_use:
+            kwargs_use["pp"] = "."
 
         if calculator_command is not None:
             if "command" in kwargs_use:
@@ -184,6 +185,7 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
             raise RuntimeError("Refusing to run without explicit ENCUT")
         # should we require anything except ENCUT?
 
+        calculation_succceeded = False
         try:
             super().calculate(atoms=atoms, properties=properties_use, system_changes=system_changes)
             calculation_succeeded = True
@@ -191,7 +193,6 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
                 del atoms.info['DFT_FAILED_VASP']
         except Exception as exc:
             atoms.info['DFT_FAILED_VASP'] = True
-            calculation_succceeded = False
             raise exc
         finally:
             clean_rundir(self.directory, self._wfl_keep_files, _default_keep_files, calculation_succeeded)

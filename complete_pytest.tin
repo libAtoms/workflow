@@ -30,7 +30,7 @@ export WFL_ACE_FIT_COMMAND="julia ${HOME}/.julia/packages/ACE1pack/rq4n0/scripts
 rm -rf $HOME/pytest_wfl
 pytest -v -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
 
-l=`egrep '^=.*(passed|failed)' complete_pytest.tin.out`
+l=`egrep '^=.*(passed|failed|skipped|xfailed)' complete_pytest.tin.out`
 
 echo "summary line $l"
 # ===== 107 passed, 8 skipped, 2 xfailed, 214 warnings in 3402.72s (0:56:42) =====
