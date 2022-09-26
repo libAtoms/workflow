@@ -15,6 +15,7 @@ from ase.stress import voigt_6_to_full_3x3_stress
 
 from wfl.configset import ConfigSet
 from wfl.autoparallelize.utils import get_remote_info
+from wfl.utils import julia_exec_path
 
 from expyre import ExPyRe
 import wfl.scripts
@@ -119,7 +120,7 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
     ace_fit_params["data"]["force_key"] = f"{ref_property_prefix}forces"
     ace_fit_params["data"]["virial_key"] = f"{ref_property_prefix}virial" # TODO is this correct?
 
-    ace_filename = os.path.join(run_dir, ACE_name) + '.json'
+    ace_filename = str(Path(run_dir) / (ACE_name + '.json'))
     if "ACE_fname" in ace_fit_params:
         warnings.warn(f"Overriding 'ACE_fname' in ace_fit_params '{ace_fit_params['ACE_fname']}' with '{ace_filename}'")
     ace_fit_params["ACE_fname"] = ace_filename
@@ -260,9 +261,9 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
         if "WFL_ACE_FIT_COMMAND" in os.environ:
             ace_fit_command = os.environ["WFL_ACE_FIT_COMMAND"]
         else:
-            julia = os.environ.get("WFL_JULIA_COMMAND", "julia")
-            ace_path = Path(subprocess.check_output(shlex.split(julia), text=True, input="import(ACE1pack)\nprint(pathof(ACE1pack)\n)")).parent.parent
-            ace_fit_command = julia + " " + str(ace_path / "scripts" / "ace_fit.jl")
+            julia_exec = julia_exec_path()
+            ace_path = Path(subprocess.check_output(shlex.split(julia_exec), text=True, input="import(ACE1pack)\nprint(pathof(ACE1pack)\n)")).parent.parent
+            ace_fit_command = julia_exec + " " + str(ace_path / "scripts" / "ace_fit.jl")
             warnings.warn(f"Automatically found ace fit command {ace_fit_command}")
 
     orig_julia_num_threads = (os.environ.get('JULIA_NUM_THREADS', None))
