@@ -49,8 +49,8 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
     scratchdir: str / Path, default None
         temporary directory to execute calculations in and delete or copy back results (set by
         "keep_files") if needed.  For example, directory on a local disk with fast file I/O.
-    calculator_command: str
-        command to run for vasp (overrides ASE_VASP_COMMAND and ASE_VASP_COMMAND_GAMMA)
+    command_gamma: str
+        command to run vasp for nonperiodic systems (overrides ASE_VASP_COMMAND_GAMMA, VASP_COMMAND_GAMMA, VASP_SCRIPT_GAMMA)
     **kwargs: arguments for ase.calculators.vasp.vasp.Vasp
         remaining arguments to ASE's Vasp calculator constructor
     """
@@ -73,7 +73,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
     })
 
     def __init__(self, keep_files="default", rundir="run_VASP_", reuse_rundir=False,
-                 workdir=".", scratchdir=None, calculator_command=None, **kwargs):
+                 workdir=".", scratchdir=None, command_gamma=None, **kwargs):
 
         # get initialparams from env var
         kwargs_use = {}
@@ -92,14 +92,57 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
         if "pp" not in kwargs_use:
             kwargs_use["pp"] = "."
 
-        if calculator_command is not None:
-            if "command" in kwargs_use:
-                raise ValueError("Got calculator_command and command arguments")
-            kwargs_use["command"] = calculator_command
+        self._command_gamma = command_gamma
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir=rundir, reuse_rundir=reuse_rundir,
                          workdir=workdir, scratchdir=scratchdir, **kwargs_use)
+
+    def per_config_setup(self, atoms, nonperiodic):
+        # VASP cannot handle nonperiodic, and current Vasp calculator complains if pbc=F
+        self._orig_pbc = atoms.pbc.copy()
+        atoms.pbc = [True] * 3
+
+        # VASP requires periodic cells with non-zero cell vectors
+        if atoms.get_volume() < 0.0:
+            (atoms.cell[0], atoms.cell[1]) = (atoms.cell[1], atoms.cell[0])
+            self._permuted_a0_a1 = True
+        else:
+            self._permuted_a0_a1 = False
+
+        self._orig_command = self.command
+        if nonperiodic:
+            if self._command_gamma is not None:
+                command_gamma = self._command_gamma
+            else:
+                command_gamma = None
+                for env_var in self.env_commands:
+                    if env_var + "_GAMMA" in os.environ:
+                        command_gamma = os.environ[env_var + "_GAMMA"]
+                        break
+            if command_gamma is not None:
+                self.command = command_gamma
+
+        # set some things for nonperiodic systems
+        self._orig_kspacing = self.float_params["kspacing"]
+        self._orig_kgamma = self.bool_params["kgamma"]
+        if nonperiodic:
+            self.float_params["kspacing"] = 100000.0
+            self.bool_params["kgamma"] = True
+
+
+    def per_config_restore(self, atoms):
+        # undo pbc change
+        atoms.pbc[:] = self._orig_pbc
+
+        # undo cell vector permutation
+        if self._permuted_a0_a1:
+            (atoms.cell[0], atoms.cell[1]) = (atoms.cell[1], atoms.cell[0])
+
+        # undo nonperiodic related changes
+        self.command = self._orig_command
+        self.float_params["kspacing"] = self._orig_kspacing
+        self.bool_params["kgamma"] = self._orig_kgamma
 
 
     def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
@@ -112,10 +155,10 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
         # hack to disable parallel I/O, since that makes VASP's I/O break if
         # this script is being run with mpirun
         from ase.parallel import world, DummyMPI
-
         orig_world_comm = world.comm
         world.comm = DummyMPI()
 
+        # make sure VASP_PP_PATH is set to a sensible default
         orig_VASP_PP_PATH = os.environ.get("VASP_PP_PATH")
         if orig_VASP_PP_PATH is None:
             if self.input_params['pp'].startswith("/"):
@@ -123,33 +166,10 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
             else:
                 os.environ["VASP_PP_PATH"] = "."
 
-        # VASP requires periodic cells with non-zero cell vectors
-        if atoms.get_volume() < 0.0:
-            (atoms.cell[0], atoms.cell[1]) = (atoms.cell[1], atoms.cell[0])
-            permuted_a0_a1 = True
-        else:
-            permuted_a0_a1 = False
-
         nonperiodic, properties_use = handle_nonperiodic(atoms, properties)
-        # VASP cannot handle nonperiodic, and current Vasp calculator complains if pbc=F
-        orig_pbc = atoms.pbc.copy()
-        atoms.pbc = [True] * 3
+        self.per_config_setup(atoms, nonperiodic)
 
         self.setup_rundir()
-
-        orig_command = self.command
-        if self.command is None:
-            if nonperiodic:
-                self.command = os.environ.get("ASE_VASP_COMMAND_GAMMA", None)
-            elif "ASE_VASP_COMMAND" not in os.environ:
-                raise RuntimeError("Need env var ASE_VASP_COMMAND for periodic systems if command is not explicitly passed to constructor")
-
-        # set some things for nonperiodic systems
-        orig_kspacing = self.float_params["kspacing"]
-        orig_kgamma = self.bool_params["kgamma"]
-        if nonperiodic:
-            self.float_params["kspacing"] = 100000.0
-            self.bool_params["kgamma"] = True
 
         atoms.info["vasp_rundir"] = str(self._cur_rundir)
 
@@ -169,17 +189,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
         finally:
             self.clean_run(_default_keep_files, calculation_succeeded)
 
-            # undo pbc change
-            atoms.pbc[:] = orig_pbc
-
-            # undo cell vector permutation
-            if permuted_a0_a1:
-                (atoms.cell[0], atoms.cell[1]) = (atoms.cell[1], atoms.cell[0])
-
-            # undo nonperiodic related changes
-            self.command = orig_command
-            self.float_params["kspacing"] = orig_kspacing
-            self.bool_params["kgamma"] = orig_kgamma
+            self.per_config_restore(atoms)
 
             # undo env VASP_PP_PATH
             if orig_VASP_PP_PATH is not None:
