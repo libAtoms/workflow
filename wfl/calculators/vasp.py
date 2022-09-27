@@ -104,8 +104,10 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
         atoms.pbc = [True] * 3
 
         # VASP requires periodic cells with non-zero cell vectors
-        if atoms.get_volume() < 0.0:
-            (atoms.cell[0], atoms.cell[1]) = (atoms.cell[1], atoms.cell[0])
+        if np.dot(np.cross(atoms.cell[0], atoms.cell[1]), atoms.cell[2]) < 0.0:
+            t = atoms.cell[0].copy()
+            atoms.cell[0] = atoms.cell[1]
+            atoms.cell[1] = t
             self._permuted_a0_a1 = True
         else:
             self._permuted_a0_a1 = False
@@ -137,7 +139,9 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
 
         # undo cell vector permutation
         if self._permuted_a0_a1:
-            (atoms.cell[0], atoms.cell[1]) = (atoms.cell[1], atoms.cell[0])
+            t = atoms.cell[0].copy()
+            atoms.cell[0] = atoms.cell[1]
+            atoms.cell[1] = t
 
         # undo nonperiodic related changes
         self.command = self._orig_command

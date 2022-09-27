@@ -89,6 +89,32 @@ def test_vasp(tmp_path):
     # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
 
 
+def test_vasp_negative_volume(tmp_path):
+    at = Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3)
+    at.cell[0, :] = [0, 2, 0]
+    at.cell[1, :] = [2, 0, 0]
+    ase.io.write(tmp_path / 'vasp_in.xyz', at, format='extxyz')
+
+    configs_eval = generic.run(
+        inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
+        outputs=OutputSpec('vasp_out.regular.xyz', file_root=tmp_path),
+        calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
+                        keep_files=True),
+        output_prefix='TEST_')
+
+    run_dir = list(tmp_path.glob('run_VASP_*'))
+    nfiles = len(list(os.scandir(run_dir[0])))
+
+    assert nfiles == 18
+
+    ats = list(configs_eval)
+    assert 'TEST_energy' in ats[0].info
+    assert 'TEST_stress' in ats[0].info
+    assert 'TEST_forces' in ats[0].arrays
+    # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
+
+
+
 def test_vasp_keep_default(tmp_path):
     ase.io.write(tmp_path / 'vasp_in.xyz', Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), format='extxyz')
 
