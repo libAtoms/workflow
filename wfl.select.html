@@ -720,7 +720,8 @@ indices into enumerate(inputs)</p></li>
 <li><p><strong>output</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – output configurations</p></li>
 <li><p><strong>num</strong> (<em>int</em>) – number of configs to select</p></li>
 <li><p><strong>info_field</strong> (<em>string</em>) – Atoms.info key for quantity by which to do flat histogram and Boltzmann bias</p></li>
-<li><p><strong>kT</strong> (<em>float</em><em>, </em><em>default -1</em>) – Boltzmann bias temperature, &lt;= 0 to not bias</p></li>
+<li><p><strong>kT</strong> (<em>float</em><em>, </em><em>default -1</em>) – Boltzmann bias temperature, &lt;= 0 to not bias
+[kT] should have the same unit as the “info_field” parameter</p></li>
 <li><p><strong>bins</strong> (<em>np.histogram bins argument</em><em>, </em><em>default 'auto'</em>) – argument to pass to np.histogram</p></li>
 <li><p><strong>by_bin</strong> (<em>bool</em><em>, </em><em>default True</em>) – do selections by bin, which is more accurate, but works badly for small kT and does not allow for selection with replacement</p></li>
 <li><p><strong>replace</strong> (<em>bool</em><em>, </em><em>default False</em>) – do selection with replacement (i.e. repeat configs)</p></li>
