@@ -15,7 +15,7 @@ from ase.stress import voigt_6_to_full_3x3_stress
 
 from wfl.configset import ConfigSet
 from wfl.autoparallelize.utils import get_remote_info
-from wfl.utils import julia_exec_path
+from wfl.utils.julia import julia_exec_path
 
 from expyre import ExPyRe
 import wfl.scripts
