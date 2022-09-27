@@ -5,8 +5,6 @@ VASP calculator
 
 import os
 from pathlib import Path
-import tempfile
-import shutil
 
 import json
 from copy import deepcopy
@@ -15,15 +13,16 @@ import numpy as np
 
 from ase.atoms import Atoms
 from ase.calculators.calculator import all_changes
-import ase.calculators.vasp.vasp
+from ase.calculators.vasp.vasp import Vasp as ASE_Vasp
 
-from .utils import clean_rundir, handle_nonperiodic
+from .wfl_fileio_calculator import WFLFileIOCalculator
+from .utils import handle_nonperiodic
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["POSCAR", "INCAR", "KPOINTS", "OUTCAR", "vasprun.xml", "vasp.out"]
 _default_properties = ["energy", "forces", "stress"]
 
-class Vasp(ase.calculators.vasp.vasp.Vasp):
+class Vasp(WFLFileIOCalculator, ASE_Vasp):
     """Extension of ASE's Vasp calculator that can be used by wfl.calculators.generic
 
     Notes
@@ -54,9 +53,6 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
         command to run for vasp (overrides ASE_VASP_COMMAND and ASE_VASP_COMMAND_GAMMA)
     **kwargs: arguments for ase.calculators.vasp.vasp.Vasp
         remaining arguments to ASE's Vasp calculator constructor
-
-    Defaults
-    --------
     """
 
     # default value of wfl_num_inputs_per_python_subprocess for calculators.generic,
@@ -64,7 +60,7 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
     wfl_generic_num_inputs_per_python_subprocess = 1
 
     # note that we also have a default for "pp", but that has to be handlded separately
-    default_parameters = ase.calculators.vasp.vasp.Vasp.default_parameters.copy()
+    default_parameters = ASE_Vasp.default_parameters.copy()
     default_parameters.update({
         "isif": 2,
         "isym": 0,
@@ -76,24 +72,22 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
         "lcharg": False,
     })
 
-    def __init__(self, atoms=None, keep_files="default",
-                 rundir="run_VASP_", reuse_rundir=False, workdir=".", scratchdir=None,
-                 calculator_command=None, **kwargs):
+    def __init__(self, keep_files="default", rundir="run_VASP_", reuse_rundir=False,
+                 workdir=".", scratchdir=None, calculator_command=None, **kwargs):
 
-        # get params from env var if not explicitly passed in
+        # get initialparams from env var
+        kwargs_use = {}
         if 'WFL_VASP_KWARGS' in os.environ:
             try:
                 kwargs_use = json.loads(os.environ['WFL_VASP_KWARGS'])
-            except:
+            except json.decoder.JSONDecodeError:
                 with open(os.environ['WFL_VASP_KWARGS']) as fin:
                     kwargs_use = json.load(fin)
-        else:
-            kwargs_use = {}
 
         # override with explicitly passed in values
         kwargs_use.update(kwargs)
 
-        # pp is not handled by Vasp.default_parameters, because that is only includes
+        # pp is not handled by Vasp.default_parameters, because that only includes
         # parameters that are in INCAR
         if "pp" not in kwargs_use:
             kwargs_use["pp"] = "."
@@ -103,16 +97,9 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
                 raise ValueError("Got calculator_command and command arguments")
             kwargs_use["command"] = calculator_command
 
-        super(Vasp, self).__init__(**kwargs_use)
-
-        self._wfl_keep_files = keep_files
-        if "directory" in kwargs_use:
-            raise ValueError("Cannot pass directory argument")
-
-        self._wfl_rundir = Path(rundir)
-        self._wfl_reuse_rundir = reuse_rundir
-        self._wfl_workdir = Path(workdir)
-        self._wfl_scratchdir = Path(scratchdir) if scratchdir is not None else None
+        # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
+        super().__init__(keep_files=keep_files, rundir=rundir, reuse_rundir=reuse_rundir,
+                         workdir=workdir, scratchdir=scratchdir, **kwargs_use)
 
 
     def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
@@ -148,22 +135,7 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
         orig_pbc = atoms.pbc.copy()
         atoms.pbc = [True] * 3
 
-        # set rundir to where we want final results to live
-        rundir_path = self._wfl_workdir / self._wfl_rundir.parent
-        rundir_path.mkdir(parents=True, exist_ok=True)
-        if self._wfl_reuse_rundir:
-            rundir = rundir_path / self._wfl_rundir.name
-            rundir.mkdir(exist_ok=True)
-        else:
-            rundir = Path(tempfile.mkdtemp(dir=rundir_path, prefix=self._wfl_rundir.name))
-
-        # set directory to where we want the calculation to actully run
-        if self._wfl_scratchdir is not None:
-            directory = self._wfl_scratchdir / str(rundir.resolve()).replace("/", "", 1)
-            directory.mkdir(parents=True, exist_ok=True)
-            self.directory = directory
-        else:
-            self.directory = rundir
+        self.setup_rundir()
 
         orig_command = self.command
         if self.command is None:
@@ -179,7 +151,7 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
             self.float_params["kspacing"] = 100000.0
             self.bool_params["kgamma"] = True
 
-        atoms.info["vasp_rundir"] = str(rundir)
+        atoms.info["vasp_rundir"] = str(self._cur_rundir)
 
         if self.float_params["encut"] is None:
             raise RuntimeError("Refusing to run without explicit ENCUT")
@@ -195,10 +167,7 @@ class Vasp(ase.calculators.vasp.vasp.Vasp):
             atoms.info['DFT_FAILED_VASP'] = True
             raise exc
         finally:
-            clean_rundir(self.directory, self._wfl_keep_files, _default_keep_files, calculation_succeeded)
-            if self._wfl_scratchdir is not None:
-                for f in Path(self.directory).glob("*"):
-                    shutil.move(f, rundir)
+            self.clean_run(_default_keep_files, calculation_succeeded)
 
             # undo pbc change
             atoms.pbc[:] = orig_pbc
