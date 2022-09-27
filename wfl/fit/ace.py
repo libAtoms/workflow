@@ -15,7 +15,7 @@ from ase.stress import voigt_6_to_full_3x3_stress
 
 from wfl.configset import ConfigSet
 from wfl.autoparallelize.utils import get_remote_info
-from wfl.utils.julia import julia_exec_path
+from wfl.utils.julia import julia_exec_path, ace_fit_jl_path
 
 from expyre import ExPyRe
 import wfl.scripts
@@ -262,8 +262,9 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
             ace_fit_command = os.environ["WFL_ACE_FIT_COMMAND"]
         else:
             julia_exec = julia_exec_path()
-            ace_path = Path(subprocess.check_output(shlex.split(julia_exec), text=True, input="import(ACE1pack)\nprint(pathof(ACE1pack)\n)")).parent.parent
-            ace_fit_command = julia_exec + " " + str(ace_path / "scripts" / "ace_fit.jl")
+            ace_fit_jl = ace_fit_jl_path(julia_exec)
+            ace_fit_command = julia_exec + ' ' + ace_fit_jl
+
             warnings.warn(f"Automatically found ace fit command {ace_fit_command}")
 
     orig_julia_num_threads = (os.environ.get('JULIA_NUM_THREADS', None))
