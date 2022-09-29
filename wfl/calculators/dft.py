@@ -38,9 +38,9 @@ def evaluate_dft(*args, **kwargs):
     if calculator_name == "CASTEP":
         op = castep.evaluate_autopara_wrappable
     elif calculator_name == "VASP":
-        op = vasp.evaluate_autopara_wrappable
+        raise ValueError(f"wfl.calculators.vasp.Vasp is compatible with wfl.calculators.generic.run()")
     elif calculator_name == "QE":
-        raise ValueError(f"wfl.calculators.espresso.Espresso is compatible with wfl.calculators.generic.run.")
+        raise ValueError(f"wfl.calculators.espresso.Espresso is compatible with wfl.calculators.generic.run()")
     else:
         raise ValueError(f"Calculator name `{calculator_name}` not understood")
 

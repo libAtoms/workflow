@@ -18,7 +18,8 @@ pytestmark = pytest.mark.remote
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.calculators import generic
 from wfl.generate import optimize
-from wfl.calculators.dft import evaluate_dft
+from wfl.calculators import generic
+from wfl.calculators.vasp import Vasp
 
 def test_generic_calc(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
@@ -47,14 +48,14 @@ def test_vasp_fail(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
 
 def do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri = {'sys_name': sys_name, 'job_name': 'pytest_vasp_'+sys_name,
-          'env_vars' : ['VASP_COMMAND=NONE', 'VASP_COMMAND_GAMMA=NONE'],
+          'env_vars' : ['ASE_VASP_COMMAND=NONE', 'ASE_VASP_COMMAND_GAMMA=NONE'],
           'input_files' : ['POTCARs'],
           'resources': {'max_time': '5m', 'num_nodes': 1},
           'num_inputs_per_queued_job': 1, 'check_interval': 10}
 
     remoteinfo_env(ri)
 
-    ri = {'test_remote_run.py::do_vasp_fail,calculators/dft.py::evaluate_dft': ri}
+    ri = {'test_remote_run.py::do_vasp_fail,calculators/generic.py::run': ri}
     print('RemoteInfo', ri)
     monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
 
@@ -80,13 +81,15 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env):
         fout.write("\n")
 
     # jobs should fail because of bad executable
-    results = evaluate_dft(inputs=ci, outputs=co, calculator_name='VASP',
-                           workdir_root='.', calculator_kwargs={'encut': 200, 'VASP_PP_PATH': 'POTCARs'},
-                           output_prefix='TEST_')
+    results = generic.run(inputs=ci, outputs=co,
+                          calculator=Vasp(encut= 200, pp='POTCARs'),
+                          output_prefix='TEST_')
 
     for at in ase.io.read(tmp_path / f'ats_o_{sys_name}.xyz', ':'):
         ## ase.io.write(sys.stdout, at, format='extxyz')
         for k in at.info:
+            if k == "TEST_calculation_failed":
+                continue
             assert not k.startswith('TEST_')
 
 

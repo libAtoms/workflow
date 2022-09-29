@@ -13,8 +13,8 @@ echo "" >> complete_pytest.tin.out
 export WFL_PYTEST_BUILDCELL=$HOME/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
 # VASP
 module load dft/vasp
-export VASP_COMMAND=vasp.serial
-export VASP_COMMAND_GAMMA=vasp.gamma.serial
+export ASE_VASP_COMMAND=vasp.serial
+export ASE_VASP_COMMAND_GAMMA=vasp.gamma.serial
 export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
 # QE
 module load dft/pwscf
@@ -28,11 +28,12 @@ export OMP_NUM_THREADS=1
 rm -rf $HOME/pytest_wfl
 pytest -v -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
 
-l=`egrep '^=.*(passed|failed)' complete_pytest.tin.out`
+l=`egrep '^=.*(passed|failed|skipped|xfailed)' complete_pytest.tin.out`
 
+echo "summary line $l"
 # ===== 107 passed, 8 skipped, 2 xfailed, 214 warnings in 3402.72s (0:56:42) =====
 
-declare -A expected_n=( ["passed"]="107" ["skipped"]="8" ["xfailed"]="2" )
+declare -A expected_n=( ["passed"]="110" ["skipped"]="8" ["xfailed"]="2" )
 echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' | while read out; do
     out_n=$(echo $out | sed -e 's/^=* //' -e 's/ .*//' -e 's/,//')
     out_cat=$(echo $out | sed -e 's/.* //' -e 's/,//')
@@ -49,4 +50,8 @@ echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' | while read out; do
     fi
 done
 
-echo "SUCCESSS"
+if [ $? == 0 ]; then
+    echo "SUCCESSS"
+else
+    exit $?
+fi
