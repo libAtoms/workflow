@@ -26,7 +26,7 @@ export MKL_NUM_THREADS=1
 export OMP_NUM_THREADS=1
 
 rm -rf $HOME/pytest_wfl
-pytest -v -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf --runacefit -rxXs "$@" >> complete_pytest.tin.out 2>&1
+pytest -v -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
 
 l=`egrep '^=.*(passed|failed)' complete_pytest.tin.out`
 
