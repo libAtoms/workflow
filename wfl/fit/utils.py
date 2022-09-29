@@ -5,6 +5,7 @@ import os
 import subprocess
 from pathlib import Path
 import shlex
+import warnings
 
 from ase.constraints import voigt_6_to_full_3x3_stress
 
@@ -13,8 +14,18 @@ from wfl.utils.julia import julia_exec_path
 
 
 def ace_fit_jl_path():
+    print("BOB ace_fit_jl_path starting")
+    if "WFL_ACE_FIT_COMMAND" in os.environ:
+        print("BOB ace_fit_jl_path returning from os.environ")
+        return os.environ["WFL_ACE_FIT_COMMAND"]
+
+    print("BOB ace_fit_jl_path searching")
+    warnings.warn(f"Automatically found ace fit command {ace_fit_command}")
     julia_exec = julia_exec_path()
+    print("BOB ace_fit_jl_path julia_exec", julia_exec)
     ace_path = Path(subprocess.check_output(shlex.split(julia_exec), text=True, input="import(ACE1pack)\nprint(pathof(ACE1pack)\n)")).parent.parent
+    print("BOB ace_fit_jl_path ace_path", ace_path)
+    print("BOB ace_fit_jl_path returning",julia_exec + " " + str(ace_path / "scripts" / "ace_fit.jl"))
     return julia_exec + " " + str(ace_path / "scripts" / "ace_fit.jl")
 
 
