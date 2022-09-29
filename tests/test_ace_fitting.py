@@ -7,15 +7,15 @@ from pathlib import Path
 import pytest
 
 from wfl.configset import ConfigSet
+from wfl.fit.utils import ace_fit_jl_path
 from wfl.fit.ace import fit, prepare_params, prepare_configs
 
-@pytest.mark.acefit
+try:
+    ace_fit_jl_path()
+except:
+    pytestmark = pytest.mark.skip
+
 def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
-
-    have_julia_with_modules = os.system("julia -e  'using ACE1pack'") == 0
-    if not have_julia_with_modules:
-        pytest.skip("no julia with appropriate modules available")
-
     print('getting fitting data from ', request.fspath)
 
     # kinda ugly, but remote running of multistage fit doesn't support absolute run_dir, so test
@@ -64,14 +64,7 @@ def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     # rerun should reuse files, be much faster
     assert time_rerun < time_actual / 10
 
-@pytest.mark.acefit
 def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
-
-    have_julia_with_modules = os.system("julia -e  'using ACE1pack'") == 0
-    if not have_julia_with_modules:
-        pytest.skip("no julia with appropriate modules available")
-
-
     print('getting fitting data from ', request.fspath)
 
     # kinda ugly, but remote running of multistage fit doesn't support absolute run_dir, so test
@@ -118,7 +111,6 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     # rerun should reuse files, be much faster
     assert time_rerun < time_actual / 10
 
-@pytest.mark.acefit
 @pytest.mark.remote
 def test_ace_fit_remote(request, tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     env_vars = ['WFL_ACE_FIT_JULIA_THREADS=$( [ $EXPYRE_NUM_CORES_PER_NODE -gt 2 ] && echo 2 || echo $(( $EXPYRE_NUM_CORES_PER_NODE )) )',

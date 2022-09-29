@@ -47,8 +47,7 @@ def quippy():
 #################################################
 wfl_markers = [("slow", "slow tests"),
                ("remote", "tests of remote execution with ExPyRe"),
-               ("perf", "tests checking performance"),
-               ("acefit", "tests requiring ace_fit.jl")]
+               ("perf", "tests checking performance")]
 
 
 def pytest_addoption(parser):
