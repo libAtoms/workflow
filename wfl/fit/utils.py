@@ -14,25 +14,22 @@ from wfl.utils.julia import julia_exec_path
 
 
 def ace_fit_jl_path():
-    print("BOB ace_fit_jl_path starting")
     if "WFL_ACE_FIT_COMMAND" in os.environ:
-        print("BOB ace_fit_jl_path returning from os.environ")
         return os.environ["WFL_ACE_FIT_COMMAND"]
 
-    print("BOB ace_fit_jl_path searching")
     julia_exec = julia_exec_path()
-    print("BOB ace_fit_jl_path julia_exec", julia_exec)
-    ace_path = subprocess.check_output(shlex.split(julia_exec), text=True, input="import(ACE1pack)\nprint(pathof(ACE1pack))\n")
-    print("BOB ace_fit_jl_path raw ace_path", ace_path)
+
+    ace_path = subprocess.check_output(shlex.split(julia_exec), text=True, shell=True, stderr=subprocess.STDOUT,
+                                       input="import(ACE1pack)\nprint(pathof(ACE1pack))\n")
+    print("BOB raw ace_path", ace_path)
+    if len(ace_path.strip()) == 0:
+        raise RuntimeError("Failed to find pathof(ACE1pack)")
     ace_path = Path(ace_path)
-    print("BOB ace_fit_jl_path raw Path ace_path", ace_path)
-    print("BOB ace_fit_jl_path raw resolved ace_path", ace_path.resolve())
-    os.system(f"echo -n 'BOB '; ls -l {ace_path.resolve()}")
     ace_path = ace_path.resolve().parent.parent
-    print("BOB ace_fit_jl_path actual ace_path", ace_path)
+
     ace_fit_command = julia_exec + " " + str(ace_path / "scripts" / "ace_fit.jl")
+
     warnings.warn(f"Automatically found ace fit command {ace_fit_command}")
-    print("BOB ace_fit_jl_path returning", ace_fit_command)
     return ace_fit_command
 
 
