@@ -53,6 +53,10 @@ def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_a
         except Exception as exc:
             if raise_calc_exceptions:
                 raise exc
+            import sys
+            # pytest seems to hide these warnings for some reason
+            if "pytest" in sys.modules:
+                print(f'WARNING: calculation failed with exception {exc}')
             warnings.warn(f'calculation failed with exception {exc}')
             at.info[f'{output_prefix}calculation_failed'] = True
 

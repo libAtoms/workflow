@@ -7,46 +7,54 @@ import tempfile
 import subprocess
 import warnings
 import shutil
+import shlex
 
 from copy import deepcopy
 from pathlib import Path
 import numpy as np
 
 from ase import Atoms
-from ase.calculators.calculator import all_changes, CalculationFailed, Calculator
-import ase.calculators.espresso
+from ase.calculators.calculator import all_changes
+from ase.calculators.espresso import Espresso as ASE_Espresso
 try:
     from ase.calculators.espresso import EspressoProfile
 except ImportError:
     EspressoProfile = None
 from ase.io.espresso import kspacing_to_grid
 
+from .wfl_fileio_calculator import WFLFileIOCalculator
 from .utils import clean_rundir, handle_nonperiodic, save_results
 from ..utils.misc import atoms_to_list
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
-default_keep_files = ["*.pwo"]
-default_properties = ["energy", "forces", "stress"]           # done as "implemented_propertie"
+_default_keep_files = ["*.pwo"]
+_default_properties = ["energy", "forces", "stress"]           # done as "implemented_propertie"
 
 
-class Espresso(ase.calculators.espresso.Espresso):
-    """Extension of ASE's Espresso calculator
+class Espresso(WFLFileIOCalculator, ASE_Espresso):
+    """Extension of ASE's Espresso calculator that can be used by wfl.calculators.generic
 
-    dir_prefix: str, default 'QE-run\_'
-        directory name prefix for calculations
+    "directory" argument cannot be present. Use rundir_prefix and workdir instead.
+
+    Parameters
+    ----------
     keep_files: bool / None / "default" / list(str), default "default"
         what kind of files to keep from the run
             - True : everything kept
             - None, False : nothing kept, unless calculation fails
             - "default"   : only ones needed for NOMAD uploads ('\*.pwo')
             - list(str)   : list of file globs to save
-    scratch_path: str, default None
-        temporary directory to execute calculations in and delete
-        or copy back results if needed (set by "keep_files"). 
-        For example, directory on an SSD with fast file io. 
-    calculator_command: str
+    rundir_prefix: str / Path, default 'run\_QE\_'
+        Run directory name prefix
+    workdir: str / Path, default . at calculate time
+        Path in which rundir will be created.
+    scratchdir: str / Path, default None
+        temporary directory to execute calculations in and delete or copy back results (set by
+        "keep_files") if needed.  For example, directory on a local disk with fast file I/O.
+    calculator_exec: str
         command for QE, without any prefix or redirection set.
         for example: "mpirun -n 4 /path/to/pw.x"
+        mutually exclusive with "command"
 
     **kwargs: arguments for ase.calculators.espresso.Espresso
     """
@@ -56,36 +64,35 @@ class Espresso(ase.calculators.espresso.Espresso):
     # to override that function's built-in default of 10
     wfl_generic_def_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
-    def __init__(self, atoms=None, keep_files="default", 
-                 dir_prefix="run_QE_", scratch_path=None,
-                 calculator_command=None, **kwargs):
+    def __init__(self, keep_files="default", rundir_prefix="run_QE_",
+                 workdir=None, scratchdir=None,
+                 calculator_exec=None, **kwargs):
 
         kwargs_command = deepcopy(kwargs)
-        if calculator_command is not None: 
+        if calculator_exec is not None:
+            if "command" in kwargs:
+                raise ValueError("Cannot specify both calculator_exec and command")
             if EspressoProfile is None:
                 # older syntax
-                kwargs_command["command"] = f"{calculator_command} -in PREFIX.pwi > PREFIX.pwo"
+                kwargs_command["command"] = f"{calculator_exec} -in PREFIX.pwi > PREFIX.pwo"
             else:
+                if " -in " in calculator_exec:
+                    raise ValueError("calculator_exec should not include espresso command line arguments such as ' -in PREFIX.pwi'")
                 # newer syntax
-                kwargs_command["profile"] = EspressoProfile(argv=calculator_command.split())
+                kwargs_command["profile"] = EspressoProfile(argv=shlex.split(calculator_exec))
 
-        super(Espresso, self).__init__(**kwargs_command)
+        # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
+        super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
+                         workdir=workdir, scratchdir=scratchdir, **kwargs_command)
 
-        self.keep_files = keep_files
-        self.scratch_path = scratch_path
-        # self.directory is overwritten in self.calculate, so let's just keep track
-        self.dir_prefix = dir_prefix
-        self.workdir_root = Path(self.directory) / (self.dir_prefix + 'FileIOCalc_files')
-        self.workdir_root.mkdir(parents=True, exist_ok=True)
-
-        # we modify the parameters in self.calculate() based on the individual atoms object, 
+        # we modify the parameters in self.calculate() based on the individual atoms object,
         # so let's make a copy of the initial parameters
         self.initial_parameters = deepcopy(self.parameters)
 
 
-    def calculate(self, atoms=None, properties=default_properties, system_changes=all_changes):
-        """Does the calculation. Handles the working directories in addition to regular 
-        ASE calculation operations (writing input, executing, reading_results) 
+    def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
+        """Do the calculation. Handles the working directories in addition to regular
+        ASE calculation operations (writing input, executing, reading_results)
         Reimplements & extends GenericFileIOCalculator.calculate() for the development version of ASE
         or FileIOCalculator.calculate() for the v3.22.1"""
 
@@ -93,38 +100,35 @@ class Espresso(ase.calculators.espresso.Espresso):
             self.atoms = atoms.copy()
 
         # this may modify self.parameters, will reset them back to initial after calculation
-        properties = self.setup_params_for_this_calc(properties)
+        properties = self.setup_calc_params(properties)
 
-        if self.scratch_path is not None:
-            directory = tempfile.mkdtemp(dir=self.scratch_path, prefix=self.dir_prefix)
-        else:
-            directory = tempfile.mkdtemp(dir=self.workdir_root, prefix=self.dir_prefix)
-        self.directory = Path(directory)
+        # from WFLFileIOCalculator
+        self.setup_rundir()
 
         try:
-            super().calculate(atoms=atoms, properties=properties,system_changes=system_changes) 
+            super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
             calculation_succeeded=True
-        except Exception as e:
+            if 'DFT_FAILED_ESPRESSO' in atoms.info:
+                del atoms.info['DFT_FAILED_ESPRESSO']
+        except Exception as exc:
+            atoms.info['DFT_FAILED_ESPRESSO'] = True
             calculation_succeeded=False
-            raise e
+            raise exc
         finally:
-            # when exception is raised, `calculation_succeeded` is set to False, 
-            # the following code is executed and exception is re-raised. 
-            clean_rundir(directory, self.keep_files, default_keep_files, calculation_succeeded)
-            if self.scratch_path is not None and Path(directory).exists():
-                shutil.move(directory, self.workdir_root)
+            # from WFLFileIOCalculator
+            self.clean_rundir(_default_keep_files, calculation_succeeded)
 
             # Return the parameters to what they were when the calculator was initialised.
-            # There is likely a more ASE-appropriate way with self.set() and self.reset(), etc. 
+            # There is likely a more ASE-appropriate way with self.set() and self.reset(), etc.
             self.parameters = deepcopy(self.initial_parameters)
 
-    def setup_params_for_this_calc(self, properties):
+    def setup_calc_params(self, properties):
 
-        # first determine if we do a non-periodic calculation. 
-        # and update the properties that we will use. 
+        # first determine if we do a non-periodic calculation.
+        # and update the properties that we will use.
         nonperiodic, properties = handle_nonperiodic(self.atoms, properties, allow_mixed=True)
 
-        # update the parameters with the cool wfl logic 
+        # update the parameters with the cool wfl logic
         self.parameters["tprnfor"] = "forces" in properties
         self.parameters["tstress"] = "stress" in properties
 
@@ -165,9 +169,9 @@ class Espresso(ase.calculators.espresso.Espresso):
                     k_offset[~self.atoms.get_pbc()] = 0
                     self.parameters["koffset"] = tuple(k_offset)
                 else:
-                    self.parameters["koffset"] = k_offset        
+                    self.parameters["koffset"] = k_offset
 
-        return properties 
+        return properties
 
 
     def cleanup(self):

@@ -71,7 +71,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
         pseudo_dir=os.path.dirname(pspot),
         kpts=(2, 3, 4),
         conv_thr=0.0001,
-        directory=tmp_path
+        workdir=tmp_path
     ) 
 
     # PBC = TTT
@@ -79,7 +79,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     properties = ["energy", "stress"] 
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    calc.setup_params_for_this_calc(properties)
+    calc.setup_calc_params(properties)
 
     assert "tstress" in calc.parameters
     assert calc.parameters['kpts'] == (2, 3, 4)
@@ -89,7 +89,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     properties = ["energy", "stress", "forces"] 
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    properties = calc.setup_params_for_this_calc(properties)
+    properties = calc.setup_calc_params(properties)
 
     assert "tstress" in calc.parameters
     assert not calc.parameters["tstress"]
@@ -108,7 +108,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     kw["koffset"] = True
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    properties = calc.setup_params_for_this_calc(properties)
+    properties = calc.setup_calc_params(properties)
 
     assert "tstress" in calc.parameters
     assert not calc.parameters["tstress"]
@@ -129,7 +129,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     kw["koffset"] = False 
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    properties = calc.setup_params_for_this_calc(properties)
+    properties = calc.setup_calc_params(properties)
 
     assert calc.parameters["koffset"] is False
 
@@ -141,7 +141,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     kw["koffset"] = (0, 1, 0)
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    properties = calc.setup_params_for_this_calc(properties)
+    properties = calc.setup_calc_params(properties)
 
     assert "tstress" in calc.parameters
     assert not calc.parameters["tstress"]
@@ -171,7 +171,7 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
         kpts=(2, 2, 2),
         conv_thr=0.0001,
         calculator_command=qe_cmd,
-        directory=tmp_path
+        workdir=tmp_path
     ) 
 
     calc = (wfl.calculators.espresso.Espresso, [], kw)
@@ -229,7 +229,7 @@ def test_wfl_Espresso_calc(tmp_path, qe_cmd_and_pseudo):
     ) 
 
     calc = wfl.calculators.espresso.Espresso(
-        directory=tmp_path,
+        workdir=tmp_path,
         **kw)
     atoms.calc = calc
 
@@ -249,7 +249,7 @@ def test_wfl_Espresso_calc_via_generic(tmp_path, qe_cmd_and_pseudo):
         pseudo_dir=os.path.dirname(pspot),
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-        directory=tmp_path
+        workdir=tmp_path
     ) 
 
     calc = (wfl.calculators.espresso.Espresso, [], kw)
