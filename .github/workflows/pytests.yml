@@ -76,6 +76,11 @@ jobs:
           # note that this hardwires a particular compatible ACE1pack version
           echo 'using Pkg; Pkg.activate("."); pkg"registry add https://github.com/JuliaRegistries/General"; pkg"registry add https://github.com/JuliaMolSim/MolSim.git"; pkg"add ACE1pack@0.0, ACE1, JuLIP, IPFitting, ASE"' > ace1pack_install.jl
           ${WFL_JULIA_COMMAND} ace1pack_install.jl
+          cp Project.toml ${HOME}
+          echo -n "BOB pwd "
+          pwd
+          echo -n "BOB ls -al "
+          ls -al
 
       - name: Install wfl (expyre and universalSOAP are dependencies)
         run: pip install .
@@ -93,6 +98,7 @@ jobs:
           make buildcell
           mkdir -p $HOME/bin
           cp src/buildcell/src/buildcell $HOME/bin/
+          cd ..
 
       - name: Install MPI dependencies
         if: env.use-mpi

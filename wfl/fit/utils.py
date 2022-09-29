@@ -22,8 +22,9 @@ def ace_fit_jl_path():
     print("BOB ace_fit_jl_path searching")
     julia_exec = julia_exec_path()
     print("BOB ace_fit_jl_path julia_exec", julia_exec)
-    ace_path = Path(subprocess.check_output(shlex.split(julia_exec), text=True, input="import(ACE1pack)\nprint(pathof(ACE1pack)\n)"))
+    ace_path = Path(subprocess.check_output(shlex.split(julia_exec), text=True, input="import(ACE1pack)\nprint(pathof(ACE1pack))\n"))
     print("BOB ace_fit_jl_path raw ace_path", ace_path)
+    print("BOB ace_fit_jl_path raw resolved ace_path", ace_path.resolve())
     ace_path = ace_path.resolve().parent.parent
     print("BOB ace_fit_jl_path actual ace_path", ace_path)
     ace_fit_command = julia_exec + " " + str(ace_path / "scripts" / "ace_fit.jl")
