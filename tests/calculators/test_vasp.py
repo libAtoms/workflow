@@ -2,6 +2,8 @@ from pathlib import Path
 import glob
 import os
 
+import numpy as np
+
 import ase.io
 import pytest
 from ase.atoms import Atoms
@@ -86,7 +88,38 @@ def test_vasp(tmp_path):
     assert 'TEST_energy' in ats[0].info
     assert 'TEST_stress' in ats[0].info
     assert 'TEST_forces' in ats[0].arrays
+    # import sys
     # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
+
+
+def test_vasp_values(tmp_path):
+    ats = Atoms(numbers=[14, 14], cell=(4, 2, 2), pbc=[True] * 3)
+    ats.positions[1, 0] = 2.1
+    ase.io.write(tmp_path / 'vasp_in.xyz', ats, format='extxyz')
+
+    configs_eval = generic.run(
+        inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
+        outputs=OutputSpec('vasp_out.regular.xyz', file_root=tmp_path),
+        calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
+                        keep_files=True),
+        output_prefix='TEST_')
+
+    run_dir = list(tmp_path.glob('run_VASP_*'))
+    nfiles = len(list(os.scandir(run_dir[0])))
+
+    assert nfiles == 18
+
+    ats = list(configs_eval)
+    assert 'TEST_energy' in ats[0].info
+    assert 'TEST_stress' in ats[0].info
+    assert 'TEST_forces' in ats[0].arrays
+
+    # import sys #NB
+    # ase.io.write(sys.stdout, list(ats), format="extxyz") #NB
+
+    assert np.allclose(ats[0].info["TEST_energy"], -0.55244948)
+    assert np.allclose(ats[0].info["TEST_stress"], [-1.805493843235339, -1.7204368283214935, -1.7204368283214935, 0.0, 0.0, 0.0])
+    assert np.allclose(ats[0].arrays["TEST_forces"], [[6.18419274, 0.0, 0.0], [-6.18419274, 0.0, 0.0]])
 
 
 def test_vasp_negative_volume(tmp_path):

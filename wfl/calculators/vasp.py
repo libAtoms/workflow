@@ -62,12 +62,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
     # note that we also have a default for "pp", but that has to be handlded separately
     default_parameters = ASE_Vasp.default_parameters.copy()
     default_parameters.update({
-        "isif": 2,
-        "isym": 0,
-        "nelm": 300,
         "ismear": 0,
-        "sigma": 0.05,
-        "ediff": 1.0e-7,
         "lwave": False,
         "lcharg": False,
     })
