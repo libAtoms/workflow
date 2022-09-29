@@ -27,7 +27,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
 
     Notes
     -----
-    "directory" argument cannot be present. Use rundir and workdir instead.
+    "directory" argument cannot be present. Use rundir_prefix and workdir instead.
     "pp" defaults to ".", so VASP_PP_PATH env var is absolute path to "<elem name>/POTCAR" files
 
     Parameters
@@ -38,14 +38,13 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
             None, False : nothing kept
             "default"   : only ones needed for NOMAD uploads ('POSCAR', 'INCAR', 'KPOINTS', 'OUTCAR', 'vasprun.xml', 'vasp.out')
             list(str)   : list of file globs to save
-    rundir: str / Path, default 'run\_VASP\_'
+    rundir_prefix: str / Path, default 'run\_VASP\_'
         Run directory name prefix
     workdir: str / Path, default . at calculate time
         Path in which rundir will be created.
     scratchdir: str / Path, default None
         temporary directory to execute calculations in and delete or copy back results (set by
         "keep_files") if needed.  For example, directory on a local disk with fast file I/O.
-
     calculator_exec: str
         executable to run (without ASE-specific command line arguments). Mutually exclusive with ASE-built-in "command"
     calculator_exec_gamma: str
@@ -177,8 +176,10 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
                 os.environ["VASP_PP_PATH"] = "."
 
         nonperiodic, properties_use = handle_nonperiodic(atoms, properties)
+        # from WFLFileIOCalculator
         self.per_config_setup(atoms, nonperiodic)
 
+        # from WFLFileIOCalculator
         self.setup_rundir()
 
         atoms.info["vasp_rundir"] = str(self._cur_rundir)
@@ -197,7 +198,8 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
             atoms.info['DFT_FAILED_VASP'] = True
             raise exc
         finally:
-            self.clean_run(_default_keep_files, calculation_succeeded)
+            # from WFLFileIOCalculator
+            self.clean_rundir(_default_keep_files, calculation_succeeded)
 
             self.per_config_restore(atoms)
 

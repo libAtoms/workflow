@@ -2,7 +2,7 @@ from pathlib import Path
 import shutil
 import tempfile
 
-from .utils import clean_rundir
+from .utils import clean_rundir as utils_clean_rundir
 
 class WFLFileIOCalculator():
     """Mixin class implementing some methods that should be available to every
@@ -58,8 +58,8 @@ class WFLFileIOCalculator():
             self.directory = self._cur_rundir
 
 
-    def clean_run(self, _default_keep_files, calculation_succeeded):
-        clean_rundir(self.directory, self._wfl_keep_files, _default_keep_files, calculation_succeeded)
+    def clean_rundir(self, _default_keep_files, calculation_succeeded):
+        utils_clean_rundir(self.directory, self._wfl_keep_files, _default_keep_files, calculation_succeeded)
         if self._wfl_scratchdir is not None:
             for f in Path(self.directory).glob("*"):
                 shutil.move(f, self._cur_rundir)
