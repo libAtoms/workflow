@@ -20,13 +20,14 @@ def ace_fit_jl_path():
         return os.environ["WFL_ACE_FIT_COMMAND"]
 
     print("BOB ace_fit_jl_path searching")
-    warnings.warn(f"Automatically found ace fit command {ace_fit_command}")
     julia_exec = julia_exec_path()
     print("BOB ace_fit_jl_path julia_exec", julia_exec)
     ace_path = Path(subprocess.check_output(shlex.split(julia_exec), text=True, input="import(ACE1pack)\nprint(pathof(ACE1pack)\n)")).parent.parent
     print("BOB ace_fit_jl_path ace_path", ace_path)
-    print("BOB ace_fit_jl_path returning",julia_exec + " " + str(ace_path / "scripts" / "ace_fit.jl"))
-    return julia_exec + " " + str(ace_path / "scripts" / "ace_fit.jl")
+    ace_fit_command = julia_exec + " " + str(ace_path / "scripts" / "ace_fit.jl")
+    warnings.warn(f"Automatically found ace fit command {ace_fit_command}")
+    print("BOB ace_fit_jl_path returning", ace_fit_command)
+    return ace_fit_command
 
 
 def fix_stress_virial(configs, ref_property_keys, stress_key):
