@@ -1,10 +1,19 @@
 import os
 import json
 import numpy as np
+import os
+import subprocess
+from pathlib import Path
+import shlex
 
 from ase.constraints import voigt_6_to_full_3x3_stress
 
 from wfl.autoparallelize.remoteinfo import RemoteInfo
+
+
+def ace_fit_jl_path(julia_exec):
+    ace_path = Path(subprocess.check_output(shlex.split(julia_exec), text=True, input="import(ACE1pack)\nprint(pathof(ACE1pack)\n)")).parent.parent
+    return str(ace_path / "scripts" / "ace_fit.jl")
 
 
 def fix_stress_virial(configs, ref_property_keys, stress_key):
