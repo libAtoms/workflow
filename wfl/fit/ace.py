@@ -258,11 +258,8 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
     with open(ace_fit_params_filename, "w") as f:
         f.write(json.dumps(ace_fit_params, indent=4))
 
-    print("BOB run_ace_fit input ace_fit_command", ace_fit_command)
     if ace_fit_command is None:
-        print("BOB run_ace_fit calling ace_fit_jl_path")
         ace_fit_command = ace_fit_jl_path()
-    print("BOB run_ace_fit final ace_fit_command", ace_fit_command)
 
     orig_julia_num_threads = (os.environ.get('JULIA_NUM_THREADS', None))
     if 'WFL_ACE_FIT_JULIA_THREADS' in os.environ:

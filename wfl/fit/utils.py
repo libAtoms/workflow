@@ -19,11 +19,11 @@ def ace_fit_jl_path():
 
     julia_exec = julia_exec_path()
 
-    ace_path = subprocess.check_output(shlex.split(julia_exec), text=True, shell=True, stderr=subprocess.STDOUT,
-                                       input="import(ACE1pack)\nprint(pathof(ACE1pack))\n")
-    print("BOB raw ace_path", ace_path)
-    if len(ace_path.strip()) == 0:
-        raise RuntimeError("Failed to find pathof(ACE1pack)")
+    try:
+        ace_path = subprocess.check_output(shlex.split(julia_exec), text=True, shell=True, stderr=subprocess.STDOUT,
+                                           input="import(ACE1pack)\nprint(pathof(ACE1pack))\n")
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError("Failed to find path of ACE1pack") from exc
     ace_path = Path(ace_path)
     ace_path = ace_path.resolve().parent.parent
 
