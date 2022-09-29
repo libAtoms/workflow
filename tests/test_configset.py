@@ -85,14 +85,14 @@ def test_list_list_list_Atoms(ats):
     cs = ConfigSet(ats_i)
     check_ConfigSet(cs, locs, gather_numbers(ats_i))
 
-def test_single_file_single_Atoms(ats):
+def test_single_file_single_Atoms(tmp_path, ats):
     print("CHECK single file with single Atoms")
     ase.io.write(tmp_path / "ats.xyz", ats[0])
     cs = ConfigSet(tmp_path / "ats.xyz")
     locs = [" / 0"]
     check_ConfigSet(cs, locs, gather_numbers([ats[0]]))
 
-def test_single_file_mult_Atoms(ats):
+def test_single_file_mult_Atoms(tmp_path, ats):
     print("CHECK single file with mult Atoms")
     ase.io.write(tmp_path / "ats.xyz", ats[0:5])
     cs = ConfigSet(tmp_path / "ats.xyz")
