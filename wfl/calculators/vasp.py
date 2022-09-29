@@ -39,11 +39,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
             "default"   : only ones needed for NOMAD uploads ('POSCAR', 'INCAR', 'KPOINTS', 'OUTCAR', 'vasprun.xml', 'vasp.out')
             list(str)   : list of file globs to save
     rundir: str / Path, default 'run\_VASP\_'
-        Run directory name prefix (or full name - see reuse_rundir)
-    reuse_rundir: bool, default False
-        Treat rundir as a fixed directory, rather than a prefix to a unique dir name.
-        WARNING: Do not set rundir to an existing directory with other files, because they
-        may be deleted by clean_rundir() at the end of the calculation.
+        Run directory name prefix
     workdir: str / Path, default . at calculate time
         Path in which rundir will be created.
     scratchdir: str / Path, default None
@@ -67,8 +63,8 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
         "lcharg": False,
     })
 
-    def __init__(self, keep_files="default", rundir="run_VASP_", reuse_rundir=False,
-                 workdir=".", scratchdir=None, command_gamma=None, **kwargs):
+    def __init__(self, keep_files="default", rundir_prefix="run_VASP_",
+                 workdir=None, scratchdir=None, command_gamma=None, **kwargs):
 
         # get initialparams from env var
         kwargs_use = {}
@@ -90,7 +86,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
         self._command_gamma = command_gamma
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
-        super().__init__(keep_files=keep_files, rundir=rundir, reuse_rundir=reuse_rundir,
+        super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
                          workdir=workdir, scratchdir=scratchdir, **kwargs_use)
 
     def per_config_setup(self, atoms, nonperiodic):

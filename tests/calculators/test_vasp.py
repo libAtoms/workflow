@@ -205,7 +205,6 @@ def test_vasp_to_SPC(tmp_path):
     assert 'forces' in ats[0].calc.results
     # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
 
-####################################################################################################
 
 def test_vasp_VASP_PP_PATH(tmp_path, monkeypatch):
     ase.io.write(tmp_path / 'vasp_in.xyz', Atoms('Si', cell=(2, 2, 2), pbc=[False] * 3), format='extxyz')
@@ -219,27 +218,6 @@ def test_vasp_VASP_PP_PATH(tmp_path, monkeypatch):
     )
 
     run_dir = list(tmp_path.glob('run_VASP_*'))
-    nfiles = len(list(os.scandir(run_dir[0])))
-
-    assert nfiles == 18
-
-    ats = list(configs_eval)
-    assert 'TEST_energy' in ats[0].info
-    assert 'TEST_forces' in ats[0].arrays
-    # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
-
-def test_vasp_reuse_rundir(tmp_path, monkeypatch):
-    ase.io.write(tmp_path / 'vasp_in.xyz', Atoms('Si', cell=(2, 2, 2), pbc=[False] * 3), format='extxyz')
-
-    monkeypatch.setenv("VASP_PP_PATH", os.environ['PYTEST_VASP_POTCAR_DIR'])
-    configs_eval = generic.run(
-        inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
-        outputs=OutputSpec('vasp_out.gamma.xyz', file_root=tmp_path),
-        calculator=Vasp(workdir=tmp_path, rundir="run_VASP", reuse_rundir=True, encut=200, keep_files=True),
-        output_prefix='TEST_', 
-    )
-
-    run_dir = list(tmp_path.glob('run_VASP'))
     nfiles = len(list(os.scandir(run_dir[0])))
 
     assert nfiles == 18
