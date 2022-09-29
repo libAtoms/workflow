@@ -713,35 +713,38 @@ must include calculator_name in [“CASTEP”, “VASP”]</p></li>
 <p>Quantum Espresso interface</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.calculators.espresso.</span></span><span class="sig-name descname"><span class="pre">Espresso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'run_QE_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratch_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.Espresso" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ase.calculators.espresso.Espresso</span></code></p>
-<p>Extension of ASE’s Espresso calculator</p>
-<dl class="simple">
-<dt>dir_prefix: str, default ‘QE-run_’</dt><dd><p>directory name prefix for calculations</p>
-</dd>
-<dt>keep_files: bool / None / “default” / list(str), default “default”</dt><dd><dl class="simple">
-<dt>what kind of files to keep from the run</dt><dd><ul class="simple">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.calculators.espresso.</span></span><span class="sig-name descname"><span class="pre">Espresso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rundir_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'run_QE_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratchdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_exec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.Espresso" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ase.calculators.espresso.Espresso</span></code></p>
+<p>Extension of ASE’s Espresso calculator that can be used by wfl.calculators.generic</p>
+<p>“directory” argument cannot be present. Use rundir_prefix and workdir instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keep_files</strong> (<em>bool / None / &quot;default&quot; / list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default &quot;default&quot;</em>) – <dl class="simple">
+<dt>what kind of files to keep from the run</dt><dd><ul>
 <li><p>True : everything kept</p></li>
 <li><p>None, False : nothing kept, unless calculation fails</p></li>
-<li><p>“default”   : only ones needed for NOMAD uploads (‘*.pwo’)</p></li>
+<li><p>”default”   : only ones needed for NOMAD uploads (‘*.pwo’)</p></li>
 <li><p>list(str)   : list of file globs to save</p></li>
 </ul>
 </dd>
 </dl>
-</dd>
-<dt>scratch_path: str, default None</dt><dd><p>temporary directory to execute calculations in and delete
-or copy back results if needed (set by “keep_files”).
-For example, directory on an SSD with fast file io.</p>
-</dd>
-<dt>calculator_command: str</dt><dd><p>command for QE, without any prefix or redirection set.
-for example: “mpirun -n 4 /path/to/pw.x”</p>
+</p></li>
+<li><p><strong>rundir_prefix</strong> (<em>str / Path</em><em>, </em><em>default 'run_QE_'</em>) – Run directory name prefix</p></li>
+<li><p><strong>workdir</strong> (<em>str / Path</em><em>, </em><em>default . at calculate time</em>) – Path in which rundir will be created.</p></li>
+<li><p><strong>scratchdir</strong> (<em>str / Path</em><em>, </em><em>default None</em>) – temporary directory to execute calculations in and delete or copy back results (set by
+“keep_files”) if needed.  For example, directory on a local disk with fast file I/O.</p></li>
+<li><p><strong>calculator_exec</strong> (<em>str</em>) – command for QE, without any prefix or redirection set.
+for example: “mpirun -n 4 /path/to/pw.x”
+mutually exclusive with “command”</p></li>
+<li><p><strong>**kwargs</strong> (<em>arguments for ase.calculators.espresso.Espresso</em>) – </p></li>
+</ul>
 </dd>
 </dl>
-<p><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: arguments for ase.calculators.espresso.Espresso</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.calculate">
 <span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['energy',</span> <span class="pre">'forces',</span> <span class="pre">'stress']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_changes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['positions',</span> <span class="pre">'numbers',</span> <span class="pre">'cell',</span> <span class="pre">'pbc',</span> <span class="pre">'initial_charges',</span> <span class="pre">'initial_magmoms']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.Espresso.calculate" title="Permalink to this definition">#</a></dt>
-<dd><p>Does the calculation. Handles the working directories in addition to regular
+<dd><p>Do the calculation. Handles the working directories in addition to regular
 ASE calculation operations (writing input, executing, reading_results)
 Reimplements &amp; extends GenericFileIOCalculator.calculate() for the development version of ASE
 or FileIOCalculator.calculate() for the v3.22.1</p>
@@ -764,8 +767,8 @@ can’t ever be sure it’s not needed anymore, so let’s not do it automatical
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.setup_params_for_this_calc">
-<span class="sig-name descname"><span class="pre">setup_params_for_this_calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.Espresso.setup_params_for_this_calc" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.setup_calc_params">
+<span class="sig-name descname"><span class="pre">setup_calc_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.Espresso.setup_calc_params" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -914,39 +917,64 @@ str with length 0 is forbidden</p></li>
 <div class="section" id="module-wfl.calculators.vasp">
 <span id="wfl-calculators-vasp-module"></span><h2>wfl.calculators.vasp module<a class="headerlink" href="#module-wfl.calculators.vasp" title="Permalink to this headline">#</a></h2>
 <p>VASP calculator</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.calculators.vasp.evaluate_autopara_wrappable">
-<span class="sig-prename descclassname"><span class="pre">wfl.calculators.vasp.</span></span><span class="sig-name descname"><span class="pre">evaluate_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'run_VASP_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'VASP_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.vasp.evaluate_autopara_wrappable" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate a configuration with VASP</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.calculators.vasp.Vasp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.calculators.vasp.</span></span><span class="sig-name descname"><span class="pre">Vasp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rundir_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'run_VASP_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratchdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_exec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_exec_gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.vasp.Vasp" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ase.calculators.vasp.vasp.Vasp</span></code></p>
+<p>Extension of ASE’s Vasp calculator that can be used by wfl.calculators.generic</p>
+<p class="rubric">Notes</p>
+<p>“directory” argument cannot be present. Use rundir_prefix and workdir instead.
+“pp” defaults to “.”, so VASP_PP_PATH env var is absolute path to “&lt;elem name&gt;/POTCAR” files</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>Atoms / list</em><em>(</em><em>Atoms</em><em>)</em>) – input atomic configs</p></li>
-<li><p><strong>workdir_root</strong> (<em>path-like</em><em>, </em><em>default os.getcwd</em><em>(</em><em>)</em>) – directory to put calculation directories into</p></li>
-<li><p><strong>dir_prefix</strong> (<em>str</em><em>, </em><em>default 'VASP_run_'</em>) – directory name prefix for calculations</p></li>
-<li><p><strong>calculator_command</strong> (<em>str</em>) – command to run for vasp (overrides VASP_COMMAND and VASP_COMMAND_GAMMA)</p></li>
-<li><p><strong>calculator_kwargs</strong> (<em>dict</em>) – arguments to Vasp, plus optional additional keys ‘INCAR_file’ and ‘KPOINTS_file’.  Normal VASP calculator
-keys override contents of INCAR and KPOINTS.  To avoid ASE Vasp’s annoying default POTCAR path
-heuristics, key VASP_PP_PATH will be used to set corresponding env var (directory above &lt;chem_symbol&gt;/POTCAR),
-and if ‘pp’ (extra path below VASP_PP_PATH) is not specified it will default to ‘.’, rather than to guess
-based on XC.</p></li>
-<li><p><strong>output_prefix</strong> (<em>str / None</em><em>, </em><em>default 'VASP_'</em>) – prefix for info/arrays keys where results will be saved, None for SinglePointCalculator</p></li>
-<li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>'energy'</em><em>, </em><em>'forces'</em><em>, </em><em>'stress'</em><em>]</em>) – properties to calculate.  Note that ‘energy’ is used to calculate force-consistent
-value (ASE’s ‘free_energy’)</p></li>
 <li><p><strong>keep_files</strong> (<em>bool / None / &quot;default&quot; / list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default &quot;default&quot;</em>) – <dl class="simple">
-<dt>what kind of files to keep from the run</dt><dd><p>True : everything kept
+<dt>what kind of files to keep from the run</dt><dd><p>True, “*” : everything kept
 None, False : nothing kept
-“default”   : only ones needed for NOMAD uploads (‘POSCAR’, ‘INCAR’, ‘KPOINTS’, ‘OUTCAR’, ‘vasprun.xyz’)
+“default”   : only ones needed for NOMAD uploads (‘POSCAR’, ‘INCAR’, ‘KPOINTS’, ‘OUTCAR’, ‘vasprun.xml’, ‘vasp.out’)
 list(str)   : list of file globs to save</p>
 </dd>
 </dl>
 </p></li>
+<li><p><strong>rundir_prefix</strong> (<em>str / Path</em><em>, </em><em>default 'run_VASP_'</em>) – Run directory name prefix</p></li>
+<li><p><strong>workdir</strong> (<em>str / Path</em><em>, </em><em>default . at calculate time</em>) – Path in which rundir will be created.</p></li>
+<li><p><strong>scratchdir</strong> (<em>str / Path</em><em>, </em><em>default None</em>) – temporary directory to execute calculations in and delete or copy back results (set by
+“keep_files”) if needed.  For example, directory on a local disk with fast file I/O.</p></li>
+<li><p><strong>calculator_exec</strong> (<em>str</em>) – executable to run (without ASE-specific command line arguments). Mutually exclusive with ASE-built-in “command”</p></li>
+<li><p><strong>calculator_exec_gamma</strong> (<em>str</em>) – executable to run for nonperiodic systems (overrides ASE_VASP_COMMAND_GAMMA, VASP_COMMAND_GAMMA, VASP_SCRIPT_GAMMA).
+Mutually exclusive with ASE-built-in “command” and “command_gamma”</p></li>
+<li><p><strong>**kwargs</strong> (<em>arguments for ase.calculators.vasp.vasp.Vasp</em>) – remaining arguments to ASE’s Vasp calculator constructor</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Atoms or list(Atoms) with calculated properties</p>
-</dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.vasp.Vasp.calculate">
+<span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['energy',</span> <span class="pre">'forces',</span> <span class="pre">'stress']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_changes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['positions',</span> <span class="pre">'numbers',</span> <span class="pre">'cell',</span> <span class="pre">'pbc',</span> <span class="pre">'initial_charges',</span> <span class="pre">'initial_magmoms']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.vasp.Vasp.calculate" title="Permalink to this definition">#</a></dt>
+<dd><p>Do the calculation. Handles the working directories in addition to regular
+ASE calculation operations (writing input, executing, reading_results)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wfl.calculators.vasp.Vasp.default_parameters">
+<span class="sig-name descname"><span class="pre">default_parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'ismear':</span> <span class="pre">0,</span> <span class="pre">'lcharg':</span> <span class="pre">False,</span> <span class="pre">'lwave':</span> <span class="pre">False}</span></em><a class="headerlink" href="#wfl.calculators.vasp.Vasp.default_parameters" title="Permalink to this definition">#</a></dt>
+<dd><p>Default parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.vasp.Vasp.per_config_restore">
+<span class="sig-name descname"><span class="pre">per_config_restore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.vasp.Vasp.per_config_restore" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.vasp.Vasp.per_config_setup">
+<span class="sig-name descname"><span class="pre">per_config_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonperiodic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.vasp.Vasp.per_config_setup" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wfl.calculators.vasp.Vasp.wfl_generic_num_inputs_per_python_subprocess">
+<span class="sig-name descname"><span class="pre">wfl_generic_num_inputs_per_python_subprocess</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#wfl.calculators.vasp.Vasp.wfl_generic_num_inputs_per_python_subprocess" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
