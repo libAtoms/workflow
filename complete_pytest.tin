@@ -36,7 +36,6 @@ declare -A expected_n=( ["passed"]="107" ["skipped"]="8" ["xfailed"]="2" )
 echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' | while read out; do
     out_n=$(echo $out | sed -e 's/^=* //' -e 's/ .*//' -e 's/,//')
     out_cat=$(echo $out | sed -e 's/.* //' -e 's/,//')
-    echo BOB $out_n $out_cat
     if [[ -z ${expected_n[$out_cat]} ]]; then
         echo "Unexpected result '$out_cat' num $out_n"
     else
