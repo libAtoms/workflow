@@ -127,7 +127,7 @@ def test_generic_autopara_defaults():
     assert "num_inputs_per_python_subprocess=3" in l_stderr.getvalue()
 
 
-def test_generic_DFT_autopara_defaults(monkeypatch):
+def test_generic_DFT_autopara_defaults(tmp_path, monkeypatch):
     ats = [Atoms('Al2', positions=[[0,0,0], [1,1,1]], cell=[10]*3, pbc=[True]*3) for _ in range(50)]
 
     ci = ConfigSet(ats)
@@ -137,6 +137,6 @@ def test_generic_DFT_autopara_defaults(monkeypatch):
 
     # try with DFT calc that overrides default
     sys.stderr = l_stderr
-    at_proc = generic.run(ci, os, Espresso(calculator_command="_DUMMY_"))
+    at_proc = generic.run(ci, os, Espresso(calculator_command="_DUMMY_", workdir=tmp_path))
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=1" in l_stderr.getvalue()

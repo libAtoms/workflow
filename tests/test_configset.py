@@ -85,17 +85,17 @@ def test_list_list_list_Atoms(ats):
     cs = ConfigSet(ats_i)
     check_ConfigSet(cs, locs, gather_numbers(ats_i))
 
-def test_single_file_single_Atoms(ats):
+def test_single_file_single_Atoms(tmp_path, ats):
     print("CHECK single file with single Atoms")
-    ase.io.write("ats.xyz", ats[0])
-    cs = ConfigSet("ats.xyz")
+    ase.io.write(tmp_path / "ats.xyz", ats[0])
+    cs = ConfigSet(tmp_path / "ats.xyz")
     locs = [" / 0"]
     check_ConfigSet(cs, locs, gather_numbers([ats[0]]))
 
-def test_single_file_mult_Atoms(ats):
+def test_single_file_mult_Atoms(tmp_path, ats):
     print("CHECK single file with mult Atoms")
-    ase.io.write("ats.xyz", ats[0:5])
-    cs = ConfigSet("ats.xyz")
+    ase.io.write(tmp_path / "ats.xyz", ats[0:5])
+    cs = ConfigSet(tmp_path / "ats.xyz")
     locs = [f" / {i}" for i in range(5)]
     check_ConfigSet(cs, locs, gather_numbers(ats[0:5]))
 
@@ -124,18 +124,18 @@ def test_mult_files_mult_trees_Atoms(tmp_path, ats):
         ats[i].info["_ConfigSet_loc"] = f" / 0 / {i}"
     for i in range(2, 4):
         ats[i].info["_ConfigSet_loc"] = f" / 1 / {i - 2}"
-    ase.io.write("ats_0.xyz", ats[0:4])
+    ase.io.write(tmp_path / "ats_0.xyz", ats[0:4])
     for i in range(0, 2):
         ats[i+4].info["_ConfigSet_loc"] = f" / 0 / {i}"
     for i in range(2, 4):
         ats[i+4].info["_ConfigSet_loc"] = f" / 1 / {i - 2}"
-    ase.io.write("ats_1.xyz", ats[4:8])
+    ase.io.write(tmp_path / "ats_1.xyz", ats[4:8])
 
     ats_i = [[ats[0:2], ats[2:4]], [ats[4:6], ats[6:8]]]
 
     locs = [f" / {i0} / {i1} / {i2}" for i0 in range(2) for i1 in range(2) for i2 in range(2)]
 
-    cs = ConfigSet(["ats_0.xyz", "ats_1.xyz"])
+    cs = ConfigSet([tmp_path / "ats_0.xyz", tmp_path / "ats_1.xyz"])
     check_ConfigSet(cs, locs, gather_numbers(ats_i))
 
 def test_out_of_order_memory(ats):

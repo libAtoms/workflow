@@ -41,42 +41,32 @@ def quippy():
 
 
 ################################################
-# Skip of slow or remote execution tests
+# Skip particular tests
 # code from Pytest documentation at:
 # https://docs.pytest.org/en/latest/example/simple.html#control-skipping-of-tests-according-to-command-line-option
 #################################################
+wfl_markers = [("slow", "slow tests"),
+               ("remote", "tests of remote execution with ExPyRe"),
+               ("perf", "tests checking performance")]
+
+
 def pytest_addoption(parser):
-    parser.addoption(
-        "--runslow", action="store_true", default=False, help="run slow tests")
-    parser.addoption(
-        "--runremote", action="store_true", default=False, help="run remote execution tests"
-    )
-    parser.addoption(
-        "--runperf", action="store_true", default=False, help="run performance tests")
+    for marker_name, marker_desc in wfl_markers:
+        parser.addoption(f"--run{marker_name}", action="store_true", default=False, help="run " + marker_desc)
 
 
 def pytest_configure(config):
-    config.addinivalue_line("markers", "slow: mark test as slow to run")
-    config.addinivalue_line("markers", "remote: mark test as related to remote execution")
-    config.addinivalue_line("markers", "perf: mark test as testing performance")
+    for marker_name, marker_desc in wfl_markers:
+        config.addinivalue_line("markers", f"{marker_name}: mark {marker_desc}")
 
 
 def pytest_collection_modifyitems(config, items):
-    if not config.getoption("--runslow"):
-        skip_slow = pytest.mark.skip(reason="need --runslow option to run")
-        for item in items:
-            if "slow" in item.keywords:
-                item.add_marker(skip_slow)
-    if not config.getoption("--runremote"):
-        skip_remote = pytest.mark.skip(reason="need --runremote option to run")
-        for item in items:
-            if "remote" in item.keywords:
-                item.add_marker(skip_remote)
-    if not config.getoption("--runperf"):
-        skip_perf = pytest.mark.skip(reason="need --runperf option to run")
-        for item in items:
-            if "perf" in item.keywords:
-                item.add_marker(skip_perf)
+    for marker_name, _ in wfl_markers:
+        if not config.getoption(f"--run{marker_name}"):
+            skip = pytest.mark.skip(reason=f"need --run{marker_name} option to run")
+            for item in items:
+                if marker_name in item.keywords:
+                    item.add_marker(skip)
 
 
 ### fixture for workflow tests that use expyre, namely tests/test_remote_run.py

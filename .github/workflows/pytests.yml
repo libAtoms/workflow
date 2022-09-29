@@ -68,6 +68,14 @@ jobs:
       - name: Install Quippy from PyPI
         run: pip install quippy-ase
 
+      - name: Julia and ace fit
+        run: |
+          wget https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-1.8.1-linux-x86_64.tar.gz
+          tar xzf julia-1.8.1-linux-x86_64.tar.gz
+          # note that this hardwires a particular compatible ACE1pack version
+          echo 'using Pkg; pkg"registry add https://github.com/JuliaRegistries/General"; pkg"registry add https://github.com/JuliaMolSim/MolSim.git"; pkg"add ACE1pack@0.0, ACE1, JuLIP, IPFitting, ASE"' > ace1pack_install.jl
+          ${PWD}/julia-1.8.1/bin/julia ace1pack_install.jl
+
       - name: Install wfl (expyre and universalSOAP are dependencies)
         run: pip install .
 
@@ -84,6 +92,7 @@ jobs:
           make buildcell
           mkdir -p $HOME/bin
           cp src/buildcell/src/buildcell $HOME/bin/
+          cd ..
 
       - name: Install MPI dependencies
         if: env.use-mpi
@@ -128,6 +137,7 @@ jobs:
           export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
           export WFL_NUM_PYTHON_SUBPROCESSES=2
           export OMP_NUM_THREADS=1
+          export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
           pytest --runremote --basetemp $HOME/pytest_plain -rxXs
 
       - name: Test with pytest - coverage
@@ -140,6 +150,7 @@ jobs:
           export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
           export WFL_NUM_PYTHON_SUBPROCESSES=2
           export OMP_NUM_THREADS=1
+          export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
           pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs
 
       # - name: Setup tmate session
@@ -163,6 +174,7 @@ jobs:
           export WFL_MPIPOOL=2
           export WFL_NUM_PYTHON_SUBPROCESSES=2
           export OMP_NUM_THREADS=1
+          export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
           mpirun -n 2 pytest --cov=wfl --cov-report term --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --with-mpi -k mpi --cov-append
 
       - name: 'Upload Coverage Data'
