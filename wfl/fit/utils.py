@@ -9,11 +9,13 @@ import shlex
 from ase.constraints import voigt_6_to_full_3x3_stress
 
 from wfl.autoparallelize.remoteinfo import RemoteInfo
+from wfl.utils.julia import julia_exec_path
 
 
-def ace_fit_jl_path(julia_exec):
+def ace_fit_jl_path():
+    julia_exec = julia_exec_path()
     ace_path = Path(subprocess.check_output(shlex.split(julia_exec), text=True, input="import(ACE1pack)\nprint(pathof(ACE1pack)\n)")).parent.parent
-    return str(ace_path / "scripts" / "ace_fit.jl")
+    return julia_exec + " " + str(ace_path / "scripts" / "ace_fit.jl")
 
 
 def fix_stress_virial(configs, ref_property_keys, stress_key):

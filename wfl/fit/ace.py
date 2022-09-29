@@ -262,9 +262,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
         if "WFL_ACE_FIT_COMMAND" in os.environ:
             ace_fit_command = os.environ["WFL_ACE_FIT_COMMAND"]
         else:
-            julia_exec = julia_exec_path()
-            ace_fit_jl = ace_fit_jl_path(julia_exec)
-            ace_fit_command = julia_exec + ' ' + ace_fit_jl
+            ace_fit_command = ace_fit_jl_path()
 
             warnings.warn(f"Automatically found ace fit command {ace_fit_command}")
 
