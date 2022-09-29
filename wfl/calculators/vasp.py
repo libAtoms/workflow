@@ -45,8 +45,12 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
     scratchdir: str / Path, default None
         temporary directory to execute calculations in and delete or copy back results (set by
         "keep_files") if needed.  For example, directory on a local disk with fast file I/O.
-    command_gamma: str
-        command to run vasp for nonperiodic systems (overrides ASE_VASP_COMMAND_GAMMA, VASP_COMMAND_GAMMA, VASP_SCRIPT_GAMMA)
+
+    calculator_exec: str
+        executable to run (without ASE-specific command line arguments). Mutually exclusive with ASE-built-in "command"
+    calculator_exec_gamma: str
+        executable to run for nonperiodic systems (overrides ASE_VASP_COMMAND_GAMMA, VASP_COMMAND_GAMMA, VASP_SCRIPT_GAMMA).
+        Mutually exclusive with ASE-built-in "command" and "command_gamma"
     **kwargs: arguments for ase.calculators.vasp.vasp.Vasp
         remaining arguments to ASE's Vasp calculator constructor
     """
@@ -64,7 +68,9 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
     })
 
     def __init__(self, keep_files="default", rundir_prefix="run_VASP_",
-                 workdir=None, scratchdir=None, command_gamma=None, **kwargs):
+                 workdir=None, scratchdir=None,
+                 calculator_exec=None, calculator_exec_gamma=None,
+                 **kwargs):
 
         # get initialparams from env var
         kwargs_use = {}
@@ -83,7 +89,16 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
         if "pp" not in kwargs_use:
             kwargs_use["pp"] = "."
 
-        self._command_gamma = command_gamma
+        if calculator_exec is not None:
+            if "command" in kwargs_use or "command_gamma" in kwargs_use:
+                raise ValueError("Cannot specify both calculator_exec and command or command_gamma")
+            self.command = calculator_exec
+        if calculator_exec_gamma is not None:
+            if "command" in kwargs_use or "command_gamma" in kwargs_use:
+                raise ValueError("Cannot specify both calculator_exec_gamma and command or command_gamma")
+            self._command_gamma = calculator_exec_gamma
+        else:
+            self._command_gamma = kwargs_use.pop("command_gamma", None)
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
