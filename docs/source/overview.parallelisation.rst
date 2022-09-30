@@ -119,3 +119,9 @@ there is an ``initializer`` argument to ``autoparallelize()`` (see ``wfl.generat
 
 There are many examples of this, including the descriptor calculator, and (with initializers) md and minim. 
 
+****************************************
+TODO
+****************************************
+
+- add schematic code (parallelisation and configset) example with link to actual example
+- add parallelisation diagram
