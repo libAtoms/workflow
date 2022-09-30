@@ -55,7 +55,7 @@ generic.run(
 
 - `generic.run()` is the main function that is used to parallelise any* ASE calculator. It returns a ConfigSet object with configs containing the results. 
 - `ConfigSet` and `OutputSpec` are used to specify where to read the atomic configs from and write the processed configs to. There are a number of ways to specify read/write destination (e.g. `list(Atoms)` or file(s) as above) when creating `ConfigSet` and `OutputSpec`, but functions such as `generic.run()` can have a consistent behaviour irrespective of where the configs came from. 
-- `calculator` is specified in a way that is pickleable and may be used in spawned processes of `multiprocessing` package that is used by Workflow. It should be given as a tuple of `(calculator_initialiser_function, arguments, keyword_arguments)`. For example, if a quippy calculator is normally instantiated as 
+- `calculator` is specified in a way that is pickleable and may be used in spawned processes of `multiprocessing` package that is used by Workflow. It should be given as a tuple of `(calculator_constructor_function, arguments, keyword_arguments)`. For example, if a quippy calculator is normally instantiated as 
 
     ```
     from quippy.potential import Potential
@@ -72,7 +72,7 @@ generic.run(
 - `output_prefix` is prepended to each of the calculated properties, saved in `Atoms.info` or `Atoms.arrays` as appropriate. 
 - `autopara_info` is used to control the parallelisation. `num_python_subprocesses` specifies how many parallel processes to spawn; a common option is to set as many as cores available for the job. More conveniently, `num_python_subprocesses` is set via a `WFL_NUM_PYTHON_SUBPROCESSES` environment variable. 
 
-### Complete script
+## Complete script
 
 `evaluate_emt.py`
 ```

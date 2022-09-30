@@ -1,6 +1,6 @@
 # Generating Atomic Structures
 
-This page (and submodules of `wfl.generate`) cover self-contained operations that loosely cover creating new atomic structures, or modifying existing ones. 
+This page (and submodules of `wfl.generate`) cover self-contained operations that loosely cover creating new atomic structures or modifying existing ones. 
 
 ## Atoms and Dimers
 
