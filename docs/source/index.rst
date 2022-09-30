@@ -37,8 +37,8 @@ Please find the code, raise issues and cotribute at https://github.com/libAtoms/
     First example <first_example.md>
     Overview <overview.rst>
     Operations <operations.rst>
-    Workflows <workflows.rst>
     Examples <examples.rst>
+    GAP-RSS <workflows.rss.rst>
     Modules <modules.rst>
 
 * :ref:`genindex`
