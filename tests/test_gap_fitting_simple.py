@@ -120,5 +120,5 @@ def test_fitting_gap_cli_remote(quippy, tmp_path, expyre_systems, monkeypatch, r
 
         remoteinfo_env(ri)
 
-        monkeypatch.setenv('WFL_GAP_SIMPLE_FIT_EXPYRE_INFO', json.dumps(ri))
+        monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
         test_fitting_gap_cli(quippy, tmp_path)

@@ -6,8 +6,8 @@ name: Python Package and tests
 
 # on all push actions AND can be triggered manually as well
 on:
-  push:
   workflow_dispatch:
+  pull_request:
 
 jobs:
   build-and-test:
@@ -38,21 +38,46 @@ jobs:
       - name: Install pip from Conda
         run: conda install pip
 
-      - name: Install phono3py from Conda forge
-        run: conda install -c conda-forge phono3py h5py
-
       - name: Install dependencies from pip (some will already be taken care of by conda's phonop3py and its dependencies)
-        run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib phonopy phono3py rdkit-pypi flake8 pytest pytest-cov
+        run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib rdkit-pypi flake8 pytest pytest-cov
+
+      - name: Install intel-mkl-full for phono3py
+        run: |
+          wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
+          sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
+          sudo sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list'
+          sudo apt-get update
+          sudo apt-get install intel-mkl-64bit-2018.2-046
+
+      - name: Install phono3py from source
+        run: |
+            source /opt/intel/compilers_and_libraries_2018.2.199/linux/mkl/bin/mklvars.sh intel64
+
+            git clone https://github.com/phonopy/phonopy
+            cd phonopy
+            python3 setup.py build
+            python3 -m pip install .
+            cd ..
+
+            git clone https://github.com/phonopy/phono3py
+            cd phono3py
+            python3 setup.py build
+            python3 setup.py install
+            cd ..
 
       - name: Install Quippy from PyPI
         run: pip install quippy-ase
 
+      - name: Julia and ace fit
+        run: |
+          wget https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-1.8.1-linux-x86_64.tar.gz
+          tar xzf julia-1.8.1-linux-x86_64.tar.gz
+          # note that this hardwires a particular compatible ACE1pack version
+          echo 'using Pkg; pkg"registry add https://github.com/JuliaRegistries/General"; pkg"registry add https://github.com/JuliaMolSim/MolSim.git"; pkg"add ACE1pack@0.0, ACE1, JuLIP, IPFitting, ASE"' > ace1pack_install.jl
+          ${PWD}/julia-1.8.1/bin/julia ace1pack_install.jl
+
       - name: Install wfl (expyre and universalSOAP are dependencies)
         run: pip install .
-
-      - name: Update apt-get for various later package instralls
-        run: |
-          sudo apt-get update
 
       - name: Install Quantum Espresso
         run: |
@@ -67,6 +92,7 @@ jobs:
           make buildcell
           mkdir -p $HOME/bin
           cp src/buildcell/src/buildcell $HOME/bin/
+          cd ..
 
       - name: Install MPI dependencies
         if: env.use-mpi
@@ -109,6 +135,9 @@ jobs:
           #
           export EXPYRE_PYTEST_SYSTEMS=github
           export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
+          export WFL_NUM_PYTHON_SUBPROCESSES=2
+          export OMP_NUM_THREADS=1
+          export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
           pytest --runremote --basetemp $HOME/pytest_plain -rxXs
 
       - name: Test with pytest - coverage
@@ -119,13 +148,23 @@ jobs:
           #
           export EXPYRE_PYTEST_SYSTEMS=github
           export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
+          export WFL_NUM_PYTHON_SUBPROCESSES=2
+          export OMP_NUM_THREADS=1
+          export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
           pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs
+
+      # - name: Setup tmate session
+      #   if: failure()
+      #   uses: mxschmitt/action-tmate@v3
+      #   timeout-minutes: 15
 
       - name: MPI tests -- plain
         if: ${{ env.use-mpi && env.coverage-on-version != matrix.python-version}}
         run: |
           # envvar and test run - No coverage
           export WFL_MPIPOOL=2
+          export WFL_NUM_PYTHON_SUBPROCESSES=2
+          export OMP_NUM_THREADS=1
           mpirun -n 2 pytest --with-mpi -k mpi
 
       - name: MPI tests -- coverage
@@ -133,6 +172,9 @@ jobs:
         run: |
           # envvar and coverage Appended to the previous
           export WFL_MPIPOOL=2
+          export WFL_NUM_PYTHON_SUBPROCESSES=2
+          export OMP_NUM_THREADS=1
+          export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
           mpirun -n 2 pytest --cov=wfl --cov-report term --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --with-mpi -k mpi --cov-append
 
       - name: 'Upload Coverage Data'

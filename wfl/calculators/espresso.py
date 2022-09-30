@@ -3,203 +3,185 @@ Quantum Espresso interface
 """
 
 import os
-import pathlib
 import tempfile
 import subprocess
 import warnings
+import shutil
+import shlex
 
+from copy import deepcopy
+from pathlib import Path
 import numpy as np
+
 from ase import Atoms
-from ase.calculators.calculator import all_changes, CalculationFailed
-from ase.calculators.espresso import Espresso
+from ase.calculators.calculator import all_changes
+from ase.calculators.espresso import Espresso as ASE_Espresso
 try:
     from ase.calculators.espresso import EspressoProfile
 except ImportError:
     EspressoProfile = None
 from ase.io.espresso import kspacing_to_grid
 
+from .wfl_fileio_calculator import WFLFileIOCalculator
 from .utils import clean_rundir, handle_nonperiodic, save_results
 from ..utils.misc import atoms_to_list
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
-__default_keep_files = ["*.pwo"]
-__default_properties = ["energy", "forces", "stress"]
+_default_keep_files = ["*.pwo"]
+_default_properties = ["energy", "forces", "stress"]           # done as "implemented_propertie"
 
 
-def evaluate_autopara_wrappable(
-    atoms,
-    workdir_root=None,
-    dir_prefix="run_QE_",
-    calculator_command=None,
-    calculator_kwargs=None,
-    output_prefix="QE_",
-    properties=None,
-    keep_files="default",
-):
-    """Evaluate a configuration with Quantum Espresso
+class Espresso(WFLFileIOCalculator, ASE_Espresso):
+    """Extension of ASE's Espresso calculator that can be used by wfl.calculators.generic
+
+    "directory" argument cannot be present. Use rundir_prefix and workdir instead.
 
     Parameters
     ----------
-    atoms: Atoms / list(Atoms)
-        input atomic configs
-    workdir_root: path-like, default os.getcwd()
-        directory to put calculation directories into
-    dir_prefix: str, default 'QE-run\_'
-        directory name prefix for calculations
-    calculator_command: str
-        command for QE, without any prefix or redirection set.
-        for example: "mpirun -n 4 /path/to/pw.x"
-    calculator_kwargs : dict
-    output_prefix : str / None, default 'QE\_'
-        prefix for info/arrays keys, None for SinglePointCalculator
-    properties : list(str), default None
-        ase-compatible property names, None for default list (energy, forces, stress)
     keep_files: bool / None / "default" / list(str), default "default"
         what kind of files to keep from the run
             - True : everything kept
             - None, False : nothing kept, unless calculation fails
             - "default"   : only ones needed for NOMAD uploads ('\*.pwo')
             - list(str)   : list of file globs to save
+    rundir_prefix: str / Path, default 'run\_QE\_'
+        Run directory name prefix
+    workdir: str / Path, default . at calculate time
+        Path in which rundir will be created.
+    scratchdir: str / Path, default None
+        temporary directory to execute calculations in and delete or copy back results (set by
+        "keep_files") if needed.  For example, directory on a local disk with fast file I/O.
+    calculator_exec: str
+        command for QE, without any prefix or redirection set.
+        for example: "mpirun -n 4 /path/to/pw.x"
+        mutually exclusive with "command"
 
-    Returns
-    -------
-        Atoms or list(Atoms) with calculated properties
+    **kwargs: arguments for ase.calculators.espresso.Espresso
     """
-    # use list of atoms in any case
-    at_list = atoms_to_list(atoms)
+    implemented_properties = ["energy", "forces", "stress"]
 
-    # default properties
-    if properties is None:
-        properties = __default_properties
+    # new default value of num_inputs_per_python_subprocess for calculators.generic,
+    # to override that function's built-in default of 10
+    wfl_generic_def_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
-    # keyword setup
-    if calculator_kwargs is None:
-        raise ValueError("QE will not perform a calculation without settings given!")
+    def __init__(self, keep_files="default", rundir_prefix="run_QE_",
+                 workdir=None, scratchdir=None,
+                 calculator_exec=None, **kwargs):
 
-    if workdir_root is None:
-        # using the current directory
-        workdir_root = os.getcwd()
-    else:
-        pathlib.Path(workdir_root).mkdir(parents=True, exist_ok=True)
-
-    for at in at_list:
-
-        # periodicity
-        kwargs_this_calc, properties_use = qe_kpoints_and_kwargs(
-            at, calculator_kwargs, properties
-        )
-
-        if calculator_command is not None:
+        kwargs_command = deepcopy(kwargs)
+        if calculator_exec is not None:
+            if "command" in kwargs:
+                raise ValueError("Cannot specify both calculator_exec and command")
             if EspressoProfile is None:
                 # older syntax
-                kwargs_this_calc["command"] = f"{calculator_command} -in PREFIX.pwi > PREFIX.pwo"
+                kwargs_command["command"] = f"{calculator_exec} -in PREFIX.pwi > PREFIX.pwo"
             else:
+                if " -in " in calculator_exec:
+                    raise ValueError("calculator_exec should not include espresso command line arguments such as ' -in PREFIX.pwi'")
                 # newer syntax
-                kwargs_this_calc['profile'] = EspressoProfile(argv=calculator_command.split())
+                kwargs_command["profile"] = EspressoProfile(argv=shlex.split(calculator_exec))
 
-        # create temp dir and calculator
-        rundir = tempfile.mkdtemp(dir=workdir_root, prefix=dir_prefix)
-        at.calc = Espresso(directory=rundir, **kwargs_this_calc)
+        # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
+        super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
+                         workdir=workdir, scratchdir=scratchdir, **kwargs_command)
 
-        # calculate
-        calculation_succeeded = False
+        # we modify the parameters in self.calculate() based on the individual atoms object,
+        # so let's make a copy of the initial parameters
+        self.initial_parameters = deepcopy(self.parameters)
+
+
+    def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
+        """Do the calculation. Handles the working directories in addition to regular
+        ASE calculation operations (writing input, executing, reading_results)
+        Reimplements & extends GenericFileIOCalculator.calculate() for the development version of ASE
+        or FileIOCalculator.calculate() for the v3.22.1"""
+
+        if atoms is not None:
+            self.atoms = atoms.copy()
+
+        # this may modify self.parameters, will reset them back to initial after calculation
+        properties = self.setup_calc_params(properties)
+
+        # from WFLFileIOCalculator
+        self.setup_rundir()
+
         try:
-            at.calc.calculate(at, properties=properties_use, system_changes=all_changes)
-            calculation_succeeded = True
-            if 'DFT_FAILED_ESPRESSO' in at.info:
-                del at.info['DFT_FAILED_ESPRESSO']
+            super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
+            calculation_succeeded=True
+            if 'DFT_FAILED_ESPRESSO' in atoms.info:
+                del atoms.info['DFT_FAILED_ESPRESSO']
         except Exception as exc:
-            # CalculationFailed is probably what's supposed to be returned
-            # for failed convergence, Espresso currently returns subprocess.CalledProcessError
-            #     since pw.x returns a non-zero status
-            warnings.warn(f'Calculation failed with exc {exc}')
-            at.info['DFT_FAILED_ESPRESSO'] = True
+            atoms.info['DFT_FAILED_ESPRESSO'] = True
+            calculation_succeeded=False
+            raise exc
+        finally:
+            # from WFLFileIOCalculator
+            self.clean_rundir(_default_keep_files, calculation_succeeded)
 
-        # save results
-        if calculation_succeeded:
-            save_results(at, properties_use, output_prefix)
+            # Return the parameters to what they were when the calculator was initialised.
+            # There is likely a more ASE-appropriate way with self.set() and self.reset(), etc.
+            self.parameters = deepcopy(self.initial_parameters)
 
-        # clean run directory
-        clean_rundir(rundir, keep_files, __default_keep_files, calculation_succeeded)
+    def setup_calc_params(self, properties):
 
-    if isinstance(atoms, Atoms):
-        return at_list[0]
-    else:
-        return at_list
+        # first determine if we do a non-periodic calculation.
+        # and update the properties that we will use.
+        nonperiodic, properties = handle_nonperiodic(self.atoms, properties, allow_mixed=True)
 
+        # update the parameters with the cool wfl logic
+        self.parameters["tprnfor"] = "forces" in properties
+        self.parameters["tstress"] = "stress" in properties
 
-def qe_kpoints_and_kwargs(
-    atoms: Atoms, kwargs: dict, properties: list,
-):
-    """Handle K-Points in QE for any periodicity
-
-    - stress is only calculated if all directions are periodic
-    - gamma point is used if none of the directions are periodic
-    - single K-Point is used in any direction which is not periodic
-
-    Parameters
-    ----------
-    atoms: Atoms
-    kwargs: dict
-        QE calculator's intended keyword arguments
-    properties: list
-        ASE-compatible property name list for calculation
-
-    Returns
-    -------
-    modified_kwargs: dict
-    properties_use: list
-
-    """
-    # periodicity, allowing mixed periodicity
-    nonperiodic, properties_use = handle_nonperiodic(
-        atoms, properties, allow_mixed=True
-    )
-
-    # a copy of the parameters that we are modifying for each calculation
-    modified_kwargs = dict(kwargs)
-
-    # stress and force calculations need keys
-    modified_kwargs["tprnfor"] = "forces" in properties_use
-    modified_kwargs["tstress"] = "stress" in properties_use
-
-    if nonperiodic:
-        if not np.any(atoms.get_pbc()):
-            # FFF -> gamma point only
-            modified_kwargs["kpts"] = None
-            modified_kwargs["kspacing"] = None
-            modified_kwargs["koffset"] = False
-        else:
-            # mixed T & F
-            if "kspacing" in kwargs:
-                # need to create the grid,
-                # `kspacing` overwrites `kpts`
-                # we set it in there and
-                modified_kwargs["kpts"] = kspacing_to_grid(
-                    atoms, spacing=kwargs["kspacing"] / (2.0 * np.pi)
-                )
-
-            # kspacing None anyways
-            modified_kwargs["kspacing"] = None
-
-            # original, or overwritten from kspacing
-            if "kpts" in modified_kwargs:
-                # any no-periodic direction has 1 k-point only
-                kpts = np.array(modified_kwargs["kpts"])
-                kpts[~atoms.get_pbc()] = 1
-                modified_kwargs["kpts"] = tuple(kpts)
-
-            # k-point offset
-            k_offset = kwargs.get("koffset", False)
-            if k_offset is True:
-                k_offset = (1, 1, 1)
-
-            if k_offset:
-                # set to zero on any non-periodic ones
-                k_offset = np.array(k_offset)
-                k_offset[~atoms.get_pbc()] = 0
-                modified_kwargs["koffset"] = tuple(k_offset)
+        if nonperiodic:
+            if not np.any(self.atoms.get_pbc()):
+                # FFF -> gamma point only
+                self.parameters["kpts"] = None
+                self.parameters["kspacing"] = None
+                self.parameters["koffset"] = False
             else:
-                modified_kwargs["koffset"] = k_offset
+                # mixed T & F
+                if "kspacing" in self.parameters:
+                    # need to create the grid,
+                    # `kspacing` overwrites `kpts`
+                    # we set it in there and
+                    self.parameters["kpts"] = kspacing_to_grid(
+                        self.atoms, spacing=self.parameters["kspacing"] / (2.0 * np.pi)
+                    )
 
-    return modified_kwargs, properties_use
+                # kspacing None anyways
+                self.parameters["kspacing"] = None
+
+                # original, or overwritten from kspacing
+                if "kpts" in self.parameters:
+                    # any no-periodic direction has 1 k-point only
+                    kpts = np.array(self.parameters["kpts"])
+                    kpts[~self.atoms.get_pbc()] = 1
+                    self.parameters["kpts"] = tuple(kpts)
+
+                # k-point offset
+                k_offset = self.parameters.get("koffset", False)
+                if k_offset is True:
+                    k_offset = (1, 1, 1)
+
+                if k_offset:
+                    # set to zero on any non-periodic ones
+                    k_offset = np.array(k_offset)
+                    k_offset[~self.atoms.get_pbc()] = 0
+                    self.parameters["koffset"] = tuple(k_offset)
+                else:
+                    self.parameters["koffset"] = k_offset
+
+        return properties
+
+
+    def cleanup(self):
+        """Clean all (empty) directories that could not have been removed
+        immediately after the calculation, for example, because other parallel
+        process might be using them.
+        Done because `self.workdir_root` gets created upon initialisation, but we
+        can't ever be sure it's not needed anymore, so let's not do it automatically."""
+        if any(self.workdir_root.iterdir()):
+            print(f'{self.workdir_root.name} is not empty, not removing')
+        else:
+            self.workdir_root.rmdir()
+

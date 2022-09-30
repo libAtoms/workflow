@@ -8,7 +8,7 @@ import spglib
 from ase.atoms import Atoms
 from ase.io.extxyz import key_val_str_to_dict
 
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.round_sig_figs import round_sig_figs
 
 
@@ -126,43 +126,6 @@ def conv_buildcell_out(buildcell_output):
     return ats
 
 
-def run(outputs, config_is, buildcell_cmd, buildcell_input, extra_info=None,
-        perturbation=0.0, skip_failures=True, symprec=0.01, verbose=False):
-    """Creates atomic configurations by repeatedly running buildcell, I/O with OutputSpec
-
-    Parameters
-    ----------
-    outputs: OutputSpec
-        where to write outputs
-    config_is: int / list(int)
-        numbers to set in buildcell_config_i info field
-        length sets number of configs generated
-    buildcell_cmd:
-        `buildcell` executable, including path if needed
-    buildcell_input: str
-        input file contents to buildcell, in the form of a single string
-    extra_info: dict, default {}
-        extra fields to place into created atoms info dict
-    perturbation: float, default 0.0
-        magnitude of perturbation to atomic positions with Atoms.rattle()
-    skip_failures: bool, default True
-        skip failed buildcell calls
-    symprec: float, default 0.01
-        precision for symmetry check
-    verbose: bool, default False
-        print some running info
-
-    Returns
-    ------
-        ConfigSet corresponding to output
-    """
-    if extra_info is None:
-        extra_info = {}
-    return autoparallelize(iterable=config_is, outputspec=outputs, op=run_autopara_wrappable,
-                         buildcell_cmd=buildcell_cmd, buildcell_input=buildcell_input,
-                         extra_info=extra_info, perturbation=perturbation, skip_failures=skip_failures,
-                         verbose=verbose, symprec=symprec)
-
 
 def run_autopara_wrappable(config_is, buildcell_cmd, buildcell_input, extra_info=None,
            perturbation=0.0, skip_failures=True, symprec=0.01, verbose=False):
@@ -243,3 +206,7 @@ def run_autopara_wrappable(config_is, buildcell_cmd, buildcell_input, extra_info
             atoms_list.append(at0)
 
     return atoms_list
+
+def run(*args, **kwargs):
+    return autoparallelize(run_autopara_wrappable, *args, **kwargs)
+run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")

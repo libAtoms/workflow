@@ -5,7 +5,6 @@ import pytest
 from pytest import approx
 
 from wfl.generate import vib
-from wfl.configset import ConfigSet, OutputSpec
 
 def test_getting_normal_modes():
     ref_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),

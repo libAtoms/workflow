@@ -2,6 +2,8 @@ import sys
 
 import numpy as np
 
+from wfl.configset import ConfigSet
+
 
 def _select_by_bin(weights, bin_edges, quantities, n, kT, replace=False, verbose=False):
     if verbose:
@@ -101,6 +103,7 @@ def _select_indices_flat_boltzmann_biased(quantities, n, kT=-1.0, bins='auto', b
         number of samples to return
     kT: float, default -1
         if > 0 temperature to bias by
+        [kT] should have the same unit as the "quantities" parameter
     bins: np.histogram argument, int or sequence of scalars or str, default 'auto'
         value passed to np.histogram bins argument
     by_bin: bool, default True
@@ -142,6 +145,7 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
         Atoms.info key for quantity by which to do flat histogram and Boltzmann bias
     kT: float, default -1
         Boltzmann bias temperature, <= 0 to not bias
+        [kT] should have the same unit as the "info_field" parameter
     bins: np.histogram bins argument, default 'auto'
         argument to pass to np.histogram
     by_bin: bool, default True
@@ -156,7 +160,7 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
     ConfigSet containing output configs
     """
 
-    if outputs.is_done():
+    if outputs.done():
         sys.stderr.write('Returning from {__name__} since output is done\n')
         return outputs.to_ConfigSet()
 
@@ -178,10 +182,10 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
     for at_i, at in enumerate(inputs):
         while selected_i < len(selected_indices) and selected_indices[selected_i] <= at_i:
             if selected_indices[selected_i] == at_i:
-                outputs.write(at)
+                outputs.store(at)
             selected_i += 1
         if selected_i >= len(selected_indices):
             break
 
-    outputs.end_write()
+    outputs.close()
     return outputs.to_ConfigSet()

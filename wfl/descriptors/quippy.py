@@ -8,7 +8,7 @@ try:
 except ModuleNotFoundError:
     pass
 
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.quip_cli_strings import dict_to_quip_str
 
 
@@ -69,42 +69,6 @@ def from_any_to_Descriptor(descriptor_src, verbose=False):
             descs[Zcenter].append(d)
 
     return descs
-
-
-def calc(inputs, outputs, descs, key, local=False, normalize=True, composition_weight=True, force=False, verbose=False):
-    """Calculates descriptors on a set of configs, I/O with ConfigSet/OutputSpec
-
-    Parameters
-    ----------
-    inputs: ConfigSet
-        input configurations
-    outputs: OutputSpec
-        where to write outputs
-    descs: str / list(str) / dict(Z : str)
-        descriptor (string or dict or quippy.descriptors.Descriptor) or list of descriptors (applied to all species) 
-        or dict of descriptors for each species (key is species or None for all species)
-        If global, combined descriptor will be concatenated.  If local and Z is not None, multiple arrays
-        entries will be created, one per Zcenter, named <key>_Z_<Zcenter>.
-    key: str
-        info/arrays key to store descriptor vectors
-    local: bool, default False
-        calculate descriptors for each atom
-    normalize: bool, default True
-        normalize final vector (e.g. if contributions from multiple descriptors were concatenated)
-    composition_weight: bool, default True
-        when concatenating contributions from different species for a global, weight each by composition fraction
-    force: bool, default False
-        overwrite key if already exists
-    verbose: bool, default False
-        verbose output
-
-    Returns
-    -------
-    ConfigSet 
-        OutputSpec.to_ConfigSet() Pointing to outputs
-    """
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=calc_autopara_wrappable, descs=descs, key=key, local=local,
-                         force=force, verbose=verbose, normalize=normalize, composition_weight=composition_weight)
 
 
 def calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, composition_weight=True, force=False, verbose=False):
@@ -229,3 +193,10 @@ def calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, comp
             at.info[key] = combined_vec
 
     return atoms
+
+
+
+def calc(*args, **kwargs):
+    return autoparallelize(calc_autopara_wrappable, *args, **kwargs)
+calc.__doc__ = autoparallelize_docstring(calc_autopara_wrappable.__doc__, "Atoms")
+

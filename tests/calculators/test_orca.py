@@ -111,7 +111,7 @@ def test_orca_with_generic(tmp_path):
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
     atoms = [atoms] * 3 + [Atoms("H")]
-    inputs = ConfigSet(input_configs=atoms)
+    inputs = ConfigSet(atoms)
     outputs = OutputSpec()
 
     calc = ORCA(directory=home_dir, 
@@ -119,7 +119,7 @@ def test_orca_with_generic(tmp_path):
                 mult=1)
 
     generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", num_python_subprocesses=0)
-    for at in outputs.to_ConfigSet():
+    for at in ConfigSet(outputs):
         assert "orca_energy" in at.info or "orca_calculation_failed" in at.info
 
 @pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
@@ -128,7 +128,7 @@ def test_orca_geometry_optimisation(tmp_path):
     home_dir = tmp_path / "home_dir"
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
-    inputs = ConfigSet(input_configs=atoms)
+    inputs = ConfigSet(atoms)
     outputs = OutputSpec()
 
     calc = ORCA(directory=home_dir, 
@@ -139,7 +139,7 @@ def test_orca_geometry_optimisation(tmp_path):
 
     generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", num_python_subprocesses=0)
 
-    out = [at for at in outputs.to_ConfigSet()][0]
+    out = [at for at in ConfigSet(outputs)][0]
 
     assert pytest.approx(out.get_distance(0, 1)) == 0.76812058465248
 
@@ -190,11 +190,11 @@ def test_run_npa(tmp_path):
                 keep_files = ["*.inp", "*.out", "*.janpa"], 
                 post_process=post_func)
 
-    inputs = ConfigSet(input_configs=atoms)
+    inputs = ConfigSet(atoms)
     outputs = OutputSpec()
     generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", num_python_subprocesses=0) 
 
-    atoms = [at for at in outputs.to_ConfigSet()][0]
+    atoms = [at for at in ConfigSet(outputs)][0]
     assert "orca_NPA_electron_population" in atoms.arrays
     assert "orca_NPA_charge" in atoms.arrays
 

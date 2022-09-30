@@ -7,7 +7,7 @@ import spglib
 from ase.constraints import ExpCellFilter
 from ase.optimize.precon import PreconLBFGS
 
-from wfl.autoparallelize import autoparallelize
+from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.at_copy_save_results import at_copy_save_results
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
@@ -31,24 +31,6 @@ def new_log(self, forces=None):
 
 PreconLBFGS.log = new_log
 
-
-# run that operates on ConfigSet, for multiprocessing
-def run(inputs, outputs, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
-        keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
-        results_prefix='optimize_', num_inputs_per_python_subprocess=10, verbose=False, update_config_type=True, **opt_kwargs):
-    # Normally each thread needs to call np.random.seed so that it will generate a different
-    # set of random numbers.  This env var overrides that to produce deterministic output,
-    # for purposes like testing
-    if 'WFL_DETERMINISTIC_HACK' in os.environ:
-        initializer = None
-    else:
-        initializer = np.random.seed
-    return autoparallelize(iterable=inputs, outputspec=outputs, op=run_autopara_wrappable, num_inputs_per_python_subprocess=num_inputs_per_python_subprocess,
-                         calculator=calculator, fmax=fmax, smax=smax, steps=steps,
-                         pressure=pressure, keep_symmetry=keep_symmetry, traj_step_interval=traj_step_interval,
-                         traj_subselect=traj_subselect, skip_failures=skip_failures, results_prefix=results_prefix,
-                         verbose=verbose, update_config_type=update_config_type,
-                         initializer=initializer, hash_ignore=['initializer'], **opt_kwargs)
 
 
 def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
@@ -91,7 +73,6 @@ def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000
     -------
         list(Atoms) trajectories
     """
-
     opt_kwargs_to_use = dict(logfile=None, master=True)
     opt_kwargs_to_use.update(opt_kwargs)
 
@@ -110,9 +91,14 @@ def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000
     all_trajs = []
 
     for at in atoms_to_list(atoms):
+        # original constraints
+        org_constraints = at.constraints
+
         if keep_symmetry:
             sym = FixSymmetry(at)
-            at.set_constraint(sym)
+            # Append rather than overwrite constraints
+            at.set_constraint([*at.constraints, sym])
+
             dataset = spglib.get_symmetry_dataset((at.cell, at.get_scaled_positions(), at.numbers), 0.01)
             if 'buildcell_config_i' in at.info:
                 print(at.info['buildcell_config_i'], end=' ')
@@ -145,7 +131,9 @@ def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000
                 # Do not store those duplicate configs.
                 return
 
-            traj.append(at_copy_save_results(at, results_prefix=results_prefix))
+            new_config = at_copy_save_results(at, results_prefix=results_prefix)
+            new_config.set_constraint(org_constraints)
+            traj.append(new_config)
 
         opt.attach(process_step, interval=traj_step_interval)
 
@@ -167,7 +155,9 @@ def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000
                 raise
 
         if len(traj) == 0 or traj[-1] != at:
-            traj.append(at_copy_save_results(at, results_prefix=results_prefix))
+            new_config = at_copy_save_results(at, results_prefix=results_prefix)
+            new_config.set_constraint(org_constraints)
+            traj.append(new_config)
 
         # set for first config, to be overwritten if it's also last config
         traj[0].info['optimize_config_type'] = 'optimize_initial'
@@ -205,6 +195,23 @@ def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000
     return all_trajs
 
 
+def run(*args, **kwargs):
+    # Normally each thread needs to call np.random.seed so that it will generate a different
+    # set of random numbers.  This env var overrides that to produce deterministic output,
+    # for purposes like testing
+    if 'WFL_DETERMINISTIC_HACK' in os.environ:
+        initializer = (None, [])
+    else:
+        initializer = (np.random.seed, [])
+    def_autopara_info={"initializer":initializer, "num_inputs_per_python_subprocess":10,
+            "hash_ignore":["initializer"]}
+
+    return autoparallelize(run_autopara_wrappable, *args, 
+        def_autopara_info=def_autopara_info, **kwargs)
+run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")
+
+
+
 # Just a placeholder for now. Could perhaps include:
 #    equispaced in energy
 #    equispaced in Cartesian path length
@@ -216,10 +223,12 @@ def subselect_from_traj(traj, subselect=None):
     Parameters
     ----------
     subselect: int or string, default None
-        None: full trajectory is returned
-        int: (not implemented) how many samples to take from the trajectory.
-        str:
-            - "last_converged": returns [last_config], if converged or None if not.
+
+        - None: full trajectory is returned
+        - int: (not implemented) how many samples to take from the trajectory.
+        - str: specific method
+
+          - "last_converged": returns [last_config] if converged, or None if not.
 
     """
     if subselect is None:

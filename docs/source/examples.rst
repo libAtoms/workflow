@@ -10,6 +10,7 @@ Self-contained code snippets of common things that can be done with Workflow.
    :maxdepth: 2
    :caption: Contents:
 
+   examples.dimers.md
    examples.orca.md
    examples.mace.md
    examples.normal_modes.md

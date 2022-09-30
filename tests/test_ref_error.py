@@ -40,7 +40,7 @@ def ref_atoms():
         if at_i < 6:
             at.info['category'] = at_i // 3
 
-    ci = ConfigSet(input_configs=ats)
+    ci = ConfigSet(ats)
 
     ats_eval = calc_run(ci, OutputSpec(), LennardJones(sigma=1.0), output_prefix='REF_')
 
@@ -48,7 +48,7 @@ def ref_atoms():
 
 
 def test_ref_error(tmp_path, ref_atoms):
-    co = OutputSpec(file_root=tmp_path, output_files='ref_err_eval.xyz')
+    co = OutputSpec("ref_err_eval.xyz", file_root=tmp_path)
     ref_err_dict = ref_err_calc(ref_atoms, co, LennardJones(sigma=0.75), ref_property_prefix='REF_',
                                 category_keys='category')
 
@@ -85,8 +85,8 @@ def test_ref_error(tmp_path, ref_atoms):
 
 
 def test_err_from_calc(ref_atoms):
-    _ = calc_run(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
-    ref_err_dict = err_from_calculated_ats(ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_',
+    ref_atoms_calc = calc_run(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
+    ref_err_dict = err_from_calculated_ats(ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_',
                                           properties=['energy_per_atom', 'forces', 'virial_per_atom'])
 
     print(ref_err_dict)
@@ -99,11 +99,11 @@ def test_err_from_calc(ref_atoms):
 
 
 def test_ref_error_properties(ref_atoms):
-    _ = calc_run(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
+    ref_atoms_calc = calc_run(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     # both energy and per atom
     ref_err_dict = err_from_calculated_ats(
-        ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["energy", "energy_per_atom"])
+        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["energy", "energy_per_atom"])
 
     assert len(ref_err_dict.keys()) == 1
     assert len(ref_err_dict['_ALL_'].keys()) == 2
@@ -116,7 +116,7 @@ def test_ref_error_properties(ref_atoms):
 
     # only energy
     ref_err_dict = err_from_calculated_ats(
-        ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["energy"])
+        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["energy"])
 
     assert len(ref_err_dict.keys()) == 1
     assert len(ref_err_dict['_ALL_'].keys()) == 1
@@ -126,7 +126,7 @@ def test_ref_error_properties(ref_atoms):
 
     # only stress
     ref_err_dict = err_from_calculated_ats(
-        ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["stress", "virial"])
+        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["stress", "virial"])
 
     assert len(ref_err_dict.keys()) == 1
     assert len(ref_err_dict['_ALL_'].keys()) == 2
@@ -139,24 +139,24 @@ def test_ref_error_properties(ref_atoms):
 
 
 def test_ref_error_forces(ref_atoms):
-    _ = calc_run(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
+    ref_atoms_calc = calc_run(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     # forces by element
     ref_err_dict = err_from_calculated_ats(
-        ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["forces"],
+        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["forces"],
         forces_by_element=True)
     assert ref_err_dict['_ALL_']['forces'][13][0] == 40
     assert approx(ref_err_dict['_ALL_']['forces'][13][1]) == __ALL__forces
 
     # remove error info so next call won't complain
-    for at in ref_atoms:
+    for at in ref_atoms_calc:
         at.info = {k: v for k, v in at.info.items() if not k.endswith('_error')}
-    for at in ref_atoms:
+    for at in ref_atoms_calc:
         at.arrays = {k: v for k, v in at.arrays.items() if not k.endswith('_error')}
 
     # forces by component
     ref_err_dict = err_from_calculated_ats(
-        ref_atoms, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["forces"],
+        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["forces"],
         forces_by_component=True, forces_by_element=True)
     assert ref_err_dict['_ALL_']['forces'][13][0] == 120
     assert approx(ref_err_dict['_ALL_']['forces'][13][1]) == 29490136730.741474
@@ -164,9 +164,9 @@ def test_ref_error_forces(ref_atoms):
 
 @pytest.mark.filterwarnings("ignore:missing reference:UserWarning")
 def test_ref_error_missing(ref_atoms):
-    _ = calc_run(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
+    ref_atoms_calc = calc_run(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
-    ref_atoms_list = [at for at in ref_atoms]
+    ref_atoms_list = [at for at in ref_atoms_calc]
 
     for at in ref_atoms_list:
         if at.info.get("category", None) == 0:

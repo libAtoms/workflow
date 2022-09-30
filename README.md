@@ -6,32 +6,35 @@
 ```python
 from wfl.configset import ConfigSet, OutputSpec
 ```
-`ConfigSet` can encapsulate one or multiple lists of `ase.atoms.Atoms` objects,
-or reference to stored sets of configuration in files or ABCD databases.
+`ConfigSet` can encapsulate one or multiple (possibly nested) lists of `ase.atoms.Atoms` objects,
+or reference to stored sets of configuration in files (CURRENTLY UNSUPPORTED: or ABCD databases).
 It can function as an iterator over all configs in the input, or iterate over groups of them
-according to the input definition with the `ConfigSet().group_iter()` method.
-The `ConfigSet` must be initialized with its inputs and indices for them.
+according to the input definition with the `ConfigSet().groups()` method.  The regular
+iterator provides enough information to write a corresponding set of output configurations
+with the same nested structure.  The `ConfigSet` must be initialized with all of its input 
+configurations or files.
 
-`OutputSpec` works as the output layer, can be used for writing results into it during
-iterations, but the actual writing is only happening when the operation is closed with
-`OutputSpec.end_write()`. Input mapping can be added to output into multiple files,
-based on the input. This is not fully functional for putting configs into the different
-outputs in a random order and repeatedly touching one.
+`OutputSpec` works as the output layer, and can be used for writing results into it during
+iterations, but the actual writing is only guaranteed to happen when the operation is closed with
+`OutputSpec.close()`.  The `OutputSpec` can specify multiple files, in which case their
+number needs to correspond to the number of top level sub-lists (or files, for file-based iput)
+in the corresponding input `ConfigSet`.
 
 For example, to read from two files and write corresponding configs to
 two other files, use
 ```python
-s_in = ConfigSet(input_files=['in1.xyz','dir/in2.xyz'])
-s_out = OutputSpec(output_files={"in1.xyz": "out1.xyz", "in2.xyz": "out2.xyz"})
+s_in = ConfigSet(["in1.xyz", "dir/in2.xyz"])
+s_out = OutputSpec(["out1.xyz",  "out2.xyz"])
 for at in s_in:
     do_some_operation(at)
-    s_out.write(at, from_input_file=s_in.get_current_input_file())
-s_out.end_write()
+    s_out.store(at, input_CS_loc=s_in.cur_loc)
+s_out.close()
 ```
 In this case the inputs is a list of files, and the outputs is either a single file (many -> 1)
 or a mapping between equal number of input and output categories (multiple 1 -> 1).
 This will not overwrite unless you also pass `force=True`.
 
+[CURRENTLY UNSUPPORTED]
 To read from and write to ABCD database records, you can do
 ```python
 output_tags = {'output_tag' : 'some unique value'}
@@ -50,11 +53,10 @@ abcd.get_atoms(output_tags)
 ```
 ## running wfl functions as independently queued jobs
 
-
-Operations that have been wrapped in `iterable_loop` can be split into independent jobs with minimal
+Operations that have been wrapped in `autoparallelize` can be split into independent jobs with minimal
 coding.  A `config.json` file must describe the available queuing sytem resources (see
 [expyre README](https://github.com/libAtoms/ExPyRe#readme)), and a JSON file (content or path in
-env var `WFL_EXPYRE_INFO`) describes the resources needed by any `iterable_loop` call that
+env var `WFL_EXPYRE_INFO`) describes the resources needed by any `autoparallelize` call that
 should be executed this way.  Any remote machine to be used requires that the `wfl` python
 module be installed.  If needed, commands needed to make this module available (e.g. setting `PYTHONPATH`)
 can be set on a per-machine basis in the `config.json` file mentioned below.
@@ -80,8 +82,8 @@ from wfl.generate_configs.minim import run
 from ase.calculators.vasp import Vasp
 
 infile = "structures.xyz"
-ci = ConfigSet(input_files=infile)
-co = OutputSpec(output_files='relaxed.' + infile, force=True, all_or_none=True)
+ci = ConfigSet(infile)
+co = OutputSpec('relaxed.' + infile)
 
 vasp_kwargs = { 'encut': 400.0, 'ismear': 0, 'sigma': 0.1, 'ediff': 1.0d-7, 'kspacing': 0.15, 'kgamma': True }
 
@@ -126,8 +128,8 @@ the directory hierarchy level that indicates the scope of the project,
 to separate the jobs database from any other project.
 
 Restarts are supposed to be handled automatically - if the workflow script is
-interrupted, just rerun it.  If the entire `iterable_loop` call is complete,
-the default of `force=True, all_or_none=True` for `OutputSpec()` will allow
+interrupted, just rerun it.  If the entire `autoparallelize` call is complete,
+The default behavior of `OutputSpec` will allow
 it to skip the operation entirely.  If the operation is not entirely done,
 the remote running package will detect an attempt to compute a previously
 initiated call (based on a hash of pickles of the function and all of its
@@ -148,7 +150,7 @@ indicating particular function calls, and values containing arguments for constr
 
 Each key consist of a comma separated list of `"end_of_path_to_file::function_name"`.  The list needs to match the _end_ of the stack
 trace, i.e. the first item matches the outermost (of the `len(str.split(','))` comma separate items specified) calling function, the second item matches
-the function that was called by it, etc., down to the final item matching the innermost function (not including the actual `iterable_loop` call).
+the function that was called by it, etc., down to the final item matching the innermost function (not including the actual `autoparallelize` call).
 Each item in the list needs to match the _end_ of the file path, followed by a `:`, followed by the function name in that file.
 
 For example, to parallelize only the call to `minin.run(...)` from `gap_rss_iter_fit.py` `do_MD_bulk_defect_step(...)`, the key could be set to
@@ -160,7 +162,7 @@ Each value consists of a dict that will be passed to the `RemoteInfo` constructo
 
 ### Dividing items into and parallelising within jobs
 
-When using the iterable loop remote job functionality, the number
+When using the autoparallelized loop remote job functionality, the number
 of items from the iterable assigned to each job is set by the
 `num_inputs_per_queued_job` parameter of the `RemoteInfo` object (normally set by
 `WFL_EXPYRE_INFO`).  If positive, it directly specifies the
@@ -189,7 +191,7 @@ Optional env vars:
  - `EXPYRE_PYTEST_SYSTEMS`: regexp to filter systems in `$HOME/.expyre/config.json` that will
    be used for testing.
  - `WFL_PYTEST_EXPYRE_INFO`: dict of fields to _add_ to `RemoteInfo` object when doing high
-   level (`iterable_loop`, `gap_fit`) remote run tests.
+   level (`autoparallelize`, `gap_fit`) remote run tests.
 
 #### pytest with remote run example
 Running a maximally complete set of tests with somehwat verbose output (also need `pw.x`

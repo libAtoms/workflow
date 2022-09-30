@@ -1,10 +1,36 @@
 import os
 import json
 import numpy as np
+import os
+import subprocess
+from pathlib import Path
+import shlex
+import warnings
 
 from ase.constraints import voigt_6_to_full_3x3_stress
 
 from wfl.autoparallelize.remoteinfo import RemoteInfo
+from wfl.utils.julia import julia_exec_path
+
+
+def ace_fit_jl_path():
+    if "WFL_ACE_FIT_COMMAND" in os.environ:
+        return os.environ["WFL_ACE_FIT_COMMAND"]
+
+    julia_exec = julia_exec_path()
+
+    try:
+        ace_path = subprocess.check_output(shlex.split(julia_exec), text=True, shell=True, stderr=subprocess.STDOUT,
+                                           input="import(ACE1pack)\nprint(pathof(ACE1pack))\n")
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError("Failed to find path of ACE1pack") from exc
+    ace_path = Path(ace_path)
+    ace_path = ace_path.resolve().parent.parent
+
+    ace_fit_command = julia_exec + " " + str(ace_path / "scripts" / "ace_fit.jl")
+
+    warnings.warn(f"Automatically found ace fit command {ace_fit_command}")
+    return ace_fit_command
 
 
 def fix_stress_virial(configs, ref_property_keys, stress_key):
@@ -108,19 +134,3 @@ def copy_properties(configs, ref_property_keys, stress_to_virial=True, force=Tru
         fix_stress_virial(configs, ref_property_keys, stress_key)
 
     return ref_property_keys
-
-
-def get_RemoteInfo(remote_info, env_var):
-    if remote_info is None and env_var in os.environ:
-        try:
-            # interpret as JSON string
-            remote_info = json.loads(os.environ[env_var])
-        except:
-            # interpret as name of file with JSON in it
-            with open(os.environ[env_var]) as fin:
-                remote_info = json.load(fin)
-
-    if isinstance(remote_info, dict):
-        remote_info = RemoteInfo(**remote_info)
-
-    return remote_info
