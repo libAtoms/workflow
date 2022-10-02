@@ -12,7 +12,7 @@ from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.quip_cli_strings import dict_to_quip_str
 
 
-def from_any_to_Descriptor(descriptor_src, verbose=False):
+def _from_any_to_Descriptor(descriptor_src, verbose=False):
     """Create quippy.descriptors.Descriptor objects
 
     Parameters
@@ -71,7 +71,7 @@ def from_any_to_Descriptor(descriptor_src, verbose=False):
     return descs
 
 
-def calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, composition_weight=True, force=False, verbose=False):
+def _calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, composition_weight=True, force=False, verbose=False):
     """Calculate descriptor for each config or atom
 
     Parameters
@@ -102,7 +102,7 @@ def calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, comp
         Input configuration(s) with descriptors in info/arrays
     """
 
-    descs = from_any_to_Descriptor(descs, verbose=verbose)
+    descs = _from_any_to_Descriptor(descs, verbose=verbose)
 
     if isinstance(atoms, Atoms):
         at_list = [atoms]
@@ -197,6 +197,5 @@ def calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, comp
 
 
 def calc(*args, **kwargs):
-    return autoparallelize(calc_autopara_wrappable, *args, **kwargs)
-calc.__doc__ = autoparallelize_docstring(calc_autopara_wrappable.__doc__, "Atoms")
-
+    return autoparallelize(_calc_autopara_wrappable, *args, **kwargs)
+autoparallelize_docstring(calc, _calc_autopara_wrappable, "Atoms")

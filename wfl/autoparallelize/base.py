@@ -3,6 +3,7 @@ import os
 import json
 import warnings
 import re
+import docstring_parser
 
 from wfl.configset import ConfigSet, OutputSpec
 from .pool import do_in_pool
@@ -43,64 +44,64 @@ from .utils import get_remote_info
 # not include its docstring.  There does not appear to be any way to override that on a
 # per-symbol basis in current sphinx versions.
 
-_autopara_docstring_params_pre = (
-"""inputs: iterable({iterable_type})
-    input quantities of type {iterable_type}
-outputs: OutputSpec or None
-    where to write output atomic configs, or None for no output (i.e. only side-effects)
-""")
+_autopara_docstring_params_pre = [
+    [["param", "inputs"],
+     "input quantities of type {input_iterable_type}",
+     "inputs", "iterable({input_iterable_type})", False, None],
+    [["param", "outputs"],
+     "where to write output atomic configs, or None for no output (i.e. only side-effects)",
+     "outputs", "OutputSpec or None", False, None]
+]
 
-_autopara_docstring_params_post = (
-"""autopara_info: AutoparaInfo, default None
-    information for automatic parallelization
-""")
+_autopara_docstring_params_post = [
+    [["param", "autopara_info"],
+     "information for automatic parallelization",
+     "autopara_info", "AutoParaInfo", True, None]
+]
 
-autopara_docstring_returns = (
-"""Returns
--------
-    co: ConfigSet
-        output configs
-""")
+_autopara_docstring_returns = [["returns"],
+                               "output configs", "ConfigSet",
+                               False, "co"]
 
-def autoparallelize_docstring(orig_docstring, input_iterable_type):
-    output_docstring = ""
-    lines = orig_docstring.splitlines(True)
-    prev_line_was_parameters_section = False
-    for li in range(len(lines)):
-        prev_line_match = re.match(r'^(\s*)Parameters\s*[:]?\s*$', lines[li-1])
-        if (li >= 1 and re.match(r'^\s*[-]*\s*$', lines[li]) and prev_line_match):
-            # set flag so that autopara_docstring_params_pre can be inserted starting on the next line
-            prev_line_was_parameters_section = True
-            # save line-initial space on parameter line to keep indentation consistent for Returns
-            # section that will be inserted into docstring later
-            section_init_space = prev_line_match.group(1)
-        elif prev_line_was_parameters_section and not re.match(r'^\s*$', lines[li]):
-            # save line-initial space from first post-Parameters line so that other parameters that will be 
-            # inserted into docstring will have consistent indentation
-            m = re.match(r'(\s*)', lines[li])
-            param_init_space = m.group(1)
-            # insert extra lines between Parameters section header and initial function parameters,
-            # with consistent indentation
-            output_docstring += ''.join([param_init_space + l for l in _autopara_docstring_params_pre.format(iterable_type=input_iterable_type).splitlines(True)])
-            # no longer need to insert autoparallelize-related lines
-            prev_line_was_parameters_section = False
-        # save orig line
-        output_docstring += lines[li]
 
-    # make sure output_docstring has not extra blank lines at the end
-    while re.match(r'^\s*$', output_docstring.splitlines()[-1]):
-        output_docstring = "\n".join(output_docstring.splitlines()[:-1])
-    # make sure docstring ends with carriage return
-    if not output_docstring.endswith("\n"):
-        output_docstring += "\n"
+def autoparallelize_docstring(wrapped_func, wrappable_func, input_iterable_type, input_arg=0):
+    parsed = docstring_parser.parse(wrappable_func.__doc__)
 
-    # insert docstring lines for parameters that come _after_ function's real parameters
-    output_docstring += '\n' + ''.join([param_init_space + l for l in _autopara_docstring_params_post.splitlines(True)])
+    # find input arg
+    input_arg_i = -1
+    param_i = -1
+    for p_i, p in enumerate(parsed.meta):
+        if isinstance(p, docstring_parser.DocstringParam):
+            param_i += 1
+            if (isinstance(input_arg, int) and param_i == input_arg) or (isinstance(input_arg, str) and p.arg_name == input_arg):
+                input_arg_i = p_i
 
-    # insert Returns section
-    output_docstring += '\n' + ''.join([section_init_space + l for l in autopara_docstring_returns.splitlines(True)])
+    # replace input_arg with pre params
+    del parsed.meta[input_arg_i]
+    for param_list in reversed(_autopara_docstring_params_pre):
+        param_list = [p.format(**{"input_iterable_type": input_iterable_type}) if isinstance(p, str) else p for p in param_list]
+        parsed.meta.insert(input_arg_i, docstring_parser.DocstringParam(*param_list))
 
-    return output_docstring
+    # find last arg
+    last_arg_i = -1
+    for p_i, p in enumerate(parsed.meta):
+        if isinstance(p, docstring_parser.DocstringParam):
+            last_arg_i = p_i
+
+    # add post to end
+    for param_list in reversed(_autopara_docstring_params_post):
+        param_list = [p.format(**{"input_iterable_type": input_iterable_type}) if isinstance(p, str) else p for p in param_list]
+        parsed.meta.insert(last_arg_i, docstring_parser.DocstringParam(*param_list))
+
+    # find returns
+    for p_i, p in enumerate(parsed.meta):
+        if isinstance(p, docstring_parser.DocstringReturns):
+            returns_i = p_i
+
+    # replace returns
+    parsed.meta[returns_i] =  docstring_parser.DocstringReturns(*_autopara_docstring_returns)
+
+    wrapped_func.__doc__ = docstring_parser.compose(parsed)
 
 
 def autoparallelize(func, *args, def_autopara_info={}, **kwargs):
