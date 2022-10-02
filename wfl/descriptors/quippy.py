@@ -12,7 +12,7 @@ from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.quip_cli_strings import dict_to_quip_str
 
 
-def _from_any_to_Descriptor(descriptor_src, verbose=False):
+def from_any_to_Descriptor(descriptor_src, verbose=False):
     """Create quippy.descriptors.Descriptor objects
 
     Parameters
@@ -102,7 +102,7 @@ def _calc_autopara_wrappable(atoms, descs, key, per_atom, normalize=True, compos
         Input configuration(s) with descriptors in info/arrays
     """
 
-    descs = _from_any_to_Descriptor(descs, verbose=verbose)
+    descs = from_any_to_Descriptor(descs, verbose=verbose)
 
     if isinstance(atoms, Atoms):
         at_list = [atoms]
