@@ -3,7 +3,10 @@ from copy import deepcopy
 
 import numpy as np
 from ase.atoms import Atoms
-from quippy.descriptors import Descriptor
+try:
+    from quippy.descriptors import Descriptor
+except ModuleNotFoundError as exc:
+    raise RuntimeError("quippy.descriptors module not found, install with 'python3 -m pip install quippy-ase'")
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.quip_cli_strings import dict_to_quip_str
