@@ -71,7 +71,7 @@ def _from_any_to_Descriptor(descriptor_src, verbose=False):
     return descs
 
 
-def _calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, composition_weight=True, force=False, verbose=False):
+def _calc_autopara_wrappable(atoms, descs, key, per_atom, normalize=True, composition_weight=True, force=False, verbose=False):
     """Calculate descriptor for each config or atom
 
     Parameters
@@ -81,16 +81,16 @@ def _calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, com
     descs: str / list(str) / dict(Z : str / Descriptor )
         descriptor or list of descriptors (applied to all species) or dict of descriptor string for each
         species (key None for all species)
-        If ``global``, combined descriptor will be concatenated.  If ``local`` and ``Z`` is not None, multiple arrays
+        If ``not per_atom``, combined descriptor will be concatenated.  If ``per_atom`` and ``Z`` is not None, multiple arrays
         entries will be created, one per Zcenter, named <key>_Z_<Zcenter>.
     key: str
-        key in Atoms.info (global) or Atoms.arrays (local) to store information
-    local: bool, default False
+        key in Atoms.info (``not per_atom``) or Atoms.arrays (``per_atom``) to store information
+    per_atom: bool
         calculate a local (per-atom) descriptor, as opposed to global (per-config)
     normalize: bool, default True
         normalize final vector (e.g. if contributions from multiple descriptors were concatenated)
     composition_weight: bool, default True
-        when concatenating contributions from different species for a global, weight each by composition fraction
+        when concatenating contributions from different species for a per-config, weight each by composition fraction
     force: bool, default False
         overwrite key if already exists
     verbose: bool, default False
@@ -110,7 +110,7 @@ def _calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, com
         at_list = atoms
 
     # local and global share very little code - should be two functions?
-    if local:
+    if per_atom:
         for at in at_list:
             # check for existing key with optional _Z_<Z> suffix
             matches = [re.search(f'^{key}(_Z_[0-9]+)?$', k) for k in at.arrays]
@@ -136,7 +136,7 @@ def _calc_autopara_wrappable(atoms, descs, key, local=False, normalize=True, com
                     if Zcenter is None:
                         # applies to all species
                         if desc_vec.shape[0] != len(at):
-                            raise RuntimeError(('Requested local descriptor that applies to all species but '
+                            raise RuntimeError(('Requested per_atom descriptor that applies to all species but '
                                                 'data.shape[0] {} != len(at) == {}').format(desc_vec.shape[0], len(at)))
                         use_desc_vec = desc_vec
                     else:
