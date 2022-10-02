@@ -14,7 +14,7 @@ from wfl.utils.parallel import construct_calculator_picklesafe
 
 
 # perform MinimaHopping on one ASE.atoms object
-def atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
+def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
                      fmax, timestep, totalsteps, skip_failures, **opt_kwargs):
     workdir = os.getcwd()
     rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_')
@@ -44,7 +44,7 @@ def atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
         return traj
 
 
-def run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2,
+def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2,
                            fmax=1, timestep=1, totalsteps=10, skip_failures=True, **opt_kwargs):
     """runs a structure optimization
 
@@ -82,9 +82,9 @@ def run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshol
     all_trajs = []
 
     for at in atoms_to_list(atoms):
-        traj = atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold,
-                                mdmin=mdmin, fmax=fmax, timestep=timestep, totalsteps=totalsteps,
-                                skip_failures=skip_failures, **opt_kwargs)
+        traj = _atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold,
+                                 mdmin=mdmin, fmax=fmax, timestep=timestep, totalsteps=totalsteps,
+                                 skip_failures=skip_failures, **opt_kwargs)
         all_trajs.append(traj)
 
     return all_trajs
@@ -102,8 +102,8 @@ def run(*args, **kwargs):
     def_autopara_info = {"initializer": initializer, "num_inputs_per_python_subprocess": 10,
                          "hash_ignore": ["initializer"]}
 
-    return autoparallelize(run_autopara_wrappable, *args,
+    return autoparallelize(_run_autopara_wrappable, *args,
                            def_autopara_info=def_autopara_info, **kwargs)
 
 
-run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")
+autoparallelize_docstring(run, _run_autopara_wrappable, "Atoms")

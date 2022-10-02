@@ -10,7 +10,7 @@ from wfl.utils.parallel import construct_calculator_picklesafe
 from .utils import save_results
 
 
-def run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_auto_', verbose=False, raise_calc_exceptions=False):
+def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_auto_', verbose=False, raise_calc_exceptions=False):
     """evaluates configs using an arbitrary calculator and store results in SinglePointCalculator
 
     Defaults to wfl_num_inputs_per_python_subprocess=10, to avoid recreating the calculator for
@@ -85,5 +85,5 @@ def run(*args, **kwargs):
 
     def_autopara_info = getattr(calculator, "wfl_generic_def_autopara_info", {"num_inputs_per_python_subprocess": 10})
 
-    return autoparallelize(run_autopara_wrappable, *args, def_autopara_info=def_autopara_info, **kwargs)
-run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")
+    return autoparallelize(_run_autopara_wrappable, *args, def_autopara_info=def_autopara_info, **kwargs)
+autoparallelize_docstring(run, _run_autopara_wrappable, "Atoms")

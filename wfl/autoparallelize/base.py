@@ -94,12 +94,16 @@ def autoparallelize_docstring(wrapped_func, wrappable_func, input_iterable_type,
         parsed.meta.insert(last_arg_i, docstring_parser.DocstringParam(*param_list))
 
     # find returns
+    returns_i = None
     for p_i, p in enumerate(parsed.meta):
         if isinstance(p, docstring_parser.DocstringReturns):
             returns_i = p_i
-
-    # replace returns
-    parsed.meta[returns_i] =  docstring_parser.DocstringReturns(*_autopara_docstring_returns)
+    if returns_i is not None:
+        # replace returns
+        parsed.meta[returns_i] =  docstring_parser.DocstringReturns(*_autopara_docstring_returns)
+    else:
+        # append returns
+        parsed.meta.append(docstring_parser.DocstringReturns(*_autopara_docstring_returns))
 
     wrapped_func.__doc__ = docstring_parser.compose(parsed)
 
