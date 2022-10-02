@@ -149,7 +149,7 @@ def _vacancy_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, sy
     -------
         list(Atoms) supercells with vacancies
     """
-    supercells = largest_bulk_autopara_wrappable(atoms, max_n_atoms, primitive=primitive, symprec=symprec)
+    supercells = _largest_bulk_autopara_wrappable(atoms, max_n_atoms, primitive=primitive, symprec=symprec)
     for at in supercells:
         if len(at) <= n_vac:
             # should this be an error?
@@ -230,7 +230,7 @@ def _antisite_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, s
     -------
         list(Atoms) supercells with antisites
     """
-    supercells = largest_bulk_autopara_wrappable(atoms, max_n_atoms, primitive=primitive, symprec=symprec)
+    supercells = _largest_bulk_autopara_wrappable(atoms, max_n_atoms, primitive=primitive, symprec=symprec)
     for at in supercells:
         if len(at) <= n_antisite:
             # should this be an error?
@@ -321,7 +321,7 @@ def _interstitial_autopara_wrappable(atoms, max_n_atoms, pert=0.0, interstitial_
     -------
         list(Atoms) supercells with interstitials
     """
-    supercells = largest_bulk_autopara_wrappable(atoms, max_n_atoms, primitive=primitive, symprec=symprec)
+    supercells = _largest_bulk_autopara_wrappable(atoms, max_n_atoms, primitive=primitive, symprec=symprec)
     for at in supercells:
         voids = np.asarray(find_voids(at))
         p_raw = voids[:, 0] ** interstitial_probability_radius_exponent

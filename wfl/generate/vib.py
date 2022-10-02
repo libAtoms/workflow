@@ -393,7 +393,7 @@ class Vibrations:
                 displaced_ats=displaced_out_configset.output_configs)
 
         else:
-            displaced_out_atoms = generic.run_autopara_wrappable(atoms=displaced_in_configset,
+            displaced_out_atoms = generic._run_autopara_wrappable(atoms=displaced_in_configset,
                                              calculator=calculator,
                                              properties=properties,
                                              output_prefix=self.prop_prefix)
@@ -581,7 +581,7 @@ autoparallelize_docstring(generate_normal_modes_parallel_atoms, _generate_normal
 def generate_normal_modes_parallel_hessian(inputs, outputs, calculator,
                                            prop_prefix):
     parallel_hessian = True
-    atoms_out = generate_normal_modes_autopara_wrappable(inputs=inputs,
+    atoms_out = _generate_normal_modes_autopara_wrappable(inputs=inputs,
                                          calculator=calculator,
                                          prop_prefix=prop_prefix,
                                          parallel_hessian=parallel_hessian)
