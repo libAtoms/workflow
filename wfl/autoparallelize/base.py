@@ -91,7 +91,7 @@ def autoparallelize_docstring(wrapped_func, wrappable_func, input_iterable_type,
     # add post to end
     for param_list in reversed(_autopara_docstring_params_post):
         param_list = [p.format(**{"input_iterable_type": input_iterable_type}) if isinstance(p, str) else p for p in param_list]
-        parsed.meta.insert(last_arg_i, docstring_parser.DocstringParam(*param_list))
+        parsed.meta.insert(last_arg_i + 1, docstring_parser.DocstringParam(*param_list))
 
     # find returns
     returns_i = None
