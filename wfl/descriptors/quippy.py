@@ -3,10 +3,7 @@ from copy import deepcopy
 
 import numpy as np
 from ase.atoms import Atoms
-try:
-    from quippy.descriptors import Descriptor
-except ModuleNotFoundError:
-    pass
+from quippy.descriptors import Descriptor
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.quip_cli_strings import dict_to_quip_str
