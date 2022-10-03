@@ -1,4 +1,4 @@
-# SMILES to .xyz
+# SMILES to `Atoms` 
 
 Needs RDKit installed
 

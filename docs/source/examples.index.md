@@ -1,42 +1,72 @@
 
 # Index
 
-Examples often show examples of more than one thing. Below is a list of common iterations with a link to the examples that implement that. 
-
-## Nearly all examples contain
-- ConfigSet and OutputSpec 
-
-
+Examples often show examples of more than one thing. Below is a list of common iterations with a link to the examples that implement that. Nearly all examples use `ConfigSet` and `OutputSpec`. [GAP-RSS](workflows.rss.rst) uses most of Workflow's functionalities. 
 
 
 ## Evaluate structures with a calculator
  
 - ORCA: [ORCA: all parallelisation options](examples.orca.md)
 - MACE: [Parallelize MACE calculator](examples.mace.md)
-- EMT: [First example](first_example.md), [Fitting a MLIP](examples.mlip_fitting.md)
+- EMT: 
+    - [First example](first_example.md)
+    - [Fitting a MLIP](examples.mlip_fitting.md)
 - XTB: [Normal Modes (non-periodic)](examples.normal_modes.md)
 
 
 ## Generate structures
 
 - [Generate Dimer Structures](examples.dimers.md) 
-- From SMILES string: [SMILES to .xyz](examples.smiles.md)
+- From SMILES string: [SMILES to `Atoms`](examples.smiles.md)
+- Geometry optimisation: [Fitting a MLIP](examples.mlip_fitting.md)
+- Sample molecular normal modes: [Normal Modes (non-periodic)](examples.normal_modes.md)
 
+
+### Run MD
+
+- Sample configs for training: [Fitting a MLIP](examples.mlip_fitting.md)
+- Run ACE MD: [MD](examples.md.md)
+ 
 
 ## Remote execution
+
 - ORCA: [ORCA: all parallelisation options](examples.orca.md)
+- Run ACE MD: [MD](examples.md.md)
+
+
+## Get descriptors 
+
+- Global SOAP: [Fitting a MLIP](examples.mlip_fitting.md)
+
+
+## Sampling
+
+- Furthest point sampling: [Fitting a MLIP](examples.mlip_fitting.md)
 
 
 ## Fit a potential
+
+- Multistage GAP fit: [Fitting a MLIP](examples.mlip_fitting.md)
+
+
+## Iterative training
+
+- An example of GAP fitting scheme: [Fitting a MLIP](examples.mlip_fitting.md)
 
 
 
 ## Command line 
 
 - Evaluate ORCA: [ORCA: all parallelisation options](examples.orca.md)
-- Generate structures from SMILES: [SMILES to .xyz](examples.smiles.md) 
+- Generate structures from SMILES: [SMILES to `Atoms`](examples.smiles.md) 
 
-## Other
 
-- Post-process each ORCA calculation on-the-fly: [ORCA: all parallelisation options](examples.orca.md#another-complete-example) 
+## miscellaneous
 
+
+- Calculate errors: [Fitting a MLIP](examples.mlip_fitting.md)
+- Parallelize your own function: 
+    - [Auto-parallelize a custom function](examples.autopara.md)
+    - [Overview of](overview.parallelisation.rst)
+- Calculate normal modes of a molecule: [Normal Modes(non-periodic)](examples.normal_modes.md)
+- Post-process each ORCA calculation on-the-fly: [ORCA: all parallelisation options](examples.orca.md) 

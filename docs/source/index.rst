@@ -30,9 +30,13 @@ Repository
 Please find the code, raise issues and cotribute at https://github.com/libAtoms/workflow.  
 
 
+***************************************
+Contents
+***************************************
+
+
 .. toctree::
     :maxdepth: 2
-    :caption: Contents:
 
     First example <first_example.md>
     Overview <overview.rst>
