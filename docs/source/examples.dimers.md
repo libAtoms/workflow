@@ -15,7 +15,7 @@ added to a training set, in this example we are interested in dimers only and, t
 from wfl.configset import OutputSpec
 from wfl.generate.atoms_and_dimers import prepare
 
-dimer = OutputSpec(output_files='dimers.xyz')
+dimer = OutputSpec(files='dimers.xyz')
 prepare(outputs=dimer, atomic_numbers=[1, 8], bond_lengths={1: 0.74, 8:1.21},
         do_isolated_atoms=False)
 ```

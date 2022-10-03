@@ -54,7 +54,6 @@ Examples often show examples of more than one thing. Below is a list of common i
 - An example of GAP fitting scheme: [Fitting a MLIP](examples.mlip_fitting.md)
 
 
-
 ## Command line 
 
 - Evaluate ORCA: [ORCA: all parallelisation options](examples.orca.md)
