@@ -793,13 +793,14 @@ attribute in which case that value is used for the default.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
 <li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>'energy'</em><em>, </em><em>'forces'</em><em>, </em><em>stress'</em><em>]</em>) – Properties to request from calculator. If any are not present after calculation (e.g.
 stress for nonperiodic configurations), a warning will be printed.</p></li>
 <li><p><strong>output_prefix</strong> (<em>str</em><em>, </em><em>default _auto_</em>) – String to prefix info/arrays key names where results will be stored.
 ‘_auto_’ for automatically determining name of calculator constructor, and
 None for SinglePointCalculator instead of info/arrays.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em>) – verbose output</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoparaInfo</em><em>, </em><em>default None</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -807,6 +808,28 @@ None for SinglePointCalculator instead of info/arrays.</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.calculators.generic.run_autopara_wrappable">
+<span class="sig-prename descclassname"><span class="pre">wfl.calculators.generic.</span></span><span class="sig-name descname"><span class="pre">run_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_auto_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_calc_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.generic.run_autopara_wrappable" title="Permalink to this definition">#</a></dt>
+<dd><p>evaluates configs using an arbitrary calculator and store results in SinglePointCalculator</p>
+<p>Defaults to wfl_num_inputs_per_python_subprocess=10, to avoid recreating the calculator for
+each configuration, unless calculator class defines a wfl_generic_def_autopara_info
+attribute in which case that value is used for the default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
+<li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>'energy'</em><em>, </em><em>'forces'</em><em>, </em><em>stress'</em><em>]</em>) – Properties to request from calculator. If any are not present after calculation (e.g.
+stress for nonperiodic configurations), a warning will be printed.</p></li>
+<li><p><strong>output_prefix</strong> (<em>str</em><em>, </em><em>default _auto_</em>) – String to prefix info/arrays key names where results will be stored.
+‘_auto_’ for automatically determining name of calculator constructor, and
+None for SinglePointCalculator instead of info/arrays.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – verbose output</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

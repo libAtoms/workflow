@@ -442,36 +442,12 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
-</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#internals-for-developers">
-   Internals, for developers
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
     </div>
     <div class="article row">
@@ -483,19 +459,6 @@ title="Print to PDF"
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#internals-for-developers">
-   Internals, for developers
-  </a>
- </li>
-</ul>
-
-                        </nav>
                     </div>
                 </div>
             </div>
@@ -511,10 +474,6 @@ title="Print to PDF"
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> can encapsulate one or multiple lists of <code class="docutils literal notranslate"><span class="pre">ase.atoms.Atoms</span></code> objects, or reference to stored sets of configuration in files (ABCD databases are currently unsupported). It can function as an iterator over all configs in the input, or iterate over groups of them according to the input definition with the <code class="docutils literal notranslate"><span class="pre">ConfigSet().groups()</span></code> method. The <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> must be initialized with its input configurations, files, or other <a href="#id1"><span class="problematic" id="id2">``</span></a>ConfigSet``s.</p>
 <p><code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> works as the output layer, used for writing results during iterations, but the actual writing is not guaranteed to happen until the operation is closed with <code class="docutils literal notranslate"><span class="pre">OutputSpec.close()</span></code>. It is possible to map a different output file to each input file, which will result in the outputs corresponding to each input file ending up in a different output file.</p>
-<p>Users should consult the simple example in <a class="reference internal" href="first_example.html"><span class="doc">First Example</span></a>, or the documentation of the two classes at
-<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wfl.configset.ConfigSet()</span></code></a> and <a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wfl.configset.OutputSpec()</span></code></a></p>
-<div class="section" id="internals-for-developers">
-<h2>Internals, for developers<a class="headerlink" href="#internals-for-developers" title="Permalink to this headline">#</a></h2>
 <p>For example, to read from two files and write corresponding configs to two other files, use</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">configs_in</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">([</span><span class="s1">&#39;in1.xyz&#39;</span><span class="p">,</span><span class="s1">&#39;dir/in2.xyz&#39;</span><span class="p">])</span>
 <span class="n">s_out</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">([</span><span class="s2">&quot;out1.xyz&quot;</span><span class="p">,</span>  <span class="s2">&quot;out2.xyz&quot;</span><span class="p">])</span>
@@ -543,7 +502,6 @@ storage).</p>
 <p>In this case the inputs are a dict (single query, AND for each key-value pair) or list of dict for queries (multiple queries, OR of all the dicts), and the output tags are a dict of tags and values to set on writing.  Unless <code class="docutils literal notranslate"><span class="pre">output_force=True</span></code>, this will refuse  to write if any config already has the output tags set (to ensure that all the configurations written by the loop can be retrieved exactly, for passing to the next stage in the pipeline).  The outputs can be retrieved (outside of the workflow) by</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">abcd</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">(</span><span class="n">output_tags</span><span class="p">)</span>
 </pre></div>
-</div>
 </div>
 </div>
 

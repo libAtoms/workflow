@@ -698,6 +698,8 @@ requires max_cutoff</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>config_is</strong> (<em>int / list</em><em>(</em><em>int</em><em>)</em>) – numbers to set in buildcell_config_i info field
+length sets number of configs generated</p></li>
 <li><p><strong>buildcell_cmd</strong> – <cite>buildcell</cite> executable, including path if needed</p></li>
 <li><p><strong>buildcell_input</strong> (<em>str</em>) – input file contents to buildcell, in the form of a single string</p></li>
 <li><p><strong>extra_info</strong> (<em>dict</em><em>, </em><em>default {}</em>) – extra fields to place into created atoms info dict</p></li>
@@ -712,7 +714,7 @@ requires max_cutoff</p></li>
 </dd>
 </dl>
 <dl class="simple">
-<dt>autopara_info<span class="classifier">AutoParaInfo, optional</span></dt><dd><p>information for automatic parallelization</p>
+<dt>autopara_info: AutoparaInfo, default None</dt><dd><p>information for automatic parallelization</p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -721,6 +723,30 @@ requires max_cutoff</p></li>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.buildcell.run_autopara_wrappable">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.buildcell.</span></span><span class="sig-name descname"><span class="pre">run_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_is</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buildcell_cmd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buildcell_input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perturbation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_failures</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symprec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.buildcell.run_autopara_wrappable" title="Permalink to this definition">#</a></dt>
+<dd><p>Creates atomic configurations by repeatedly running buildcell</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config_is</strong> (<em>int / list</em><em>(</em><em>int</em><em>)</em>) – numbers to set in buildcell_config_i info field
+length sets number of configs generated</p></li>
+<li><p><strong>buildcell_cmd</strong> – <cite>buildcell</cite> executable, including path if needed</p></li>
+<li><p><strong>buildcell_input</strong> (<em>str</em>) – input file contents to buildcell, in the form of a single string</p></li>
+<li><p><strong>extra_info</strong> (<em>dict</em><em>, </em><em>default {}</em>) – extra fields to place into created atoms info dict</p></li>
+<li><p><strong>perturbation</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of perturbation to atomic positions with Atoms.rattle()</p></li>
+<li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – skip failed buildcell calls</p></li>
+<li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 0.01</em>) – precision for symmetry check</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – print some running info</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list of Atoms created by buildcell</p>
 </dd>
 </dl>
 </dd></dl>
@@ -738,6 +764,7 @@ sampling configs</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input configs</p></li>
 <li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
 <li><p><strong>dt</strong> (<em>float</em>) – time step (fs)</p></li>
 <li><p><strong>steps</strong> (<em>int</em>) – number of steps</p></li>
@@ -766,14 +793,67 @@ Used during MD loop with one config at a time, returning True/False</p></li>
 Used at end of MD loop with entire trajectory as list, returns subset</p></li>
 <li><p><strong>abort_check</strong> (<em>default None</em><em>,</em>) – wfl.generate.md.abort_base.AbortBase - derived class that
 checks the MD snapshots and aborts the simulation on some condition.</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>co</strong> – output configs</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) trajectories</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dl>
+<dl class="simple">
+<dt>autopara_info: AutoparaInfo, default None</dt><dd><p>information for automatic parallelization</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.md.sample_autopara_wrappable">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.md.</span></span><span class="sig-name descname"><span class="pre">sample_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature_tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure_tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compressibility_fd_displ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traj_step_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_failures</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'md_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_config_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traj_select_during_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traj_select_after_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abort_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.md.sample_autopara_wrappable" title="Permalink to this definition">#</a></dt>
+<dd><p>runs an MD trajectory with aggresive, not necessarily physical, integrators for
+sampling configs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input configs</p></li>
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
+<li><p><strong>dt</strong> (<em>float</em>) – time step (fs)</p></li>
+<li><p><strong>steps</strong> (<em>int</em>) – number of steps</p></li>
+<li><p><strong>temperature</strong> (<em>float</em><em> or </em><em>(</em><em>float</em><em>, </em><em>float</em><em>, </em><em>[</em><em>int</em><em>]</em><em>]</em><em>)</em><em>, or </em><em>list of dicts  default None</em>) – <p>temperature control (Kelvin)
+- float: constant T
+- tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp
+- [ {‘T_i’: float, ‘T_f’ : float, ‘traj_frac’ : flot, ‘n_stages’: int=10}, … ] list of stages, each one a ramp, with</p>
+<blockquote>
+<div><p>duration defined as fraction of total number of steps</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>temperature_tau</strong> (<em>float</em><em>, </em><em>default None</em>) – time scale that enables Berendsen constant T temperature rescaling (fs)</p></li>
+<li><p><strong>pressure</strong> (<em>None / float / tuple</em>) – applied pressure distribution (GPa) as parsed by wfl.utils.pressure.sample_pressure()
+enabled Berendsen constant P volume rescaling</p></li>
+<li><p><strong>pressure_tau</strong> (<em>float</em><em>, </em><em>default None</em>) – time scale for Berendsen constant P volume rescaling (fs)
+ignored if pressure is None, defaults to 3*temperature_tau</p></li>
+<li><p><strong>compressibility_fd_displ</strong> (<em>float</em><em>, </em><em>default 0.01</em>) – finite difference in strain to use when computing compressibility for NPTBerendsen</p></li>
+<li><p><strong>traj_step_interval</strong> (<em>int</em><em>, </em><em>default 1</em>) – interval between trajectory snapshots</p></li>
+<li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip minimizations that raise an exception</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output
+MD logs are not printed unless this is True</p></li>
+<li><p><strong>update_config_type</strong> (<em>bool</em><em>, </em><em>default True</em>) – append “MD” to at.info[‘config_type’]</p></li>
+<li><p><strong>traj_select_during_func</strong> (<em>func</em><em>(</em><em>Atoms</em><em>)</em><em>, </em><em>default None</em>) – Function to sub-select configs from the first trajectory.
+Used during MD loop with one config at a time, returning True/False</p></li>
+<li><p><strong>traj_select_after_func</strong> (<em>func</em><em>(</em><em>list</em><em>(</em><em>Atoms</em><em>)</em><em>)</em><em>, </em><em>default None</em>) – Function to sub-select configs from the first trajectory.
+Used at end of MD loop with entire trajectory as list, returns subset</p></li>
+<li><p><strong>abort_check</strong> (<em>default None</em><em>,</em>) – wfl.generate.md.abort_base.AbortBase - derived class that
+checks the MD snapshots and aborts the simulation on some condition.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) trajectories</p>
 </dd>
 </dl>
 </dd></dl>
@@ -781,6 +861,11 @@ checks the MD snapshots and aborts the simulation on some condition.</p></li>
 </div>
 <div class="section" id="module-wfl.generate.minimahopping">
 <span id="wfl-generate-minimahopping-module"></span><h2>wfl.generate.minimahopping module<a class="headerlink" href="#module-wfl.generate.minimahopping" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.minimahopping.atom_opt_hopping">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.minimahopping.</span></span><span class="sig-name descname"><span class="pre">atom_opt_hopping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ediff0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minima_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">totalsteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_failures</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">opt_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.minimahopping.atom_opt_hopping" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.generate.minimahopping.run">
 <span class="sig-prename descclassname"><span class="pre">wfl.generate.minimahopping.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.minimahopping.run" title="Permalink to this definition">#</a></dt>
@@ -790,6 +875,7 @@ checks the MD snapshots and aborts the simulation on some condition.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input configs</p></li>
 <li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
 <li><p><strong>Ediff0</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>eV</em><em>)</em>) – initial energy acceptance threshold</p></li>
 <li><p><strong>T0</strong> (<em>float</em><em>, </em><em>default 1000</em><em> (</em><em>K</em><em>)</em>) – initial MD ‘temperature’</p></li>
@@ -800,14 +886,48 @@ checks the MD snapshots and aborts the simulation on some condition.</p></li>
 <li><p><strong>totalsteps</strong> (<em>int</em><em>, </em><em>default 10</em>) – number of steps</p></li>
 <li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip optimizations that raise an exception</p></li>
 <li><p><strong>opt_kwargs</strong> – keyword arguments for MinimaHopping</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>co</strong> – output configs</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) trajectories</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dl>
+<dl class="simple">
+<dt>autopara_info: AutoparaInfo, default None</dt><dd><p>information for automatic parallelization</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.minimahopping.run_autopara_wrappable">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.minimahopping.</span></span><span class="sig-name descname"><span class="pre">run_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ediff0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minima_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">totalsteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_failures</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">opt_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.minimahopping.run_autopara_wrappable" title="Permalink to this definition">#</a></dt>
+<dd><p>runs a structure optimization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input configs</p></li>
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
+<li><p><strong>Ediff0</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>eV</em><em>)</em>) – initial energy acceptance threshold</p></li>
+<li><p><strong>T0</strong> (<em>float</em><em>, </em><em>default 1000</em><em> (</em><em>K</em><em>)</em>) – initial MD ‘temperature’</p></li>
+<li><p><strong>minima_threshold</strong> (<em>float</em><em>, </em><em>default 0.5</em><em> (</em><em>Å</em><em>)</em>) – threshold for identical configs</p></li>
+<li><p><strong>mdmin</strong> (<em>int</em><em>, </em><em>default 2</em>) – criteria to stop MD simulation (number of minima)</p></li>
+<li><p><strong>fmax</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>eV/Å</em><em>)</em>) – max force for optimizations</p></li>
+<li><p><strong>timestep</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>fs</em><em>)</em>) – timestep for MD simulations</p></li>
+<li><p><strong>totalsteps</strong> (<em>int</em><em>, </em><em>default 10</em>) – number of steps</p></li>
+<li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip optimizations that raise an exception</p></li>
+<li><p><strong>opt_kwargs</strong> – keyword arguments for MinimaHopping</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) trajectories</p>
 </dd>
 </dl>
 </dd></dl>
@@ -815,6 +935,11 @@ checks the MD snapshots and aborts the simulation on some condition.</p></li>
 </div>
 <div class="section" id="module-wfl.generate.optimize">
 <span id="wfl-generate-optimize-module"></span><h2>wfl.generate.optimize module<a class="headerlink" href="#module-wfl.generate.optimize" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.optimize.new_log">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.optimize.</span></span><span class="sig-name descname"><span class="pre">new_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.optimize.new_log" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.generate.optimize.run">
 <span class="sig-prename descclassname"><span class="pre">wfl.generate.optimize.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.optimize.run" title="Permalink to this definition">#</a></dt>
@@ -824,6 +949,7 @@ checks the MD snapshots and aborts the simulation on some condition.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input configs</p></li>
 <li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
 <li><p><strong>fmax</strong> (<em>float</em><em>, </em><em>default 1e-3</em>) – force convergence tolerance</p></li>
 <li><p><strong>smax</strong> (<em>float</em><em>, </em><em>default None</em>) – stress convergence tolerance, default from fmax</p></li>
@@ -838,14 +964,52 @@ Currently implemented: “last_converged”, which takes the last config, if con
 optimisation logs are not printed unless this is True</p></li>
 <li><p><strong>update_config_type</strong> (<em>bool</em><em>, </em><em>default True</em>) – append at.info[‘optimize_config_type’] at.info[‘config_type’]</p></li>
 <li><p><strong>opt_kwargs</strong> – keyword arguments for PreconLBFGS</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>co</strong> – output configs</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) trajectories</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dl>
+<dl class="simple">
+<dt>autopara_info: AutoparaInfo, default None</dt><dd><p>information for automatic parallelization</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.optimize.run_autopara_wrappable">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.optimize.</span></span><span class="sig-name descname"><span class="pre">run_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traj_step_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traj_subselect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_failures</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'optimize_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_config_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">opt_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.optimize.run_autopara_wrappable" title="Permalink to this definition">#</a></dt>
+<dd><p>runs a structure optimization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input configs</p></li>
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
+<li><p><strong>fmax</strong> (<em>float</em><em>, </em><em>default 1e-3</em>) – force convergence tolerance</p></li>
+<li><p><strong>smax</strong> (<em>float</em><em>, </em><em>default None</em>) – stress convergence tolerance, default from fmax</p></li>
+<li><p><strong>steps</strong> (<em>int</em><em>, </em><em>default 1000</em>) – max number of steps</p></li>
+<li><p><strong>pressure</strong> (<em>None / float / tuple</em>) – applied pressure distribution (GPa), as parsed by wfl.utils.pressure.sample_pressure()</p></li>
+<li><p><strong>keep_symmetry</strong> (<em>bool</em><em>, </em><em>default True</em>) – constrain symmetry to maintain initial</p></li>
+<li><p><strong>traj_step_interval</strong> (<em>int</em><em>, </em><em>default 1</em>) – if present, interval between trajectory snapshots</p></li>
+<li><p><strong>traj_subselect</strong> (<em>&quot;last_converged&quot;</em><em>, </em><em>default None</em>) – rule for sub-selecting configs from the full trajectory.
+Currently implemented: “last_converged”, which takes the last config, if converged.</p></li>
+<li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip optimizations that raise an exception</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output
+optimisation logs are not printed unless this is True</p></li>
+<li><p><strong>update_config_type</strong> (<em>bool</em><em>, </em><em>default True</em>) – append at.info[‘optimize_config_type’] at.info[‘config_type’]</p></li>
+<li><p><strong>opt_kwargs</strong> – keyword arguments for PreconLBFGS</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) trajectories</p>
 </dd>
 </dl>
 </dd></dl>
@@ -885,17 +1049,43 @@ optimisation logs are not printed unless this is True</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>SMILES string</em><em>)</em>) – input quantities of type SMILES string</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>smiles</strong> (<em>str/list</em><em>(</em><em>str</em><em>)</em>) – smiles string to generate structure from</p></li>
 <li><p><strong>useBasicKnowledge</strong> (<em>bool</em><em>, </em><em>default True</em>) – impose basic knowledge such as flat aromatic rings</p></li>
 <li><p><strong>useExpTorsionAnglePrefs</strong> (<em>bool</em><em>, </em><em>default True</em>) – impose experimental torsion angle preferences</p></li>
 <li><p><strong>extra_info</strong> (<em>dict</em><em>, </em><em>default {}</em>) – extra fields to place into created atoms info dict</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>co</strong> – output configs</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>list(Atoms) generated from SMILES</em></p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoparaInfo, default None</em>) – information for automatic parallelization</p></li>
+</ul>
+</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.smiles.run_autopara_wrappable">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.smiles.</span></span><span class="sig-name descname"><span class="pre">run_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smiles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useBasicKnowledge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useExpTorsionAnglePrefs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.smiles.run_autopara_wrappable" title="Permalink to this definition">#</a></dt>
+<dd><p>Creates atomic configurations by repeatedly running smi_to_xyz, I/O with OutputSpec.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>smiles</strong> (<em>str/list</em><em>(</em><em>str</em><em>)</em>) – smiles string to generate structure from</p></li>
+<li><p><strong>useBasicKnowledge</strong> (<em>bool</em><em>, </em><em>default True</em>) – impose basic knowledge such as flat aromatic rings</p></li>
+<li><p><strong>useExpTorsionAnglePrefs</strong> (<em>bool</em><em>, </em><em>default True</em>) – impose experimental torsion angle preferences</p></li>
+<li><p><strong>extra_info</strong> (<em>dict</em><em>, </em><em>default {}</em>) – extra fields to place into created atoms info dict</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) generated from SMILES</p>
 </dd>
 </dl>
 </dd></dl>
@@ -918,6 +1108,7 @@ optimisation logs are not printed unless this is True</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input primitive cell configs</p></li>
 <li><p><strong>max_n_atoms</strong> (<em>int</em>) – maximum number of atoms allowed in a supercell</p></li>
 <li><p><strong>pert</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of random displacement</p></li>
 <li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
@@ -926,14 +1117,46 @@ optimisation logs are not printed unless this is True</p></li>
 <li><p><strong>cluster_r</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – if &gt; 0.0, multiply by 1st nn distance of initial antisite, and make antisites in cluster of
 atoms within this distance of initial antisite.</p></li>
 <li><p><strong>Zs</strong> (<em>iterable</em><em>(</em><em>int</em><em>)</em><em>, </em><em>default None</em>) – list of atomic numbers to be used to create antisites.  If none or length 0, use set of species already present in each config for itself.</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>co</strong> – output configs</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) supercells with antisites</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dl>
+<dl class="simple">
+<dt>autopara_info: AutoparaInfo, default None</dt><dd><p>information for automatic parallelization</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.supercells.antisite_autopara_wrappable">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.supercells.</span></span><span class="sig-name descname"><span class="pre">antisite_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symprec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_antisite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.supercells.antisite_autopara_wrappable" title="Permalink to this definition">#</a></dt>
+<dd><p>make antisites in largest bulk-like supercells</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input primitive cell configs</p></li>
+<li><p><strong>max_n_atoms</strong> (<em>int</em>) – maximum number of atoms allowed in a supercell</p></li>
+<li><p><strong>pert</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of random displacement</p></li>
+<li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
+<li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
+<li><p><strong>n_antisite</strong> (<em>int</em><em>, </em><em>default 1</em>) – number of antisites to create in each supercell</p></li>
+<li><p><strong>cluster_r</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – if &gt; 0.0, multiply by 1st nn distance of initial antisite, and make antisites in cluster of
+atoms within this distance of initial antisite.</p></li>
+<li><p><strong>Zs</strong> (<em>iterable</em><em>(</em><em>int</em><em>)</em><em>, </em><em>default None</em>) – list of atomic numbers to be used to create antisites.  If none or length 0, use set of species already present in each config for itself.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) supercells with antisites</p>
 </dd>
 </dl>
 </dd></dl>
@@ -947,19 +1170,49 @@ atoms within this distance of initial antisite.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input primitive cell configs</p></li>
 <li><p><strong>max_n_atoms</strong> (<em>int</em>) – maximum number of atoms allowed in a supercell</p></li>
 <li><p><strong>pert</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of random displacement</p></li>
 <li><p><strong>interstitial_probability_radius_exponent</strong> (<em>float</em><em>, </em><em>default 3.0</em>) – probability of selecting an interstitial void is proportional to its radius to this power</p></li>
 <li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
 <li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>co</strong> – output configs</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) supercells with interstitials</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dl>
+<dl class="simple">
+<dt>autopara_info: AutoparaInfo, default None</dt><dd><p>information for automatic parallelization</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.supercells.interstitial_autopara_wrappable">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.supercells.</span></span><span class="sig-name descname"><span class="pre">interstitial_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interstitial_probability_radius_exponent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symprec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.supercells.interstitial_autopara_wrappable" title="Permalink to this definition">#</a></dt>
+<dd><p>make interstitials in largest bulk-like supercells</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input primitive cell configs</p></li>
+<li><p><strong>max_n_atoms</strong> (<em>int</em>) – maximum number of atoms allowed in a supercell</p></li>
+<li><p><strong>pert</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of random displacement</p></li>
+<li><p><strong>interstitial_probability_radius_exponent</strong> (<em>float</em><em>, </em><em>default 3.0</em>) – probability of selecting an interstitial void is proportional to its radius to this power</p></li>
+<li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
+<li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) supercells with interstitials</p>
 </dd>
 </dl>
 </dd></dl>
@@ -973,18 +1226,47 @@ atoms within this distance of initial antisite.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input primitive cell configs</p></li>
 <li><p><strong>max_n_atoms</strong> (<em>int</em>) – maximum number of atoms allowed in a supercell</p></li>
 <li><p><strong>pert</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of random displacement</p></li>
 <li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
 <li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>co</strong> – output configs</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) supercells</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dl>
+<dl class="simple">
+<dt>autopara_info: AutoparaInfo, default None</dt><dd><p>information for automatic parallelization</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.supercells.largest_bulk_autopara_wrappable">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.supercells.</span></span><span class="sig-name descname"><span class="pre">largest_bulk_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symprec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.supercells.largest_bulk_autopara_wrappable" title="Permalink to this definition">#</a></dt>
+<dd><p>make largest bulk-like supercells</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input primitive cell configs</p></li>
+<li><p><strong>max_n_atoms</strong> (<em>int</em>) – maximum number of atoms allowed in a supercell</p></li>
+<li><p><strong>pert</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of random displacement</p></li>
+<li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
+<li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) supercells</p>
 </dd>
 </dl>
 </dd></dl>
@@ -998,6 +1280,7 @@ atoms within this distance of initial antisite.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input primitive cell configs</p></li>
 <li><p><strong>max_n_atoms</strong> (<em>int</em>) – maximum number of atoms allowed in a supercell</p></li>
 <li><p><strong>min_thickness</strong> (<em>float</em>) – duplicate slab in normal direction to exceed this minimum thickness</p></li>
 <li><p><strong>vacuum</strong> (<em>float</em>) – thickness of vacuum layer to add</p></li>
@@ -1008,14 +1291,48 @@ vectors with indices up to +/- max_surface_cell_indices</p></li>
 <li><p><strong>pert</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of random displacement</p></li>
 <li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
 <li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>co</strong> – output configs</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) surface supercells with surface formed by first two cell vectors</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dl>
+<dl class="simple">
+<dt>autopara_info: AutoparaInfo, default None</dt><dd><p>information for automatic parallelization</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.supercells.surface_autopara_wrappable">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.supercells.</span></span><span class="sig-name descname"><span class="pre">surface_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vacuum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simple_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_surface_cell_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duplicate_in_plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symprec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.supercells.surface_autopara_wrappable" title="Permalink to this definition">#</a></dt>
+<dd><p>make surface supercells</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input primitive cell configs</p></li>
+<li><p><strong>max_n_atoms</strong> (<em>int</em>) – maximum number of atoms allowed in a supercell</p></li>
+<li><p><strong>min_thickness</strong> (<em>float</em>) – duplicate slab in normal direction to exceed this minimum thickness</p></li>
+<li><p><strong>vacuum</strong> (<em>float</em>) – thickness of vacuum layer to add</p></li>
+<li><p><strong>simple_cut</strong> (<em>bool</em><em>, </em><em>default False</em>) – if true, surface is formed by two primitive lattice vectors, otherwise use two random
+vectors with indices up to +/- max_surface_cell_indices</p></li>
+<li><p><strong>max_surface_cell_indices</strong> (<em>int</em><em>, </em><em>default 1</em>) – maximum indices used to make surfaces when simple_cut=False</p></li>
+<li><p><strong>duplicate_in_plane</strong> (<em>bool</em><em>, </em><em>default True</em>) – duplicate surface cell in-plane if allowed by max_n_atoms</p></li>
+<li><p><strong>pert</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of random displacement</p></li>
+<li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
+<li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) surface supercells with surface formed by first two cell vectors</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1029,6 +1346,7 @@ vectors with indices up to +/- max_surface_cell_indices</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input primitive cell configs</p></li>
 <li><p><strong>max_n_atoms</strong> (<em>int</em>) – maximum number of atoms allowed in a supercell</p></li>
 <li><p><strong>pert</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of random displacement</p></li>
 <li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
@@ -1036,14 +1354,45 @@ vectors with indices up to +/- max_surface_cell_indices</p></li>
 <li><p><strong>n_vac</strong> (<em>int</em><em>, </em><em>default 1</em>) – number of vacancies to create in each supercell</p></li>
 <li><p><strong>cluster_r</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – if &gt; 0.0, multiply by 1st nn distance of initial vacancy, and make vacancies in cluster of
 atoms within this distance of initial vacancy.</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>co</strong> – output configs</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) supercells with vacancies</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dl>
+<dl class="simple">
+<dt>autopara_info: AutoparaInfo, default None</dt><dd><p>information for automatic parallelization</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.supercells.vacancy_autopara_wrappable">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.supercells.</span></span><span class="sig-name descname"><span class="pre">vacancy_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symprec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_vac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.supercells.vacancy_autopara_wrappable" title="Permalink to this definition">#</a></dt>
+<dd><p>make vacancies in largest bulk-like supercells</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – input primitive cell configs</p></li>
+<li><p><strong>max_n_atoms</strong> (<em>int</em>) – maximum number of atoms allowed in a supercell</p></li>
+<li><p><strong>pert</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of random displacement</p></li>
+<li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
+<li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
+<li><p><strong>n_vac</strong> (<em>int</em><em>, </em><em>default 1</em>) – number of vacancies to create in each supercell</p></li>
+<li><p><strong>cluster_r</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – if &gt; 0.0, multiply by 1st nn distance of initial vacancy, and make vacancies in cluster of
+atoms within this distance of initial vacancy.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) supercells with vacancies</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1180,27 +1529,55 @@ modes</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.vib.generate_normal_modes_autopara_wrappable">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.vib.</span></span><span class="sig-name descname"><span class="pre">generate_normal_modes_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_hessian</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.generate_normal_modes_autopara_wrappable" title="Permalink to this definition">#</a></dt>
+<dd><p>Get normal mode information for all atoms in the input</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>Atoms / list</em><em>(</em><em>Atoms</em><em>)</em>) – input configs</p></li>
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
+<li><p><strong>prop_prefix</strong> (<em>str / None</em>) – prefix for normal_mode_frequencies and normal_mode_displacements
+stored in atoms.info/arrays</p></li>
+<li><p><strong>parallel_hessian</strong> (<em>bool</em><em>, </em><em>default=True</em>) – whether to parallelize 6N calculations needed for Hessian
+approximation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) with normal mode information</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="wfl.generate.vib.generate_normal_modes_parallel_atoms">
 <span class="sig-prename descclassname"><span class="pre">wfl.generate.vib.</span></span><span class="sig-name descname"><span class="pre">generate_normal_modes_parallel_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.generate_normal_modes_parallel_atoms" title="Permalink to this definition">#</a></dt>
 <dd><p>Get normal mode information for all atoms in the input</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
+<li><p><strong>inputs</strong> (<em>Atoms / list</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>inputs</strong> – input configs</p></li>
 <li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
 <li><p><strong>prop_prefix</strong> (<em>str / None</em>) – prefix for normal_mode_frequencies and normal_mode_displacements
 stored in atoms.info/arrays</p></li>
 <li><p><strong>parallel_hessian</strong> (<em>bool</em><em>, </em><em>default=True</em>) – whether to parallelize 6N calculations needed for Hessian
 approximation.</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>co</strong> – output configs</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>list(Atoms) with normal mode information</em></p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoparaInfo, default None</em>) – information for automatic parallelization</p></li>
+</ul>
+</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
 </dd>
 </dl>
 </dd></dl>
