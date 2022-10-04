@@ -88,9 +88,9 @@ ref_array = np.array(
       2.71619185e-05, 0.00000000e+00]])
 
 
-def calc_desc_fake(configs_in, configs_out, descs, key):
+def calc_desc_fake(configs_in, configs_out, descs, key, per_atom):
     # fake descriptor calculator for envs with no quippy installed
-    if descs != "soap n_max=4 l_max=4 cutoff=4.0 atom_sigma=0.25 average":
+    if descs != "soap n_max=4 l_max=4 cutoff=4.0 atom_sigma=0.25 average" or per_atom:
         raise ValueError("pre-calculated descriptors are not for the given desc, fix your tests")
 
     for i, at in enumerate(configs_in):
@@ -128,7 +128,8 @@ def greedy_fps(calc_desc, tmp_path):
 
     ats_desc = calc_desc(ConfigSet(ats),
                          OutputSpec('test.select_greedy_FPS.desc.xyz', file_root=tmp_path),
-                         descs='soap n_max=4 l_max=4 cutoff=4.0 atom_sigma=0.25 average', key='desc')
+                         descs='soap n_max=4 l_max=4 cutoff=4.0 atom_sigma=0.25 average', key='desc',
+                         per_atom=False)
 
     print('try with desc in Atoms.info no exclude')
     np.random.seed(42)

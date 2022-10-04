@@ -29,7 +29,7 @@ def smi_to_atoms(smi, useBasicKnowledge=True, useExpTorsionAnglePrefs=True):
 
 
 
-def run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, extra_info=None):
+def _run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, extra_info=None):
     """Creates atomic configurations by repeatedly running smi_to_xyz, I/O with OutputSpec.
 
     Parameters
@@ -67,5 +67,5 @@ def run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePre
 
 
 def run(*args, **kwargs):
-    return autoparallelize(run_autopara_wrappable, *args, **kwargs)
-run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "SMILES string")
+    return autoparallelize(_run_autopara_wrappable, *args, **kwargs)
+autoparallelize_docstring(run, _run_autopara_wrappable, "SMILES string")

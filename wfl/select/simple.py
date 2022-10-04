@@ -17,8 +17,6 @@ def _select_autopara_wrappable(inputs, at_filter):
         input configurations
     at_filter: callable
         callable that takes an Atoms and returns a bool indicating if it should be selected
-
-
     """
     outputs = []
     for at in inputs:
@@ -35,10 +33,10 @@ def by_bool_func(*args, **kwargs):
         num_python_subprocesses = 0
     else:
         num_python_subprocesses = None
-    def_autopara_info={"num_python_subprocesses":num_python_subprocesses}
+    def_autopara_info={"num_python_subprocesses": num_python_subprocesses}
     return autoparallelize(_select_autopara_wrappable, *args,
            def_autopara_info=def_autopara_info, **kwargs)
-by_bool_func.__doc__ = autoparallelize_docstring(_select_autopara_wrappable.__doc__, "Atoms")
+autoparallelize_docstring(by_bool_func, _select_autopara_wrappable, "Atoms")
 
 # NOTE this could probably be done with autoparallelize by returning a list with multiple
 # copies when a single config needs to be returned multiple times, and either
