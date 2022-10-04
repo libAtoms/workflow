@@ -125,8 +125,6 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
             # from WFLFileIOCalculator
             self.clean_rundir(_default_keep_files, calculation_succeeded)
 
-        print(f'current dir: {os.getcwd()}')
-
 
 
     def cleanup(self):
