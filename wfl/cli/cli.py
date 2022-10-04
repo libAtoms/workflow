@@ -38,6 +38,7 @@ from wfl.calculators.dft import evaluate_dft
 from wfl.calculators import committee
 import wfl.calculators.orca
 import wfl.calculators.orca.basinhopping
+import wfl.calculators.generic
 
 
 from wfl.fit import gap as fit_gap
@@ -460,18 +461,18 @@ def _castep_eval(ctx, inputs, output_file, workdir_root, directory_prefix, prope
                    "is recPBE with settings tested for radicals")
 @click.option("--orca-additional-blocks", type=click.STRING,
               help="orca blocks to be added, default is None")
-def orca_eval(ctx, inputs, workdir_root, output_file, directory_prefix,
-              orca_command, calc_kwargs, keep_files, output_prefix, scratch_path, n_run, n_hop,
+def orca_eval_bh(ctx, inputs, workdir_root, output_file, directory_prefix,
+              orca_command, calc_kwargs, keep_files, output_prefix, scratchdir, n_run, n_hop,
               orca_simple_input, orca_additional_blocks):
     verbose = ctx.obj["verbose"]
 
-    if scratch_path is not None:
-        if not os.path.isdir(scratch_path):
+    if scratchdir is not None:
+        if not os.path.isdir(scratchdir):
             raise NotADirectoryError(
-                f"Scratch path needs to be a directory, invalid given: {scratch_path}")
-        if not os.access(scratch_path, os.W_OK):
-            raise PermissionError(f"cannot write to specified scratch dir: {scratch_path}")
-        scratch_path = os.path.abspath(scratch_path)
+                f"Scratch path needs to be a directory, invalid given: {scratchdir}")
+        if not os.access(scratchdir, os.W_OK):
+            raise PermissionError(f"cannot write to specified scratch dir: {scratchdir}")
+        scratchdir = os.path.abspath(scratchdir)
 
     try:
         keep_files = bool(distutils.util.strtobool(keep_files))
@@ -486,7 +487,7 @@ def orca_eval(ctx, inputs, workdir_root, output_file, directory_prefix,
         calc_kwargs = key_val_str_to_dict(calc_kwargs)
 
     # update args
-    for key, val in dict(orca_command=orca_command, scratch_path=scratch_path, n_run=n_run,
+    for key, val in dict(orca_command=orca_command, scratchdir=scratchdir, n_run=n_run,
                          n_hop=n_hop, orcasimpleinput=orca_simple_input,
                          orcablock=orca_additional_blocks).items():
         if val is not None:
@@ -511,29 +512,30 @@ def orca_eval(ctx, inputs, workdir_root, output_file, directory_prefix,
 @click.argument("inputs", nargs=-1)
 @click.option("--output-file", type=click.STRING, required=True)
 @click.option("--output-prefix", type=click.STRING, help="prefix in info/arrays for results")
-@click.option("--base-rundir", type=click.STRING, help="directory to put all calculation directories into")
-@click.option("--directory-prefix", type=click.STRING, default='ORCA')
-@click.option("--calc-kwargs", "--kw", type=click.STRING, required=False, default=None,
-              help="Kwargs for calculation, overwritten by other options")
+@click.option("--workdir", type=click.STRING, help="directory to put all calculation directories into")
+@click.option("--rundir-prefix", type=click.STRING, default='ORCA_')
 @click.option("--keep-files", type=click.STRING, default="default",
               help="How much of files to keep, default is NOMAD compatible subset")
-@click.option("--orca-command", type=click.STRING, help="path to ORCA executable, default=`orca`")
-@click.option("--scratch-path", "-tmp", type=click.STRING,
+@click.option("--calculator-exec", type=click.STRING, help="path to ORCA executable, default=`orca`")
+@click.option("--scratchdir", "-tmp", type=click.STRING,
               help="Directory to use as scratch for calculations, SSD recommended, default: cwd")
-@click.option("--orca-simple-input", type=click.STRING, help="orca simple input line, make sure it is correct, default "
+@click.option("--orcasimpleinput", type=click.STRING, help="orca simple input line, make sure it is correct, default "
                                                              "is recPBE with settings tested for radicals")
-@click.option("--orca-additional-blocks", type=click.STRING, help="orca blocks to be added, default is None")
-def orca_eval(ctx, inputs, workdir_root, output_file, directory_prefix,
-              orca_command, calc_kwargs, keep_files, output_prefix, scratch_path,
-              orca_simple_input, orca_additional_blocks):
+@click.option("--orcablocks", type=click.STRING, help="orca blocks to be added, default is None")
+@click.option("--charge", type=click.INT, default=0, help='charge for the calculation')
+@click.option("--mult", type=click.INT, default=None, help='multiplicity')
+def orca_eval(ctx, inputs, output_file, output_prefix, workdir,
+              rundir_prefix, keep_files, calculator_exec, scratchdir,
+              orcasimpleinput, orcablocks, charge, mult):
+
     verbose = ctx.obj["verbose"]
 
-    if scratch_path is not None:
-        if not os.path.isdir(scratch_path):
-            raise NotADirectoryError(f"Scratch path needs to be a directory, invalid given: {scratch_path}")
-        if not os.access(scratch_path, os.W_OK):
-            raise PermissionError(f"cannot write to specified scratch dir: {scratch_path}")
-        scratch_path = os.path.abspath(scratch_path)
+    if scratchdir is not None:
+        if not os.path.isdir(scratchdir):
+            raise NotADirectoryError(f"Scratch path needs to be a directory, invalid given: {scratchdir}")
+        if not os.access(scratchdir, os.W_OK):
+            raise PermissionError(f"cannot write to specified scratch dir: {scratchdir}")
+        scratchdir = os.path.abspath(scratchdir)
 
     try:
         keep_files = bool(distutils.util.strtobool(keep_files))
@@ -541,30 +543,38 @@ def orca_eval(ctx, inputs, workdir_root, output_file, directory_prefix,
         if keep_files != 'default':
             raise RuntimeError(f'invalid value given for "keep_files" ({keep_files})')
 
-    # default: dict()
-    if calc_kwargs is None:
-        calc_kwargs = dict()
-    else:
-        calc_kwargs = key_val_str_to_dict(calc_kwargs)
-
-    # update args
-    for key, val in dict(orca_command=orca_command, scratch_path=scratch_path,
-                         orcasimpleinput=orca_simple_input, orcablocks=orca_additional_blocks).items():
-        if val is not None:
-            calc_kwargs[key] = val
 
     configset = ConfigSet(inputs)
     outputspec = OutputSpec(output_file)
 
+    orca_params = {
+        "keep_files": keep_files,
+        "rundir_prefix": rundir_prefix,
+        "workdir": workdir,
+        "scratchdir": scratchdir,
+        "calculator_exec": calculator_exec,
+        "charge": charge,
+        "mult": mult
+    }
+
+    if orcasimpleinput is not None:
+        orca_params["orcasimpleinput"] = orcasimpleinput
+    if orcablocks is not None:
+        orca_params["orcablocks"] = orcablocks
+
     if verbose:
         print(configset)
         print(outputspec)
-        print("ORCA calculation parameters: ", calc_kwargs)
+        print(f"orca params: {orca_params}")
+    
+    calc = (wfl.calculators.orca.ORCA, [], orca_params)
 
-    wfl.calculators.orca.evaluate(
-        inputs=configset, outputs=outputspec, workdir_root=workdir_root,
-        dir_prefix=directory_prefix,
-        keep_files=keep_files, output_prefix=output_prefix, orca_kwargs=calc_kwargs
+    wfl.calculators.generic.run(
+        inputs=configset, 
+        outputs=outputspec,
+        calculator=calc, 
+        properties=["energy", "forces", "dipole"],
+        output_prefix=output_prefix,
     )
 
 

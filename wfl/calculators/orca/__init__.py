@@ -12,32 +12,59 @@ import numpy as np
 from ase import units
 from ase.calculators.calculator import CalculationFailed, Calculator, \
     FileIOCalculator, all_changes
-import ase.calculators.orca
+from ase.calculators.orca import ORCA as ASE_ORCA
 
+from ..wfl_fileio_calculator import WFLFileIOCalculator
 from wfl.calculators.utils import clean_rundir, save_results
 from wfl.utils.misc import atoms_to_list, chunks
-from wfl.calculators.orca.basinhopping import BasinHoppingORCA
 
-default_keep_files = ["*.inp", "*.out", "*.ase", "*.engrad", "*.xyz",
+
+_default_keep_files = ["*.inp", "*.out", "*.ase", "*.engrad", "*.xyz",
                         "*_trj.xyz"]
 
 
-class ORCA(ase.calculators.orca.ORCA):
-    """Extension of ASE's ORCA calculator:
-        - Specify Path to orca executable
+class ORCA(WFLFileIOCalculator, ASE_ORCA):
+    """Extension of ASE's ORCA calculator that can be used by wfl.calculators.generic
+
+    Notes
+    -----
+        - "directory" argument cannot be present. Use rundir_prefix and workdir instead. 
         - Unless specified, multiplicity is set to singlet/doublet for
           closed-/open-shell structures
-        - Additional tasks with results stored in `extra_results` dictionary. 
+        - Results from additional optimisation task (set to "opt" or "copt") are stored in `extra_results` dictionary. 
 
-    Handling of "task":
-        - ORCA programs to run, in addition or instead of calculating energy forces and dipole
-        - `task` will be pre-pended to the keyword line
-        - `engrad` is enforced by default, except in the case of geometry optimisation
-        - Supported conventional tasks: `opt`, `copt` (see orca manual)
+    Parameters
+    ----------
+    keep_files: bool / None / "default" / list(str), default "default"
+        what kind of files to keep from the run
+            - True : everything kept
+            - None, False : nothing kept, unless calculation fails
+            - "default"   : only ones needed for NOMAD uploads ('\*.pwo')
+            - list(str)   : list of file globs to save
+    rundir_prefix: str / Path, default 'ORCA\_'
+        Run directory name prefix
+    workdir: str / Path, default . at calculate time
+        Path in which rundir will be created.
+    scratchdir: str / Path, default None
+        temporary directory to execute calculations in and delete or copy back results (set by
+        "keep_files") if needed.  For example, directory on a local disk with fast file I/O.
+    calculator_exec: str, default "orca"
+        command for ORCA, without any prefix or redirection set.
+        for example: "/path/to/orca"
+        mutually exclusive with "command"
+    post_process: function that takes the current instance of the calculator and is to be 
+        executed after reading back results from file, but before all the files are deleted. 
+        For example, a localisation scheme that uses the wavefunction files and saves local 
+        charges to `ORCA.extra_results`. 
 
+    **kwargs: arguments for ase.calculators.espresso.Espresso
     """
 
     implemented_properties = ["energy", "forces", "dipole"]
+    
+    # new default value of num_inputs_per_python_subprocess for calculators.generic,
+    # to override that function's built-in default of 10
+    wfl_generic_def_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
     # same as parent class, only multiplicity changed to trigger default
     default_parameters = dict(
@@ -46,34 +73,29 @@ class ORCA(ase.calculators.orca.ORCA):
         orcasimpleinput='tightscf PBE def2-SVP',
         orcablocks='%scf maxiter 200 end')
 
-    def __init__(self, restart=None,
-                 ignore_bad_restart_file=Calculator._deprecated,
-                 label='orca', atoms=None,
-                 keep_files="default", dir_prefix="ORCA_", scratch_path=None,
-                 orca_path="orca", post_process=None,
+    def __init__(self, keep_files="default", rundir_prefix="ORCA_", scratchdir=None,
+                 workdir=None, calculator_exec=None, post_process=None,
                  **kwargs):
 
-        super(ORCA, self).__init__(restart, ignore_bad_restart_file,
-                                           label, atoms, **kwargs)
-
-        self.orca_path = orca_path
-        if self.orca_path != "orca":
-            self.command = f'{orca_path} PREFIX.inp > ' \
+        if calculator_exec is not None:
+            if "command" in kwargs:
+                raise ValueError("Cannot specify both calculator_exec and command")
+            if " PREFIX " in calculator_exec:
+                raise ValueError("calculator_exec should not include orca command line arguments such as ' PREFIX.inp > PREFIX.out'")
+            self.command = f'{calculator_exec} PREFIX.inp > ' \
                            f'PREFIX.out'
+        elif calculator_exec is None and "command" not in kwargs:
+            self.command = os.environ.pop("ASE_ORCA_COMMAND", "orca PREFIX.inp > PREFIX.out")
+        else:
+            self.command = kwargs["command"]
+
+        super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
+                         workdir=workdir, scratchdir=scratchdir, **kwargs)
 
         self.extra_results = dict()
         # to make use of wfl.calculators.utils.save_results()
         self.extra_results["atoms"] = {}
         self.extra_results["config"] = {}
-
-
-        self.keep_files = keep_files
-        # set up the directories
-        self.scratch_path = scratch_path
-        # self.directory is overwritten in self.calculate, so let's just keep track
-        self.dir_prefix = dir_prefix
-        self.workdir_root = Path(self.directory) / (self.dir_prefix + "calc_files")
-        self.workdir_root.mkdir(parents=True, exist_ok=True)
 
         self.post_process = post_process 
 
@@ -84,10 +106,8 @@ class ORCA(ase.calculators.orca.ORCA):
 
         Calculator.calculate(self, atoms, properties, system_changes)
 
-        if self.scratch_path is not None:
-            self.directory = tempfile.mkdtemp(dir=self.scratch_path, prefix=self.dir_prefix)
-        else:
-            self.directory = tempfile.mkdtemp(dir=self.workdir_root, prefix=self.dir_prefix)
+        # from WFLFileIOCalculator
+        self.setup_rundir()
 
         try:
             self.write_input(self.atoms, properties, system_changes)
@@ -102,9 +122,9 @@ class ORCA(ase.calculators.orca.ORCA):
         finally:
             # when exception is raised, `calculation_succeeded` is set to False, 
             # the following code is executed and exception is re-raised. 
-            clean_rundir(self.directory, self.keep_files, default_keep_files, calculation_succeeded)
-            if self.scratch_path is not None and Path(self.directory).exists():
-                shutil.move(self.directory, self.workdir_root)
+            # from WFLFileIOCalculator
+            self.clean_rundir(_default_keep_files, calculation_succeeded)
+
 
 
     def cleanup(self):
@@ -377,7 +397,8 @@ def natural_population_analysis(janpa_home_dir, orca_calc):
 
 
     # 1. Convert from orca output to incomplete molden
-    command = f"{orca_calc.orca_path}_2mkl {label} -molden > {label}.orca_2mkl.out"
+    calculator_exec = orca_calc.command.split(' ')[0]
+    command = f"{calculator_exec}_2mkl {label} -molden > {label}.orca_2mkl.out"
     subprocess.run(command, shell=True)     # think about how to handle errors, etc
 
     # 2. Clean up molden format
