@@ -461,17 +461,17 @@ def _castep_eval(ctx, inputs, output_file, workdir_root, directory_prefix, prope
 @click.option("--orca-additional-blocks", type=click.STRING,
               help="orca blocks to be added, default is None")
 def orca_eval(ctx, inputs, workdir_root, output_file, directory_prefix,
-              orca_command, calc_kwargs, keep_files, output_prefix, scratch_path, n_run, n_hop,
+              orca_command, calc_kwargs, keep_files, output_prefix, scratchdir, n_run, n_hop,
               orca_simple_input, orca_additional_blocks):
     verbose = ctx.obj["verbose"]
 
-    if scratch_path is not None:
-        if not os.path.isdir(scratch_path):
+    if scratchdir is not None:
+        if not os.path.isdir(scratchdir):
             raise NotADirectoryError(
-                f"Scratch path needs to be a directory, invalid given: {scratch_path}")
-        if not os.access(scratch_path, os.W_OK):
-            raise PermissionError(f"cannot write to specified scratch dir: {scratch_path}")
-        scratch_path = os.path.abspath(scratch_path)
+                f"Scratch path needs to be a directory, invalid given: {scratchdir}")
+        if not os.access(scratchdir, os.W_OK):
+            raise PermissionError(f"cannot write to specified scratch dir: {scratchdir}")
+        scratchdir = os.path.abspath(scratchdir)
 
     try:
         keep_files = bool(distutils.util.strtobool(keep_files))
@@ -486,7 +486,7 @@ def orca_eval(ctx, inputs, workdir_root, output_file, directory_prefix,
         calc_kwargs = key_val_str_to_dict(calc_kwargs)
 
     # update args
-    for key, val in dict(orca_command=orca_command, scratch_path=scratch_path, n_run=n_run,
+    for key, val in dict(orca_command=orca_command, scratchdir=scratchdir, n_run=n_run,
                          n_hop=n_hop, orcasimpleinput=orca_simple_input,
                          orcablock=orca_additional_blocks).items():
         if val is not None:
@@ -524,16 +524,16 @@ def orca_eval(ctx, inputs, workdir_root, output_file, directory_prefix,
                                                              "is recPBE with settings tested for radicals")
 @click.option("--orca-additional-blocks", type=click.STRING, help="orca blocks to be added, default is None")
 def orca_eval(ctx, inputs, workdir_root, output_file, directory_prefix,
-              orca_command, calc_kwargs, keep_files, output_prefix, scratch_path,
+              orca_command, calc_kwargs, keep_files, output_prefix, scratchdir,
               orca_simple_input, orca_additional_blocks):
     verbose = ctx.obj["verbose"]
 
-    if scratch_path is not None:
-        if not os.path.isdir(scratch_path):
-            raise NotADirectoryError(f"Scratch path needs to be a directory, invalid given: {scratch_path}")
-        if not os.access(scratch_path, os.W_OK):
-            raise PermissionError(f"cannot write to specified scratch dir: {scratch_path}")
-        scratch_path = os.path.abspath(scratch_path)
+    if scratchdir is not None:
+        if not os.path.isdir(scratchdir):
+            raise NotADirectoryError(f"Scratch path needs to be a directory, invalid given: {scratchdir}")
+        if not os.access(scratchdir, os.W_OK):
+            raise PermissionError(f"cannot write to specified scratch dir: {scratchdir)
+        scratchdir = os.path.abspath(scratchdir)
 
     try:
         keep_files = bool(distutils.util.strtobool(keep_files))
@@ -548,7 +548,7 @@ def orca_eval(ctx, inputs, workdir_root, output_file, directory_prefix,
         calc_kwargs = key_val_str_to_dict(calc_kwargs)
 
     # update args
-    for key, val in dict(orca_command=orca_command, scratch_path=scratch_path,
+    for key, val in dict(orca_command=orca_command, scratchdir=scratchdir,
                          orcasimpleinput=orca_simple_input, orcablocks=orca_additional_blocks).items():
         if val is not None:
             calc_kwargs[key] = val

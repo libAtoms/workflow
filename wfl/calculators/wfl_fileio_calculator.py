@@ -51,7 +51,8 @@ class WFLFileIOCalculator():
 
         # set self.directory to where we want the calculation to actually run
         if self._wfl_scratchdir is not None:
-            directory = self._wfl_scratchdir / (str(self._cur_rundir.resolve()).replace("/", "", 1))
+            dir_name = str(self._cur_rundir.resolve()).replace("/", "", 1)
+            directory = self._wfl_scratchdir / dir_name
             directory.mkdir(parents=True, exist_ok=True)
             self.directory = directory
         else:
