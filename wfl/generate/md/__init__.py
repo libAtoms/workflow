@@ -18,7 +18,7 @@ from ..utils import config_type_append
 bar = 1.0e-4 * GPa
 
 
-def sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
+def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
               traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False, update_config_type=True,
               traj_select_during_func=None, traj_select_after_func=None, abort_check=None):
@@ -249,8 +249,6 @@ def sample(*args, **kwargs):
         initializer = (np.random.seed, [])
     def_autopara_info={"initializer":initializer}
 
-    return autoparallelize(sample_autopara_wrappable, *args, 
+    return autoparallelize(_sample_autopara_wrappable, *args, 
         def_autopara_info=def_autopara_info, **kwargs)
-sample.__doc__ = autoparallelize_docstring(sample_autopara_wrappable.__doc__, "Atoms")
-
-
+autoparallelize_docstring(sample, _sample_autopara_wrappable, "Atoms")

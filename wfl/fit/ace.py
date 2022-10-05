@@ -21,7 +21,7 @@ from wfl.fit.utils import ace_fit_jl_path
 from expyre import ExPyRe
 import wfl.scripts
 
-def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None, 
+def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None, weight_from_sigma=False,
         ref_property_prefix='REF_', skip_if_present=False, run_dir='.', dry_run=False,
         verbose=True, remote_info=None, remote_label=None, wait_for_results=True):
     """Runs ace_fit on a set of fitting configs
@@ -41,6 +41,8 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
         executable for ace_fit. 
         e.g. `julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl` or similar. 
         Alternatively set by WFL_ACE_FIT_COMMAND.
+    weight_from_sigma: bool, default False
+        get per-config weights from each config's *_sigma
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
     skip_if_present: bool, default False
@@ -77,15 +79,15 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
     WFL_ACE_FIT_COMMAND: command to execute ace_fit.jl, e.g. "julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl"
     """
 
-    ace_fit_params = prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir, ref_property_prefix)
     fitting_configs = prepare_configs(fitting_configs, ref_property_prefix)
+    ace_fit_params = prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir, ref_property_prefix, weight_from_sigma)
 
     return run_ace_fit(fitting_configs, ace_fit_params,
                 skip_if_present=skip_if_present, run_dir=run_dir, ace_fit_command=ace_fit_command, dry_run=dry_run,
                 verbose=verbose, remote_info=remote_info, remote_label=remote_label, wait_for_results=wait_for_results)
 
 
-def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_property_prefix='REF_'):
+def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_property_prefix='REF_', weight_from_sigma=False):
     """Prepare ace_fit parameters so they are compatible with the rest of workflow.
     Runs ace_fit on a a set of fitting configs
 
@@ -103,11 +105,13 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
         path of directory to run in
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
+    weight_from_sigma: bool, default False
+        get per-config weights from each config's *_sigma
 
     Returns
     -------
     ace_fit_params: Dict
-        with updated energy/force/virial keys and e0 values.
+        with updated energy/force/virial keys, e0 values, and optional config_type weights
     """
 
     assert isinstance(ref_property_prefix, str) and len(ref_property_prefix) > 0
@@ -127,6 +131,15 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
     ace_fit_params["ACE_fname"] = ace_filename
 
     _prepare_e0(ace_fit_params, fitting_configs, ref_property_prefix)
+
+    if weight_from_sigma:
+        ace_fit_params["weights"] = {}
+        for at_i, at in enumerate(fitting_configs):
+            config_type = f"config_{at_i}"
+            at.info["config_type"] = config_type
+            ace_fit_params["weights"][config_type] = { "E": 1.0 / at.info.get("energy_sigma", 1.0),
+                                                       "F": 1.0 / at.info.get("force_sigma", 1.0),
+                                                       "V": 1.0 / at.info.get("virial_sigma", 1.0) }
 
     return ace_fit_params
 

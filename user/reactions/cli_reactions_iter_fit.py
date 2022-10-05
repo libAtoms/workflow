@@ -146,9 +146,9 @@ def do_initial_step(ctx, active_iter, verbose):
     sample_normal_modes(frames=params.get("global/fragments"),
                         output=normal_modes_in,
                         calculator=(Potential, None, dict(args_str="IP Glue", param_str=glue_param_str)),
-                        nfree=params.get("initial_step/vibrations/n_free", 2),
+                        nfree=params.get("initial_step/NormalModes/n_free", 2),
                         prefix="vib_", config_type="normal_modes",
-                        num_per_mode=params.get("initial_step/vibrations/num_per_mode"))
+                        num_per_mode=params.get("initial_step/NormalModes/num_per_mode"))
 
     # DFT on fragments
     print_log('evaluating with DFT - fragments')

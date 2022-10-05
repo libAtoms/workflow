@@ -17,7 +17,7 @@ from .utils import config_type_append
 orig_log = PreconLBFGS.log
 
 
-def new_log(self, forces=None):
+def _new_log(self, forces=None):
     if 'buildcell_config_i' in self.atoms.info:
         if self.logfile is not None:
             self.logfile.write(str(self.atoms.info['buildcell_config_i']) + ' ')
@@ -29,11 +29,10 @@ def new_log(self, forces=None):
         pass
 
 
-PreconLBFGS.log = new_log
+PreconLBFGS.log = _new_log
 
 
-
-def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
+def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
            keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
            results_prefix='optimize_', verbose=False, update_config_type=True, **opt_kwargs):
     """runs a structure optimization 
@@ -206,9 +205,9 @@ def run(*args, **kwargs):
     def_autopara_info={"initializer":initializer, "num_inputs_per_python_subprocess":10,
             "hash_ignore":["initializer"]}
 
-    return autoparallelize(run_autopara_wrappable, *args, 
+    return autoparallelize(_run_autopara_wrappable, *args, 
         def_autopara_info=def_autopara_info, **kwargs)
-run.__doc__ = autoparallelize_docstring(run_autopara_wrappable.__doc__, "Atoms")
+autoparallelize_docstring(run, _run_autopara_wrappable, "Atoms")
 
 
 

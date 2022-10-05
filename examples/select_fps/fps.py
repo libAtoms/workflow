@@ -18,11 +18,13 @@ def main(nsamples):
     with open(os.path.join(workdir, 'gap_params.yaml'), 'r') as foo:
         desc_dict = yaml.safe_load(foo)
     desc_dicts = [d for d in desc_dict if 'soap' in d.keys()] # filtering out only SOAP descriptor
+    per_atom = True
     for param in desc_dicts:
         if 'average' not in param.keys():
             param['average']= True # to create global (per-conf) descriptors instead of local (per-atom)
+            per_atom = False
     
-    md_desc = calc_descriptors(inputs=md, outputs=md_desc, descs=desc_dicts, key='desc')
+    md_desc = calc_descriptors(inputs=md, outputs=md_desc, descs=desc_dicts, key='desc', per_atom=per_atom)
     
     # Step 2: Sampling
     fps     = OutputSpec(files=os.path.join(workdir, "out_fps.xyz"))
