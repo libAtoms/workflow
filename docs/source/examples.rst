@@ -17,6 +17,5 @@ Self-contained code snippets of common things that can be done with Workflow.
    examples.mlip_fitting.md
    examples.normal_modes.md
    examples.smiles.md
-   examples.autopara.md
    examples.md.md
 
