@@ -31,6 +31,7 @@ To generate normal modes via finite differences, each of N atoms are displaced b
 - Few structures and slow calculator: generate normal modes in sequence and parallelize the 6N evaluations needed to approximate the Hessian for each molecule. The example above. 
 - Many structures and fast calculator: generate normal modes in parallel and evaluate each of the 6N displacements in sequence. Example: 
 
+
 ```python
 from ase.build import molecule
 from xtb.ase.calculator import XTB

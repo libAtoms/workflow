@@ -25,7 +25,7 @@ except ModuleNotFoundError:
 from ase.io.extxyz import key_val_str_to_dict
 
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate import vib
+from wfl.generate import normal_modes as nm 
 import wfl.generate.smiles
 import wfl.utils.misc
 import wfl.generate.buildcell
@@ -129,7 +129,7 @@ def configs_from_smiles(ctx, smiles, output, info):
         print(f'info: {info}')
         print(outputspec)
 
-    wfl.generate.smiles.run(outputs=outputspec, smiles=smiles, extra_info=info)
+    wfl.generate.smiles.run(smiles, outputs=outputspec, extra_info=info)
 
 
 @subcli_file_operations.command("gather")
