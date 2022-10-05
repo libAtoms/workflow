@@ -1,4 +1,6 @@
-# Customise Auto-parallelized Functions
+# Customize Auto-parallelized Functions
+
+Code below shows how to make an automatically parallelized function, in this example adding a silly extension to already Workflow-wrapped optimisation function. For an overview of how parallelization in Workflow works see [Automatic parallelization of tasks](overview.parallelisation.rst).
 
 ```
 

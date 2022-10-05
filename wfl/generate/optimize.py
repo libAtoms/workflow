@@ -32,7 +32,6 @@ def new_log(self, forces=None):
 PreconLBFGS.log = new_log
 
 
-
 def run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
            keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
            results_prefix='optimize_', verbose=False, update_config_type=True, **opt_kwargs):
