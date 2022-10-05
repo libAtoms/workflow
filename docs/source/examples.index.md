@@ -16,6 +16,7 @@ Examples often show examples of more than one thing. Below is a list of common i
 - XTB: 
     - [Normal Modes of molecules](examples.normal_modes.md)
     - [Molecular Dynamics](examples.md.md)
+- VASP: [Functions as independently queued jobs](overview.queued.md) 
 
 
 ## Generate structures
@@ -34,6 +35,7 @@ Examples often show examples of more than one thing. Below is a list of common i
 
 ## Remote execution
 
+- Overview: [Functions as independently queued jobs](overview.queued.md)
 - [ORCA via command line](examples.orca_cli.md)
 - [ORCA via python script](examples.orca_python.md)
 - Run ACE MD: [MD](examples.md.md)

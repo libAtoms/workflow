@@ -242,12 +242,11 @@ def sample(*args, **kwargs):
     # Normally each thread needs to call np.random.seed so that it will generate a different
     # set of random numbers.  This env var overrides that to produce deterministic output,
     # for purposes like testing
-    # EG: do we need a "hash_ignore" like in optimize.py?
     if 'WFL_DETERMINISTIC_HACK' in os.environ:
         initializer = (None, [])
     else:
         initializer = (np.random.seed, [])
-    def_autopara_info={"initializer":initializer}
+    def_autopara_info={"initializer":initializer, "hash_ignore":["initializer"]}
 
     return autoparallelize(_sample_autopara_wrappable, *args, 
         def_autopara_info=def_autopara_info, **kwargs)
