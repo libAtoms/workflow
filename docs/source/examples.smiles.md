@@ -14,14 +14,14 @@ wfl generate-configs smiles -o configs.xyz CCCCCC CC c1ccccc1
 
 ## Python script
 
-Just the "task":
+Single operation:
 
 ```python
 from wfl.generate import smiles
 atoms = smiles.smi_to_atoms("CCCCCC")
 ```
 
-With Workflow's parallelization
+With Workflow's parallelization:
 
 ```python
 from wfl.configset import ConfigSet

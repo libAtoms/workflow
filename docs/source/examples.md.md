@@ -1,6 +1,6 @@
 # Molecular Dynamics
 
-The following script takes atomic structures from "configs.xyz", runs Berendsen NVT molecular dynamics simulation for 6000 steps (3ps) and writes snapshots to "configs.sample.xyz" every 1000 steps (0.5 ps). The script submits jobs to the "standard" queue of "local" cluster on 4 cores each, each containing 4 md simulations running in parallel. 
+The following script takes atomic structures from "configs.xyz", runs Berendsen NVT molecular dynamics simulation for 6000 steps (3ps) and writes snapshots to "configs.sample.xyz" every 1000 steps (0.5 ps). The script submits jobs to the "standard" queue of "local" cluster on 4 cores each, each job containing 4 MD simulations running in parallel. 
 
 ```
 import os

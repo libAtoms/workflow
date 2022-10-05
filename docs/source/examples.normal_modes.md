@@ -1,6 +1,6 @@
 # Normal Modes of molecules 
 
-Workflow can numerically generate normal modes of a molecule and a given calculator and then simultaneously sample random displacements along multiple or all normal modes that correspond to a given temperature.  
+Workflow can numerically generate normal modes of a molecule with specified calculator and then simultaneously sample random displacements along multiple normal modes to follow Boltzamnn distribution at a given temperature.  
 
 
 ## Generate
@@ -78,7 +78,7 @@ water_nm.summary()
 
 ## Sample
 
-Finally, we can generate random displacements of the molecule, along multiple normal modes, that correspond to the Boltzmann distribution. 
+Finally, we can generate random displacements of the molecule, along multiple normal modes, that correspond to the Boltzmann distribution at a given temperature. 
 
 ```python
 from wfl.configset import ConfigSet, OutputSpec

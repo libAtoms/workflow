@@ -6,12 +6,16 @@ Examples often show examples of more than one thing. Below is a list of common i
 
 ## Evaluate structures with a calculator
  
-- ORCA: [ORCA: all parallelisation options](examples.orca.md)
+- ORCA:
+    - [ORCA via command line](examples.orca_cli.md)
+    - ORCA via python script](examples.orca_python.md)
 - MACE: [Parallelize MACE calculator](examples.mace.md)
 - EMT: 
     - [First example](first_example.md)
     - [Fitting a MLIP](examples.mlip_fitting.md)
-- XTB: [Normal Modes (non-periodic)](examples.normal_modes.md)
+- XTB: 
+    - [Normal Modes of molecules](examples.normal_modes.md)
+    - [Molecular Dynamics](examples.md.md)
 
 
 ## Generate structures
@@ -30,7 +34,8 @@ Examples often show examples of more than one thing. Below is a list of common i
 
 ## Remote execution
 
-- ORCA: [ORCA: all parallelisation options](examples.orca.md)
+- [ORCA via command line](examples.orca_cli.md)
+- [ORCA via python script](examples.orca_python.md)
 - Run ACE MD: [MD](examples.md.md)
 
 
@@ -56,14 +61,14 @@ Examples often show examples of more than one thing. Below is a list of common i
 
 ## Command line 
 
-- Evaluate ORCA: [ORCA: all parallelisation options](examples.orca.md)
+- [ORCA via command line](examples.orca_cli.md)
 - Generate structures from SMILES: [SMILES to `Atoms`](examples.smiles.md) 
 
 
-## miscellaneous
+## Miscellaneous
 
 
 - Calculate errors: [Fitting a MLIP](examples.mlip_fitting.md)
 - Parallelize your own function: [Overview of](overview.parallelisation.rst)
 - Calculate normal modes of a molecule: [Normal Modes(non-periodic)](examples.normal_modes.md)
-- Post-process each ORCA calculation on-the-fly: [ORCA: all parallelisation options](examples.orca.md) 
+- Post-process each ORCA calculation on-the-fly: [ORCA via python script](examples.orca_python.md)

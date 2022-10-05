@@ -23,7 +23,7 @@ dtype="float64"
 my_mace_calc = MACECalculator(model_path=mace_model_fname, dtype=dtype, device="cpu") 
 ```
 
-But in Workflow, for `generic.run` to parallelize this calculator it needs to be defined as a tuple of `(calc_function, [args], **kwargs)`. In our example, instead of the above code snippet, that corresponds to 
+But in Workflow, for `generic.run` to parallelize this calculator it needs to be defined as a tuple of `(calc_function, [args], **kwargs)`. In our example, the above code snippet corresponds to 
 
 ```
 from wfl.calculators import generic
