@@ -183,12 +183,14 @@ def get_descriptors(in_file, out_file, params_file, key='desc', **kwargs):
     params = yaml.safe_load(open(params_file, 'r'))
     params = [i for i in params if 'soap' in i.keys()]
 
+    per_atom = True
     for param in params:
         if 'average' not in param.keys():
             param['average'] = True
+            per_atom = False
 
     # Calculate the actual descriptors (gets added as key in at.info)
-    desc_calc(in_config, out_config, params, key, **kwargs)
+    desc_calc(in_config, out_config, params, key, per_atom, **kwargs)
     return None
 
 

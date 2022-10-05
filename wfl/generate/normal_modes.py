@@ -395,7 +395,7 @@ class NormalModes:
                 displaced_ats=list(displaced_out_configset.to_ConfigSet()))
 
         else:
-            displaced_out_atoms = generic.run_autopara_wrappable(atoms=displaced_in_configset,
+            displaced_out_atoms = generic._run_autopara_wrappable(atoms=displaced_in_configset,
                                              calculator=calculator,
                                              properties=properties,
                                              output_prefix=self.prop_prefix)
@@ -539,7 +539,7 @@ def sample_normal_modes(inputs, outputs, temp, sample_size, prop_prefix,
     outputs.close()
 
 
-def generate_normal_modes_autopara_wrappable(inputs, calculator, prop_prefix,
+def _generate_normal_modes_autopara_wrappable(inputs, calculator, prop_prefix,
                              parallel_hessian):
     """Get normal mode information for all atoms in the input
 
@@ -576,14 +576,14 @@ def generate_normal_modes_parallel_atoms(*args, **kwargs):
      # iterable loop parallelizes over input structures, not over 6xN
     # displaced structures needed for numerical hessian
     kwargs["parallel_hessian"] = False 
-    return autoparallelize(generate_normal_modes_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
-generate_normal_modes_parallel_atoms.__doc__ = autoparallelize_docstring(generate_normal_modes_autopara_wrappable.__doc__, "Atoms")
+    return autoparallelize(_generate_normal_modes_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
+autoparallelize_docstring(generate_normal_modes_parallel_atoms, _generate_normal_modes_autopara_wrappable, "Atoms")
 
 
 def generate_normal_modes_parallel_hessian(inputs, outputs, calculator,
                                            prop_prefix):
     parallel_hessian = True
-    atoms_out = generate_normal_modes_autopara_wrappable(inputs=inputs,
+    atoms_out = _generate_normal_modes_autopara_wrappable(inputs=inputs,
                                          calculator=calculator,
                                          prop_prefix=prop_prefix,
                                          parallel_hessian=parallel_hessian)
