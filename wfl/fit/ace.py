@@ -128,14 +128,17 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
 
     _prepare_e0(ace_fit_params, fitting_configs, ref_property_prefix)
 
-    if ace_fit_params.get("weights", {}).get("from_sigma"):
-        ace_fit_params["weights"] = {}
-        for at_i, at in enumerate(fitting_configs):
-            config_type = f"config_{at_i}"
-            at.info["config_type"] = config_type
-            ace_fit_params["weights"][config_type] = { "E": 1.0 / at.info.get("energy_sigma", 1.0),
-                                                       "F": 1.0 / at.info.get("force_sigma", 1.0),
-                                                       "V": 1.0 / at.info.get("virial_sigma", 1.0) }
+    from_sigma = ace_fit_params.get("weights", {}).get("from_sigma")
+    if from_sigma is not None:
+        del ace_fit_params["weights"]["from_sigma"]
+        if from_sigma:
+            ace_fit_params["weights"] = {}
+            for at_i, at in enumerate(fitting_configs):
+                config_type = f"config_{at_i}"
+                at.info["config_type"] = config_type
+                ace_fit_params["weights"][config_type] = { "E": 1.0 / at.info.get("energy_sigma", 1.0),
+                                                           "F": 1.0 / at.info.get("force_sigma", 1.0),
+                                                           "V": 1.0 / at.info.get("virial_sigma", 1.0) }
 
     return ace_fit_params
 
