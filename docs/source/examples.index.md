@@ -65,8 +65,6 @@ Examples often show examples of more than one thing. Below is a list of common i
 
 
 - Calculate errors: [Fitting a MLIP](examples.mlip_fitting.md)
-- Parallelize your own function: 
-    - [Auto-parallelize a custom function](examples.autopara.md)
-    - [Overview of](overview.parallelisation.rst)
+- Parallelize your own function: [Overview of](overview.parallelisation.rst)
 - Calculate normal modes of a molecule: [Normal Modes(non-periodic)](examples.normal_modes.md)
 - Post-process each ORCA calculation on-the-fly: [ORCA: all parallelisation options](examples.orca.md) 
