@@ -16,8 +16,6 @@ This page is for the functions/modules/code operations that are somewhat more mo
    operations.generate.md
    operations.descriptors.md
    operations.select.rst
-   operations.gap_fitting.md
-   operations.multistage_gap_fitting.rst 
-   operations.ace_fitting.md
+   operations.fitting.rst
    operations.utils.md
   
