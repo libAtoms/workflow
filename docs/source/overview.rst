@@ -1,4 +1,4 @@
-.. _code_structure:
+.. _overview:
 
 ######################################
 Overview

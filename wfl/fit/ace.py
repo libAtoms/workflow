@@ -39,7 +39,7 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None, weight_
         set up, if needed.
     ace_fit_command: str, default None
         executable for ace_fit. 
-        e.g. `julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl` or similar. 
+        e.g. "julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl" or similar. 
         Alternatively set by WFL_ACE_FIT_COMMAND.
     weight_from_sigma: bool, default False
         get per-config weights from each config's *_sigma

@@ -40,7 +40,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
         - float: constant T
         - tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp
         - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with
-          duration defined as fraction of total number of steps
+        duration defined as fraction of total number of steps
     temperature_tau: float, default None
         time scale that enables Berendsen constant T temperature rescaling (fs)
     pressure: None / float / tuple
