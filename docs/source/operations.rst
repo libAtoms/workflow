@@ -8,15 +8,14 @@ This page is for the functions/modules/code operations that are somewhat more mo
 
 
 
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    operations.calculators.md
    operations.generate.md
-   operations.select.rst
    operations.descriptors.md
+   operations.select.rst
    operations.gap_fitting.md
    operations.multistage_gap_fitting.rst 
    operations.ace_fitting.md

@@ -18,19 +18,17 @@ dftb_calc = (
     )
 ```
 
-See [autoparallelization page](overview.parallelisation.rst) for further explanation, [MACE example](examples.mace.md), [wfl.calculators.generic.run](??) and [first example](first_example.md) for more details and examples.  
+Further see [autoparallelization page](overview.parallelisation.rst) and [examples page](examples.index.md).  
 
 
 ## File-based calculators
 
-ASE's calculators that write & read files to & from disk must to be modified if they were to be parallelized via Workflow's `generic` calculator. Specifically, each instance of calculator must execute the calculation in a separate folder. Workflow handles the files, as well as creation and clean-up of temporary directories. 
+ASE's calculators that write & read files to & from disk must to be modified if they were to be parallelized via Workflow's `generic` calculator. Specifically, each instance of calculator must execute the calculation in a separate folder so processes running in parallel don't attempt to read and write to the same files. Workflow handles the files, as well as creation and clean-up of temporary directories. 
 
-Currently, ORCA, VASP and QuantumEspresso are compatible with the `generic` calculator; CASTEP parallelization is accessed via `calculators.dft.evaluate_dft()`.  
-
-See examples, documentation.
+Currently, [ORCA], VASP and QuantumEspresso are compatible with the `generic` calculator; CASTEP parallelization is accessed via `calculators.dft.evaluate_dft()`.  
 
 ## Special calculators
 
 Finally, there is a (currently broken) non-conventional "Basin Hopping" calculator implementation for ORCA. 
-`BasinHoppingORCA()` ([Example](link), [docs](link), [publication](link)) runs multiple single point evaluations perturbing the initial guess of the wavefunction each time. It returns the results corresponding to the global minimum and lowest-energy solution.  
+`BasinHoppingORCA()` runs multiple single point evaluations perturbing the initial guess of the wavefunction each time. It returns the results corresponding to the global minimum and lowest-energy solution.  
 
