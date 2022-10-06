@@ -17,5 +17,4 @@ This page is for the functions/modules/code operations that are somewhat more mo
    operations.descriptors.md
    operations.select.rst
    operations.fitting.rst
-   operations.utils.md
   
