@@ -121,7 +121,7 @@ python evaluate_emt.py
 
 # With remote execution
 
-Workflow also allows to submit (remotelly) queued jobs automatically, by interfacing with ExPyRe ([docummentation](https://libatoms.github.io/ExPyRe/), [repository](https://github.com/libAtoms/ExPyRe/tree/main/expyre)). In this example, instead of calling the above python script in a queue submission script, the modified python script is called from the head node and the parallelisation mechanism behind `generic.run()` sets up and submits the job and returns the results like the script normally would. To enable remote submission, `RemoteInfo` must be added to `AutoparaInfo`. 
+Workflow also allows to submit (remotely) queued jobs automatically, by interfacing with ExPyRe ([docummentation](https://libatoms.github.io/ExPyRe/), [repository](https://github.com/libAtoms/ExPyRe/tree/main/expyre)). In this example, instead of calling the above python script in a queue submission script, the modified python script is called from the head node and the parallelisation mechanism behind `generic.run()` sets up and submits the job and returns the results like the script normally would. To enable remote submission, `RemoteInfo` must be added to `AutoparaInfo`. 
 
 ```
 from wfl.autoparallelize.remoteinfo import RemoteInfo()
