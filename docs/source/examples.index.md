@@ -1,7 +1,7 @@
 
 # Index
 
-Examples often show examples of more than one thing. Below is a list of common iterations with a link to the examples that implement that. Nearly all examples use `ConfigSet` and `OutputSpec`. [GAP-RSS](workflows.rss.rst) uses most of Workflow's functionalities. 
+Examples often show examples of more than one thing. Below is a list of common operations with a link to the examples that implement each one. Nearly all examples use `ConfigSet` and `OutputSpec`. [GAP-RSS](workflows.rss.rst) uses most of Workflow's functionalities. 
 
 
 ## Evaluate structures with a calculator
