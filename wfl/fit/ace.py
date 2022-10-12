@@ -4,6 +4,7 @@ import warnings
 import itertools
 import subprocess
 import json
+import yaml
 import shlex
 from copy import deepcopy
 from pathlib import Path
@@ -266,9 +267,9 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
     _write_fitting_configs(fitting_configs, ace_fit_params, ace_file_base)
 
-    ace_fit_params_filename = Path(ace_file_base).parent / ("fit_params_" + Path(ace_file_base).name + ".json")
+    ace_fit_params_filename = Path(ace_file_base).parent / ("fit_params_" + Path(ace_file_base).name + ".yaml")
     with open(ace_fit_params_filename, "w") as f:
-        f.write(json.dumps(ace_fit_params, indent=4))
+        f.write(yaml.dump(ace_fit_params, indent=4))
 
     if ace_fit_command is None:
         ace_fit_command = ace_fit_jl_path()
