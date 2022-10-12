@@ -14,7 +14,7 @@ This page (and submodules of `wfl.generate`) gives a brief overview self-contain
 
 ## BuildCell
 
-`wfl.generate.buildcel.run()` wrapps [AIRSS](https://airss-docs.github.io/technical-reference/buildcell-manual)'s `buildcell` that constructs sensible random structures.  
+`wfl.generate.buildcell.run()` wrapps [AIRSS](https://airss-docs.github.io/technical-reference/buildcell-manual)'s `buildcell` that constructs sensible random structures.  
 
 
 ## Super Cells
