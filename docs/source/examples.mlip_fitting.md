@@ -95,7 +95,7 @@ if verbose:
 get_gap(training, gap_name, Zs, length_scales, gap_params, run_dir=GAP_dir)
 ```
 
-Next, we create a directory in which we will write all future files resulting from a GAP fit, naming them by the iteration in our process. The function ```get_gap``` represents a helper function that takes training_file, parameters, and output filenames and runs the [multistage gap fit](wfl.fit.rst) function. This function will run locally. If you wish to run this or any other wfl-based function remotely, check out the [ExPyRe documentation](XXXXX) and add the remote information via the keyword ```remote_info```.
+Next, we create a directory in which we will write all future files resulting from a GAP fit, naming them by the iteration in our process. The function ```get_gap``` represents a helper function that takes training_file, parameters, and output filenames and runs the [multistage gap fit](wfl.fit.rst) function. This function will run locally. If you wish to run this or any other wfl-based function remotely, check out the [Expyre documentation](https://libatoms.github.io/ExPyRe/) and add the remote information via the keyword ```remote_info```.
 
 ## Preparing the iterative process
 
