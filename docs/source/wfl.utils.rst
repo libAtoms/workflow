@@ -44,6 +44,14 @@ wfl.utils.gap\_xml\_tools module
    :undoc-members:
    :show-inheritance:
 
+wfl.utils.julia module
+----------------------
+
+.. automodule:: wfl.utils.julia
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 wfl.utils.logging module
 ------------------------
 

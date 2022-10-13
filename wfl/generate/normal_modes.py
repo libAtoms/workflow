@@ -16,13 +16,14 @@ from scipy import stats
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
+from wfl.autoparallelize.autoparainfo import AutoparaInfo
 from wfl.utils.misc import atoms_to_list
 
 # conversion factor from eV/Å^2/amu to eV^2
 eigenval_units_factor = units._hbar ** 2 * 1e10 ** 2 / (units._e *
                                                         units._amu)
 
-class Vibrations:
+class NormalModes:
     # displacement for generating numerical hessian
     num_hess_delta = 0.01
 
@@ -185,7 +186,7 @@ class Vibrations:
             print(f'{idx:3d} {1000 * en:6.1f}{c} {en / units.invcm:7.1f}{c}')
         print('---------------------\n')
 
-    def view_modes(self, prefix='nm', output_dir='normal_modes',
+    def view(self, prefix='nm', output_dir='normal_modes',
                    normal_mode_numbers='all', temp=300, nimages=16):
         """writes out xyz files with oscillations along each of the normal
         modes
@@ -376,21 +377,22 @@ class Vibrations:
         -------
         """
 
-        displaced_in_configset = ConfigSet(
-            input_configs=self._displace_at_in_xyz())
+        displaced_in_configset = ConfigSet(self._displace_at_in_xyz())
         displaced_out_configset = OutputSpec()
 
         properties = ['energy', 'forces']
 
         if parallel_hessian:
-
-            generic.run(inputs=displaced_in_configset,
-                        outputs=displaced_out_configset,
-                        calculator=calculator, output_prefix=self.prop_prefix,
-                        properties=properties, num_inputs_per_python_subprocess=1)
+            generic.run(
+                inputs=displaced_in_configset,
+                outputs=displaced_out_configset,
+                calculator=calculator, 
+                output_prefix=self.prop_prefix,
+                properties=properties, 
+                autopara_info=AutoparaInfo(num_inputs_per_python_subprocess=1))
 
             self._write_nm_to_atoms(
-                displaced_ats=displaced_out_configset.output_configs)
+                displaced_ats=list(displaced_out_configset.to_ConfigSet()))
 
         else:
             displaced_out_atoms = generic._run_autopara_wrappable(atoms=displaced_in_configset,
@@ -482,7 +484,7 @@ class Vibrations:
         return displaced_ats
 
     def _yield_displacements(self):
-        """modified ase.vibrations.vibrations"""
+        """modified ase.NormalModes.NormalModes"""
 
         indices = np.arange(self.num_at)
         for index in indices:
@@ -527,7 +529,7 @@ def sample_normal_modes(inputs, outputs, temp, sample_size, prop_prefix,
         inputs = [inputs]
 
     for atoms in inputs:
-        at_vib = Vibrations(atoms, prop_prefix)
+        at_vib = NormalModes(atoms, prop_prefix)
         sample = at_vib.sample_normal_modes(temp=temp,
                                             sample_size=sample_size,
                                             info_to_keep=info_to_keep,
@@ -561,7 +563,7 @@ def _generate_normal_modes_autopara_wrappable(inputs, calculator, prop_prefix,
 
     atoms_out = []
     for atoms in atoms_to_list(inputs):
-        at_vib = Vibrations(atoms, prop_prefix)
+        at_vib = NormalModes(atoms, prop_prefix)
         at_vib.derive_normal_mode_info(calculator=calculator,
                                        parallel_hessian=parallel_hessian)
         atoms = at_vib.atoms

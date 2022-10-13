@@ -4,7 +4,7 @@ import ase.io
 import pytest 
 from pytest import approx
 
-from wfl.generate import vib
+from wfl.generate import normal_modes as nm 
 
 def test_getting_normal_modes():
     ref_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
@@ -12,7 +12,7 @@ def test_getting_normal_modes():
 
     at = ase.io.read(os.path.join(ref_path, 'water_dftb_nms.xyz'))
 
-    my_vib = vib.Vibrations(at, prop_prefix='')
+    my_vib = nm.NormalModes(at, prop_prefix='')
 
 
     # test that displacements are done ok
@@ -58,7 +58,7 @@ def test_sample_normal_modes():
     nm_fn = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                          'assets/normal_modes/water_dftb_nms.xyz')
 
-    my_vib = vib.Vibrations(nm_fn, prop_prefix='')
+    my_vib = nm.NormalModes(nm_fn, prop_prefix='')
     temp = 300
     at = my_vib.sample_normal_modes(temp=temp, sample_size=1)[0]
     info = list(at.info.keys())
@@ -88,14 +88,14 @@ def test_sample_normal_modes():
     assert len(sample) == n_sample
 
 
-def test_view_modes(tmp_path):
+def test_view(tmp_path):
     ref_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                             'assets/normal_modes/')
 
     nm_fn = os.path.join(ref_path, 'water_dftb_nms.xyz')
-    my_vib = vib.Vibrations(nm_fn, prop_prefix='')
+    my_vib = nm.NormalModes(nm_fn, prop_prefix='')
 
-    my_vib.view_modes(output_dir=tmp_path, normal_mode_numbers=7)
+    my_vib.view(output_dir=tmp_path, normal_mode_numbers=7)
     my_mode = ase.io.read(os.path.join(tmp_path, 'nm_7.xyz'), ':')
     ref_mode = ase.io.read(os.path.join(ref_path, 'nm_7.xyz'), ':')
 
@@ -106,7 +106,7 @@ def test_view_modes(tmp_path):
 def test_print_summary():
     nm_fn = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                          'assets/normal_modes/water_dftb_nms.xyz')
-    my_vib = vib.Vibrations(nm_fn, prop_prefix='')
+    my_vib = nm.NormalModes(nm_fn, prop_prefix='')
 
     # just check that it prints successfully
     my_vib.summary()

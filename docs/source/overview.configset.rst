@@ -14,7 +14,7 @@ Input and output of atomic structures
   from wfl.configset import ConfigSet, OutputSpec
 
 
-``ConfigSet`` can encapsulate one or multiple lists of ``ase.atoms.Atoms`` objects, or reference to stored sets of configuration in files (ABCD databases are currently unsupported). It can function as an iterator over all configs in the input, or iterate over groups of them according to the input definition with the ``ConfigSet().groups()`` method. The ``ConfigSet`` must be initialized with its input configurations, files, or other ``ConfigSet``s.
+``ConfigSet`` can encapsulate one or multiple lists of ``ase.atoms.Atoms`` objects, or reference to stored sets of configuration in files (ABCD databases are currently unsupported). It can function as an iterator over all configs in the input, or iterate over groups of them according to the input definition with the ``ConfigSet().groups()`` method. The ``ConfigSet`` must be initialized with its input configurations, files, or other ``ConfigSet`` objects.
 
 ``OutputSpec`` works as the output layer, used for writing results during iterations, but the actual writing is not guaranteed to happen until the operation is closed with ``OutputSpec.close()``. It is possible to map a different output file to each input file, which will result in the outputs corresponding to each input file ending up in a different output file.
 

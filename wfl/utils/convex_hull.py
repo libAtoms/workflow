@@ -13,7 +13,7 @@ def find_hull(ps, below=True):
     ps: ndarray(n_ps, n_dim)
         array of positions in arbitrary dim space
     below: bool, default True
-        only return parts of hull that are "below", i.e. lowest values of n_dim-1 component
+        only return parts of hull that are "below" all of the other points, i.e. lowest values of n_dim-1 component (assumed to be energy)
 
     Returns
     -------

@@ -68,6 +68,14 @@ wfl.calculators.vasp module
    :undoc-members:
    :show-inheritance:
 
+wfl.calculators.wfl\_fileio\_calculator module
+----------------------------------------------
+
+.. automodule:: wfl.calculators.wfl_fileio_calculator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

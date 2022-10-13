@@ -4,12 +4,13 @@
 The following serves as a basic example of how to fit MLIPs (in this case a GAP for Cu slabs) using the ground functionalities of the wfl package. In theory you need no other previous installations other than wfl, ase, and working versions of QUIP and quippy.
 
 # Table of contents
-1. [General workflow and setup](#general)
-2. [Fitting the initial GAP](#Fitting-the-initial-GAP)
-3. [Preparing the iterative process](#generate)
-4. [The iterative Process](#generate)
+1. [General workflow and setup](general)
+2. [Fitting the initial GAP](fitting-initial)
+3. [Preparing the iterative process](preparing-iter)
+4. [The iterative Process](iterative-proc)
 
-## General workflow and setup <a name="general">
+## General workflow and setup
+(general)=
 
 In the ```examples/iterative_gap_fit``` directory you will find the following files:
 
@@ -60,6 +61,7 @@ from wfl.select.by_descriptor import greedy_fps_conf_global
 ```
 
 ## Fitting the initial GAP
+(fitting-initial)=
 
 The ```main``` function in ```batch_gap_fit.py``` begins with fitting an initial GAP for Cu structures:
 
@@ -95,9 +97,10 @@ if verbose:
 get_gap(training, gap_name, Zs, length_scales, gap_params, run_dir=GAP_dir)
 ```
 
-Next, we create a directory in which we will write all future files resulting from a GAP fit, naming them by the iteration in our process. The function ```get_gap``` represents a helper function that takes training_file, parameters, and output filenames and runs the [multistage gap fit](wfl.fit.rst) function. This function will run locally. If you wish to run this or any other wfl-based function remotely, check out the [ExPyRe documentation](XXXXX) and add the remote information via the keyword ```remote_info```.
+Next, we create a directory in which we will write all future files resulting from a GAP fit, naming them by the iteration in our process. The function ```get_gap``` represents a helper function that takes training_file, parameters, and output filenames and runs the [multistage gap fit](wfl.fit.rst) function. This function will run locally. If you wish to run this or any other wfl-based function remotely, check out the [Expyre documentation](https://libatoms.github.io/ExPyRe/) and add the remote information via the keyword ```remote_info```.
 
 ## Preparing the iterative process
+(preparing-iter)=
 
 ```python
 ### MD info
@@ -125,6 +128,7 @@ max_count = 5
 Above are some examples for preparing the [structure generation processes](wfl.generate.rst) ```MD``` and ```optimize```. In this particular file, we define the type of structure generation process with the parameter ```calc```, and set the maximum number of iterations to 5. The variable ```n_select``` determines how many structures get added to the training set each generation.
 
 ## The Iterative Process
+(iterative-proc)=
 
 ```python
 while fit_idx  < max_count:
