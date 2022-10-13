@@ -7,6 +7,17 @@ from .utils import clean_rundir as utils_clean_rundir
 class WFLFileIOCalculator():
     """Mixin class implementing some methods that should be available to every
     WFL calculator that does I/O via files, i.e. DFT calculators
+    
+    As a python mixin class, must be inherited from by the wrapping wfl calculator class _before_ the ASE calculator, i.e.
+    
+    .. code-block:: python
+    
+        from ase.calculators.dftcode import DftCodeCalculator as ASE_DftCodeCalculator
+        class DftCodeCalculator(WFLFileIOCalculator, ASE_DftCodeCalculator):
+            .
+            .
+            .
+
 
     Parameters
     ----------
