@@ -539,60 +539,24 @@ title="Print to PDF"
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
-<li><p><strong>atoms</strong> (<em>ase.atoms.Atoms / list</em><em>(</em><em>Atoms</em><em>)</em>) – input configuration(s)</p></li>
 <li><p><strong>descs</strong> (<em>str / list</em><em>(</em><em>str</em><em>) </em><em>/ dict</em><em>(</em><em>Z : str / Descriptor</em><em> )</em>) – descriptor or list of descriptors (applied to all species) or dict of descriptor string for each
 species (key None for all species)
-If <code class="docutils literal notranslate"><span class="pre">global</span></code>, combined descriptor will be concatenated.  If <code class="docutils literal notranslate"><span class="pre">local</span></code> and <code class="docutils literal notranslate"><span class="pre">Z</span></code> is not None, multiple arrays
+If <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">per_atom</span></code>, combined descriptor will be concatenated.  If <code class="docutils literal notranslate"><span class="pre">per_atom</span></code> and <code class="docutils literal notranslate"><span class="pre">Z</span></code> is not None, multiple arrays
 entries will be created, one per Zcenter, named &lt;key&gt;_Z_&lt;Zcenter&gt;.</p></li>
-<li><p><strong>key</strong> (<em>str</em>) – key in Atoms.info (global) or Atoms.arrays (local) to store information</p></li>
-<li><p><strong>local</strong> (<em>bool</em><em>, </em><em>default False</em>) – calculate a local (per-atom) descriptor, as opposed to global (per-config)</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – key in Atoms.info (<code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">per_atom</span></code>) or Atoms.arrays (<code class="docutils literal notranslate"><span class="pre">per_atom</span></code>) to store information</p></li>
+<li><p><strong>per_atom</strong> (<em>bool</em>) – calculate a local (per-atom) descriptor, as opposed to global (per-config)</p></li>
 <li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default True</em>) – normalize final vector (e.g. if contributions from multiple descriptors were concatenated)</p></li>
-<li><p><strong>composition_weight</strong> (<em>bool</em><em>, </em><em>default True</em>) – when concatenating contributions from different species for a global, weight each by composition fraction</p></li>
+<li><p><strong>composition_weight</strong> (<em>bool</em><em>, </em><em>default True</em>) – when concatenating contributions from different species for a per-config, weight each by composition fraction</p></li>
 <li><p><strong>force</strong> (<em>bool</em><em>, </em><em>default False</em>) – overwrite key if already exists</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>atoms</strong> (<em>Atoms or list(Atoms)</em>) – Input configuration(s) with descriptors in info/arrays</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoparaInfo, default None</em>) – information for automatic parallelization</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>co</strong> – output configs</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.descriptors.quippy.calc_autopara_wrappable">
-<span class="sig-prename descclassname"><span class="pre">wfl.descriptors.quippy.</span></span><span class="sig-name descname"><span class="pre">calc_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">composition_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.descriptors.quippy.calc_autopara_wrappable" title="Permalink to this definition">#</a></dt>
-<dd><p>Calculate descriptor for each config or atom</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>ase.atoms.Atoms / list</em><em>(</em><em>Atoms</em><em>)</em>) – input configuration(s)</p></li>
-<li><p><strong>descs</strong> (<em>str / list</em><em>(</em><em>str</em><em>) </em><em>/ dict</em><em>(</em><em>Z : str / Descriptor</em><em> )</em>) – descriptor or list of descriptors (applied to all species) or dict of descriptor string for each
-species (key None for all species)
-If <code class="docutils literal notranslate"><span class="pre">global</span></code>, combined descriptor will be concatenated.  If <code class="docutils literal notranslate"><span class="pre">local</span></code> and <code class="docutils literal notranslate"><span class="pre">Z</span></code> is not None, multiple arrays
-entries will be created, one per Zcenter, named &lt;key&gt;_Z_&lt;Zcenter&gt;.</p></li>
-<li><p><strong>key</strong> (<em>str</em>) – key in Atoms.info (global) or Atoms.arrays (local) to store information</p></li>
-<li><p><strong>local</strong> (<em>bool</em><em>, </em><em>default False</em>) – calculate a local (per-atom) descriptor, as opposed to global (per-config)</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default True</em>) – normalize final vector (e.g. if contributions from multiple descriptors were concatenated)</p></li>
-<li><p><strong>composition_weight</strong> (<em>bool</em><em>, </em><em>default True</em>) – when concatenating contributions from different species for a global, weight each by composition fraction</p></li>
-<li><p><strong>force</strong> (<em>bool</em><em>, </em><em>default False</em>) – overwrite key if already exists</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>atoms</strong> – Input configuration(s) with descriptors in info/arrays</p>
+<dd class="field-even"><p><strong>co</strong> – output configs</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Atoms or list(Atoms)</p>
+<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
 </dd>
 </dl>
 </dd></dl>

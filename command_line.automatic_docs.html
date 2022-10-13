@@ -1296,21 +1296,15 @@ does not support globbed filenames as xyz input</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-base-rundir">
-<span class="sig-name descname"><span class="pre">--base-rundir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;base_rundir&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-base-rundir" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-workdir">
+<span class="sig-name descname"><span class="pre">--workdir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;workdir&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-workdir" title="Permalink to this definition">#</a></dt>
 <dd><p>directory to put all calculation directories into</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-directory-prefix">
-<span class="sig-name descname"><span class="pre">--directory-prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;directory_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-directory-prefix" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-rundir-prefix">
+<span class="sig-name descname"><span class="pre">--rundir-prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;rundir_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-rundir-prefix" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-calc-kwargs">
-<span id="cmdoption-wfl-ref-method-orca-eval-kw"></span><span class="sig-name descname"><span class="pre">--calc-kwargs</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--kw</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;calc_kwargs&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-calc-kwargs" title="Permalink to this definition">#</a></dt>
-<dd><p>Kwargs for calculation, overwritten by other options</p>
-</dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-keep-files">
@@ -1319,27 +1313,39 @@ does not support globbed filenames as xyz input</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-orca-command">
-<span class="sig-name descname"><span class="pre">--orca-command</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;orca_command&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-orca-command" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-calculator-exec">
+<span class="sig-name descname"><span class="pre">--calculator-exec</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;calculator_exec&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-calculator-exec" title="Permalink to this definition">#</a></dt>
 <dd><p>path to ORCA executable, default=`orca`</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-tmp">
-<span id="cmdoption-wfl-ref-method-orca-eval-scratch-path"></span><span class="sig-name descname"><span class="pre">-tmp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--scratch-path</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;scratch_path&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-tmp" title="Permalink to this definition">#</a></dt>
+<span id="cmdoption-wfl-ref-method-orca-eval-scratchdir"></span><span class="sig-name descname"><span class="pre">-tmp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--scratchdir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;scratchdir&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-tmp" title="Permalink to this definition">#</a></dt>
 <dd><p>Directory to use as scratch for calculations, SSD recommended, default: cwd</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-orca-simple-input">
-<span class="sig-name descname"><span class="pre">--orca-simple-input</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;orca_simple_input&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-orca-simple-input" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-orcasimpleinput">
+<span class="sig-name descname"><span class="pre">--orcasimpleinput</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;orcasimpleinput&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-orcasimpleinput" title="Permalink to this definition">#</a></dt>
 <dd><p>orca simple input line, make sure it is correct, default is recPBE with settings tested for radicals</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-orca-additional-blocks">
-<span class="sig-name descname"><span class="pre">--orca-additional-blocks</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;orca_additional_blocks&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-orca-additional-blocks" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-orcablocks">
+<span class="sig-name descname"><span class="pre">--orcablocks</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;orcablocks&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-orcablocks" title="Permalink to this definition">#</a></dt>
 <dd><p>orca blocks to be added, default is None</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-charge">
+<span class="sig-name descname"><span class="pre">--charge</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;charge&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-charge" title="Permalink to this definition">#</a></dt>
+<dd><p>charge for the calculation</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-mult">
+<span class="sig-name descname"><span class="pre">--mult</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mult&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-mult" title="Permalink to this definition">#</a></dt>
+<dd><p>multiplicity</p>
 </dd></dl>
 
 <p class="rubric">Arguments</p>
