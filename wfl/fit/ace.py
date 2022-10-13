@@ -52,7 +52,7 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
     ace_fit_command: str, default None
         executable for ace_fit. 
         e.g. ``julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl`` or similar. 
-        Alternatively set by WFL_ACE_FIT_COMMAND.
+        Alternatively set by `WFL_ACE_FIT_COMMAND` env var.
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
     skip_if_present: bool, default False

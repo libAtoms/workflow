@@ -40,7 +40,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
         - float: constant T
         - tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp
         - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with
-          duration defined as fraction of total number of steps
+        duration defined as fraction of total number of steps
     temperature_tau: float, default None
         time scale that enables Berendsen constant T temperature rescaling (fs)
     pressure: None / float / tuple
@@ -242,12 +242,11 @@ def sample(*args, **kwargs):
     # Normally each thread needs to call np.random.seed so that it will generate a different
     # set of random numbers.  This env var overrides that to produce deterministic output,
     # for purposes like testing
-    # EG: do we need a "hash_ignore" like in optimize.py?
     if 'WFL_DETERMINISTIC_HACK' in os.environ:
         initializer = (None, [])
     else:
         initializer = (np.random.seed, [])
-    def_autopara_info={"initializer":initializer}
+    def_autopara_info={"initializer":initializer, "hash_ignore":["initializer"]}
 
     return autoparallelize(_sample_autopara_wrappable, *args, 
         def_autopara_info=def_autopara_info, **kwargs)

@@ -1,7 +1,7 @@
 """
 This is testing the ORCA calculator given here, with an example orca output given to test on.
 
-the assets/ directory contains the orca files and this test depends on them
+the assets/ workdir contains the orca files and this test depends on them
 """
 
 import os
@@ -21,6 +21,7 @@ from ase.calculators.calculator import CalculationFailed
 from wfl.calculators.orca import ORCA, parse_npa_output, natural_population_analysis
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
+from wfl.autoparallelize.autoparainfo import AutoparaInfo
 
 ref_parameters = dict(charge=0,
                       mult=1,
@@ -72,13 +73,13 @@ def test_orca_is_converged():
 def test_full_orca(tmp_path):
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
 
-    scratch_path = tmp_path / "fake_scratch_dir"
-    scratch_path.mkdir(exist_ok=True)
+    scratchdir = tmp_path / "fake_scratch_dir"
+    scratchdir.mkdir(exist_ok=True)
     home_dir = tmp_path / "home_dir"
 
     # this should raise error and copy over default files
-    calc = ORCA(directory=home_dir, 
-                scratch_path=scratch_path, 
+    calc = ORCA(workdir=home_dir, 
+                scratchdir=scratchdir, 
                 keep_files = False, 
                 mult=2)
 
@@ -87,16 +88,15 @@ def test_full_orca(tmp_path):
         atoms.get_potential_energy()
     except CalculationFailed:
         pass
-    assert not any(scratch_path.iterdir())
-    workdir_root = (home_dir / "ORCA_calc_files")
-    assert workdir_root.exists()
-    calc_dir = [d for d in workdir_root.iterdir()][0]
+    assert list(scratchdir.iterdir()) == []
+    assert home_dir.exists()
+    calc_dir = [d for d in home_dir.iterdir()][0]
     for ext in [".ase", ".inp", ".out"]:
         assert (calc_dir / ("orca" + ext)).exists()
 
     # just check this executes without error
-    calc = ORCA(directory=home_dir, 
-                scratch_path=scratch_path, 
+    calc = ORCA(workdir=home_dir, 
+                scratchdir=scratchdir, 
                 keep_files = "default", 
                 mult=1)
 
@@ -114,12 +114,14 @@ def test_orca_with_generic(tmp_path):
     inputs = ConfigSet(atoms)
     outputs = OutputSpec()
 
-    calc = ORCA(directory=home_dir, 
+    calc = ORCA(workdir=home_dir, 
                 keep_files = "default", 
                 mult=1)
 
-    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", num_python_subprocesses=0)
-    for at in ConfigSet(outputs):
+    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_")
+
+
+    for at in outputs.to_ConfigSet():
         assert "orca_energy" in at.info or "orca_calculation_failed" in at.info
 
 @pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
@@ -131,15 +133,16 @@ def test_orca_geometry_optimisation(tmp_path):
     inputs = ConfigSet(atoms)
     outputs = OutputSpec()
 
-    calc = ORCA(directory=home_dir, 
+    calc = ORCA(workdir=home_dir, 
                 keep_files = "default", 
                 mult=1, 
                 task="opt")
 
 
-    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", num_python_subprocesses=0)
+    generic_result = generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_")
 
-    out = [at for at in ConfigSet(outputs)][0]
+
+    out = list(generic_result)[0]
 
     assert pytest.approx(out.get_distance(0, 1)) == 0.76812058465248
 
@@ -150,7 +153,7 @@ def test_post_processing(tmp_path):
     home_dir = tmp_path / "home_dir"
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
-    calc = ORCA(directory=home_dir, 
+    calc = ORCA(workdir=home_dir, 
                 keep_files = ["*.inp", "*.out", "*.post"], 
                 post_process=simplest_orca_post)
 
@@ -186,15 +189,18 @@ def test_run_npa(tmp_path):
     home_dir = tmp_path / "home_dir"
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
-    calc = ORCA(directory=home_dir, 
+    calc = ORCA(workdir=home_dir, 
                 keep_files = ["*.inp", "*.out", "*.janpa"], 
-                post_process=post_func)
+                post_process=post_func, 
+                )
 
     inputs = ConfigSet(atoms)
     outputs = OutputSpec()
-    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", num_python_subprocesses=0) 
 
-    atoms = [at for at in ConfigSet(outputs)][0]
+    generic_results = generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", raise_calc_exceptions=True)
+
+
+    atoms = list(generic_results)[0]
     assert "orca_NPA_electron_population" in atoms.arrays
     assert "orca_NPA_charge" in atoms.arrays
 
