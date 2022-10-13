@@ -1,6 +1,7 @@
 from pathlib import Path
 import shutil
 import tempfile
+import warnings
 
 from .utils import clean_rundir as utils_clean_rundir
 
@@ -62,7 +63,7 @@ class WFLFileIOCalculator():
 
         # set self.directory to where we want the calculation to actually run
         if self._wfl_scratchdir is not None:
-            dir_name = str(self._cur_rundir.resolve()).replace("/", "", 1)
+            dir_name = str(self._cur_rundir.resolve()).replace("/", "", 1).replace("/", "_")
             directory = self._wfl_scratchdir / dir_name
             directory.mkdir(parents=True, exist_ok=True)
             self.directory = directory
@@ -75,3 +76,8 @@ class WFLFileIOCalculator():
         if self._wfl_scratchdir is not None:
             for f in Path(self.directory).glob("*"):
                 shutil.move(f, self._cur_rundir)
+            if any(Path(self.directory).iterdir()):
+                warnings.warn(f"scartch dir {self.directory} is not empty, not deleting.")
+            else:
+                Path(self.directory).rmdir()
+                self.directory = '.' 

@@ -88,8 +88,7 @@ def test_full_orca(tmp_path):
         atoms.get_potential_energy()
     except CalculationFailed:
         pass
-    # Temporarily: scratchdir isn't cleaned up, see issue 161. 
-    # assert not any(scratchdir.iterdir())
+    assert not any(scratchdir.iterdir())
     assert home_dir.exists()
     calc_dir = [d for d in home_dir.iterdir()][0]
     for ext in [".ase", ".inp", ".out"]:
