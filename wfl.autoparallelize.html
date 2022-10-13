@@ -80,15 +80,10 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contents:
- </span>
-</p>
-<ul class="current nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="first_example.html">
-   First example
+   First Example
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -102,6 +97,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="overview.overall_design.html">
+     Overall design
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="overview.configset.html">
      Input and output of atomic structures
     </a>
@@ -109,6 +109,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="overview.parallelisation.html">
      Automatic parallelization of tasks
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.queued.html">
+     Functions as independently queued jobs
     </a>
    </li>
   </ul>
@@ -125,17 +130,12 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
-     Calculators in workflow
+     Calculators in Workflow
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.generate.html">
-     Generating Configs
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
+     Generating Atomic Structures
     </a>
    </li>
    <li class="toctree-l2">
@@ -144,46 +144,36 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
+    <a class="reference internal" href="operations.select.html">
+     Selecting Configs
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
-     Multistage GAP fitting
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="operations.fitting.html">
+     Fitting potentials
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="workflows.html">
-   Workflows
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.rss.html">
-     How to do GAP-RSS
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.mlip_fitting.html">
-     Fitting a MLIP
-    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.gap_fitting.html">
+       Fitting GAP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.multistage_gap_fitting.html">
+       Multistage GAP fitting
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.ace_fitting.html">
+       Fitting ACE
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -198,13 +188,23 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.index.html">
+     Index
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.dimers.html">
      Generating Dimer Structures
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
+    <a class="reference internal" href="examples.orca_cli.html">
+     ORCA via command line
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca_python.html">
+     ORCA via Python script
     </a>
    </li>
    <li class="toctree-l2">
@@ -213,26 +213,36 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
+     Normal Modes of molecules
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
+     SMILES to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Atoms
+      </span>
+     </code>
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.md.html">
-     MD
+     Molecular Dynamics
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="workflows.rss.html">
+   GAP-RSS
+  </a>
  </li>
  <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="modules.html">
@@ -308,10 +318,17 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul class="simple">
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.scripts.html">
@@ -470,6 +487,11 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.autoparallelize.autoparainfo">
+   wfl.autoparallelize.autoparainfo module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.autoparallelize.base">
    wfl.autoparallelize.base module
   </a>
@@ -529,6 +551,11 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.autoparallelize.autoparainfo">
+   wfl.autoparallelize.autoparainfo module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.autoparallelize.base">
    wfl.autoparallelize.base module
   </a>
@@ -577,6 +604,37 @@ title="Print to PDF"
 <h1>wfl.autoparallelize package<a class="headerlink" href="#wfl-autoparallelize-package" title="Permalink to this headline">#</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="module-wfl.autoparallelize.autoparainfo">
+<span id="wfl-autoparallelize-autoparainfo-module"></span><h2>wfl.autoparallelize.autoparainfo module<a class="headerlink" href="#module-wfl.autoparallelize.autoparainfo" title="Permalink to this headline">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.autoparallelize.autoparainfo.AutoparaInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.autoparainfo.</span></span><span class="sig-name descname"><span class="pre">AutoparaInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.autoparainfo.AutoparaInfo" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Object containing information required to autoparallelize a function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_inputs_per_python_subprocess</strong> (<em>int</em><em>, </em><em>default 1</em>) – number of inputs passed to each call of the low level operation.</p></li>
+<li><p><strong>iterable_arg</strong> (<em>int / str</em><em>, </em><em>default 0</em>) – index (int positional, str keyword) of input iterable argument in low level function</p></li>
+<li><p><strong>skip_failed</strong> (<em>bool</em><em>, </em><em>default True</em>) – skip output for failed low level function calls</p></li>
+<li><p><strong>initializer</strong> (<em>(</em><em>func</em><em>, </em><em>func_kwargs</em><em>)</em><em>, </em><em>default</em><em> (</em><em>None</em><em>, </em><em>[</em><em>]</em><em>)</em>) – initializer to be called when each python subprocess is started</p></li>
+<li><p><strong>hash_ignore</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>]</em>) – list of arguments to ignore when doing hash of remote function arguments to determine if it’s already been done</p></li>
+<li><p><strong>num_python_subprocesses</strong> (<em>int</em><em>, </em><em>default None</em>) – number of python subprocesses</p></li>
+<li><p><strong>remote_info</strong> (<a class="reference internal" href="#wfl.autoparallelize.remoteinfo.RemoteInfo" title="wfl.autoparallelize.remoteinfo.RemoteInfo"><em>RemoteInfo</em></a><em>, </em><em>default None</em>) – information for running remotely</p></li>
+<li><p><strong>remote_label</strong> (<em>str</em><em>, </em><em>default None</em>) – string label to match to keys in remote_info dict</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.autoparallelize.autoparainfo.AutoparaInfo.update_defaults">
+<span class="sig-name descname"><span class="pre">update_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">def_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.autoparainfo.AutoparaInfo.update_defaults" title="Permalink to this definition">#</a></dt>
+<dd><p>Starting from object passed by user at runtime, update all unspecified fields to the defaults
+specified when wrapping function, otherwise to class-wide defaults</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-wfl.autoparallelize.base">
 <span id="wfl-autoparallelize-base-module"></span><h2>wfl.autoparallelize.base module<a class="headerlink" href="#module-wfl.autoparallelize.base" title="Permalink to this headline">#</a></h2>

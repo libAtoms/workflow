@@ -1,82 +1,100 @@
-# Normal Modes (non-periodic)
+# Normal Modes of molecules 
+
+Workflow can numerically generate normal modes of a molecule with specified calculator and then simultaneously sample random displacements along multiple normal modes to follow Boltzamnn distribution at a given temperature.  
+
 
 ## Generate
 
+The following script generates normal modes of methane and water with a [xTB](https://xtb-python.readthedocs.io/en/latest/index.html) calculator. The unit normal mode displacements are stored in `Atoms.arrays` and associated frequencies in `Atoms.info`. 
+
+```python
+from ase.build import molecule
+from xtb.ase.calculator import XTB
+from wfl.configset import ConfigSet, OutputSpec
+from wfl.generate import normal_modes as nm 
+
+mols = [molecule("CH4"), molecule("H2O")]
+ConfigSet = ConfigSet(mols)
+OutputSpec = OutputSpec("molecules.normal_modes.xyz")
+
+calc = (XTB, [], {'method':'GFN2-xTB'})
+prop_prefix = 'xtb2_'
+
+nm.generate_normal_modes_parallel_hessian(inputs=ConfigSet,
+                                    outputs=OutputSpec,
+                                    calculator=calc,
+                                    prop_prefix=prop_prefix)
 ```
-@click.command('xtb-normal-modes')
-@click.argument('input-fname')
-@click.option('-o', '--output-fname')
-@click.option('--parallel-hessian', "parallel_hessian", flag_value=True,
-              default=True)
-@click.option('--parallel-atoms', "parallel_hessian", flag_value=False)
-def xtb_normal_modes(input_fname, output_fname, parallel_hessian):
 
-    from xtb.ase.calculator import XTB
+To generate normal modes via finite differences, each of N atoms are displaced backwards and forwards along each direction leading to 6N calls to the reference calculator. Depending on the number of structures to be processed and speed of the calculator different modes of parallelizing the calculation are appropriate:
 
-    ConfigSet = ConfigSet(input_fname)
-    OutputSpec = OutputSpec(output_fname)
+- Few structures and slow calculator: generate normal modes in sequence and parallelize the 6N evaluations needed to approximate the Hessian for each molecule. The example above. 
+- Many structures and fast calculator: generate normal modes in parallel and evaluate each of the 6N displacements in sequence. Example: 
 
-    calc = (XTB, [], {'method':'GFN2-xTB'})
 
-    prop_prefix = 'xtb2_'
+```python
+from ase.build import molecule
+from xtb.ase.calculator import XTB
+from wfl.configset import ConfigSet, OutputSpec
+from wfl.generate import normal_modes as nm 
+from wfl.autoparallelize.autoparainfo import AutoparaInfo
 
-    if parallel_hessian:
-        vib.generate_normal_modes_parallel_hessian(inputs=ConfigSet,
-                                          outputs=OutputSpec,
-                                          calculator=calc,
-                                          prop_prefix=prop_prefix)
-    else:
-        vib.generate_normal_modes_parallel_atoms(inputs=ConfigSet,
-                                                 outputs=OutputSpec,
-                                                 calculator=calc,
-                                                 prop_prefix=prop_prefix,
-                                                 num_inputs_per_python_subprocess=1)
+mols = [molecule("CH4"), molecule("H2O")]
+ConfigSet = ConfigSet(mols)
+OutputSpec = OutputSpec("molecules.normal_modes.xyz")
+
+calc = (XTB, [], {'method':'GFN2-xTB'})
+prop_prefix = 'xtb2_'
+
+nm.generate_normal_modes_parallel_atoms(inputs=ConfigSet,
+                                         outputs=OutputSpec,
+                                         calculator=calc,
+                                         prop_prefix=prop_prefix,
+                                         autopara_info = AutoparaInfo(
+                                            num_inputs_per_python_subprocess=1))
+
+```
+
+
+## Visualize
+
+Normal mode frequencies and displacements can be visualized: 
+
+```python
+from ase.io import read, write
+from wfl.generate import normal_modes as nm
+
+at = read("molecules.normal_modes.xyz")
+water_nm = nm.NormalModes(at, "xtb2_")
+
+# writes trajectories of each normal mode to file
+water_nm.view()
+
+# prints frequencies
+water_nm.summary()
+
 ```
 
 
 ## Sample
 
-```
-def sample(inputs, outputs, temp, sample_size, prop_prefix,
-                        info_to_keep=None, arrays_to_keep=None):
-    """Multiple times displace along normal modes for all atoms in input
+Finally, we can generate random displacements of the molecule, along multiple normal modes, that correspond to the Boltzmann distribution at a given temperature. 
 
-    Parameters
-    ----------
+```python
+from wfl.configset import ConfigSet, OutputSpec
+from wfl.generate import normal_modes as nm
 
-    inputs: Atoms / list(Atoms) / ConfigSet
-        Structures with normal mode information (eigenvalues &
-        eigenvectors)
-    outputs: OutputSpec
-    temp: float
-        Temperature for normal mode displacements
-    sample_size: int
-        How many perturbed structures per input structure to return
-    prop_prefix: str / None
-        prefix for normal_mode_frequencies and normal_mode_displacements
-        stored in atoms.info/arrays
-    info_to_keep: str, default "config_type"
-        string of Atoms.info.keys() to keep
-    arrays_to_keep: str, default None
-        string of Atoms.arrays.keys() entries to keep
+inputs = ConfigSet("molecules.normal_modes.xyz")
+outputs = OutputSpec("molecules.normal_modes.sample.xyz")
 
-    Returns
-    -------
-    """
-
-    if isinstance(inputs, Atoms):
-        inputs = [inputs]
-
-    for atoms in inputs:
-        at_vib = Vibrations(atoms, prop_prefix)
-        sample = at_vib.sample_normal_modes(sample_size=sample_size,
-                                            temp=temp, 
-                                            info_to_keep=info_to_keep,
-                                            arrays_to_keep=arrays_to_keep)
-        outputs.store(sample)
-
-    outputs.close()
-    return ConfigSet(outputs)
+for atoms in inputs:
+    at_nm = nm.NormalModes(atoms, "xtb2_")
+    sample = at_nm.sample_normal_modes(sample_size=100,
+                                        temp=300,  # Kelvin
+                                        info_to_keep="default",
+                                        arrays_to_keep=None)
+    outputs.store(sample)
+outputs.close()
 ```
 
-Elena: I have [this script](https://github.com/gelzinyte/scripties/blob/main/util/normal_modes.py) that randomly displaces atoms along different normal modes and down-weights the very shallow noisy ones. Is it worth merging into workflow and/or describing here? 
+NB the sampling function clears all but specified `Atoms.info` (apart from `config_type` by default) and `Atoms.arrays` entries to avoid carrying over now incorrect values, for example from previous single point evaluations.

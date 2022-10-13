@@ -80,15 +80,10 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contents:
- </span>
-</p>
-<ul class="current nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="first_example.html">
-   First example
+   First Example
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -102,6 +97,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="overview.overall_design.html">
+     Overall design
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="overview.configset.html">
      Input and output of atomic structures
     </a>
@@ -109,6 +109,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="overview.parallelisation.html">
      Automatic parallelization of tasks
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.queued.html">
+     Functions as independently queued jobs
     </a>
    </li>
   </ul>
@@ -125,17 +130,12 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
-     Calculators in workflow
+     Calculators in Workflow
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.generate.html">
-     Generating Configs
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
+     Generating Atomic Structures
     </a>
    </li>
    <li class="toctree-l2">
@@ -144,46 +144,36 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
+    <a class="reference internal" href="operations.select.html">
+     Selecting Configs
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
-     Multistage GAP fitting
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="operations.fitting.html">
+     Fitting potentials
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="workflows.html">
-   Workflows
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.rss.html">
-     How to do GAP-RSS
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.mlip_fitting.html">
-     Fitting a MLIP
-    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.gap_fitting.html">
+       Fitting GAP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.multistage_gap_fitting.html">
+       Multistage GAP fitting
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.ace_fitting.html">
+       Fitting ACE
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -198,13 +188,23 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.index.html">
+     Index
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.dimers.html">
      Generating Dimer Structures
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
+    <a class="reference internal" href="examples.orca_cli.html">
+     ORCA via command line
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca_python.html">
+     ORCA via Python script
     </a>
    </li>
    <li class="toctree-l2">
@@ -213,26 +213,36 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
+     Normal Modes of molecules
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
+     SMILES to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Atoms
+      </span>
+     </code>
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.md.html">
-     MD
+     Molecular Dynamics
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="workflows.rss.html">
+   GAP-RSS
+  </a>
  </li>
  <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="modules.html">
@@ -308,10 +318,17 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul class="simple">
+      </ul>
      </li>
      <li class="toctree-l3 current active">
       <a class="current reference internal" href="#">

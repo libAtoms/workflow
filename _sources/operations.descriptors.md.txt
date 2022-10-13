@@ -1,3 +1,3 @@
 # Descriptors
 
-Brief overview of descriptors (in quippy). 
+Workflow has a parallelized interface (`wfl.descriptors.quippy.calc()`) for calculating quippy descriptors via `quippy.descriptors.Descriptors`. See [Fitting a MLIP](examples.mlip_fitting.md) example that generates a global SOAP descriptor.

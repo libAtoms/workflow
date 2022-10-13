@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Generating Configs &#8212; workflow  documentation</title>
+    <title>Generating Atomic Structures &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,8 +32,8 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Selecting Configs" href="operations.select.html" />
-    <link rel="prev" title="Calculators in workflow" href="operations.calculators.html" />
+    <link rel="next" title="Descriptors" href="operations.descriptors.html" />
+    <link rel="prev" title="Calculators in Workflow" href="operations.calculators.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -80,15 +80,10 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contents:
- </span>
-</p>
-<ul class="current nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="first_example.html">
-   First example
+   First Example
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -102,6 +97,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="overview.overall_design.html">
+     Overall design
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="overview.configset.html">
      Input and output of atomic structures
     </a>
@@ -109,6 +109,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="overview.parallelisation.html">
      Automatic parallelization of tasks
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.queued.html">
+     Functions as independently queued jobs
     </a>
    </li>
   </ul>
@@ -125,17 +130,12 @@
   <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
-     Calculators in workflow
+     Calculators in Workflow
     </a>
    </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     Generating Configs
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
+     Generating Atomic Structures
     </a>
    </li>
    <li class="toctree-l2">
@@ -144,46 +144,36 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
+    <a class="reference internal" href="operations.select.html">
+     Selecting Configs
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
-     Multistage GAP fitting
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="operations.fitting.html">
+     Fitting potentials
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="workflows.html">
-   Workflows
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.rss.html">
-     How to do GAP-RSS
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.mlip_fitting.html">
-     Fitting a MLIP
-    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.gap_fitting.html">
+       Fitting GAP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.multistage_gap_fitting.html">
+       Multistage GAP fitting
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.ace_fitting.html">
+       Fitting ACE
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -198,13 +188,23 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.index.html">
+     Index
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.dimers.html">
      Generating Dimer Structures
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
+    <a class="reference internal" href="examples.orca_cli.html">
+     ORCA via command line
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca_python.html">
+     ORCA via Python script
     </a>
    </li>
    <li class="toctree-l2">
@@ -213,26 +213,36 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
+     Normal Modes of molecules
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
+     SMILES to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Atoms
+      </span>
+     </code>
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.md.html">
-     MD
+     Molecular Dynamics
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="workflows.rss.html">
+   GAP-RSS
+  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
@@ -308,10 +318,17 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul class="simple">
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.scripts.html">
@@ -442,23 +459,140 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#atoms-and-dimers">
+   Atoms and Dimers
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#smiles-to-atoms">
+   SMILES to Atoms
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#buildcell">
+   BuildCell
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#super-cells">
+   Super Cells
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#molecular-dynamics">
+   Molecular Dynamics
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#geometry-optimization">
+   Geometry Optimization
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#minima-hopping">
+   Minima Hopping
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#structures-for-phonons">
+   Structures for phonons
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#normal-modes-of-molecules">
+   Normal Modes of Molecules
+  </a>
+ </li>
+</ul>
+
+    </nav>
 </div>
     </div>
     <div class="article row">
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Generating Configs</h1>
+                <h1>Generating Atomic Structures</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#atoms-and-dimers">
+   Atoms and Dimers
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#smiles-to-atoms">
+   SMILES to Atoms
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#buildcell">
+   BuildCell
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#super-cells">
+   Super Cells
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#molecular-dynamics">
+   Molecular Dynamics
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#geometry-optimization">
+   Geometry Optimization
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#minima-hopping">
+   Minima Hopping
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#structures-for-phonons">
+   Structures for phonons
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#normal-modes-of-molecules">
+   Normal Modes of Molecules
+  </a>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -466,9 +600,52 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="generating-configs">
-<h1>Generating Configs<a class="headerlink" href="#generating-configs" title="Permalink to this headline">#</a></h1>
-<p>Mainly brief overview things in of wfl.generate</p>
+  <div class="section" id="generating-atomic-structures">
+<h1>Generating Atomic Structures<a class="headerlink" href="#generating-atomic-structures" title="Permalink to this headline">#</a></h1>
+<p>This page (and submodules of <code class="docutils literal notranslate"><span class="pre">wfl.generate</span></code>) gives a brief overview self-contained operations in Workflow that loosely cover creating new atomic structures or modifying existing ones. All but “atoms and dimers” functions below make use of Workflow’s autoparallelization functionality.</p>
+<div class="section" id="atoms-and-dimers">
+<h2>Atoms and Dimers<a class="headerlink" href="#atoms-and-dimers" title="Permalink to this headline">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.atoms_and_dimers.prepare()</span></code> makes a set of dimer (two-atom) configurations for specified elements and specified distance range. See documentation and example <a class="reference internal" href="examples.dimers.html"><span class="doc std std-doc">Generating Dimer Structures</span></a>.</p>
+</div>
+<div class="section" id="smiles-to-atoms">
+<h2>SMILES to Atoms<a class="headerlink" href="#smiles-to-atoms" title="Permalink to this headline">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.smiles.run()</span></code> converts <a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system">SMILES</a> (e.g. “CCCC” for n-butane) to ASE’s <code class="docutils literal notranslate"><span class="pre">Atoms</span></code>. See example <a class="reference internal" href="examples.smiles.html"><span class="doc std std-doc">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></span></a></p>
+</div>
+<div class="section" id="buildcell">
+<h2>BuildCell<a class="headerlink" href="#buildcell" title="Permalink to this headline">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.buildcell.run()</span></code> wrapps <a class="reference external" href="https://airss-docs.github.io/technical-reference/buildcell-manual">AIRSS</a>’s <code class="docutils literal notranslate"><span class="pre">buildcell</span></code> that constructs sensible random structures.</p>
+</div>
+<div class="section" id="super-cells">
+<h2>Super Cells<a class="headerlink" href="#super-cells" title="Permalink to this headline">#</a></h2>
+<p>Functions in <code class="docutils literal notranslate"><span class="pre">wfl.generate.supercells</span></code> creates supercells from given primitive cells. These include</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">largest_bulk()</span></code> - makes largest bulk-like supercell with no more than specified number of atoms.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vacancy()</span></code> - makes a vacancy in a largest bulk-like supercell from above.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">antisite()</span></code> - makes antisites in a largest bulk-like supercell from above.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interstitial()</span></code> - makes interstitials in a largest bulk-like supercell from above.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">surface()</span></code> - makes a surface supercell.</p></li>
+</ul>
+</div>
+<div class="section" id="molecular-dynamics">
+<h2>Molecular Dynamics<a class="headerlink" href="#molecular-dynamics" title="Permalink to this headline">#</a></h2>
+<p>Molecular dynamics submodule aimed at sampling atomic configurations. Allows for NVE (Velocity Verlet), NPT (Berendsen) and NVT (Berendsen) integrators. Has hooks for custom functions that sample configs from the trajectory on-the-fly and/or at the end of the individual simulation and also for stopping the simulation early if some condition is met (e.g. MD is unstable).</p>
+</div>
+<div class="section" id="geometry-optimization">
+<h2>Geometry Optimization<a class="headerlink" href="#geometry-optimization" title="Permalink to this headline">#</a></h2>
+<p>`wfl.generate.optimize.run() optimizes geometry with the given calculator and PreconLBFGS, including symmetry constraints.</p>
+</div>
+<div class="section" id="minima-hopping">
+<h2>Minima Hopping<a class="headerlink" href="#minima-hopping" title="Permalink to this headline">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.minimahopping.run()</span></code> wraps ASE’s <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/optimize.html#minima-hopping">Minima hopping</a> code. This algorithm utilizes a series of alternating steps of NVE molecular dynamics and local optimizations.</p>
+</div>
+<div class="section" id="structures-for-phonons">
+<h2>Structures for phonons<a class="headerlink" href="#structures-for-phonons" title="Permalink to this headline">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.phonopy.run()</span></code> creates displaced configs with phonopy or phono3py.</p>
+</div>
+<div class="section" id="normal-modes-of-molecules">
+<h2>Normal Modes of Molecules<a class="headerlink" href="#normal-modes-of-molecules" title="Permalink to this headline">#</a></h2>
+<p>Calculates normal mode directions and frequencies of molecules. From these can generate a Boltzmann sample of random displacements along multiple normal modes. See example on <a class="reference internal" href="examples.normal_modes.html"><span class="doc std std-doc">Normal modes of molecules</span></a>.</p>
+</div>
 </div>
 
 
@@ -483,13 +660,13 @@ title="Print to PDF"
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Calculators in workflow</p>
+            <p class="prev-next-title">Calculators in Workflow</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="operations.select.html" title="next page">
+    <a class='right-next' id="next-link" href="operations.descriptors.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Selecting Configs</p>
+        <p class="prev-next-title">Descriptors</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -1,135 +1,72 @@
-# MD
+# Molecular Dynamics
 
-takes input file, and runs many md trajectories and saves each to a different trajectory file. 
-(single-to-many configset.py functionality would be very useful here)
-
-Script to submit jobs
+The following script takes atomic structures from "configs.xyz", runs Berendsen NVT molecular dynamics simulation for 6000 steps (3ps) and writes snapshots to "configs.sample.xyz" every 1000 steps (0.5 ps). The script submits jobs to the "standard" queue of "local" cluster on 4 cores each, each job containing 4 MD simulations running in parallel. 
 
 ```
-from ase.io import read
-from pathlib import Path
-import util.md.test
+import os
+from xtb.ase.calculator import XTB
 from expyre.resources import Resources
-import wfl.pipeline.utils
-
+from wfl.autoparallelize.remoteinfo import RemoteInfo
+from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.generate import md
+from wfl.configset import ConfigSet, OutputSpec
 
 temp = 300
-nnodes=10
-steps = 300000
-sample_interval = 5000
-ace_fname="/work/e89/e89/eg475/work/md_tests/ace_cut4.5_N3D16_ard/2_wdir/ace_cut4.5_ard_N3D16.json"
-input_fname = "mega_md_test_in.xyz"
-wdir = "md_outputs"
 
-num_inputs_per_queued_job = nnodes * 128
-max_time = '24h'
-n = (nnodes, "nodes")
+num_cores=4
+steps = 6000
+sample_interval = 1000
+input_fname = "configs.xyz"
+out_fname = "configs.sample.xyz"
+
+num_inputs_per_queued_job = num_cores
+max_time = '48h'
 partitions="standard"
 sysname="local"
-partial_node=False
-
-Path("_expyre").mkdir(exist_ok=True)
 
 # remote info
 resources = Resources(
     max_time = max_time,
-    n = n,
+    num_cores = num_cores,
     partitions = partitions)
 
-remote_info = wfl.pipeline.utils.RemoteInfo(
-    sys_name = sysname,
-    job_name = "md-test",
-    resources = resources,
-    partial_node = partial_node,
+remote_info = RemoteInfo(
+    sys_name = sysname, 
+    job_name = "md", 
+    resources = resources, 
     num_inputs_per_queued_job=num_inputs_per_queued_job,
+    exact_fit=False, 
+    pre_cmds = ["conda activate my-env"]
+    ) 
+
+calc = (XTB, [], {'method':'GFN2-xTB'})
+
+ci = ConfigSet(input_fname)
+co = OutputSpec(out_fname)
+
+# Needed for the script be re-runable, otherwise a different random seed is generated.
+# Without this, if this script is interrupted while the jobs is running, re-starting this 
+# script would make it create and submit new jobs rather than monitor the ones already running.
+os.environ["WFL_DETERMINISTIC_HACK"] = "true"
+
+# xTB has some internal parallelisation that needs turning off by setting this env. variable. 
+os.environ["OMP_NUM_THREADS"] = "1"
+
+ci = md.sample(
+    inputs=ci, 
+    outputs=co,
+    calculator=calc,
+    steps = steps, 
+    dt = 0.5,           
+    temperature = temp,  
+    temperature_tau = 500, 
+    traj_step_interval = sample_interval, 
+    results_prefix = "xtb2_", 
+    update_config_type = False,
+    autopara_info = AutoparaInfo(
+        remote_info=remote_info, 
+        num_inputs_per_python_subprocess=1)
     )
-
-
-calc = (pyjulip_ace, [ace_fname], {})
-ats = read(input_fname, ":")
-wdir = Path(wdir) / str(int(temp))
-wdir.mkdir(exist_ok=True, parents=True)
-
-run_md_test(
-    workdir_root=wdir,
-    in_ats=ats,
-    temp=temp,
-    calc=calc,
-    info_label="graph_name",
-    steps=steps,
-    sampling_interval=sample_interval,
-    pred_prop_prefix="ace_" ,
-    remote_info=remote_info
-    )
-
-```
-
-Extra functions:
-
-```
-import os
-from pathlib import Path
-from wfl.generate_configs import md
-import numpy as np
-import hashlib
-
-def pyjulip_ace(ace_fname):
-    import pyjulip
-    return pyjulip.ACE1(ace_fname)
-
-
-def run_md_test(workdir_root, in_ats, temp, calc, info_label, steps, sampling_interval, 
-        pred_prop_prefix, remote_info):
-
-    workdir_root = Path(workdir_root) 
-    workdir_root.mkdir(exist_ok=True)
-
-    ci, co = prepare_inputs(in_ats, info_label, workdir_root)
-
-    os.environ["WFL_DETERMINISTIC_HACK"] = "true"
-
-    md_params = {
-        "steps": steps,
-        "dt": 0.5,  # fs
-        "temperature": temp,  # K
-        "temperature_tau": 500,  # fs, somewhat quicker than recommended (???)
-        "traj_step_interval": sampling_interval,
-        "results_prefix": pred_prop_prefix}
-
-    md.sample(
-        inputs=ci, 
-        outputs=co,
-        calculator=calc,
-        verbose=False,
-        remote_info=remote_info,
-        **md_params
-        )
-
-def prepare_inputs(ats, info_label, workdir_root):
-
-    input_files = []
-    output_files = {}
-    for at in ats:
-        hash = hash_atoms(at)
-        label = at.info[info_label] + hash
-        fname_in = workdir_root / (label + "_in.xyz")
-        fname_out = workdir_root / (label + "_out.xyz")
-        input_files.append(fname_in)
-        output_files[fname_in] = fname_out
-        write(fname_in, at)
-
-    ci = ConfigSet(input_files)
-    co = OutputSpec(output_files)
-    return ci, co
-
-#creates unique hash for a matrix of numbers
-def hash_array(v):
-    return hashlib.md5(np.array2string(v, precision=8, sign='+', floatmode='fixed').encode()).hexdigest()
-
-#creates unique hash for Atoms from atomic numbers and positions
-def hash_atoms(at):
-    v = np.concatenate((at.numbers.reshape(-1,1), at.positions),axis=1)
-    return hash_array(v)
 
 ```
 
@@ -139,13 +76,12 @@ expyre config.json:
 { "systems": {
     "local": { "host": null,
         "scheduler": "slurm",
-        "commands": ["source /work/e89/e89/eg475/.bashrc",  "echo $(date)", "hostname"],
+        "commands": ["source ~/.bashrc",  "echo $(date)", "hostname"],
         "header": ["#SBATCH --nodes={nnodes}",
                    "#SBATCH --tasks-per-node={num_cores_per_node}",
                    "#SBATCH --cpus-per-task=1",
                    "#SBATCH --account=change-me",
                    "#SBATCH --qos=standard"],
-                "rundir": "/work/e89/e89/eg475/expyre_rundir",
         "partitions": {"standard" : {"num_cores": 128, "max_time" : "24h", "max_mem": "256G"},
                        "highmem" : {"num_cores": 128, "max_time" : "24h", "max_mem": "512G"}}
                  }

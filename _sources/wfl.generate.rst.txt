@@ -1,6 +1,14 @@
 wfl.generate package
 ====================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   wfl.generate.md
+
 Submodules
 ----------
 
@@ -20,18 +28,18 @@ wfl.generate.buildcell module
    :undoc-members:
    :show-inheritance:
 
-wfl.generate.md module
-----------------------
-
-.. automodule:: wfl.generate.md
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 wfl.generate.minimahopping module
 ---------------------------------
 
 .. automodule:: wfl.generate.minimahopping
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+wfl.generate.normal\_modes module
+---------------------------------
+
+.. automodule:: wfl.generate.normal_modes
    :members:
    :undoc-members:
    :show-inheritance:
@@ -72,14 +80,6 @@ wfl.generate.utils module
 -------------------------
 
 .. automodule:: wfl.generate.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-wfl.generate.vib module
------------------------
-
-.. automodule:: wfl.generate.vib
    :members:
    :undoc-members:
    :show-inheritance:

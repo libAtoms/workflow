@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Normal Modes (non-periodic) &#8212; workflow  documentation</title>
+    <title>Normal Modes of molecules &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,8 +32,8 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="SMILES to .xyz" href="examples.smiles.html" />
-    <link rel="prev" title="Parallelize MACE calculator" href="examples.mace.html" />
+    <link rel="next" title="SMILES to Atoms" href="examples.smiles.html" />
+    <link rel="prev" title="Fitting a MLIP" href="examples.mlip_fitting.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -80,15 +80,10 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contents:
- </span>
-</p>
-<ul class="current nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="first_example.html">
-   First example
+   First Example
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -102,6 +97,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="overview.overall_design.html">
+     Overall design
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="overview.configset.html">
      Input and output of atomic structures
     </a>
@@ -109,6 +109,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="overview.parallelisation.html">
      Automatic parallelization of tasks
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.queued.html">
+     Functions as independently queued jobs
     </a>
    </li>
   </ul>
@@ -125,17 +130,12 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
-     Calculators in workflow
+     Calculators in Workflow
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.generate.html">
-     Generating Configs
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
+     Generating Atomic Structures
     </a>
    </li>
    <li class="toctree-l2">
@@ -144,46 +144,36 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
+    <a class="reference internal" href="operations.select.html">
+     Selecting Configs
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
-     Multistage GAP fitting
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="operations.fitting.html">
+     Fitting potentials
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="workflows.html">
-   Workflows
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.rss.html">
-     How to do GAP-RSS
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.mlip_fitting.html">
-     Fitting a MLIP
-    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.gap_fitting.html">
+       Fitting GAP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.multistage_gap_fitting.html">
+       Multistage GAP fitting
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.ace_fitting.html">
+       Fitting ACE
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -198,13 +188,23 @@
   </label>
   <ul class="current">
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.index.html">
+     Index
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.dimers.html">
      Generating Dimer Structures
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
+    <a class="reference internal" href="examples.orca_cli.html">
+     ORCA via command line
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca_python.html">
+     ORCA via Python script
     </a>
    </li>
    <li class="toctree-l2">
@@ -212,27 +212,37 @@
      Parallelize MACE calculator
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     Normal Modes (non-periodic)
+     Normal Modes of molecules
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
+     SMILES to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Atoms
+      </span>
+     </code>
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.md.html">
-     MD
+     Molecular Dynamics
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="workflows.rss.html">
+   GAP-RSS
+  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
@@ -308,10 +318,17 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul class="simple">
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.scripts.html">
@@ -470,6 +487,11 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#visualize">
+   Visualize
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#sample">
    Sample
   </a>
@@ -483,7 +505,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Normal Modes (non-periodic)</h1>
+                <h1>Normal Modes of molecules</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -496,6 +518,11 @@ title="Print to PDF"
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#generate">
    Generate
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#visualize">
+   Visualize
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -513,86 +540,96 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="normal-modes-non-periodic">
-<h1>Normal Modes (non-periodic)<a class="headerlink" href="#normal-modes-non-periodic" title="Permalink to this headline">#</a></h1>
+  <div class="section" id="normal-modes-of-molecules">
+<h1>Normal Modes of molecules<a class="headerlink" href="#normal-modes-of-molecules" title="Permalink to this headline">#</a></h1>
+<p>Workflow can numerically generate normal modes of a molecule with specified calculator and then simultaneously sample random displacements along multiple normal modes to follow Boltzamnn distribution at a given temperature.</p>
 <div class="section" id="generate">
 <h2>Generate<a class="headerlink" href="#generate" title="Permalink to this headline">#</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;xtb-normal-modes&#39;</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;input-fname&#39;</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output-fname&#39;</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--parallel-hessian&#39;</span><span class="p">,</span> <span class="s2">&quot;parallel_hessian&quot;</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-              <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--parallel-atoms&#39;</span><span class="p">,</span> <span class="s2">&quot;parallel_hessian&quot;</span><span class="p">,</span> <span class="n">flag_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">xtb_normal_modes</span><span class="p">(</span><span class="n">input_fname</span><span class="p">,</span> <span class="n">output_fname</span><span class="p">,</span> <span class="n">parallel_hessian</span><span class="p">):</span>
+<p>The following script generates normal modes of methane and water with a <a class="reference external" href="https://xtb-python.readthedocs.io/en/latest/index.html">xTB</a> calculator. The unit normal mode displacements are stored in <code class="docutils literal notranslate"><span class="pre">Atoms.arrays</span></code> and associated frequencies in <code class="docutils literal notranslate"><span class="pre">Atoms.info</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ase.build</span> <span class="kn">import</span> <span class="n">molecule</span>
+<span class="kn">from</span> <span class="nn">xtb.ase.calculator</span> <span class="kn">import</span> <span class="n">XTB</span>
+<span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
+<span class="kn">from</span> <span class="nn">wfl.generate</span> <span class="kn">import</span> <span class="n">normal_modes</span> <span class="k">as</span> <span class="n">nm</span> 
 
-    <span class="kn">from</span> <span class="nn">xtb.ase.calculator</span> <span class="kn">import</span> <span class="n">XTB</span>
+<span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">molecule</span><span class="p">(</span><span class="s2">&quot;CH4&quot;</span><span class="p">),</span> <span class="n">molecule</span><span class="p">(</span><span class="s2">&quot;H2O&quot;</span><span class="p">)]</span>
+<span class="n">ConfigSet</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
+<span class="n">OutputSpec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;molecules.normal_modes.xyz&quot;</span><span class="p">)</span>
 
-    <span class="n">ConfigSet</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_fname</span><span class="p">)</span>
-    <span class="n">OutputSpec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_fname</span><span class="p">)</span>
+<span class="n">calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">XTB</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span><span class="s1">&#39;GFN2-xTB&#39;</span><span class="p">})</span>
+<span class="n">prop_prefix</span> <span class="o">=</span> <span class="s1">&#39;xtb2_&#39;</span>
 
-    <span class="n">calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">XTB</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span><span class="s1">&#39;GFN2-xTB&#39;</span><span class="p">})</span>
+<span class="n">nm</span><span class="o">.</span><span class="n">generate_normal_modes_parallel_hessian</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">ConfigSet</span><span class="p">,</span>
+                                    <span class="n">outputs</span><span class="o">=</span><span class="n">OutputSpec</span><span class="p">,</span>
+                                    <span class="n">calculator</span><span class="o">=</span><span class="n">calc</span><span class="p">,</span>
+                                    <span class="n">prop_prefix</span><span class="o">=</span><span class="n">prop_prefix</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To generate normal modes via finite differences, each of N atoms are displaced backwards and forwards along each direction leading to 6N calls to the reference calculator. Depending on the number of structures to be processed and speed of the calculator different modes of parallelizing the calculation are appropriate:</p>
+<ul class="simple">
+<li><p>Few structures and slow calculator: generate normal modes in sequence and parallelize the 6N evaluations needed to approximate the Hessian for each molecule. The example above.</p></li>
+<li><p>Many structures and fast calculator: generate normal modes in parallel and evaluate each of the 6N displacements in sequence. Example:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ase.build</span> <span class="kn">import</span> <span class="n">molecule</span>
+<span class="kn">from</span> <span class="nn">xtb.ase.calculator</span> <span class="kn">import</span> <span class="n">XTB</span>
+<span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
+<span class="kn">from</span> <span class="nn">wfl.generate</span> <span class="kn">import</span> <span class="n">normal_modes</span> <span class="k">as</span> <span class="n">nm</span> 
+<span class="kn">from</span> <span class="nn">wfl.autoparallelize.autoparainfo</span> <span class="kn">import</span> <span class="n">AutoparaInfo</span>
 
-    <span class="n">prop_prefix</span> <span class="o">=</span> <span class="s1">&#39;xtb2_&#39;</span>
+<span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">molecule</span><span class="p">(</span><span class="s2">&quot;CH4&quot;</span><span class="p">),</span> <span class="n">molecule</span><span class="p">(</span><span class="s2">&quot;H2O&quot;</span><span class="p">)]</span>
+<span class="n">ConfigSet</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
+<span class="n">OutputSpec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;molecules.normal_modes.xyz&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">parallel_hessian</span><span class="p">:</span>
-        <span class="n">vib</span><span class="o">.</span><span class="n">generate_normal_modes_parallel_hessian</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">ConfigSet</span><span class="p">,</span>
-                                          <span class="n">outputs</span><span class="o">=</span><span class="n">OutputSpec</span><span class="p">,</span>
-                                          <span class="n">calculator</span><span class="o">=</span><span class="n">calc</span><span class="p">,</span>
-                                          <span class="n">prop_prefix</span><span class="o">=</span><span class="n">prop_prefix</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">vib</span><span class="o">.</span><span class="n">generate_normal_modes_parallel_atoms</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">ConfigSet</span><span class="p">,</span>
-                                                 <span class="n">outputs</span><span class="o">=</span><span class="n">OutputSpec</span><span class="p">,</span>
-                                                 <span class="n">calculator</span><span class="o">=</span><span class="n">calc</span><span class="p">,</span>
-                                                 <span class="n">prop_prefix</span><span class="o">=</span><span class="n">prop_prefix</span><span class="p">,</span>
-                                                 <span class="n">num_inputs_per_python_subprocess</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">XTB</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span><span class="s1">&#39;GFN2-xTB&#39;</span><span class="p">})</span>
+<span class="n">prop_prefix</span> <span class="o">=</span> <span class="s1">&#39;xtb2_&#39;</span>
+
+<span class="n">nm</span><span class="o">.</span><span class="n">generate_normal_modes_parallel_atoms</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">ConfigSet</span><span class="p">,</span>
+                                         <span class="n">outputs</span><span class="o">=</span><span class="n">OutputSpec</span><span class="p">,</span>
+                                         <span class="n">calculator</span><span class="o">=</span><span class="n">calc</span><span class="p">,</span>
+                                         <span class="n">prop_prefix</span><span class="o">=</span><span class="n">prop_prefix</span><span class="p">,</span>
+                                         <span class="n">autopara_info</span> <span class="o">=</span> <span class="n">AutoparaInfo</span><span class="p">(</span>
+                                            <span class="n">num_inputs_per_python_subprocess</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+</pre></div>
+</div>
+</div>
+<div class="section" id="visualize">
+<h2>Visualize<a class="headerlink" href="#visualize" title="Permalink to this headline">#</a></h2>
+<p>Normal mode frequencies and displacements can be visualized:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
+<span class="kn">from</span> <span class="nn">wfl.generate</span> <span class="kn">import</span> <span class="n">normal_modes</span> <span class="k">as</span> <span class="n">nm</span>
+
+<span class="n">at</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">&quot;molecules.normal_modes.xyz&quot;</span><span class="p">)</span>
+<span class="n">water_nm</span> <span class="o">=</span> <span class="n">nm</span><span class="o">.</span><span class="n">NormalModes</span><span class="p">(</span><span class="n">at</span><span class="p">,</span> <span class="s2">&quot;xtb2_&quot;</span><span class="p">)</span>
+
+<span class="c1"># writes trajectories of each normal mode to file</span>
+<span class="n">water_nm</span><span class="o">.</span><span class="n">view</span><span class="p">()</span>
+
+<span class="c1"># prints frequencies</span>
+<span class="n">water_nm</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+
 </pre></div>
 </div>
 </div>
 <div class="section" id="sample">
 <h2>Sample<a class="headerlink" href="#sample" title="Permalink to this headline">#</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">,</span> <span class="n">prop_prefix</span><span class="p">,</span>
-                        <span class="n">info_to_keep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arrays_to_keep</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Multiple times displace along normal modes for all atoms in input</span>
+<p>Finally, we can generate random displacements of the molecule, along multiple normal modes, that correspond to the Boltzmann distribution at a given temperature.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
+<span class="kn">from</span> <span class="nn">wfl.generate</span> <span class="kn">import</span> <span class="n">normal_modes</span> <span class="k">as</span> <span class="n">nm</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="s2">&quot;molecules.normal_modes.xyz&quot;</span><span class="p">)</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;molecules.normal_modes.sample.xyz&quot;</span><span class="p">)</span>
 
-<span class="sd">    inputs: Atoms / list(Atoms) / ConfigSet</span>
-<span class="sd">        Structures with normal mode information (eigenvalues &amp;</span>
-<span class="sd">        eigenvectors)</span>
-<span class="sd">    outputs: OutputSpec</span>
-<span class="sd">    temp: float</span>
-<span class="sd">        Temperature for normal mode displacements</span>
-<span class="sd">    sample_size: int</span>
-<span class="sd">        How many perturbed structures per input structure to return</span>
-<span class="sd">    prop_prefix: str / None</span>
-<span class="sd">        prefix for normal_mode_frequencies and normal_mode_displacements</span>
-<span class="sd">        stored in atoms.info/arrays</span>
-<span class="sd">    info_to_keep: str, default &quot;config_type&quot;</span>
-<span class="sd">        string of Atoms.info.keys() to keep</span>
-<span class="sd">    arrays_to_keep: str, default None</span>
-<span class="sd">        string of Atoms.arrays.keys() entries to keep</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">):</span>
-        <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputs</span><span class="p">]</span>
-
-    <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
-        <span class="n">at_vib</span> <span class="o">=</span> <span class="n">Vibrations</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">prop_prefix</span><span class="p">)</span>
-        <span class="n">sample</span> <span class="o">=</span> <span class="n">at_vib</span><span class="o">.</span><span class="n">sample_normal_modes</span><span class="p">(</span><span class="n">sample_size</span><span class="o">=</span><span class="n">sample_size</span><span class="p">,</span>
-                                            <span class="n">temp</span><span class="o">=</span><span class="n">temp</span><span class="p">,</span> 
-                                            <span class="n">info_to_keep</span><span class="o">=</span><span class="n">info_to_keep</span><span class="p">,</span>
-                                            <span class="n">arrays_to_keep</span><span class="o">=</span><span class="n">arrays_to_keep</span><span class="p">)</span>
-        <span class="n">outputs</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
-
-    <span class="n">outputs</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
+    <span class="n">at_nm</span> <span class="o">=</span> <span class="n">nm</span><span class="o">.</span><span class="n">NormalModes</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">&quot;xtb2_&quot;</span><span class="p">)</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">at_nm</span><span class="o">.</span><span class="n">sample_normal_modes</span><span class="p">(</span><span class="n">sample_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                                        <span class="n">temp</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>  <span class="c1"># Kelvin</span>
+                                        <span class="n">info_to_keep</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                                        <span class="n">arrays_to_keep</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">outputs</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+<span class="n">outputs</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Elena: I have <a class="reference external" href="https://github.com/gelzinyte/scripties/blob/main/util/normal_modes.py">this script</a> that randomly displaces atoms along different normal modes and down-weights the very shallow noisy ones. Is it worth merging into workflow and/or describing here?</p>
+<p>NB the sampling function clears all but specified <code class="docutils literal notranslate"><span class="pre">Atoms.info</span></code> (apart from <code class="docutils literal notranslate"><span class="pre">config_type</span></code> by default) and <code class="docutils literal notranslate"><span class="pre">Atoms.arrays</span></code> entries to avoid carrying over now incorrect values, for example from previous single point evaluations.</p>
 </div>
 </div>
 
@@ -604,17 +641,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="examples.mace.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="examples.mlip_fitting.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Parallelize MACE calculator</p>
+            <p class="prev-next-title">Fitting a MLIP</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="examples.smiles.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">SMILES to .xyz</p>
+        <p class="prev-next-title">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

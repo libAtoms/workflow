@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calculators in workflow &#8212; workflow  documentation</title>
+    <title>Calculators in Workflow &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,7 +32,7 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Generating Configs" href="operations.generate.html" />
+    <link rel="next" title="Generating Atomic Structures" href="operations.generate.html" />
     <link rel="prev" title="Operations" href="operations.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -80,15 +80,10 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contents:
- </span>
-</p>
-<ul class="current nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="first_example.html">
-   First example
+   First Example
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -102,6 +97,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="overview.overall_design.html">
+     Overall design
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="overview.configset.html">
      Input and output of atomic structures
     </a>
@@ -109,6 +109,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="overview.parallelisation.html">
      Automatic parallelization of tasks
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.queued.html">
+     Functions as independently queued jobs
     </a>
    </li>
   </ul>
@@ -125,17 +130,12 @@
   <ul class="current">
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     Calculators in workflow
+     Calculators in Workflow
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.generate.html">
-     Generating Configs
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
+     Generating Atomic Structures
     </a>
    </li>
    <li class="toctree-l2">
@@ -144,46 +144,36 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
+    <a class="reference internal" href="operations.select.html">
+     Selecting Configs
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
-     Multistage GAP fitting
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="operations.fitting.html">
+     Fitting potentials
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="workflows.html">
-   Workflows
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.rss.html">
-     How to do GAP-RSS
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.mlip_fitting.html">
-     Fitting a MLIP
-    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.gap_fitting.html">
+       Fitting GAP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.multistage_gap_fitting.html">
+       Multistage GAP fitting
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.ace_fitting.html">
+       Fitting ACE
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -198,13 +188,23 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.index.html">
+     Index
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.dimers.html">
      Generating Dimer Structures
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
+    <a class="reference internal" href="examples.orca_cli.html">
+     ORCA via command line
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca_python.html">
+     ORCA via Python script
     </a>
    </li>
    <li class="toctree-l2">
@@ -213,26 +213,36 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
+     Normal Modes of molecules
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
+     SMILES to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Atoms
+      </span>
+     </code>
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.md.html">
-     MD
+     Molecular Dynamics
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="workflows.rss.html">
+   GAP-RSS
+  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
@@ -308,10 +318,17 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul class="simple">
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.scripts.html">
@@ -405,7 +422,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/operations.calculators.rst.txt"
+        <a href="_sources/operations.calculators.md.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -416,7 +433,7 @@ title="Download source file"
 <span class="headerbtn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.rst</span>
+<span class="headerbtn__text-container">.md</span>
 </a>
 
       </li>
@@ -465,13 +482,18 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#general-overview">
-   General overview
+  <a class="reference internal nav-link" href="#parallelize-with-generic-run">
+   Parallelize with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     generic.run()
+    </span>
+   </code>
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#regular-calculators">
-   Regular calculators
+  <a class="reference internal nav-link" href="#file-based-calculators">
+   File-based calculators
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -488,7 +510,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Calculators in workflow</h1>
+                <h1>Calculators in Workflow</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -499,13 +521,18 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#general-overview">
-   General overview
+  <a class="reference internal nav-link" href="#parallelize-with-generic-run">
+   Parallelize with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     generic.run()
+    </span>
+   </code>
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#regular-calculators">
-   Regular calculators
+  <a class="reference internal nav-link" href="#file-based-calculators">
+   File-based calculators
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -524,35 +551,30 @@ title="Print to PDF"
               <div>
                 
   <div class="section" id="calculators-in-workflow">
-<span id="calculators"></span><h1>Calculators in workflow<a class="headerlink" href="#calculators-in-workflow" title="Permalink to this headline">#</a></h1>
-<p>Everything about calculators.</p>
-<div class="section" id="general-overview">
-<h2>General overview<a class="headerlink" href="#general-overview" title="Permalink to this headline">#</a></h2>
-<p>Could include</p>
-<ul class="simple">
-<li><p>Common features, general principles, improvements from ASE’s (e.g. file handling)</p></li>
-<li><p>List of supported calculators</p></li>
-<li><p>Very quick description of speciality calculators</p></li>
-</ul>
+<h1>Calculators in Workflow<a class="headerlink" href="#calculators-in-workflow" title="Permalink to this headline">#</a></h1>
+<p>In principle, any ASE calculator can be parallelized using Workflow. The parallelization happens at <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> object level. That is, if we wanted to get single-point energies &amp; forces on 16 <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> structures and using 16 cores, all 16 <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects would get processed at the same time, each on a single core.</p>
+<div class="section" id="parallelize-with-generic-run">
+<h2>Parallelize with <code class="docutils literal notranslate"><span class="pre">generic.run()</span></code><a class="headerlink" href="#parallelize-with-generic-run" title="Permalink to this headline">#</a></h2>
+<p>In ASE, we iterate over all <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects, initialize a calculator, set it to an <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> object and call it to evaluate energies and forces sequentially. In Workflow, with <code class="docutils literal notranslate"><span class="pre">generic.run</span></code> we define a way to initialize a calculator, define where from and to read and write configurations (<code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>) and set a directive for how many cores to parallelize over.</p>
+<p>The calculator has to be defined as a tuple of <code class="docutils literal notranslate"><span class="pre">(Calculator,</span> <span class="pre">[args],</span> <span class="pre">**kwargs)</span></code>, for example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dftb_calc</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">quippy</span><span class="o">.</span><span class="n">potentials</span><span class="o">.</span><span class="n">Potential</span><span class="p">,</span> 
+    <span class="p">[</span><span class="s2">&quot;TB DFTB&quot;</span><span class="p">],</span> 
+    <span class="p">{</span><span class="s2">&quot;param_filename&quot;</span><span class="p">:</span> <span class="p">:</span><span class="s2">&quot;tightbind.parms.DFTB.mio-0-1.xm&quot;</span><span class="p">}</span>
+    <span class="p">)</span>
+</pre></div>
 </div>
-<div class="section" id="regular-calculators">
-<h2>Regular calculators<a class="headerlink" href="#regular-calculators" title="Permalink to this headline">#</a></h2>
-<p>Descriptions of calculators that are slight modifications of ASE’s calculators</p>
-<ul class="simple">
-<li><p>Castep</p></li>
-<li><p>Vasp</p></li>
-<li><p>Quantum Espresso</p></li>
-<li><p>Orca</p></li>
-</ul>
+<p>Further see <a class="reference internal" href="overview.parallelisation.html"><span class="doc std std-doc">autoparallelization page</span></a> and <a class="reference internal" href="examples.index.html"><span class="doc std std-doc">examples page</span></a>.</p>
+</div>
+<div class="section" id="file-based-calculators">
+<h2>File-based calculators<a class="headerlink" href="#file-based-calculators" title="Permalink to this headline">#</a></h2>
+<p>ASE’s calculators that write &amp; read files to &amp; from disk must to be modified if they were to be parallelized via Workflow’s <code class="docutils literal notranslate"><span class="pre">generic</span></code> calculator. Specifically, each instance of calculator must execute the calculation in a separate folder so processes running in parallel don’t attempt to read and write to the same files. Workflow handles the files, as well as creation and clean-up of temporary directories.</p>
+<p>Currently, [ORCA], VASP and QuantumEspresso are compatible with the <code class="docutils literal notranslate"><span class="pre">generic</span></code> calculator; CASTEP parallelization is accessed via <code class="docutils literal notranslate"><span class="pre">calculators.dft.evaluate_dft()</span></code>.</p>
 </div>
 <div class="section" id="special-calculators">
 <h2>Special calculators<a class="headerlink" href="#special-calculators" title="Permalink to this headline">#</a></h2>
-<p>Desciptor of more interesting calculators</p>
-<ul class="simple">
-<li><p>Generic (including examples for parallelising GAP, ASE’s native calculators and others)</p></li>
-<li><p>Orca basin hopping (Tamas has the most up-to-date branch he hasn’t merged to the main workflow?)</p></li>
-<li><p>Committee/multi-call super-calculator (for magnetic moments at first instance)</p></li>
-</ul>
+<p>Finally, there is a (currently broken) non-conventional “Basin Hopping” calculator implementation for ORCA.
+<code class="docutils literal notranslate"><span class="pre">BasinHoppingORCA()</span></code> runs multiple single point evaluations perturbing the initial guess of the wavefunction each time. It returns the results corresponding to the global minimum and lowest-energy solution.</p>
 </div>
 </div>
 
@@ -574,7 +596,7 @@ title="Print to PDF"
     <a class='right-next' id="next-link" href="operations.generate.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Generating Configs</p>
+        <p class="prev-next-title">Generating Atomic Structures</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

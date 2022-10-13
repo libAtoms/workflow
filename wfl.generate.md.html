@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Examples &#8212; workflow  documentation</title>
+    <title>wfl.generate.md package &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,8 +32,6 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Index" href="examples.index.html" />
-    <link rel="prev" title="Fitting ACE" href="operations.ace_fitting.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -80,7 +78,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <ul class="current nav bd-sidenav">
+        <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="first_example.html">
    First Example
@@ -177,11 +175,11 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="examples.html">
    Examples
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
   <label for="toctree-checkbox-4">
    <i class="fas fa-chevron-down">
    </i>
@@ -422,7 +420,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/examples.rst.txt"
+        <a href="_sources/wfl.generate.md.rst.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -459,23 +457,90 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#submodules">
+   Submodules
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.generate.md.abort">
+   wfl.generate.md.abort module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.generate.md.abort_base">
+   wfl.generate.md.abort_base module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.generate.md">
+   Module contents
+  </a>
+ </li>
+</ul>
+
+    </nav>
 </div>
     </div>
     <div class="article row">
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Examples</h1>
+                <h1>wfl.generate.md package</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#submodules">
+   Submodules
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.generate.md.abort">
+   wfl.generate.md.abort module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.generate.md.abort_base">
+   wfl.generate.md.abort_base module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.generate.md">
+   Module contents
+  </a>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -483,61 +548,140 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="examples">
-<span id="id1"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">#</a></h1>
-<p>Self-contained code snippets of common things that can be done with Workflow.</p>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="examples.index.html">Index</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#evaluate-structures-with-a-calculator">Evaluate structures with a calculator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#generate-structures">Generate structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#remote-execution">Remote execution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#get-descriptors">Get descriptors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#sampling">Sampling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#fit-a-potential">Fit a potential</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#iterative-training">Iterative training</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#miscellaneous">Miscellaneous</a></li>
+  <div class="section" id="wfl-generate-md-package">
+<h1>wfl.generate.md package<a class="headerlink" href="#wfl-generate-md-package" title="Permalink to this headline">#</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="module-wfl.generate.md.abort">
+<span id="wfl-generate-md-abort-module"></span><h2>wfl.generate.md.abort module<a class="headerlink" href="#module-wfl.generate.md.abort" title="Permalink to this headline">#</a></h2>
+<p>Communly used and/or examples of classes that can be used to abort an MD sampling
+run under specified conditions</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.generate.md.abort.AbortOnCollision">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.generate.md.abort.</span></span><span class="sig-name descname"><span class="pre">AbortOnCollision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collision_radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_failed_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.md.abort.AbortOnCollision" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#wfl.generate.md.abort_base.AbortSimBase" title="wfl.generate.md.abort_base.AbortSimBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.generate.md.abort_base.AbortSimBase</span></code></a></p>
+<p>Abort an MD run if a collision (two atoms closer than some distance) happens
+for a number of steps in a row</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>collision_radius</strong> (<em>float</em>) – distance for atoms to be considered a collision</p></li>
+<li><p><strong>n_failed_steps</strong> (<em>int</em><em>, </em><em>default 1</em>) – how many steps in a row any atom pairs have to be too cloe</p></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.dimers.html">Generating Dimer Structures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.orca_cli.html">ORCA via command line</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca_cli.html#evaluate-atomic-configurations-sequentially-on-a-single-core">1. Evaluate atomic configurations sequentially on a single core</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca_cli.html#parallelize-with-orca">2.1 Parallelize with ORCA</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca_cli.html#parallelize-with-workflow">2.2 Parallelize with Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca_cli.html#parallelize-with-orca-and-workflow">2.3 Parallelize with ORCA and Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca_cli.html#evaluate-structures-in-multiple-queued-jobs-from-command-line">3. Evaluate structures in multiple queued jobs from command line</a></li>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.generate.md.abort.AbortOnCollision.atoms_ok">
+<span class="sig-name descname"><span class="pre">atoms_ok</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">at</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.md.abort.AbortOnCollision.atoms_ok" title="Permalink to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>Method returning a boolean indicating whether this trajectory step is acceptable.</dt><dd><p>All derived classes must implement this method.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>at</strong> (<em>Atoms</em>) – atomic configuration</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>is_ok</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool containing status</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wfl.generate.md.abort_base">
+<span id="wfl-generate-md-abort-base-module"></span><h2>wfl.generate.md.abort_base module<a class="headerlink" href="#module-wfl.generate.md.abort_base" title="Permalink to this headline">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.generate.md.abort_base.AbortSimBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.generate.md.abort_base.</span></span><span class="sig-name descname"><span class="pre">AbortSimBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_failed_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.md.abort_base.AbortSimBase" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Base class used for checking and aborting MD simulation of <cite>wfl.generate.md.sample()</cite>.
+See <cite>stop</cite> method docstring for its default behavior.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.generate.md.abort_base.AbortSimBase.atoms_ok">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atoms_ok</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">at</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.md.abort_base.AbortSimBase.atoms_ok" title="Permalink to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>Method returning a boolean indicating whether this trajectory step is acceptable.</dt><dd><p>All derived classes must implement this method.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>at</strong> (<em>Atoms</em>) – atomic configuration</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>is_ok</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool containing status</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.generate.md.abort_base.AbortSimBase.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">at</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.md.abort_base.AbortSimBase.stop" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a boolean indicating whether <cite>wfl.generate.md.sample()</cite> should stop
+the simulation. Defaults to aborting if <cite>n_failed_steps</cite> in a row <cite>atoms_ok()</cite>
+are evaluated to False. Derrived classes may overwrite this.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wfl.generate.md">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.generate.md" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.md.sample">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.md.</span></span><span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.md.sample" title="Permalink to this definition">#</a></dt>
+<dd><p>runs an MD trajectory with aggresive, not necessarily physical, integrators for
+sampling configs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
+<li><p><strong>dt</strong> (<em>float</em>) – time step (fs)</p></li>
+<li><p><strong>steps</strong> (<em>int</em>) – number of steps</p></li>
+<li><p><strong>temperature</strong> (<em>float</em><em> or </em><em>(</em><em>float</em><em>, </em><em>float</em><em>, </em><em>[</em><em>int</em><em>]</em><em>]</em><em>)</em><em>, or </em><em>list of dicts  default None</em>) – temperature control (Kelvin)
+- float: constant T
+- tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp
+- [ {‘T_i’: float, ‘T_f’ : float, ‘traj_frac’ : flot, ‘n_stages’: int=10}, … ] list of stages, each one a ramp, with
+duration defined as fraction of total number of steps</p></li>
+<li><p><strong>temperature_tau</strong> (<em>float</em><em>, </em><em>default None</em>) – time scale that enables Berendsen constant T temperature rescaling (fs)</p></li>
+<li><p><strong>pressure</strong> (<em>None / float / tuple</em>) – applied pressure distribution (GPa) as parsed by wfl.utils.pressure.sample_pressure()
+enabled Berendsen constant P volume rescaling</p></li>
+<li><p><strong>pressure_tau</strong> (<em>float</em><em>, </em><em>default None</em>) – time scale for Berendsen constant P volume rescaling (fs)
+ignored if pressure is None, defaults to 3*temperature_tau</p></li>
+<li><p><strong>compressibility_fd_displ</strong> (<em>float</em><em>, </em><em>default 0.01</em>) – finite difference in strain to use when computing compressibility for NPTBerendsen</p></li>
+<li><p><strong>traj_step_interval</strong> (<em>int</em><em>, </em><em>default 1</em>) – interval between trajectory snapshots</p></li>
+<li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip minimizations that raise an exception</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output
+MD logs are not printed unless this is True</p></li>
+<li><p><strong>update_config_type</strong> (<em>bool</em><em>, </em><em>default True</em>) – append “MD” to at.info[‘config_type’]</p></li>
+<li><p><strong>traj_select_during_func</strong> (<em>func</em><em>(</em><em>Atoms</em><em>)</em><em>, </em><em>default None</em>) – Function to sub-select configs from the first trajectory.
+Used during MD loop with one config at a time, returning True/False</p></li>
+<li><p><strong>traj_select_after_func</strong> (<em>func</em><em>(</em><em>list</em><em>(</em><em>Atoms</em><em>)</em><em>)</em><em>, </em><em>default None</em>) – Function to sub-select configs from the first trajectory.
+Used at end of MD loop with entire trajectory as list, returns subset</p></li>
+<li><p><strong>abort_check</strong> (<em>default None</em><em>,</em>) – wfl.generate.md.abort_base.AbortBase - derived class that
+checks the MD snapshots and aborts the simulation on some condition.</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.orca_python.html">ORCA via Python script</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.mace.html">Parallelize MACE calculator</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.mace.html#complete-example">Complete example</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.mlip_fitting.html">Fitting a MLIP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.mlip_fitting.html#table-of-contents">Table of contents</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html#general-workflow-and-setup">General workflow and setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html#getting-started-parallelization-and-imports">Getting started: Parallelization and Imports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html#fitting-the-initial-gap">Fitting the initial GAP</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html#preparing-the-iterative-process">Preparing the iterative process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html#the-iterative-process">The Iterative Process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html#keeping-track-of-training-and-test-errors">Keeping track of training and test errors</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.normal_modes.html">Normal Modes of molecules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html#generate">Generate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html#visualize">Visualize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html#sample">Sample</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.smiles.html">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.smiles.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.smiles.html#python-script">Python script</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.md.html">Molecular Dynamics</a></li>
-</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 </div>
 
@@ -549,20 +693,6 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="operations.ace_fitting.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Fitting ACE</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="examples.index.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Index</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
 </div>
             </footer>
         </div>

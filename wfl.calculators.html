@@ -80,15 +80,10 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contents:
- </span>
-</p>
-<ul class="current nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="first_example.html">
-   First example
+   First Example
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -102,6 +97,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="overview.overall_design.html">
+     Overall design
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="overview.configset.html">
      Input and output of atomic structures
     </a>
@@ -109,6 +109,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="overview.parallelisation.html">
      Automatic parallelization of tasks
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.queued.html">
+     Functions as independently queued jobs
     </a>
    </li>
   </ul>
@@ -125,17 +130,12 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
-     Calculators in workflow
+     Calculators in Workflow
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.generate.html">
-     Generating Configs
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
+     Generating Atomic Structures
     </a>
    </li>
    <li class="toctree-l2">
@@ -144,46 +144,36 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
+    <a class="reference internal" href="operations.select.html">
+     Selecting Configs
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
-     Multistage GAP fitting
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="operations.fitting.html">
+     Fitting potentials
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="workflows.html">
-   Workflows
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.rss.html">
-     How to do GAP-RSS
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.mlip_fitting.html">
-     Fitting a MLIP
-    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.gap_fitting.html">
+       Fitting GAP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.multistage_gap_fitting.html">
+       Multistage GAP fitting
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.ace_fitting.html">
+       Fitting ACE
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -198,13 +188,23 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.index.html">
+     Index
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.dimers.html">
      Generating Dimer Structures
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
+    <a class="reference internal" href="examples.orca_cli.html">
+     ORCA via command line
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca_python.html">
+     ORCA via Python script
     </a>
    </li>
    <li class="toctree-l2">
@@ -213,26 +213,36 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
+     Normal Modes of molecules
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
+     SMILES to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Atoms
+      </span>
+     </code>
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.md.html">
-     MD
+     Molecular Dynamics
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="workflows.rss.html">
+   GAP-RSS
+  </a>
  </li>
  <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="modules.html">
@@ -308,10 +318,17 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul class="simple">
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.scripts.html">
@@ -510,6 +527,11 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.calculators.wfl_fileio_calculator">
+   wfl.calculators.wfl_fileio_calculator module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.calculators">
    Module contents
   </a>
@@ -576,6 +598,11 @@ title="Print to PDF"
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.calculators.vasp">
    wfl.calculators.vasp module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.calculators.wfl_fileio_calculator">
+   wfl.calculators.wfl_fileio_calculator module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -714,7 +741,7 @@ must include calculator_name in [“CASTEP”, “VASP”]</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.calculators.espresso.</span></span><span class="sig-name descname"><span class="pre">Espresso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rundir_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'run_QE_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratchdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_exec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.Espresso" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ase.calculators.espresso.Espresso</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator" title="wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator"><code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ase.calculators.espresso.Espresso</span></code></p>
 <p>Extension of ASE’s Espresso calculator that can be used by wfl.calculators.generic</p>
 <p>“directory” argument cannot be present. Use rundir_prefix and workdir instead.</p>
 <dl class="field-list simple">
@@ -897,7 +924,7 @@ str with length 0 is forbidden</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="wfl.calculators.vasp.Vasp">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.calculators.vasp.</span></span><span class="sig-name descname"><span class="pre">Vasp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rundir_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'run_VASP_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratchdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_exec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_exec_gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.vasp.Vasp" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ase.calculators.vasp.vasp.Vasp</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator" title="wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator"><code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ase.calculators.vasp.vasp.Vasp</span></code></p>
 <p>Extension of ASE’s Vasp calculator that can be used by wfl.calculators.generic</p>
 <p class="rubric">Notes</p>
 <p>“directory” argument cannot be present. Use rundir_prefix and workdir instead.
@@ -950,6 +977,54 @@ ASE calculation operations (writing input, executing, reading_results)</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="wfl.calculators.vasp.Vasp.wfl_generic_num_inputs_per_python_subprocess">
 <span class="sig-name descname"><span class="pre">wfl_generic_num_inputs_per_python_subprocess</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#wfl.calculators.vasp.Vasp.wfl_generic_num_inputs_per_python_subprocess" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wfl.calculators.wfl_fileio_calculator">
+<span id="wfl-calculators-wfl-fileio-calculator-module"></span><h2>wfl.calculators.wfl_fileio_calculator module<a class="headerlink" href="#module-wfl.calculators.wfl_fileio_calculator" title="Permalink to this headline">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.calculators.wfl_fileio_calculator.</span></span><span class="sig-name descname"><span class="pre">WFLFileIOCalculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rundir_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratchdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mixin class implementing some methods that should be available to every
+WFL calculator that does I/O via files, i.e. DFT calculators</p>
+<p>As a python mixin class, must be inherited from by the wrapping wfl calculator class _before_ the ASE calculator, i.e.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ase.calculators.dftcode</span> <span class="kn">import</span> <span class="n">DftCodeCalculator</span> <span class="k">as</span> <span class="n">ASE_DftCodeCalculator</span>
+<span class="k">class</span> <span class="nc">DftCodeCalculator</span><span class="p">(</span><span class="n">WFLFileIOCalculator</span><span class="p">,</span> <span class="n">ASE_DftCodeCalculator</span><span class="p">):</span>
+    <span class="o">.</span>
+    <span class="o">.</span>
+    <span class="o">.</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keep_files</strong> (<em>bool / None / &quot;default&quot; / list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default &quot;default&quot;</em>) – <dl class="simple">
+<dt>what kind of files to keep from the run</dt><dd><p>True, “*” : everything kept
+None, False : nothing kept
+“default”   : default list, varies by calculator, usually only ones needed for NOMAD uploads
+list(str)   : list of file globs to save</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>rundir_prefix</strong> (<em>str / Path</em>) – Run directory name prefix</p></li>
+<li><p><strong>workdir</strong> (<em>str / Path</em><em>, </em><em>default . at calculate time</em>) – Path in which rundir (rundir_prefix + temp suffix) will be created.</p></li>
+<li><p><strong>scratchdir</strong> (<em>str / Path</em><em>, </em><em>default None</em>) – temporary directory to execute calculations in and delete or copy back results (set by
+“keep_files”) if needed.  For example, directory on a local disk with fast file I/O.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – remaining superclass constructor kwargs</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.clean_rundir">
+<span class="sig-name descname"><span class="pre">clean_rundir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_default_keep_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculation_succeeded</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.clean_rundir" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.setup_rundir">
+<span class="sig-name descname"><span class="pre">setup_rundir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.setup_rundir" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

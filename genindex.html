@@ -78,15 +78,10 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contents:
- </span>
-</p>
-<ul class="nav bd-sidenav">
+        <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="first_example.html">
-   First example
+   First Example
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -100,6 +95,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="overview.overall_design.html">
+     Overall design
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="overview.configset.html">
      Input and output of atomic structures
     </a>
@@ -107,6 +107,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="overview.parallelisation.html">
      Automatic parallelization of tasks
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.queued.html">
+     Functions as independently queued jobs
     </a>
    </li>
   </ul>
@@ -123,17 +128,12 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
-     Calculators in workflow
+     Calculators in Workflow
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.generate.html">
-     Generating Configs
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
+     Generating Atomic Structures
     </a>
    </li>
    <li class="toctree-l2">
@@ -142,46 +142,36 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
+    <a class="reference internal" href="operations.select.html">
+     Selecting Configs
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
-     Multistage GAP fitting
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="operations.fitting.html">
+     Fitting potentials
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="workflows.html">
-   Workflows
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.rss.html">
-     How to do GAP-RSS
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.mlip_fitting.html">
-     Fitting a MLIP
-    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.gap_fitting.html">
+       Fitting GAP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.multistage_gap_fitting.html">
+       Multistage GAP fitting
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.ace_fitting.html">
+       Fitting ACE
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -196,13 +186,23 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.index.html">
+     Index
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.dimers.html">
      Generating Dimer Structures
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
+    <a class="reference internal" href="examples.orca_cli.html">
+     ORCA via command line
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca_python.html">
+     ORCA via Python script
     </a>
    </li>
    <li class="toctree-l2">
@@ -211,26 +211,36 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
+     Normal Modes of molecules
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
+     SMILES to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Atoms
+      </span>
+     </code>
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.md.html">
-     MD
+     Molecular Dynamics
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="workflows.rss.html">
+   GAP-RSS
+  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
@@ -306,10 +316,17 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul class="simple">
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.scripts.html">
@@ -432,6 +449,7 @@ title="Fullscreen mode"
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
@@ -440,6 +458,7 @@ title="Fullscreen mode"
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
  | <a href="#Z"><strong>Z</strong></a>
@@ -452,374 +471,374 @@ title="Fullscreen mode"
     --atoms-filename
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-atoms-filename">wfl-fitting-simple-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-atoms-filename">wfl-fitting-simple-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --base-rundir
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-base-rundir">wfl-ref-method-castep-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-base-rundir">wfl-ref-method-castep-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-base-rundir">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-base-rundir">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-base-rundir">wfl-ref-method-vasp-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-base-rundir">wfl-ref-method-vasp-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --buildcell-exec
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-buildcell-exec">wfl-generate-configs-repeat-buildcell command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-buildcell-exec">wfl-generate-configs-repeat-buildcell command line option</a>
 </li>
       </ul></li>
       <li>
     --buildcell-input
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-buildcell-input">wfl-generate-configs-repeat-buildcell command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-buildcell-input">wfl-generate-configs-repeat-buildcell command line option</a>
 </li>
       </ul></li>
       <li>
     --calc
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-c">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-c">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     --calc-args
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-a">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-a">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     --calc-kwargs
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-k">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-k">wfl-processing-reference-error command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-calc-kwargs">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-calc-kwargs">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
       </ul></li>
       <li>
     --calculator-exec
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-calculator-exec">wfl-ref-method-orca-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-calculator-exec">wfl-ref-method-orca-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --castep-command
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-castep-command">wfl-ref-method-castep-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-castep-command">wfl-ref-method-castep-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --castep-kwargs
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-castep-kwargs">wfl-ref-method-castep-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-castep-kwargs">wfl-ref-method-castep-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --category_keys
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-C">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-C">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     --cell
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-cell">wfl-file-op-strip command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-cell">wfl-file-op-strip command line option</a>
 </li>
       </ul></li>
       <li>
     --charge
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-charge">wfl-ref-method-orca-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-charge">wfl-ref-method-orca-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --database-modify-mod
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-m">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-m">wfl-fitting-multistage-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --descriptor
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-descriptor">wfl-descriptor-calc command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-descriptor">wfl-descriptor-calc command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-descriptor">wfl-select-configs-CUR-global command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-descriptor">wfl-select-configs-CUR-global command line option</a>
 </li>
       </ul></li>
       <li>
     --descriptor-key
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-descriptor-key">wfl-select-configs-CUR-global command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-descriptor-key">wfl-select-configs-CUR-global command line option</a>
 </li>
       </ul></li>
       <li>
     --deterministic
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-deterministic">wfl-select-configs-CUR-global command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-deterministic">wfl-select-configs-CUR-global command line option</a>
 </li>
       </ul></li>
       <li>
     --directory-prefix
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-directory-prefix">wfl-ref-method-castep-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-directory-prefix">wfl-ref-method-castep-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-directory-prefix">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-directory-prefix">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-directory-prefix">wfl-ref-method-vasp-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-directory-prefix">wfl-ref-method-vasp-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --extra-info
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-extra-info">wfl-generate-configs-repeat-buildcell command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-extra-info">wfl-generate-configs-repeat-buildcell command line option</a>
 </li>
       </ul></li>
       <li>
     --fit
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-fit">wfl-fitting-simple-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-fit">wfl-fitting-simple-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --fitting-error
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-fitting-error">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-fitting-error">wfl-fitting-multistage-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --force
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-force">wfl-descriptor-calc command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-force">wfl-descriptor-calc command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-f">wfl-file-op-gather command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-f">wfl-file-op-gather command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-f">wfl-file-op-strip command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-f">wfl-file-op-strip command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-f">wfl-processing-committee command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-f">wfl-processing-committee command line option</a>
 </li>
       </ul></li>
       <li>
     --gap-file
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-g">wfl-fitting-simple-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-g">wfl-fitting-simple-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --gap-fit-command
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-gap-fit-command">wfl-fitting-simple-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-gap-fit-command">wfl-fitting-simple-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --gap-fn
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-g">wfl-processing-committee command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-g">wfl-processing-committee command line option</a>
 </li>
       </ul></li>
       <li>
     --GAP-name
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-G">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-G">wfl-fitting-multistage-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --incar
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-incar">wfl-ref-method-vasp-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-incar">wfl-ref-method-vasp-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --index
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-i">wfl-file-op-gather command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-i">wfl-file-op-gather command line option</a>
 </li>
       </ul></li>
       <li>
     --info
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-i">wfl-generate-configs-smiles command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-i">wfl-generate-configs-smiles command line option</a>
 </li>
       </ul></li>
       <li>
     --intermed-file
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-intermed-file">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-intermed-file">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     --keep-array
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-a">wfl-file-op-strip command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-a">wfl-file-op-strip command line option</a>
 </li>
       </ul></li>
       <li>
     --keep-files
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-keep-files">wfl-ref-method-castep-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-keep-files">wfl-ref-method-castep-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-keep-files">wfl-ref-method-orca-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-keep-files">wfl-ref-method-orca-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-keep-files">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-keep-files">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
       </ul></li>
       <li>
     --keep-info
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-i">wfl-file-op-strip command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-i">wfl-file-op-strip command line option</a>
 </li>
       </ul></li>
       <li>
     --keep_descriptor
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-keep_descriptor">wfl-select-configs-CUR-global command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-keep_descriptor">wfl-select-configs-CUR-global command line option</a>
 </li>
       </ul></li>
       <li>
     --kernel_exponent
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-kernel_exponent">wfl-select-configs-CUR-global command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-kernel_exponent">wfl-select-configs-CUR-global command line option</a>
 </li>
       </ul></li>
       <li>
     --key
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-key">wfl-descriptor-calc command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-key">wfl-descriptor-calc command line option</a>
 </li>
       </ul></li>
       <li>
     --kpoints
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-kpoints">wfl-ref-method-vasp-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-kpoints">wfl-ref-method-vasp-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --kw
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-calc-kwargs">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-calc-kwargs">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
       </ul></li>
       <li>
     --local
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-local">wfl-descriptor-calc command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-local">wfl-descriptor-calc command line option</a>
 </li>
       </ul></li>
       <li>
     --mult
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-mult">wfl-ref-method-orca-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-mult">wfl-ref-method-orca-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --n-configs
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-N">wfl-generate-configs-repeat-buildcell command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-N">wfl-generate-configs-repeat-buildcell command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-N">wfl-select-configs-CUR-global command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-N">wfl-select-configs-CUR-global command line option</a>
 </li>
       </ul></li>
       <li>
     --n-hop
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nh">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nh">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
       </ul></li>
       <li>
     --n-run
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nr">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nr">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
       </ul></li>
       <li>
     --no-fitting-error
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-fitting-error">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-fitting-error">wfl-fitting-multistage-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --orca-additional-blocks
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-orca-additional-blocks">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-orca-additional-blocks">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
       </ul></li>
       <li>
     --orca-command
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-orca-command">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-orca-command">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
       </ul></li>
       <li>
     --orca-simple-input
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-orca-simple-input">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-orca-simple-input">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
       </ul></li>
       <li>
     --orcablocks
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-orcablocks">wfl-ref-method-orca-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-orcablocks">wfl-ref-method-orca-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --orcasimpleinput
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-orcasimpleinput">wfl-ref-method-orca-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-orcasimpleinput">wfl-ref-method-orca-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --outfile
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-o">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-o">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
   </ul></td>
@@ -828,342 +847,342 @@ title="Fullscreen mode"
     --output
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-o">wfl-file-op-gather command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-o">wfl-file-op-gather command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-o">wfl-file-op-strip command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-o">wfl-file-op-strip command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-o">wfl-generate-configs-smiles command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-o">wfl-generate-configs-smiles command line option</a>
 </li>
       </ul></li>
       <li>
     --output-file
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-output-file">wfl-descriptor-calc command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-output-file">wfl-descriptor-calc command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-o">wfl-fitting-simple-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-o">wfl-fitting-simple-gap command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-output-file">wfl-generate-configs-repeat-buildcell command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-output-file">wfl-generate-configs-repeat-buildcell command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-output-file">wfl-ref-method-castep-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-output-file">wfl-ref-method-castep-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-output-file">wfl-ref-method-orca-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-output-file">wfl-ref-method-orca-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-output-file">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-output-file">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-output-file">wfl-ref-method-vasp-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-output-file">wfl-ref-method-vasp-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-output-file">wfl-select-configs-CUR-global command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-output-file">wfl-select-configs-CUR-global command line option</a>
 </li>
       </ul></li>
       <li>
     --output-prefix
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-output-prefix">wfl-ref-method-castep-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-output-prefix">wfl-ref-method-castep-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-output-prefix">wfl-ref-method-orca-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-output-prefix">wfl-ref-method-orca-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-output-prefix">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-output-prefix">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-output-prefix">wfl-ref-method-vasp-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-output-prefix">wfl-ref-method-vasp-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --param-file
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-p">wfl-fitting-simple-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-p">wfl-fitting-simple-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --params-file
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-P">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-P">wfl-fitting-multistage-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --perturbation
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-perturbation">wfl-generate-configs-repeat-buildcell command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-perturbation">wfl-generate-configs-repeat-buildcell command line option</a>
 </li>
       </ul></li>
       <li>
     --pre-calc
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-pre">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-pre">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     --prefix
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-p">wfl-processing-committee command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-p">wfl-processing-committee command line option</a>
 </li>
       </ul></li>
       <li>
     --properties
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-p">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-p">wfl-processing-reference-error command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-properties">wfl-ref-method-castep-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-properties">wfl-ref-method-castep-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-properties">wfl-ref-method-vasp-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-properties">wfl-ref-method-vasp-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --property_prefix
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-0">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-0">wfl-fitting-multistage-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --ref-prefix
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-r">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-r">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     --run-dir
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-d">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-d">wfl-fitting-multistage-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --rundir-prefix
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-rundir-prefix">wfl-ref-method-orca-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-rundir-prefix">wfl-ref-method-orca-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --scratch-path
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-tmp">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-tmp">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
       </ul></li>
       <li>
     --scratchdir
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-tmp">wfl-ref-method-orca-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-tmp">wfl-ref-method-orca-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --testing-configs
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-testing-configs">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-testing-configs">wfl-fitting-multistage-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --vasp-command
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-vasp-command">wfl-ref-method-vasp-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-vasp-command">wfl-ref-method-vasp-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --vasp-kwargs
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-vasp-kwargs">wfl-ref-method-vasp-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-vasp-kwargs">wfl-ref-method-vasp-eval command line option</a>
 </li>
       </ul></li>
       <li>
     --verbose
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-v">wfl command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-v">wfl command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-v">wfl-fitting-simple-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-v">wfl-fitting-simple-gap command line option</a>
 </li>
       </ul></li>
       <li>
     --workdir
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-workdir">wfl-ref-method-orca-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-workdir">wfl-ref-method-orca-eval command line option</a>
 </li>
       </ul></li>
       <li>
     -a
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-a">wfl-file-op-strip command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-a">wfl-file-op-strip command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-a">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-a">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     -C
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-C">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-C">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     -c
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-c">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-c">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     -d
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-d">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-d">wfl-fitting-multistage-gap command line option</a>
 </li>
       </ul></li>
       <li>
     -f
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-f">wfl-file-op-gather command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-f">wfl-file-op-gather command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-f">wfl-file-op-strip command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-f">wfl-file-op-strip command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-f">wfl-processing-committee command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-f">wfl-processing-committee command line option</a>
 </li>
       </ul></li>
       <li>
     -G
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-G">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-G">wfl-fitting-multistage-gap command line option</a>
 </li>
       </ul></li>
       <li>
     -g
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-g">wfl-fitting-simple-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-g">wfl-fitting-simple-gap command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-g">wfl-processing-committee command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-g">wfl-processing-committee command line option</a>
 </li>
       </ul></li>
       <li>
     -i
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-i">wfl-file-op-gather command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-i">wfl-file-op-gather command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-i">wfl-file-op-strip command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-i">wfl-file-op-strip command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-i">wfl-generate-configs-smiles command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-i">wfl-generate-configs-smiles command line option</a>
 </li>
       </ul></li>
       <li>
     -k
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-k">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-k">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     -m
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-m">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-m">wfl-fitting-multistage-gap command line option</a>
 </li>
       </ul></li>
       <li>
     -N
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-N">wfl-generate-configs-repeat-buildcell command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-N">wfl-generate-configs-repeat-buildcell command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-N">wfl-select-configs-CUR-global command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-N">wfl-select-configs-CUR-global command line option</a>
 </li>
       </ul></li>
       <li>
     -nh
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nh">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nh">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
       </ul></li>
       <li>
     -nr
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nr">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nr">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
       </ul></li>
       <li>
     -o
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-o">wfl-file-op-gather command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-o">wfl-file-op-gather command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-o">wfl-file-op-strip command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-o">wfl-file-op-strip command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-o">wfl-fitting-simple-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-o">wfl-fitting-simple-gap command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-o">wfl-generate-configs-smiles command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-o">wfl-generate-configs-smiles command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-o">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-o">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     -P
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-P">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-P">wfl-fitting-multistage-gap command line option</a>
 </li>
       </ul></li>
       <li>
     -p
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-0">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-0">wfl-fitting-multistage-gap command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-p">wfl-fitting-simple-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-p">wfl-fitting-simple-gap command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-p">wfl-processing-committee command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-p">wfl-processing-committee command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-p">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-p">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     -pre
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-pre">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-pre">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     -r
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-r">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-r">wfl-processing-reference-error command line option</a>
 </li>
       </ul></li>
       <li>
     -tmp
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-tmp">wfl-ref-method-orca-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-tmp">wfl-ref-method-orca-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-tmp">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-tmp">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
       </ul></li>
       <li>
     -v
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-v">wfl command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-v">wfl command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-v">wfl-fitting-simple-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-v">wfl-fitting-simple-gap command line option</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1172,6 +1191,10 @@ title="Fullscreen mode"
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="wfl.generate.md.html#wfl.generate.md.abort.AbortOnCollision">AbortOnCollision (class in wfl.generate.md.abort)</a>
+</li>
+      <li><a href="wfl.generate.md.html#wfl.generate.md.abort_base.AbortSimBase">AbortSimBase (class in wfl.generate.md.abort_base)</a>
+</li>
       <li><a href="wfl.fit.html#wfl.fit.utils.ace_fit_jl_path">ace_fit_jl_path() (in module wfl.fit.utils)</a>
 </li>
       <li><a href="wfl.generate.html#wfl.generate.supercells.antisite">antisite() (in module wfl.generate.supercells)</a>
@@ -1180,7 +1203,15 @@ title="Fullscreen mode"
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="wfl.generate.md.html#wfl.generate.md.abort.AbortOnCollision.atoms_ok">atoms_ok() (wfl.generate.md.abort.AbortOnCollision method)</a>
+
+      <ul>
+        <li><a href="wfl.generate.md.html#wfl.generate.md.abort_base.AbortSimBase.atoms_ok">(wfl.generate.md.abort_base.AbortSimBase method)</a>
+</li>
+      </ul></li>
       <li><a href="wfl.utils.html#wfl.utils.misc.atoms_to_list">atoms_to_list() (in module wfl.utils.misc)</a>
+</li>
+      <li><a href="wfl.autoparallelize.html#wfl.autoparallelize.autoparainfo.AutoparaInfo">AutoparaInfo (class in wfl.autoparallelize.autoparainfo)</a>
 </li>
       <li><a href="wfl.autoparallelize.html#wfl.autoparallelize.base.autoparallelize">autoparallelize() (in module wfl.autoparallelize.base)</a>
 </li>
@@ -1239,7 +1270,11 @@ title="Fullscreen mode"
       <li><a href="wfl.calculators.html#wfl.calculators.utils.clean_failed_results">clean_failed_results() (in module wfl.calculators.utils)</a>
 </li>
       <li><a href="wfl.calculators.html#wfl.calculators.utils.clean_rundir">clean_rundir() (in module wfl.calculators.utils)</a>
+
+      <ul>
+        <li><a href="wfl.calculators.html#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.clean_rundir">(wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator method)</a>
 </li>
+      </ul></li>
       <li><a href="wfl.calculators.html#wfl.calculators.espresso.Espresso.cleanup">cleanup() (wfl.calculators.espresso.Espresso method)</a>
 
       <ul>
@@ -1292,7 +1327,7 @@ title="Fullscreen mode"
         <li><a href="wfl.calculators.html#wfl.calculators.vasp.Vasp.default_parameters">(wfl.calculators.vasp.Vasp attribute)</a>
 </li>
       </ul></li>
-      <li><a href="wfl.generate.html#wfl.generate.vib.Vibrations.derive_normal_mode_info">derive_normal_mode_info() (wfl.generate.vib.Vibrations method)</a>
+      <li><a href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.derive_normal_mode_info">derive_normal_mode_info() (wfl.generate.normal_modes.NormalModes method)</a>
 </li>
       <li><a href="wfl.html#wfl.descriptor_heuristics.descriptor_2brn_uniform_file">descriptor_2brn_uniform_file() (in module wfl.descriptor_heuristics)</a>
 </li>
@@ -1330,7 +1365,7 @@ title="Fullscreen mode"
 </li>
       <li><a href="wfl.calculators.html#wfl.calculators.espresso.Espresso">Espresso (class in wfl.calculators.espresso)</a>
 </li>
-      <li><a href="wfl.generate.html#wfl.generate.vib.Vibrations.evals_to_freqs">evals_to_freqs() (wfl.generate.vib.Vibrations static method)</a>
+      <li><a href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.evals_to_freqs">evals_to_freqs() (wfl.generate.normal_modes.NormalModes static method)</a>
 </li>
       <li><a href="wfl.calculators.html#wfl.calculators.castep.evaluate_autopara_wrappable">evaluate_autopara_wrappable() (in module wfl.calculators.castep)</a>
 </li>
@@ -1344,7 +1379,7 @@ title="Fullscreen mode"
 </li>
       <li><a href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.evaluate_ref">evaluate_ref() (in module wfl.cli.gap_rss_iter_fit)</a>
 </li>
-      <li><a href="wfl.generate.html#wfl.generate.vib.Vibrations.evecs_to_modes">evecs_to_modes() (wfl.generate.vib.Vibrations static method)</a>
+      <li><a href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.evecs_to_modes">evecs_to_modes() (wfl.generate.normal_modes.NormalModes static method)</a>
 </li>
       <li><a href="wfl.utils.html#wfl.utils.gap_xml_tools.extract_e0">extract_e0() (in module wfl.utils.gap_xml_tools)</a>
 </li>
@@ -1372,7 +1407,7 @@ title="Fullscreen mode"
 </li>
       <li><a href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.flat_histo_then_by_desc">flat_histo_then_by_desc() (in module wfl.cli.gap_rss_iter_fit)</a>
 </li>
-      <li><a href="wfl.generate.html#wfl.generate.vib.Vibrations.freqs_to_evals">freqs_to_evals() (wfl.generate.vib.Vibrations static method)</a>
+      <li><a href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.freqs_to_evals">freqs_to_evals() (wfl.generate.normal_modes.NormalModes static method)</a>
 </li>
       <li><a href="wfl.descriptors.html#wfl.descriptors.quippy.from_any_to_Descriptor">from_any_to_Descriptor() (in module wfl.descriptors.quippy)</a>
 </li>
@@ -1386,9 +1421,9 @@ title="Fullscreen mode"
 </li>
       <li><a href="wfl.fit.gap.html#wfl.fit.gap.multistage.GAP_xml_modify_label">GAP_xml_modify_label() (in module wfl.fit.gap.multistage)</a>
 </li>
-      <li><a href="wfl.generate.html#wfl.generate.vib.generate_normal_modes_parallel_atoms">generate_normal_modes_parallel_atoms() (in module wfl.generate.vib)</a>
+      <li><a href="wfl.generate.html#wfl.generate.normal_modes.generate_normal_modes_parallel_atoms">generate_normal_modes_parallel_atoms() (in module wfl.generate.normal_modes)</a>
 </li>
-      <li><a href="wfl.generate.html#wfl.generate.vib.generate_normal_modes_parallel_hessian">generate_normal_modes_parallel_hessian() (in module wfl.generate.vib)</a>
+      <li><a href="wfl.generate.html#wfl.generate.normal_modes.generate_normal_modes_parallel_hessian">generate_normal_modes_parallel_hessian() (in module wfl.generate.normal_modes)</a>
 </li>
       <li><a href="wfl.utils.html#wfl.utils.params.Params.get">get() (wfl.utils.params.Params method)</a>
 </li>
@@ -1452,27 +1487,27 @@ title="Fullscreen mode"
     INPUTS
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-arg-INPUTS">wfl-descriptor-calc command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-arg-INPUTS">wfl-descriptor-calc command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-arg-INPUTS">wfl-file-op-gather command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-arg-INPUTS">wfl-file-op-gather command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-arg-INPUTS">wfl-file-op-strip command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-arg-INPUTS">wfl-file-op-strip command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-arg-INPUTS">wfl-fitting-multistage-gap command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-arg-INPUTS">wfl-fitting-multistage-gap command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-arg-INPUTS">wfl-processing-committee command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-arg-INPUTS">wfl-processing-committee command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-arg-INPUTS">wfl-processing-reference-error command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-arg-INPUTS">wfl-processing-reference-error command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-arg-INPUTS">wfl-ref-method-castep-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-arg-INPUTS">wfl-ref-method-castep-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-arg-INPUTS">wfl-ref-method-orca-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-arg-INPUTS">wfl-ref-method-orca-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-arg-INPUTS">wfl-ref-method-orca-eval-basin-hopping command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-arg-INPUTS">wfl-ref-method-orca-eval-basin-hopping command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-arg-INPUTS">wfl-ref-method-vasp-eval command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-arg-INPUTS">wfl-ref-method-vasp-eval command line option</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-arg-INPUTS">wfl-select-configs-CUR-global command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-arg-INPUTS">wfl-select-configs-CUR-global command line option</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1484,6 +1519,14 @@ title="Fullscreen mode"
       <li><a href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.is_elemental">is_elemental() (in module wfl.cli.gap_rss_iter_fit)</a>
 </li>
       <li><a href="wfl.generate.html#wfl.generate.atoms_and_dimers.isolated_atom_from_e0">isolated_atom_from_e0() (in module wfl.generate.atoms_and_dimers)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="wfl.utils.html#wfl.utils.julia.julia_exec_path">julia_exec_path() (in module wfl.utils.julia)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1511,7 +1554,7 @@ title="Fullscreen mode"
 </li>
       <li><a href="wfl.select.html#wfl.select.selection_space.minima_among_neighbors">minima_among_neighbors() (in module wfl.select.selection_space)</a>
 </li>
-      <li><a href="wfl.generate.html#wfl.generate.vib.Vibrations.modes_to_evecs">modes_to_evecs() (wfl.generate.vib.Vibrations static method)</a>
+      <li><a href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.modes_to_evecs">modes_to_evecs() (wfl.generate.normal_modes.NormalModes static method)</a>
 </li>
       <li><a href="wfl.fit.modify_database.html#wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull.modify">modify() (in module wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull)</a>
 
@@ -1532,6 +1575,8 @@ title="Fullscreen mode"
         <li><a href="wfl.html#module-wfl">wfl</a>
 </li>
         <li><a href="wfl.autoparallelize.html#module-wfl.autoparallelize">wfl.autoparallelize</a>
+</li>
+        <li><a href="wfl.autoparallelize.html#module-wfl.autoparallelize.autoparainfo">wfl.autoparallelize.autoparainfo</a>
 </li>
         <li><a href="wfl.autoparallelize.html#module-wfl.autoparallelize.base">wfl.autoparallelize.base</a>
 </li>
@@ -1564,6 +1609,8 @@ title="Fullscreen mode"
         <li><a href="wfl.calculators.html#module-wfl.calculators.utils">wfl.calculators.utils</a>
 </li>
         <li><a href="wfl.calculators.html#module-wfl.calculators.vasp">wfl.calculators.vasp</a>
+</li>
+        <li><a href="wfl.calculators.html#module-wfl.calculators.wfl_fileio_calculator">wfl.calculators.wfl_fileio_calculator</a>
 </li>
         <li><a href="wfl.cli.html#module-wfl.cli">wfl.cli</a>
 </li>
@@ -1615,9 +1662,15 @@ title="Fullscreen mode"
 </li>
         <li><a href="wfl.generate.html#module-wfl.generate.buildcell">wfl.generate.buildcell</a>
 </li>
-        <li><a href="wfl.generate.html#module-wfl.generate.md">wfl.generate.md</a>
+        <li><a href="wfl.generate.md.html#module-wfl.generate.md">wfl.generate.md</a>
+</li>
+        <li><a href="wfl.generate.md.html#module-wfl.generate.md.abort">wfl.generate.md.abort</a>
+</li>
+        <li><a href="wfl.generate.md.html#module-wfl.generate.md.abort_base">wfl.generate.md.abort_base</a>
 </li>
         <li><a href="wfl.generate.html#module-wfl.generate.minimahopping">wfl.generate.minimahopping</a>
+</li>
+        <li><a href="wfl.generate.html#module-wfl.generate.normal_modes">wfl.generate.normal_modes</a>
 </li>
         <li><a href="wfl.generate.html#module-wfl.generate.optimize">wfl.generate.optimize</a>
 </li>
@@ -1626,8 +1679,6 @@ title="Fullscreen mode"
         <li><a href="wfl.generate.html#module-wfl.generate.supercells">wfl.generate.supercells</a>
 </li>
         <li><a href="wfl.generate.html#module-wfl.generate.utils">wfl.generate.utils</a>
-</li>
-        <li><a href="wfl.generate.html#module-wfl.generate.vib">wfl.generate.vib</a>
 </li>
         <li><a href="wfl.scripts.html#module-wfl.scripts">wfl.scripts</a>
 </li>
@@ -1654,6 +1705,8 @@ title="Fullscreen mode"
         <li><a href="wfl.utils.html#module-wfl.utils.find_voids">wfl.utils.find_voids</a>
 </li>
         <li><a href="wfl.utils.html#module-wfl.utils.gap_xml_tools">wfl.utils.gap_xml_tools</a>
+</li>
+        <li><a href="wfl.utils.html#module-wfl.utils.julia">wfl.utils.julia</a>
 </li>
         <li><a href="wfl.utils.html#module-wfl.utils.logging">wfl.utils.logging</a>
 </li>
@@ -1690,7 +1743,9 @@ title="Fullscreen mode"
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="wfl.generate.html#wfl.generate.vib.Vibrations.num_hess_delta">num_hess_delta (wfl.generate.vib.Vibrations attribute)</a>
+      <li><a href="wfl.generate.html#wfl.generate.normal_modes.NormalModes">NormalModes (class in wfl.generate.normal_modes)</a>
+</li>
+      <li><a href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.num_hess_delta">num_hess_delta (wfl.generate.normal_modes.NormalModes attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1800,12 +1855,12 @@ title="Fullscreen mode"
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="wfl.generate.html#wfl.generate.md.sample">sample() (in module wfl.generate.md)</a>
+      <li><a href="wfl.generate.md.html#wfl.generate.md.sample">sample() (in module wfl.generate.md)</a>
 </li>
-      <li><a href="wfl.generate.html#wfl.generate.vib.sample_normal_modes">sample_normal_modes() (in module wfl.generate.vib)</a>
+      <li><a href="wfl.generate.html#wfl.generate.normal_modes.sample_normal_modes">sample_normal_modes() (in module wfl.generate.normal_modes)</a>
 
       <ul>
-        <li><a href="wfl.generate.html#wfl.generate.vib.Vibrations.sample_normal_modes">(wfl.generate.vib.Vibrations method)</a>
+        <li><a href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.sample_normal_modes">(wfl.generate.normal_modes.NormalModes method)</a>
 </li>
       </ul></li>
       <li><a href="wfl.utils.html#wfl.utils.pressure.sample_pressure">sample_pressure() (in module wfl.utils.pressure)</a>
@@ -1818,6 +1873,8 @@ title="Fullscreen mode"
 </li>
       <li><a href="wfl.calculators.html#wfl.calculators.espresso.Espresso.setup_calc_params">setup_calc_params() (wfl.calculators.espresso.Espresso method)</a>
 </li>
+      <li><a href="wfl.calculators.html#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.setup_rundir">setup_rundir() (wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wfl.autoparallelize.html#wfl.autoparallelize.mpipool_support.shutdown_and_barrier">shutdown_and_barrier() (in module wfl.autoparallelize.mpipool_support)</a>
@@ -1828,16 +1885,18 @@ title="Fullscreen mode"
     SMILES
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-arg-SMILES">wfl-generate-configs-smiles command line option</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-arg-SMILES">wfl-generate-configs-smiles command line option</a>
 </li>
       </ul></li>
       <li><a href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.step_startup">step_startup() (in module wfl.cli.gap_rss_iter_fit)</a>
+</li>
+      <li><a href="wfl.generate.md.html#wfl.generate.md.abort_base.AbortSimBase.stop">stop() (wfl.generate.md.abort_base.AbortSimBase method)</a>
 </li>
       <li><a href="wfl.html#wfl.configset.OutputSpec.store">store() (wfl.configset.OutputSpec method)</a>
 </li>
       <li><a href="wfl.generate.html#wfl.generate.optimize.subselect_from_traj">subselect_from_traj() (in module wfl.generate.optimize)</a>
 </li>
-      <li><a href="wfl.generate.html#wfl.generate.vib.Vibrations.summary">summary() (wfl.generate.vib.Vibrations method)</a>
+      <li><a href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.summary">summary() (wfl.generate.normal_modes.NormalModes method)</a>
 </li>
       <li><a href="wfl.generate.html#wfl.generate.supercells.surface">surface() (in module wfl.generate.supercells)</a>
 </li>
@@ -1852,6 +1911,14 @@ title="Fullscreen mode"
   </ul></td>
 </tr></table>
 
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="wfl.autoparallelize.html#wfl.autoparallelize.autoparainfo.AutoparaInfo.update_defaults">update_defaults() (wfl.autoparallelize.autoparainfo.AutoparaInfo method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -1859,15 +1926,13 @@ title="Fullscreen mode"
 </li>
       <li><a href="wfl.select.html#wfl.select.selection_space.val_relative_to_nearby_composition_volume_min">val_relative_to_nearby_composition_volume_min() (in module wfl.select.selection_space)</a>
 </li>
-      <li><a href="wfl.calculators.html#wfl.calculators.vasp.Vasp">Vasp (class in wfl.calculators.vasp)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="wfl.calculators.html#wfl.calculators.vasp.Vasp">Vasp (class in wfl.calculators.vasp)</a>
+</li>
       <li><a href="wfl.utils.html#wfl.utils.convex_hull.vertical_dist_from_hull">vertical_dist_from_hull() (in module wfl.utils.convex_hull)</a>
 </li>
-      <li><a href="wfl.generate.html#wfl.generate.vib.Vibrations">Vibrations (class in wfl.generate.vib)</a>
-</li>
-      <li><a href="wfl.generate.html#wfl.generate.vib.Vibrations.view_modes">view_modes() (wfl.generate.vib.Vibrations method)</a>
+      <li><a href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.view">view() (wfl.generate.normal_modes.NormalModes method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1886,374 +1951,381 @@ title="Fullscreen mode"
     wfl command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-v">--verbose</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-v">--verbose</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-v">-v</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-v">-v</a>
 </li>
       </ul></li>
       <li>
     wfl-descriptor-calc command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-descriptor">--descriptor</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-descriptor">--descriptor</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-force">--force</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-force">--force</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-key">--key</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-key">--key</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-local">--local</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-local">--local</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-output-file">--output-file</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-output-file">--output-file</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-arg-INPUTS">INPUTS</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-descriptor-calc-arg-INPUTS">INPUTS</a>
 </li>
       </ul></li>
       <li>
     wfl-file-op-gather command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-f">--force</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-f">--force</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-i">--index</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-i">--index</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-o">--output</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-o">--output</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-f">-f</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-f">-f</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-i">-i</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-i">-i</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-o">-o</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-o">-o</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-arg-INPUTS">INPUTS</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-gather-arg-INPUTS">INPUTS</a>
 </li>
       </ul></li>
       <li>
     wfl-file-op-strip command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-cell">--cell</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-cell">--cell</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-f">--force</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-f">--force</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-a">--keep-array</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-a">--keep-array</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-i">--keep-info</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-i">--keep-info</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-o">--output</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-o">--output</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-a">-a</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-a">-a</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-f">-f</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-f">-f</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-i">-i</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-i">-i</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-o">-o</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-o">-o</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-arg-INPUTS">INPUTS</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-file-op-strip-arg-INPUTS">INPUTS</a>
 </li>
       </ul></li>
       <li>
     wfl-fitting-multistage-gap command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-m">--database-modify-mod</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-m">--database-modify-mod</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-fitting-error">--fitting-error</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-fitting-error">--fitting-error</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-G">--GAP-name</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-G">--GAP-name</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-fitting-error">--no-fitting-error</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-fitting-error">--no-fitting-error</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-P">--params-file</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-P">--params-file</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-0">--property_prefix</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-0">--property_prefix</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-d">--run-dir</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-d">--run-dir</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-testing-configs">--testing-configs</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-testing-configs">--testing-configs</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-d">-d</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-d">-d</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-G">-G</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-G">-G</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-m">-m</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-m">-m</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-P">-P</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-P">-P</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-0">-p</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-0">-p</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-arg-INPUTS">INPUTS</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-multistage-gap-arg-INPUTS">INPUTS</a>
 </li>
       </ul></li>
       <li>
     wfl-fitting-simple-gap command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-atoms-filename">--atoms-filename</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-atoms-filename">--atoms-filename</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-fit">--fit</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-fit">--fit</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-g">--gap-file</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-g">--gap-file</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-gap-fit-command">--gap-fit-command</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-gap-fit-command">--gap-fit-command</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-o">--output-file</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-o">--output-file</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-p">--param-file</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-p">--param-file</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-v">--verbose</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-v">--verbose</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-g">-g</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-g">-g</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-o">-o</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-o">-o</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-p">-p</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-p">-p</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-v">-v</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-fitting-simple-gap-v">-v</a>
 </li>
       </ul></li>
       <li>
     wfl-generate-configs-repeat-buildcell command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-buildcell-exec">--buildcell-exec</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-buildcell-exec">--buildcell-exec</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-buildcell-input">--buildcell-input</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-buildcell-input">--buildcell-input</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-extra-info">--extra-info</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-extra-info">--extra-info</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-N">--n-configs</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-N">--n-configs</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-output-file">--output-file</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-output-file">--output-file</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-perturbation">--perturbation</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-perturbation">--perturbation</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-N">-N</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-repeat-buildcell-N">-N</a>
 </li>
       </ul></li>
       <li>
     wfl-generate-configs-smiles command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-i">--info</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-i">--info</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-o">--output</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-o">--output</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-i">-i</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-i">-i</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-o">-o</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-o">-o</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-arg-SMILES">SMILES</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-generate-configs-smiles-arg-SMILES">SMILES</a>
 </li>
       </ul></li>
       <li>
     wfl-processing-committee command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-f">--force</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-f">--force</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-g">--gap-fn</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-g">--gap-fn</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-p">--prefix</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-p">--prefix</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-f">-f</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-f">-f</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-g">-g</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-g">-g</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-p">-p</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-p">-p</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-committee-arg-INPUTS">INPUTS</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-committee-arg-INPUTS">INPUTS</a>
 </li>
       </ul></li>
       <li>
     wfl-processing-reference-error command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-c">--calc</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-c">--calc</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-a">--calc-args</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-a">--calc-args</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-k">--calc-kwargs</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-k">--calc-kwargs</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-C">--category_keys</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-C">--category_keys</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-intermed-file">--intermed-file</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-intermed-file">--intermed-file</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-o">--outfile</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-o">--outfile</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-pre">--pre-calc</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-pre">--pre-calc</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-p">--properties</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-p">--properties</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-r">--ref-prefix</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-r">--ref-prefix</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-a">-a</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-a">-a</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-c">-c</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-c">-c</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-C">-C</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-C">-C</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-k">-k</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-k">-k</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-o">-o</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-o">-o</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-p">-p</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-p">-p</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-pre">-pre</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-pre">-pre</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-r">-r</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-r">-r</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-arg-INPUTS">INPUTS</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-processing-reference-error-arg-INPUTS">INPUTS</a>
 </li>
       </ul></li>
       <li>
     wfl-ref-method-castep-eval command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-base-rundir">--base-rundir</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-base-rundir">--base-rundir</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-castep-command">--castep-command</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-castep-command">--castep-command</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-castep-kwargs">--castep-kwargs</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-castep-kwargs">--castep-kwargs</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-directory-prefix">--directory-prefix</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-directory-prefix">--directory-prefix</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-keep-files">--keep-files</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-keep-files">--keep-files</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-output-file">--output-file</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-output-file">--output-file</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-output-prefix">--output-prefix</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-output-prefix">--output-prefix</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-properties">--properties</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-properties">--properties</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-arg-INPUTS">INPUTS</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-castep-eval-arg-INPUTS">INPUTS</a>
 </li>
       </ul></li>
       <li>
     wfl-ref-method-orca-eval command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-calculator-exec">--calculator-exec</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-calculator-exec">--calculator-exec</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-charge">--charge</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-charge">--charge</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-keep-files">--keep-files</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-keep-files">--keep-files</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-mult">--mult</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-mult">--mult</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-orcablocks">--orcablocks</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-orcablocks">--orcablocks</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-orcasimpleinput">--orcasimpleinput</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-orcasimpleinput">--orcasimpleinput</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-output-file">--output-file</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-output-file">--output-file</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-output-prefix">--output-prefix</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-output-prefix">--output-prefix</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-rundir-prefix">--rundir-prefix</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-rundir-prefix">--rundir-prefix</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-tmp">--scratchdir</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-tmp">--scratchdir</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-workdir">--workdir</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-workdir">--workdir</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-tmp">-tmp</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-tmp">-tmp</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-arg-INPUTS">INPUTS</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-arg-INPUTS">INPUTS</a>
 </li>
       </ul></li>
       <li>
     wfl-ref-method-orca-eval-basin-hopping command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-base-rundir">--base-rundir</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-base-rundir">--base-rundir</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-calc-kwargs">--calc-kwargs</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-calc-kwargs">--calc-kwargs</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-directory-prefix">--directory-prefix</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-directory-prefix">--directory-prefix</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-keep-files">--keep-files</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-keep-files">--keep-files</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-calc-kwargs">--kw</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-calc-kwargs">--kw</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nh">--n-hop</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nh">--n-hop</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nr">--n-run</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nr">--n-run</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-orca-additional-blocks">--orca-additional-blocks</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-orca-additional-blocks">--orca-additional-blocks</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-orca-command">--orca-command</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-orca-command">--orca-command</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-orca-simple-input">--orca-simple-input</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-orca-simple-input">--orca-simple-input</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-output-file">--output-file</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-output-file">--output-file</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-output-prefix">--output-prefix</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-output-prefix">--output-prefix</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-tmp">--scratch-path</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-tmp">--scratch-path</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nh">-nh</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nh">-nh</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nr">-nr</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nr">-nr</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-tmp">-tmp</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-tmp">-tmp</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-arg-INPUTS">INPUTS</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-orca-eval-basin-hopping-arg-INPUTS">INPUTS</a>
 </li>
       </ul></li>
       <li>
     wfl-ref-method-vasp-eval command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-base-rundir">--base-rundir</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-base-rundir">--base-rundir</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-directory-prefix">--directory-prefix</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-directory-prefix">--directory-prefix</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-incar">--incar</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-incar">--incar</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-kpoints">--kpoints</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-kpoints">--kpoints</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-output-file">--output-file</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-output-file">--output-file</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-output-prefix">--output-prefix</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-output-prefix">--output-prefix</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-properties">--properties</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-properties">--properties</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-vasp-command">--vasp-command</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-vasp-command">--vasp-command</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-vasp-kwargs">--vasp-kwargs</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-vasp-kwargs">--vasp-kwargs</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-arg-INPUTS">INPUTS</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-ref-method-vasp-eval-arg-INPUTS">INPUTS</a>
 </li>
       </ul></li>
       <li>
     wfl-select-configs-CUR-global command line option
 
       <ul>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-descriptor">--descriptor</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-descriptor">--descriptor</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-descriptor-key">--descriptor-key</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-descriptor-key">--descriptor-key</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-deterministic">--deterministic</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-deterministic">--deterministic</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-keep_descriptor">--keep_descriptor</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-keep_descriptor">--keep_descriptor</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-kernel_exponent">--kernel_exponent</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-kernel_exponent">--kernel_exponent</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-N">--n-configs</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-N">--n-configs</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-output-file">--output-file</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-output-file">--output-file</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-N">-N</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-N">-N</a>
 </li>
-        <li><a href="command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-arg-INPUTS">INPUTS</a>
+        <li><a href="attic/command_line.automatic_docs.html#cmdoption-wfl-select-configs-CUR-global-arg-INPUTS">INPUTS</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     wfl.autoparallelize
 
       <ul>
         <li><a href="wfl.autoparallelize.html#module-wfl.autoparallelize">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    wfl.autoparallelize.autoparainfo
+
+      <ul>
+        <li><a href="wfl.autoparallelize.html#module-wfl.autoparallelize.autoparainfo">module</a>
 </li>
       </ul></li>
       <li>
@@ -2366,6 +2438,13 @@ title="Fullscreen mode"
 
       <ul>
         <li><a href="wfl.calculators.html#module-wfl.calculators.vasp">module</a>
+</li>
+      </ul></li>
+      <li>
+    wfl.calculators.wfl_fileio_calculator
+
+      <ul>
+        <li><a href="wfl.calculators.html#module-wfl.calculators.wfl_fileio_calculator">module</a>
 </li>
       </ul></li>
       <li>
@@ -2547,7 +2626,21 @@ title="Fullscreen mode"
     wfl.generate.md
 
       <ul>
-        <li><a href="wfl.generate.html#module-wfl.generate.md">module</a>
+        <li><a href="wfl.generate.md.html#module-wfl.generate.md">module</a>
+</li>
+      </ul></li>
+      <li>
+    wfl.generate.md.abort
+
+      <ul>
+        <li><a href="wfl.generate.md.html#module-wfl.generate.md.abort">module</a>
+</li>
+      </ul></li>
+      <li>
+    wfl.generate.md.abort_base
+
+      <ul>
+        <li><a href="wfl.generate.md.html#module-wfl.generate.md.abort_base">module</a>
 </li>
       </ul></li>
       <li>
@@ -2555,6 +2648,13 @@ title="Fullscreen mode"
 
       <ul>
         <li><a href="wfl.generate.html#module-wfl.generate.minimahopping">module</a>
+</li>
+      </ul></li>
+      <li>
+    wfl.generate.normal_modes
+
+      <ul>
+        <li><a href="wfl.generate.html#module-wfl.generate.normal_modes">module</a>
 </li>
       </ul></li>
       <li>
@@ -2583,13 +2683,6 @@ title="Fullscreen mode"
 
       <ul>
         <li><a href="wfl.generate.html#module-wfl.generate.utils">module</a>
-</li>
-      </ul></li>
-      <li>
-    wfl.generate.vib
-
-      <ul>
-        <li><a href="wfl.generate.html#module-wfl.generate.vib">module</a>
 </li>
       </ul></li>
       <li>
@@ -2684,6 +2777,13 @@ title="Fullscreen mode"
 </li>
       </ul></li>
       <li>
+    wfl.utils.julia
+
+      <ul>
+        <li><a href="wfl.utils.html#module-wfl.utils.julia">module</a>
+</li>
+      </ul></li>
+      <li>
     wfl.utils.logging
 
       <ul>
@@ -2774,6 +2874,8 @@ title="Fullscreen mode"
 </li>
       </ul></li>
       <li><a href="wfl.calculators.html#wfl.calculators.vasp.Vasp.wfl_generic_num_inputs_per_python_subprocess">wfl_generic_num_inputs_per_python_subprocess (wfl.calculators.vasp.Vasp attribute)</a>
+</li>
+      <li><a href="wfl.calculators.html#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator">WFLFileIOCalculator (class in wfl.calculators.wfl_fileio_calculator)</a>
 </li>
       <li><a href="wfl.calculators.orca.html#wfl.calculators.orca.ORCA.write_input">write_input() (wfl.calculators.orca.ORCA method)</a>
 </li>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Examples &#8212; workflow  documentation</title>
+    <title>ORCA via Python script &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,8 +32,8 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Index" href="examples.index.html" />
-    <link rel="prev" title="Fitting ACE" href="operations.ace_fitting.html" />
+    <link rel="next" title="Parallelize MACE calculator" href="examples.mace.html" />
+    <link rel="prev" title="ORCA via command line" href="examples.orca_cli.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -178,7 +178,7 @@
   </ul>
  </li>
  <li class="toctree-l1 current active has-children">
-  <a class="current reference internal" href="#">
+  <a class="reference internal" href="examples.html">
    Examples
   </a>
   <input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
@@ -186,7 +186,7 @@
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="examples.index.html">
      Index
@@ -202,8 +202,8 @@
      ORCA via command line
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca_python.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      ORCA via Python script
     </a>
    </li>
@@ -422,7 +422,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/examples.rst.txt"
+        <a href="_sources/examples.orca_python.md.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -433,7 +433,7 @@ title="Download source file"
 <span class="headerbtn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.rst</span>
+<span class="headerbtn__text-container">.md</span>
 </a>
 
       </li>
@@ -471,7 +471,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Examples</h1>
+                <h1>ORCA via Python script</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -483,61 +483,84 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="examples">
-<span id="id1"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">#</a></h1>
-<p>Self-contained code snippets of common things that can be done with Workflow.</p>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="examples.index.html">Index</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#evaluate-structures-with-a-calculator">Evaluate structures with a calculator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#generate-structures">Generate structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#remote-execution">Remote execution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#get-descriptors">Get descriptors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#sampling">Sampling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#fit-a-potential">Fit a potential</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#iterative-training">Iterative training</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.index.html#miscellaneous">Miscellaneous</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.dimers.html">Generating Dimer Structures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.orca_cli.html">ORCA via command line</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca_cli.html#evaluate-atomic-configurations-sequentially-on-a-single-core">1. Evaluate atomic configurations sequentially on a single core</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca_cli.html#parallelize-with-orca">2.1 Parallelize with ORCA</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca_cli.html#parallelize-with-workflow">2.2 Parallelize with Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca_cli.html#parallelize-with-orca-and-workflow">2.3 Parallelize with ORCA and Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca_cli.html#evaluate-structures-in-multiple-queued-jobs-from-command-line">3. Evaluate structures in multiple queued jobs from command line</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.orca_python.html">ORCA via Python script</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.mace.html">Parallelize MACE calculator</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.mace.html#complete-example">Complete example</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.mlip_fitting.html">Fitting a MLIP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.mlip_fitting.html#table-of-contents">Table of contents</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html#general-workflow-and-setup">General workflow and setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html#getting-started-parallelization-and-imports">Getting started: Parallelization and Imports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html#fitting-the-initial-gap">Fitting the initial GAP</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html#preparing-the-iterative-process">Preparing the iterative process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html#the-iterative-process">The Iterative Process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html#keeping-track-of-training-and-test-errors">Keeping track of training and test errors</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.normal_modes.html">Normal Modes of molecules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html#generate">Generate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html#visualize">Visualize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html#sample">Sample</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.smiles.html">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.smiles.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.smiles.html#python-script">Python script</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.md.html">Molecular Dynamics</a></li>
-</ul>
+  <div class="section" id="orca-via-python-script">
+<h1>ORCA via Python script<a class="headerlink" href="#orca-via-python-script" title="Permalink to this headline">#</a></h1>
+<p>This example Python script evaluates atomic structures stored in a “configs.xyz” file with ORCA calculator and saves them to “configs.dft.xyz”. The script (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">orca_eval.py</span></code> called from head node) submits (multiple) jobs to the cluster, each job containing up to 20 structures (<code class="docutils literal notranslate"><span class="pre">num_inputs_per_queued_job</span> <span class="pre">=</span> <span class="pre">20</span></code>) and running on 4 cores (<code class="docutils literal notranslate"><span class="pre">num_cores</span> <span class="pre">=</span> <span class="pre">4</span></code>). Once the jobs are submitted, the python execution may be stopped. To save the evaluated structures from all of the finished jobs, the (unchanged!!) script is run again - it checks that the jobs are successfully completed and collects all of their outputs to “configs.dft.xyz”.</p>
+<p>Workflow’s ORCA calculator has an option to execute a (partially initialized) function just after the ORCA executable has been called. This allows to further process outputs of the calculation before the no longer needed files are deleted. The example below uses external <a class="reference external" href="https://sourceforge.net/p/janpa/wiki/Home/">JANPA</a> package to take the large ORCA wavefunction files, calculate localized charges and electron populations and save them to <code class="docutils literal notranslate"><span class="pre">Atoms.arrays</span></code> in the output file.</p>
+<p><code class="docutils literal notranslate"><span class="pre">orca_eval.py</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
+<span class="kn">from</span> <span class="nn">wfl.calculators.orca</span> <span class="kn">import</span> <span class="n">ORCA</span><span class="p">,</span> <span class="n">natural_population_analysis</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">wfl.calculators</span> <span class="kn">import</span> <span class="n">generic</span>
+<span class="kn">from</span> <span class="nn">wfl.autoparallelize.remoteinfo</span> <span class="kn">import</span> <span class="n">RemoteInfo</span>
+<span class="kn">from</span> <span class="nn">wfl.autoparallelize.autoparainfo</span> <span class="kn">import</span> <span class="n">AutoparaInfo</span>
+<span class="kn">from</span> <span class="nn">expyre.resources</span> <span class="kn">import</span> <span class="n">Resources</span>
+
+<span class="n">input_fname</span> <span class="o">=</span> <span class="s2">&quot;configs.xyz&quot;</span>
+<span class="n">output_fname</span> <span class="o">=</span> <span class="s2">&quot;configs.dft.xyz&quot;</span>
+<span class="n">num_inputs_per_queued_job</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">num_cores</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">max_time</span> <span class="o">=</span> <span class="s2">&quot;48h&quot;</span>
+
+<span class="c1"># structures</span>
+<span class="n">ci</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_fname</span><span class="p">)</span>
+<span class="n">co</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_fname</span><span class="p">)</span>
+
+<span class="n">expyre_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;_expyre&quot;</span><span class="p">)</span>
+<span class="n">expyre_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># remote info</span>
+<span class="n">resources</span> <span class="o">=</span> <span class="n">Resources</span><span class="p">(</span>
+    <span class="n">max_time</span> <span class="o">=</span> <span class="n">max_time</span><span class="p">,</span>
+    <span class="n">num_cores</span> <span class="o">=</span> <span class="n">num_cores</span><span class="p">,</span>
+    <span class="n">partitions</span> <span class="o">=</span> <span class="s2">&quot;any$&quot;</span><span class="p">)</span>
+
+<span class="n">remote_info</span> <span class="o">=</span> <span class="n">RemoteInfo</span><span class="p">(</span>
+    <span class="n">sys_name</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span><span class="p">,</span> 
+    <span class="n">job_name</span> <span class="o">=</span> <span class="s2">&quot;npa&quot;</span><span class="p">,</span> 
+    <span class="n">resources</span> <span class="o">=</span> <span class="n">resources</span><span class="p">,</span> 
+    <span class="n">partial_node</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> 
+    <span class="n">num_inputs_per_queued_job</span><span class="o">=</span><span class="n">num_inputs_per_queued_job</span><span class="p">,</span> 
+    <span class="n">pre_cmds</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;conda activate my_env&quot;</span><span class="p">])</span>
+
+<span class="c1"># orca params</span>
+<span class="n">orca_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;orcablocks&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">cf Convergence Tight SmearTemp 5000 end&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;orcasimpleinput&quot;</span><span class="p">:</span> <span class="s2">&quot;UKS B3LYP def2-SV(P) def2/J D3BJ&quot;</span><span class="p">,</span> 
+               <span class="s2">&quot;keep_files&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;orca_kwargs: </span><span class="si">{</span><span class="n">orca_kwargs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># calculator</span>
+<span class="n">janpa_home_dir</span> <span class="o">=</span> <span class="s2">&quot;/path/to/janpa/dir&quot;</span> 
+<span class="n">post_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">natural_population_analysis</span><span class="p">,</span> <span class="n">janpa_home_dir</span><span class="p">)</span>
+<span class="n">orca_kwargs</span><span class="p">[</span><span class="s2">&quot;post_process&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post_func</span>
+<span class="n">calculator</span> <span class="o">=</span> <span class="p">(</span><span class="n">ORCA</span><span class="p">,</span> <span class="p">[],</span> <span class="n">orca_kwargs</span><span class="p">)</span>
+
+<span class="c1"># run calculation</span>
+<span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="n">ci</span><span class="p">,</span> 
+    <span class="n">outputs</span><span class="o">=</span><span class="n">co</span><span class="p">,</span>
+    <span class="n">calculator</span><span class="o">=</span><span class="n">calculator</span><span class="p">,</span>
+    <span class="n">properties</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;forces&quot;</span><span class="p">],</span>
+    <span class="n">output_prefix</span><span class="o">=</span><span class="s1">&#39;dft_&#39;</span><span class="p">,</span>
+    <span class="n">autopara_info</span> <span class="o">=</span> <span class="n">AutoparaInfo</span><span class="p">(</span>
+        <span class="n">remote_info</span><span class="o">=</span><span class="n">remote_info</span><span class="p">,</span>
+        <span class="n">num_inputs_per_python_subprocess</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+</pre></div>
+</div>
+<p>An example of <code class="docutils literal notranslate"><span class="pre">~/.expyre/config.json</span></code> that stores information about the resources available on the <code class="docutils literal notranslate"><span class="pre">local</span></code> cluster:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s2">&quot;systems&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;local&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+        <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="s2">&quot;sge&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;commands&quot;</span><span class="p">:</span> <span class="p">[</span>  <span class="s2">&quot;echo $(date)&quot;</span><span class="p">,</span> <span class="s2">&quot;hostname&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;header&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;#$ -pe smp </span><span class="si">{num_cores_per_node}</span><span class="s2">&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;partitions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;any&quot;</span><span class="p">:</span>        <span class="p">{</span><span class="s2">&quot;num_cores&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span> <span class="s2">&quot;max_time&quot;</span><span class="p">:</span> <span class="s2">&quot;168h&quot;</span><span class="p">,</span> <span class="s2">&quot;max_mem&quot;</span><span class="p">:</span> <span class="s2">&quot;50GB&quot;</span><span class="p">},</span>
+                       <span class="s2">&quot;any@node15&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;num_cores&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span> <span class="s2">&quot;max_time&quot;</span><span class="p">:</span> <span class="s2">&quot;168h&quot;</span><span class="p">,</span> <span class="s2">&quot;max_mem&quot;</span><span class="p">:</span> <span class="s2">&quot;47GB&quot;</span><span class="p">}</span>
+                    <span class="p">}</span>
+            <span class="p">}</span>
+<span class="p">}}</span>
+</pre></div>
 </div>
 </div>
 
@@ -549,17 +572,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="operations.ace_fitting.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="examples.orca_cli.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Fitting ACE</p>
+            <p class="prev-next-title">ORCA via command line</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="examples.index.html" title="next page">
+    <a class='right-next' id="next-link" href="examples.mace.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Index</p>
+        <p class="prev-next-title">Parallelize MACE calculator</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -33,7 +33,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Multistage GAP fitting" href="operations.multistage_gap_fitting.html" />
-    <link rel="prev" title="Descriptors" href="operations.descriptors.html" />
+    <link rel="prev" title="Fitting potentials" href="operations.fitting.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -80,15 +80,10 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contents:
- </span>
-</p>
-<ul class="current nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="first_example.html">
-   First example
+   First Example
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -102,6 +97,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="overview.overall_design.html">
+     Overall design
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="overview.configset.html">
      Input and output of atomic structures
     </a>
@@ -109,6 +109,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="overview.parallelisation.html">
      Automatic parallelization of tasks
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.queued.html">
+     Functions as independently queued jobs
     </a>
    </li>
   </ul>
@@ -125,17 +130,12 @@
   <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
-     Calculators in workflow
+     Calculators in Workflow
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.generate.html">
-     Generating Configs
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
+     Generating Atomic Structures
     </a>
    </li>
    <li class="toctree-l2">
@@ -143,47 +143,37 @@
      Descriptors
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Fitting GAP
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.select.html">
+     Selecting Configs
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
-     Multistage GAP fitting
+   <li class="toctree-l2 current active has-children">
+    <a class="reference internal" href="operations.fitting.html">
+     Fitting potentials
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="workflows.html">
-   Workflows
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.rss.html">
-     How to do GAP-RSS
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.mlip_fitting.html">
-     Fitting a MLIP
-    </a>
+    <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul class="current">
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
+       Fitting GAP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.multistage_gap_fitting.html">
+       Multistage GAP fitting
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.ace_fitting.html">
+       Fitting ACE
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -198,13 +188,23 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.index.html">
+     Index
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.dimers.html">
      Generating Dimer Structures
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
+    <a class="reference internal" href="examples.orca_cli.html">
+     ORCA via command line
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca_python.html">
+     ORCA via Python script
     </a>
    </li>
    <li class="toctree-l2">
@@ -213,26 +213,36 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
+     Normal Modes of molecules
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
+     SMILES to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Atoms
+      </span>
+     </code>
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.md.html">
-     MD
+     Molecular Dynamics
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="workflows.rss.html">
+   GAP-RSS
+  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
@@ -308,10 +318,17 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul class="simple">
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.scripts.html">
@@ -468,7 +485,51 @@ title="Print to PDF"
                 
   <div class="section" id="fitting-gap">
 <h1>Fitting GAP<a class="headerlink" href="#fitting-gap" title="Permalink to this headline">#</a></h1>
-<p>Workflow interface to fitting GAP (mostly <code class="docutils literal notranslate"><span class="pre">gap_simple.py</span></code>)</p>
+<p><code class="docutils literal notranslate"><span class="pre">wfl.fig.gap.simple.run_gap_fit()</span></code> is a lightweight wrapper for calling <code class="docutils literal notranslate"><span class="pre">gap_fit</span></code> program from python. It makes use of Workflow’s atomic structure handling to fit in with the rest of potential fitting infrastructure and makes use of <a class="reference external" href="https://libatoms.github.io/ExPyRe/">ExPyRe</a> for submitting just this fitting function as a (remotely) queued cluster job.</p>
+<p>The function needs a <code class="docutils literal notranslate"><span class="pre">fitting_dict</span></code> that gets converted in the <code class="docutils literal notranslate"><span class="pre">gap_fit</span></code> command line arguments. The dictionary gets processed so:</p>
+<ul class="simple">
+<li><p>booleans -&gt; “T”/”F”</p></li>
+<li><p>lists -&gt;  { v1 v2 v3 … }</p></li>
+<li><p>{‘key1’:[v1, v2, v3], ‘key2’:[v1, v2, v3]} -&gt; ‘{key1:v1:v2:v3:key2:v1:v2:v3}’</p></li>
+<li><p>strings with spaces get enclosed in quotes</p></li>
+<li><p>otherwise {key:val} -&gt; key=val</p></li>
+<li><p>asserts that mandatory parameters are given</p></li>
+<li><p>descriptors are passed in pram_dict[‘_gap’], which is a list of dictionaries, one dictionary per descriptor</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">atoms_filename</span></code> and <code class="docutils literal notranslate"><span class="pre">at_file</span></code> mustn’t be present in the dictionary, the file with fitting configs gets created from the input <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code>.</p></li>
+<li><p>The default executable is <code class="docutils literal notranslate"><span class="pre">gap_fit</span></code>, but it can also be given as an argument or as <code class="docutils literal notranslate"><span class="pre">WFL_GAP_FIT_COMMAND</span></code> environment variable.</p></li>
+</ul>
+<p>Normally, <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> is set to 1, so that only Workflow’s parallelization is used and not OpenMP. For fitting GAP, which $isn’t parallelizable over atomic structures like other operations are, <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> should be set to turn on the OpenMP parallelization. The number of OpenMP threads to to use for fitting GAP, but nothing else, is controlled via  <code class="docutils literal notranslate"><span class="pre">WFL_GAP_FIT_OMP_NUM_THREADS</span></code> environment variable.</p>
+<p>Below is an example dictionary and the corresponding <code class="docutils literal notranslate"><span class="pre">gap_fit</span></code> string (<code class="docutils literal notranslate"><span class="pre">gap_fit</span></code> executable is added later).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gap_fit_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default_sigma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+                <span class="s1">&#39;sparse_seprate_file&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s1">&#39;core_ip_args&#39;</span><span class="p">:</span> <span class="s1">&#39;IP Glue&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;core_param_file&#39;</span><span class="p">:</span> <span class="s1">&#39;/test/path/test/file.xml&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;config_type_sigma&#39;</span><span class="p">:</span> <span class="s1">&#39;isolated_atom:1e-05:0.0:0.0:0.0:funky_configs:0.1:0.3:0.0:0.0&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;_gap&#39;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span><span class="s1">&#39;soap&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;l_max&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;n_max&#39;</span><span class="p">:</span> <span class="s1">&#39;12&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;cutoff&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="s1">&#39;covariance_type&#39;</span><span class="p">:</span> <span class="s1">&#39;dot_product&#39;</span><span class="p">,</span> <span class="s1">&#39;zeta&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                        <span class="s1">&#39;n_sparse&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s1">&#39;sparse_method&#39;</span><span class="p">:</span> <span class="s1">&#39;cur_points&#39;</span><span class="p">},</span>
+                    <span class="p">{</span><span class="s1">&#39;soap&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;l_max&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;n_max&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="s1">&#39;cutoff&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+                        <span class="s1">&#39;delta&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;covariance_type&#39;</span><span class="p">:</span> <span class="s1">&#39;dot_product&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;zeta&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;n_sparse&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                        <span class="s1">&#39;sparse_method&#39;</span><span class="p">:</span> <span class="s1">&#39;cur_points&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;atom_gaussian_width&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;add_species&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                        <span class="s1">&#39;n_species&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;species_Z&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">]}]}</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gap_fit_string</span> <span class="o">=</span> <span class="s1">&#39;default_sigma={0.01 0.1 0.1 0.0} sparse_seprate_file=F &#39;</span> \
+                <span class="s1">&#39;core_ip_args=&quot;IP Glue&quot; core_param_file=/test/path/test/file.xml &#39;</span> \
+                <span class="s1">&#39;config_type_sigma=isolated_atom:1e-05:0.0:0.0:0.0:&#39;</span> \
+                <span class="s1">&#39;funky_configs:0.1:0.3:0.0:0.0 &#39;</span> \
+                <span class="s1">&#39;gap={ soap=T l_max=6 n_max=12 cutoff=3 delta=1 &#39;</span> \
+                <span class="s1">&#39;covariance_type=dot_product zeta=4 n_sparse=200 &#39;</span> \
+                <span class="s1">&#39;sparse_method=cur_points : soap=T l_max=4 n_max=12 cutoff=6 delta=1&#39;</span> \
+                <span class="s1">&#39; covariance_type=dot_product zeta=4 n_sparse=100 &#39;</span> \
+                <span class="s1">&#39;sparse_method=cur_points atom_gaussian_width=0.3 add_species=F &#39;</span> \
+                <span class="s1">&#39;n_species=3 Z=8 species_Z={{8 1 6}} }&#39;</span>
+</pre></div>
+</div>
 </div>
 
 
@@ -479,11 +540,11 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="operations.descriptors.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="operations.fitting.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Descriptors</p>
+            <p class="prev-next-title">Fitting potentials</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="operations.multistage_gap_fitting.html" title="next page">

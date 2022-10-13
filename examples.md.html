@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MD &#8212; workflow  documentation</title>
+    <title>Molecular Dynamics &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,8 +32,8 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="wfl" href="modules.html" />
-    <link rel="prev" title="Customise Auto-parallelized Functions" href="examples.autopara.html" />
+    <link rel="next" title="How to do GAP-RSS" href="workflows.rss.html" />
+    <link rel="prev" title="SMILES to Atoms" href="examples.smiles.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -80,15 +80,10 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contents:
- </span>
-</p>
-<ul class="current nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="first_example.html">
-   First example
+   First Example
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -102,6 +97,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="overview.overall_design.html">
+     Overall design
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="overview.configset.html">
      Input and output of atomic structures
     </a>
@@ -109,6 +109,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="overview.parallelisation.html">
      Automatic parallelization of tasks
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.queued.html">
+     Functions as independently queued jobs
     </a>
    </li>
   </ul>
@@ -125,17 +130,12 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
-     Calculators in workflow
+     Calculators in Workflow
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.generate.html">
-     Generating Configs
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
+     Generating Atomic Structures
     </a>
    </li>
    <li class="toctree-l2">
@@ -144,46 +144,36 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
+    <a class="reference internal" href="operations.select.html">
+     Selecting Configs
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
-     Multistage GAP fitting
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="operations.fitting.html">
+     Fitting potentials
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="workflows.html">
-   Workflows
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.rss.html">
-     How to do GAP-RSS
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.mlip_fitting.html">
-     Fitting a MLIP
-    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.gap_fitting.html">
+       Fitting GAP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.multistage_gap_fitting.html">
+       Multistage GAP fitting
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.ace_fitting.html">
+       Fitting ACE
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -198,13 +188,23 @@
   </label>
   <ul class="current">
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.index.html">
+     Index
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.dimers.html">
      Generating Dimer Structures
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
+    <a class="reference internal" href="examples.orca_cli.html">
+     ORCA via command line
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca_python.html">
+     ORCA via Python script
     </a>
    </li>
    <li class="toctree-l2">
@@ -213,26 +213,36 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
+     Normal Modes of molecules
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
+     SMILES to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Atoms
+      </span>
+     </code>
     </a>
    </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     MD
+     Molecular Dynamics
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="workflows.rss.html">
+   GAP-RSS
+  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
@@ -308,10 +318,17 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul class="simple">
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.scripts.html">
@@ -454,7 +471,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>MD</h1>
+                <h1>Molecular Dynamics</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -466,133 +483,73 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="md">
-<h1>MD<a class="headerlink" href="#md" title="Permalink to this headline">#</a></h1>
-<p>takes input file, and runs many md trajectories and saves each to a different trajectory file.
-(single-to-many configset.py functionality would be very useful here)</p>
-<p>Script to submit jobs</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">read</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">util.md.test</span>
+  <div class="section" id="molecular-dynamics">
+<h1>Molecular Dynamics<a class="headerlink" href="#molecular-dynamics" title="Permalink to this headline">#</a></h1>
+<p>The following script takes atomic structures from “configs.xyz”, runs Berendsen NVT molecular dynamics simulation for 6000 steps (3ps) and writes snapshots to “configs.sample.xyz” every 1000 steps (0.5 ps). The script submits jobs to the “standard” queue of “local” cluster on 4 cores each, each job containing 4 MD simulations running in parallel.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">xtb.ase.calculator</span> <span class="kn">import</span> <span class="n">XTB</span>
 <span class="kn">from</span> <span class="nn">expyre.resources</span> <span class="kn">import</span> <span class="n">Resources</span>
-<span class="kn">import</span> <span class="nn">wfl.pipeline.utils</span>
-
+<span class="kn">from</span> <span class="nn">wfl.autoparallelize.remoteinfo</span> <span class="kn">import</span> <span class="n">RemoteInfo</span>
+<span class="kn">from</span> <span class="nn">wfl.autoparallelize.autoparainfo</span> <span class="kn">import</span> <span class="n">AutoparaInfo</span>
+<span class="kn">from</span> <span class="nn">wfl.generate</span> <span class="kn">import</span> <span class="n">md</span>
+<span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
 
 <span class="n">temp</span> <span class="o">=</span> <span class="mi">300</span>
-<span class="n">nnodes</span><span class="o">=</span><span class="mi">10</span>
-<span class="n">steps</span> <span class="o">=</span> <span class="mi">300000</span>
-<span class="n">sample_interval</span> <span class="o">=</span> <span class="mi">5000</span>
-<span class="n">ace_fname</span><span class="o">=</span><span class="s2">&quot;/work/e89/e89/eg475/work/md_tests/ace_cut4.5_N3D16_ard/2_wdir/ace_cut4.5_ard_N3D16.json&quot;</span>
-<span class="n">input_fname</span> <span class="o">=</span> <span class="s2">&quot;mega_md_test_in.xyz&quot;</span>
-<span class="n">wdir</span> <span class="o">=</span> <span class="s2">&quot;md_outputs&quot;</span>
 
-<span class="n">num_inputs_per_queued_job</span> <span class="o">=</span> <span class="n">nnodes</span> <span class="o">*</span> <span class="mi">128</span>
-<span class="n">max_time</span> <span class="o">=</span> <span class="s1">&#39;24h&#39;</span>
-<span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">nnodes</span><span class="p">,</span> <span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
+<span class="n">num_cores</span><span class="o">=</span><span class="mi">4</span>
+<span class="n">steps</span> <span class="o">=</span> <span class="mi">6000</span>
+<span class="n">sample_interval</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">input_fname</span> <span class="o">=</span> <span class="s2">&quot;configs.xyz&quot;</span>
+<span class="n">out_fname</span> <span class="o">=</span> <span class="s2">&quot;configs.sample.xyz&quot;</span>
+
+<span class="n">num_inputs_per_queued_job</span> <span class="o">=</span> <span class="n">num_cores</span>
+<span class="n">max_time</span> <span class="o">=</span> <span class="s1">&#39;48h&#39;</span>
 <span class="n">partitions</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span>
 <span class="n">sysname</span><span class="o">=</span><span class="s2">&quot;local&quot;</span>
-<span class="n">partial_node</span><span class="o">=</span><span class="kc">False</span>
-
-<span class="n">Path</span><span class="p">(</span><span class="s2">&quot;_expyre&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># remote info</span>
 <span class="n">resources</span> <span class="o">=</span> <span class="n">Resources</span><span class="p">(</span>
     <span class="n">max_time</span> <span class="o">=</span> <span class="n">max_time</span><span class="p">,</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="p">,</span>
+    <span class="n">num_cores</span> <span class="o">=</span> <span class="n">num_cores</span><span class="p">,</span>
     <span class="n">partitions</span> <span class="o">=</span> <span class="n">partitions</span><span class="p">)</span>
 
-<span class="n">remote_info</span> <span class="o">=</span> <span class="n">wfl</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">RemoteInfo</span><span class="p">(</span>
-    <span class="n">sys_name</span> <span class="o">=</span> <span class="n">sysname</span><span class="p">,</span>
-    <span class="n">job_name</span> <span class="o">=</span> <span class="s2">&quot;md-test&quot;</span><span class="p">,</span>
-    <span class="n">resources</span> <span class="o">=</span> <span class="n">resources</span><span class="p">,</span>
-    <span class="n">partial_node</span> <span class="o">=</span> <span class="n">partial_node</span><span class="p">,</span>
+<span class="n">remote_info</span> <span class="o">=</span> <span class="n">RemoteInfo</span><span class="p">(</span>
+    <span class="n">sys_name</span> <span class="o">=</span> <span class="n">sysname</span><span class="p">,</span> 
+    <span class="n">job_name</span> <span class="o">=</span> <span class="s2">&quot;md&quot;</span><span class="p">,</span> 
+    <span class="n">resources</span> <span class="o">=</span> <span class="n">resources</span><span class="p">,</span> 
     <span class="n">num_inputs_per_queued_job</span><span class="o">=</span><span class="n">num_inputs_per_queued_job</span><span class="p">,</span>
+    <span class="n">exact_fit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+    <span class="n">pre_cmds</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;conda activate my-env&quot;</span><span class="p">]</span>
+    <span class="p">)</span> 
+
+<span class="n">calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">XTB</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span><span class="s1">&#39;GFN2-xTB&#39;</span><span class="p">})</span>
+
+<span class="n">ci</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_fname</span><span class="p">)</span>
+<span class="n">co</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">out_fname</span><span class="p">)</span>
+
+<span class="c1"># Needed for the script be re-runable, otherwise a different random seed is generated.</span>
+<span class="c1"># Without this, if this script is interrupted while the jobs is running, re-starting this </span>
+<span class="c1"># script would make it create and submit new jobs rather than monitor the ones already running.</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;WFL_DETERMINISTIC_HACK&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span>
+
+<span class="c1"># xTB has some internal parallelisation that needs turning off by setting this env. variable. </span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OMP_NUM_THREADS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+
+<span class="n">ci</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="n">ci</span><span class="p">,</span> 
+    <span class="n">outputs</span><span class="o">=</span><span class="n">co</span><span class="p">,</span>
+    <span class="n">calculator</span><span class="o">=</span><span class="n">calc</span><span class="p">,</span>
+    <span class="n">steps</span> <span class="o">=</span> <span class="n">steps</span><span class="p">,</span> 
+    <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>           
+    <span class="n">temperature</span> <span class="o">=</span> <span class="n">temp</span><span class="p">,</span>  
+    <span class="n">temperature_tau</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> 
+    <span class="n">traj_step_interval</span> <span class="o">=</span> <span class="n">sample_interval</span><span class="p">,</span> 
+    <span class="n">results_prefix</span> <span class="o">=</span> <span class="s2">&quot;xtb2_&quot;</span><span class="p">,</span> 
+    <span class="n">update_config_type</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">autopara_info</span> <span class="o">=</span> <span class="n">AutoparaInfo</span><span class="p">(</span>
+        <span class="n">remote_info</span><span class="o">=</span><span class="n">remote_info</span><span class="p">,</span> 
+        <span class="n">num_inputs_per_python_subprocess</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="p">)</span>
-
-
-<span class="n">calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">pyjulip_ace</span><span class="p">,</span> <span class="p">[</span><span class="n">ace_fname</span><span class="p">],</span> <span class="p">{})</span>
-<span class="n">ats</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">input_fname</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
-<span class="n">wdir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">wdir</span><span class="p">)</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">temp</span><span class="p">))</span>
-<span class="n">wdir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">run_md_test</span><span class="p">(</span>
-    <span class="n">workdir_root</span><span class="o">=</span><span class="n">wdir</span><span class="p">,</span>
-    <span class="n">in_ats</span><span class="o">=</span><span class="n">ats</span><span class="p">,</span>
-    <span class="n">temp</span><span class="o">=</span><span class="n">temp</span><span class="p">,</span>
-    <span class="n">calc</span><span class="o">=</span><span class="n">calc</span><span class="p">,</span>
-    <span class="n">info_label</span><span class="o">=</span><span class="s2">&quot;graph_name&quot;</span><span class="p">,</span>
-    <span class="n">steps</span><span class="o">=</span><span class="n">steps</span><span class="p">,</span>
-    <span class="n">sampling_interval</span><span class="o">=</span><span class="n">sample_interval</span><span class="p">,</span>
-    <span class="n">pred_prop_prefix</span><span class="o">=</span><span class="s2">&quot;ace_&quot;</span> <span class="p">,</span>
-    <span class="n">remote_info</span><span class="o">=</span><span class="n">remote_info</span>
-    <span class="p">)</span>
-
-</pre></div>
-</div>
-<p>Extra functions:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">wfl.generate_configs</span> <span class="kn">import</span> <span class="n">md</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">hashlib</span>
-
-<span class="k">def</span> <span class="nf">pyjulip_ace</span><span class="p">(</span><span class="n">ace_fname</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">pyjulip</span>
-    <span class="k">return</span> <span class="n">pyjulip</span><span class="o">.</span><span class="n">ACE1</span><span class="p">(</span><span class="n">ace_fname</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">run_md_test</span><span class="p">(</span><span class="n">workdir_root</span><span class="p">,</span> <span class="n">in_ats</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span> <span class="n">info_label</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">sampling_interval</span><span class="p">,</span> 
-        <span class="n">pred_prop_prefix</span><span class="p">,</span> <span class="n">remote_info</span><span class="p">):</span>
-
-    <span class="n">workdir_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">workdir_root</span><span class="p">)</span> 
-    <span class="n">workdir_root</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="n">ci</span><span class="p">,</span> <span class="n">co</span> <span class="o">=</span> <span class="n">prepare_inputs</span><span class="p">(</span><span class="n">in_ats</span><span class="p">,</span> <span class="n">info_label</span><span class="p">,</span> <span class="n">workdir_root</span><span class="p">)</span>
-
-    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;WFL_DETERMINISTIC_HACK&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span>
-
-    <span class="n">md_params</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;steps&quot;</span><span class="p">:</span> <span class="n">steps</span><span class="p">,</span>
-        <span class="s2">&quot;dt&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>  <span class="c1"># fs</span>
-        <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">temp</span><span class="p">,</span>  <span class="c1"># K</span>
-        <span class="s2">&quot;temperature_tau&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>  <span class="c1"># fs, somewhat quicker than recommended (???)</span>
-        <span class="s2">&quot;traj_step_interval&quot;</span><span class="p">:</span> <span class="n">sampling_interval</span><span class="p">,</span>
-        <span class="s2">&quot;results_prefix&quot;</span><span class="p">:</span> <span class="n">pred_prop_prefix</span><span class="p">}</span>
-
-    <span class="n">md</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
-        <span class="n">inputs</span><span class="o">=</span><span class="n">ci</span><span class="p">,</span> 
-        <span class="n">outputs</span><span class="o">=</span><span class="n">co</span><span class="p">,</span>
-        <span class="n">calculator</span><span class="o">=</span><span class="n">calc</span><span class="p">,</span>
-        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">remote_info</span><span class="o">=</span><span class="n">remote_info</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">md_params</span>
-        <span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">prepare_inputs</span><span class="p">(</span><span class="n">ats</span><span class="p">,</span> <span class="n">info_label</span><span class="p">,</span> <span class="n">workdir_root</span><span class="p">):</span>
-
-    <span class="n">input_files</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">output_files</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">ats</span><span class="p">:</span>
-        <span class="nb">hash</span> <span class="o">=</span> <span class="n">hash_atoms</span><span class="p">(</span><span class="n">at</span><span class="p">)</span>
-        <span class="n">label</span> <span class="o">=</span> <span class="n">at</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">info_label</span><span class="p">]</span> <span class="o">+</span> <span class="nb">hash</span>
-        <span class="n">fname_in</span> <span class="o">=</span> <span class="n">workdir_root</span> <span class="o">/</span> <span class="p">(</span><span class="n">label</span> <span class="o">+</span> <span class="s2">&quot;_in.xyz&quot;</span><span class="p">)</span>
-        <span class="n">fname_out</span> <span class="o">=</span> <span class="n">workdir_root</span> <span class="o">/</span> <span class="p">(</span><span class="n">label</span> <span class="o">+</span> <span class="s2">&quot;_out.xyz&quot;</span><span class="p">)</span>
-        <span class="n">input_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname_in</span><span class="p">)</span>
-        <span class="n">output_files</span><span class="p">[</span><span class="n">fname_in</span><span class="p">]</span> <span class="o">=</span> <span class="n">fname_out</span>
-        <span class="n">write</span><span class="p">(</span><span class="n">fname_in</span><span class="p">,</span> <span class="n">at</span><span class="p">)</span>
-
-    <span class="n">ci</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">input_files</span><span class="p">)</span>
-    <span class="n">co</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">output_files</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ci</span><span class="p">,</span> <span class="n">co</span>
-
-<span class="c1">#creates unique hash for a matrix of numbers</span>
-<span class="k">def</span> <span class="nf">hash_array</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">floatmode</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
-
-<span class="c1">#creates unique hash for Atoms from atomic numbers and positions</span>
-<span class="k">def</span> <span class="nf">hash_atoms</span><span class="p">(</span><span class="n">at</span><span class="p">):</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">at</span><span class="o">.</span><span class="n">numbers</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">at</span><span class="o">.</span><span class="n">positions</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">hash_array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
 </pre></div>
 </div>
@@ -600,13 +557,12 @@ title="Print to PDF"
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s2">&quot;systems&quot;</span><span class="p">:</span> <span class="p">{</span>
     <span class="s2">&quot;local&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
         <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="s2">&quot;slurm&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;commands&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;source /work/e89/e89/eg475/.bashrc&quot;</span><span class="p">,</span>  <span class="s2">&quot;echo $(date)&quot;</span><span class="p">,</span> <span class="s2">&quot;hostname&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;commands&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;source ~/.bashrc&quot;</span><span class="p">,</span>  <span class="s2">&quot;echo $(date)&quot;</span><span class="p">,</span> <span class="s2">&quot;hostname&quot;</span><span class="p">],</span>
         <span class="s2">&quot;header&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;#SBATCH --nodes=</span><span class="si">{nnodes}</span><span class="s2">&quot;</span><span class="p">,</span>
                    <span class="s2">&quot;#SBATCH --tasks-per-node=</span><span class="si">{num_cores_per_node}</span><span class="s2">&quot;</span><span class="p">,</span>
                    <span class="s2">&quot;#SBATCH --cpus-per-task=1&quot;</span><span class="p">,</span>
                    <span class="s2">&quot;#SBATCH --account=change-me&quot;</span><span class="p">,</span>
                    <span class="s2">&quot;#SBATCH --qos=standard&quot;</span><span class="p">],</span>
-                <span class="s2">&quot;rundir&quot;</span><span class="p">:</span> <span class="s2">&quot;/work/e89/e89/eg475/expyre_rundir&quot;</span><span class="p">,</span>
         <span class="s2">&quot;partitions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;standard&quot;</span> <span class="p">:</span> <span class="p">{</span><span class="s2">&quot;num_cores&quot;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span> <span class="s2">&quot;max_time&quot;</span> <span class="p">:</span> <span class="s2">&quot;24h&quot;</span><span class="p">,</span> <span class="s2">&quot;max_mem&quot;</span><span class="p">:</span> <span class="s2">&quot;256G&quot;</span><span class="p">},</span>
                        <span class="s2">&quot;highmem&quot;</span> <span class="p">:</span> <span class="p">{</span><span class="s2">&quot;num_cores&quot;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span> <span class="s2">&quot;max_time&quot;</span> <span class="p">:</span> <span class="s2">&quot;24h&quot;</span><span class="p">,</span> <span class="s2">&quot;max_mem&quot;</span><span class="p">:</span> <span class="s2">&quot;512G&quot;</span><span class="p">}}</span>
                  <span class="p">}</span>
@@ -624,17 +580,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="examples.autopara.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="examples.smiles.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Customise Auto-parallelized Functions</p>
+            <p class="prev-next-title">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="modules.html" title="next page">
+    <a class='right-next' id="next-link" href="workflows.rss.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">wfl</p>
+        <p class="prev-next-title">How to do GAP-RSS</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

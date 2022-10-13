@@ -80,15 +80,10 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contents:
- </span>
-</p>
-<ul class="current nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="first_example.html">
-   First example
+   First Example
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -102,6 +97,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="overview.overall_design.html">
+     Overall design
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="overview.configset.html">
      Input and output of atomic structures
     </a>
@@ -109,6 +109,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="overview.parallelisation.html">
      Automatic parallelization of tasks
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.queued.html">
+     Functions as independently queued jobs
     </a>
    </li>
   </ul>
@@ -125,17 +130,12 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
-     Calculators in workflow
+     Calculators in Workflow
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.generate.html">
-     Generating Configs
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
+     Generating Atomic Structures
     </a>
    </li>
    <li class="toctree-l2">
@@ -144,46 +144,36 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
+    <a class="reference internal" href="operations.select.html">
+     Selecting Configs
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
-     Multistage GAP fitting
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="operations.fitting.html">
+     Fitting potentials
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="workflows.html">
-   Workflows
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.rss.html">
-     How to do GAP-RSS
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.mlip_fitting.html">
-     Fitting a MLIP
-    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.gap_fitting.html">
+       Fitting GAP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.multistage_gap_fitting.html">
+       Multistage GAP fitting
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.ace_fitting.html">
+       Fitting ACE
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -198,13 +188,23 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.index.html">
+     Index
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.dimers.html">
      Generating Dimer Structures
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
+    <a class="reference internal" href="examples.orca_cli.html">
+     ORCA via command line
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca_python.html">
+     ORCA via Python script
     </a>
    </li>
    <li class="toctree-l2">
@@ -213,26 +213,36 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
+     Normal Modes of molecules
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
+     SMILES to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Atoms
+      </span>
+     </code>
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.md.html">
-     MD
+     Molecular Dynamics
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="workflows.rss.html">
+   GAP-RSS
+  </a>
  </li>
  <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="modules.html">
@@ -308,10 +318,17 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3 current active">
+     <li class="toctree-l3 current active has-children">
       <a class="current reference internal" href="#">
        wfl.generate package
       </a>
+      <input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul class="simple">
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.scripts.html">
@@ -465,6 +482,11 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#subpackages">
+   Subpackages
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#submodules">
    Submodules
   </a>
@@ -480,13 +502,13 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.generate.md">
-   wfl.generate.md module
+  <a class="reference internal nav-link" href="#module-wfl.generate.minimahopping">
+   wfl.generate.minimahopping module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.generate.minimahopping">
-   wfl.generate.minimahopping module
+  <a class="reference internal nav-link" href="#module-wfl.generate.normal_modes">
+   wfl.generate.normal_modes module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -512,11 +534,6 @@ title="Print to PDF"
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.generate.utils">
    wfl.generate.utils module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.generate.vib">
-   wfl.generate.vib module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -544,6 +561,11 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#subpackages">
+   Subpackages
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#submodules">
    Submodules
   </a>
@@ -559,13 +581,13 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.generate.md">
-   wfl.generate.md module
+  <a class="reference internal nav-link" href="#module-wfl.generate.minimahopping">
+   wfl.generate.minimahopping module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.generate.minimahopping">
-   wfl.generate.minimahopping module
+  <a class="reference internal nav-link" href="#module-wfl.generate.normal_modes">
+   wfl.generate.normal_modes module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -594,11 +616,6 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.generate.vib">
-   wfl.generate.vib module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.generate">
    Module contents
   </a>
@@ -615,6 +632,30 @@ title="Print to PDF"
                 
   <div class="section" id="wfl-generate-package">
 <h1>wfl.generate package<a class="headerlink" href="#wfl-generate-package" title="Permalink to this headline">#</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">wfl.generate package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-wfl.generate.atoms_and_dimers">wfl.generate.atoms_and_dimers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-wfl.generate.buildcell">wfl.generate.buildcell module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-wfl.generate.minimahopping">wfl.generate.minimahopping module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-wfl.generate.normal_modes">wfl.generate.normal_modes module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-wfl.generate.optimize">wfl.generate.optimize module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wfl-generate-phonopy-module">wfl.generate.phonopy module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-wfl.generate.smiles">wfl.generate.smiles module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-wfl.generate.supercells">wfl.generate.supercells module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-wfl.generate.utils">wfl.generate.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-wfl.generate">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
 </div>
@@ -726,59 +767,6 @@ requires max_cutoff</p></li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-wfl.generate.md">
-<span id="wfl-generate-md-module"></span><h2>wfl.generate.md module<a class="headerlink" href="#module-wfl.generate.md" title="Permalink to this headline">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.generate.md.sample">
-<span class="sig-prename descclassname"><span class="pre">wfl.generate.md.</span></span><span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.md.sample" title="Permalink to this definition">#</a></dt>
-<dd><p>runs an MD trajectory with aggresive, not necessarily physical, integrators for
-sampling configs</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
-<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
-<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
-<li><p><strong>dt</strong> (<em>float</em>) – time step (fs)</p></li>
-<li><p><strong>steps</strong> (<em>int</em>) – number of steps</p></li>
-<li><p><strong>temperature</strong> (<em>float</em><em> or </em><em>(</em><em>float</em><em>, </em><em>float</em><em>, </em><em>[</em><em>int</em><em>]</em><em>]</em><em>)</em><em>, or </em><em>list of dicts  default None</em>) – <p>temperature control (Kelvin)
-- float: constant T
-- tuple/list of float, float, [int=10]: T_init, T_final, and optional number of stages for ramp
-- [ {‘T_i’: float, ‘T_f’ : float, ‘traj_frac’ : flot, ‘n_stages’: int=10}, … ] list of stages, each one a ramp, with</p>
-<blockquote>
-<div><p>duration defined as fraction of total number of steps</p>
-</div></blockquote>
-</p></li>
-<li><p><strong>temperature_tau</strong> (<em>float</em><em>, </em><em>default None</em>) – time scale that enables Berendsen constant T temperature rescaling (fs)</p></li>
-<li><p><strong>pressure</strong> (<em>None / float / tuple</em>) – applied pressure distribution (GPa) as parsed by wfl.utils.pressure.sample_pressure()
-enabled Berendsen constant P volume rescaling</p></li>
-<li><p><strong>pressure_tau</strong> (<em>float</em><em>, </em><em>default None</em>) – time scale for Berendsen constant P volume rescaling (fs)
-ignored if pressure is None, defaults to 3*temperature_tau</p></li>
-<li><p><strong>compressibility_fd_displ</strong> (<em>float</em><em>, </em><em>default 0.01</em>) – finite difference in strain to use when computing compressibility for NPTBerendsen</p></li>
-<li><p><strong>traj_step_interval</strong> (<em>int</em><em>, </em><em>default 1</em>) – interval between trajectory snapshots</p></li>
-<li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip minimizations that raise an exception</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output
-MD logs are not printed unless this is True</p></li>
-<li><p><strong>update_config_type</strong> (<em>bool</em><em>, </em><em>default True</em>) – append “MD” to at.info[‘config_type’]</p></li>
-<li><p><strong>traj_select_during_func</strong> (<em>func</em><em>(</em><em>Atoms</em><em>)</em><em>, </em><em>default None</em>) – Function to sub-select configs from the first trajectory.
-Used during MD loop with one config at a time, returning True/False</p></li>
-<li><p><strong>traj_select_after_func</strong> (<em>func</em><em>(</em><em>list</em><em>(</em><em>Atoms</em><em>)</em><em>)</em><em>, </em><em>default None</em>) – Function to sub-select configs from the first trajectory.
-Used at end of MD loop with entire trajectory as list, returns subset</p></li>
-<li><p><strong>abort_check</strong> (<em>default None</em><em>,</em>) – wfl.generate.md.abort_base.AbortBase - derived class that
-checks the MD snapshots and aborts the simulation on some condition.</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>co</strong> – output configs</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
 <div class="section" id="module-wfl.generate.minimahopping">
 <span id="wfl-generate-minimahopping-module"></span><h2>wfl.generate.minimahopping module<a class="headerlink" href="#module-wfl.generate.minimahopping" title="Permalink to this headline">#</a></h2>
 <dl class="py function">
@@ -808,6 +796,180 @@ checks the MD snapshots and aborts the simulation on some condition.</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-wfl.generate.normal_modes">
+<span id="wfl-generate-normal-modes-module"></span><h2>wfl.generate.normal_modes module<a class="headerlink" href="#module-wfl.generate.normal_modes" title="Permalink to this headline">#</a></h2>
+<p>Generate configs with normal mode sampling, generally useful for small
+molecules to learn around their relaxed state.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.generate.normal_modes.NormalModes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.generate.normal_modes.</span></span><span class="sig-name descname"><span class="pre">NormalModes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nm_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_prefix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.normal_modes.NormalModes" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.generate.normal_modes.NormalModes.derive_normal_mode_info">
+<span class="sig-name descname"><span class="pre">derive_normal_mode_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_hessian</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.normal_modes.NormalModes.derive_normal_mode_info" title="Permalink to this definition">#</a></dt>
+<dd><p>Get normal mode information using numerical hessian</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
+<li><p><strong>parallel_hessian</strong> (<em>bool</em><em>, </em><em>default=True</em>) – whether to parallelize 6N calculations needed for approximating
+the Hessian.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.generate.normal_modes.NormalModes.evals_to_freqs">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evals_to_freqs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.normal_modes.NormalModes.evals_to_freqs" title="Permalink to this definition">#</a></dt>
+<dd><p>Converts from eigenvalues in eV/Å^2/amu to frequencies (square
+root of eigenvalue) in eV. Negative frequencies are shorthand for
+imaginary frequencies.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.generate.normal_modes.NormalModes.evecs_to_modes">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evecs_to_modes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evecs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse_m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.normal_modes.NormalModes.evecs_to_modes" title="Permalink to this definition">#</a></dt>
+<dd><p>converts from mass-weighted 3N-long eigenvector to 3N displacements
+in Cartesian coordinates</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.generate.normal_modes.NormalModes.freqs_to_evals">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">freqs_to_evals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freqs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.normal_modes.NormalModes.freqs_to_evals" title="Permalink to this definition">#</a></dt>
+<dd><p>Converts from frequencies (sqrt of eigenvalue) in eV to eigenvalues
+in eV/Å^2/amu. Negative frequencies are shorthand for imaginary
+frequencies.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.generate.normal_modes.NormalModes.modes_to_evecs">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">modes_to_evecs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse_m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.normal_modes.NormalModes.modes_to_evecs" title="Permalink to this definition">#</a></dt>
+<dd><p>converts 3xN cartesian displacements to 1x3N mass-weighted
+eigenvectors</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wfl.generate.normal_modes.NormalModes.num_hess_delta">
+<span class="sig-name descname"><span class="pre">num_hess_delta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.01</span></em><a class="headerlink" href="#wfl.generate.normal_modes.NormalModes.num_hess_delta" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.generate.normal_modes.NormalModes.sample_normal_modes">
+<span class="sig-name descname"><span class="pre">sample_normal_modes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energies_for_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normal_mode_numbers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_to_keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrays_to_keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.normal_modes.NormalModes.sample_normal_modes" title="Permalink to this definition">#</a></dt>
+<dd><p>Randomly displace equilibrium structure’s atoms along given
+normal modes so that normal mode energies follow Boltzmann
+distribution at a given temperature.</p>
+<p class="rubric">Notes</p>
+<p>Coefficients for scaling the individual mass-weighted normal
+coordinates are sampled from a normal distribution with standard
+deviation of  eigenvalue / (kB * temp). The harmonic energy
+distribution then follows a generalised gamma distribution with
+degrees of freedom = len(normal_mode_numbers) or
+shape = len(normal_mode_numbers) / 2.</p>
+<p>Returned atoms have an atoms.info[‘nm_energy’] entry with the
+corresponding harmonic energy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_size</strong> (<em>int</em>) – How many randomly perturbed structures to return</p></li>
+<li><p><strong>temp</strong> (<em>float</em><em>, </em><em>default None</em>) – Temperature for the displacement (putting kT energy into each
+mode) alternative to <cite>energies_for_modes</cite></p></li>
+<li><p><strong>energies_for_modes</strong> (<em>list</em><em>(</em><em>float</em><em>)</em><em>, </em><em>default: None</em>) – list of energies (e.g. kT) for each of the normal modes
+for generating displacement magnitudes. Alternative to <cite>temp</cite>.
+Length either 3N - 6 if normal_mode_numbers == ‘all’ or matches
+len(normal_mode_numbers).</p></li>
+<li><p><strong>normal_mode_numbers</strong> (<em>int / list</em><em>(</em><em>int</em><em>) </em><em>/ 'all'</em><em>, </em><em>default &quot;all&quot;</em>) – List of normal mode numbers to displace along. Alternatively if
+“all” is selected, all but first six (rotations and translations)
+normal modes are used.</p></li>
+<li><p><strong>info_to_keep</strong> (<em>list</em><em>(</em><em>str</em><em>) </em><em>/ None / 'default'</em><em>, </em><em>default 'default'</em>) – list of Atoms.info.keys() to keep, defaults to ‘config_type’ only</p></li>
+<li><p><strong>arrays_to_keep</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default None</em>) – list of Atoms.arrays.keys() entries to keep</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(Atoms) of randomly perturbed structures</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.generate.normal_modes.NormalModes.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.normal_modes.NormalModes.summary" title="Permalink to this definition">#</a></dt>
+<dd><p>Prints all vibrational frequencies.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.generate.normal_modes.NormalModes.view">
+<span class="sig-name descname"><span class="pre">view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal_modes'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normal_mode_numbers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nimages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.normal_modes.NormalModes.view" title="Permalink to this definition">#</a></dt>
+<dd><p>writes out xyz files with oscillations along each of the normal
+modes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefix</strong> (<em>str</em><em>, </em><em>default &quot;nm&quot;</em>) – Prefix normal mode files</p></li>
+<li><p><strong>output_dir</strong> (<em>str</em><em>, </em><em>default &quot;normal_modes&quot;</em>) – Directory for outputs</p></li>
+<li><p><strong>normal_mode_numbers</strong> (<em>str / list</em><em>(</em><em>int</em><em>) </em><em>/ np.array</em><em>(</em><em>int</em><em>)</em><em>, </em><em>default &quot;all&quot;</em>) – List of normal mode numbers to write out or “all” to save all</p></li>
+<li><p><strong>temp</strong> (<em>float</em><em>, </em><em>default 300</em>) – Temperature for the oscillation</p></li>
+<li><p><strong>nimages</strong> (<em>int</em><em>, </em><em>default 32</em>) – Number of structures per oscillation/output file</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.normal_modes.generate_normal_modes_parallel_atoms">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.normal_modes.</span></span><span class="sig-name descname"><span class="pre">generate_normal_modes_parallel_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.normal_modes.generate_normal_modes_parallel_atoms" title="Permalink to this definition">#</a></dt>
+<dd><p>Get normal mode information for all atoms in the input</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
+<li><p><strong>prop_prefix</strong> (<em>str / None</em>) – prefix for normal_mode_frequencies and normal_mode_displacements
+stored in atoms.info/arrays</p></li>
+<li><p><strong>parallel_hessian</strong> (<em>bool</em><em>, </em><em>default=True</em>) – whether to parallelize 6N calculations needed for Hessian
+approximation.</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.normal_modes.generate_normal_modes_parallel_hessian">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.normal_modes.</span></span><span class="sig-name descname"><span class="pre">generate_normal_modes_parallel_hessian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_prefix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.normal_modes.generate_normal_modes_parallel_hessian" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.normal_modes.sample_normal_modes">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.normal_modes.</span></span><span class="sig-name descname"><span class="pre">sample_normal_modes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_to_keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrays_to_keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.normal_modes.sample_normal_modes" title="Permalink to this definition">#</a></dt>
+<dd><p>Multiple times displace along normal modes for all atoms in input</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>Atoms / list</em><em>(</em><em>Atoms</em><em>) </em><em>/ ConfigSet</em>) – Structures with normal mode information (eigenvalues &amp; eigenvectors)</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – </p></li>
+<li><p><strong>temp</strong> (<em>float</em>) – Temperature for normal mode displacements</p></li>
+<li><p><strong>sample_size</strong> (<em>int</em>) – Now many perturbed structures per input structure to return</p></li>
+<li><p><strong>prop_prefix</strong> (<em>str / None</em>) – prefix for normal_mode_frequencies and normal_mode_displacements
+stored in atoms.info/arrays</p></li>
+<li><p><strong>info_to_keep</strong> (<em>str</em><em>, </em><em>default &quot;config_type&quot;</em>) – string of Atoms.info.keys() to keep</p></li>
+<li><p><strong>arrays_to_keep</strong> (<em>str</em><em>, </em><em>default None</em>) – string of Atoms.arrays.keys() entries to keep</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1055,180 +1217,6 @@ atoms within this distance of initial vacancy.</p></li>
 <dt class="sig sig-object py" id="wfl.generate.utils.config_type_append">
 <span class="sig-prename descclassname"><span class="pre">wfl.generate.utils.</span></span><span class="sig-name descname"><span class="pre">config_type_append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">at</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.utils.config_type_append" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
-
-</div>
-<div class="section" id="module-wfl.generate.vib">
-<span id="wfl-generate-vib-module"></span><h2>wfl.generate.vib module<a class="headerlink" href="#module-wfl.generate.vib" title="Permalink to this headline">#</a></h2>
-<p>Generate configs with normal mode sampling, generally useful for small
-molecules to learn around their relaxed state.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="wfl.generate.vib.Vibrations">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.generate.vib.</span></span><span class="sig-name descname"><span class="pre">Vibrations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nm_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_prefix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.Vibrations" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.generate.vib.Vibrations.derive_normal_mode_info">
-<span class="sig-name descname"><span class="pre">derive_normal_mode_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_hessian</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.Vibrations.derive_normal_mode_info" title="Permalink to this definition">#</a></dt>
-<dd><p>Get normal mode information using numerical hessian</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
-<li><p><strong>parallel_hessian</strong> (<em>bool</em><em>, </em><em>default=True</em>) – whether to parallelize 6N calculations needed for approximating
-the Hessian.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.generate.vib.Vibrations.evals_to_freqs">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evals_to_freqs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.Vibrations.evals_to_freqs" title="Permalink to this definition">#</a></dt>
-<dd><p>Converts from eigenvalues in eV/Å^2/amu to frequencies (square
-root of eigenvalue) in eV. Negative frequencies are shorthand for
-imaginary frequencies.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.generate.vib.Vibrations.evecs_to_modes">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evecs_to_modes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evecs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse_m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.Vibrations.evecs_to_modes" title="Permalink to this definition">#</a></dt>
-<dd><p>converts from mass-weighted 3N-long eigenvector to 3N displacements
-in Cartesian coordinates</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.generate.vib.Vibrations.freqs_to_evals">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">freqs_to_evals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freqs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.Vibrations.freqs_to_evals" title="Permalink to this definition">#</a></dt>
-<dd><p>Converts from frequencies (sqrt of eigenvalue) in eV to eigenvalues
-in eV/Å^2/amu. Negative frequencies are shorthand for imaginary
-frequencies.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.generate.vib.Vibrations.modes_to_evecs">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">modes_to_evecs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse_m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.Vibrations.modes_to_evecs" title="Permalink to this definition">#</a></dt>
-<dd><p>converts 3xN cartesian displacements to 1x3N mass-weighted
-eigenvectors</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="wfl.generate.vib.Vibrations.num_hess_delta">
-<span class="sig-name descname"><span class="pre">num_hess_delta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.01</span></em><a class="headerlink" href="#wfl.generate.vib.Vibrations.num_hess_delta" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.generate.vib.Vibrations.sample_normal_modes">
-<span class="sig-name descname"><span class="pre">sample_normal_modes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energies_for_modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normal_mode_numbers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_to_keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrays_to_keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.Vibrations.sample_normal_modes" title="Permalink to this definition">#</a></dt>
-<dd><p>Randomly displace equilibrium structure’s atoms along given
-normal modes so that normal mode energies follow Boltzmann
-distribution at a given temperature.</p>
-<p class="rubric">Notes</p>
-<p>Coefficients for scaling the individual mass-weighted normal
-coordinates are sampled from a normal distribution with standard
-deviation of  eigenvalue / (kB * temp). The harmonic energy
-distribution then follows a generalised gamma distribution with
-degrees of freedom = len(normal_mode_numbers) or
-shape = len(normal_mode_numbers) / 2.</p>
-<p>Returned atoms have an atoms.info[‘nm_energy’] entry with the
-corresponding harmonic energy</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>sample_size</strong> (<em>int</em>) – How many randomly perturbed structures to return</p></li>
-<li><p><strong>temp</strong> (<em>float</em><em>, </em><em>default None</em>) – Temperature for the displacement (putting kT energy into each
-mode) alternative to <cite>energies_for_modes</cite></p></li>
-<li><p><strong>energies_for_modes</strong> (<em>list</em><em>(</em><em>float</em><em>)</em><em>, </em><em>default: None</em>) – list of energies (e.g. kT) for each of the normal modes
-for generating displacement magnitudes. Alternative to <cite>temp</cite>.
-Length either 3N - 6 if normal_mode_numbers == ‘all’ or matches
-len(normal_mode_numbers).</p></li>
-<li><p><strong>normal_mode_numbers</strong> (<em>int / list</em><em>(</em><em>int</em><em>) </em><em>/ 'all'</em><em>, </em><em>default &quot;all&quot;</em>) – List of normal mode numbers to displace along. Alternatively if
-“all” is selected, all but first six (rotations and translations)
-normal modes are used.</p></li>
-<li><p><strong>info_to_keep</strong> (<em>list</em><em>(</em><em>str</em><em>) </em><em>/ None / 'default'</em><em>, </em><em>default 'default'</em>) – list of Atoms.info.keys() to keep, defaults to ‘config_type’ only</p></li>
-<li><p><strong>arrays_to_keep</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default None</em>) – list of Atoms.arrays.keys() entries to keep</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list(Atoms) of randomly perturbed structures</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.generate.vib.Vibrations.summary">
-<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.Vibrations.summary" title="Permalink to this definition">#</a></dt>
-<dd><p>Prints all vibrational frequencies.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.generate.vib.Vibrations.view_modes">
-<span class="sig-name descname"><span class="pre">view_modes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal_modes'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normal_mode_numbers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nimages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.Vibrations.view_modes" title="Permalink to this definition">#</a></dt>
-<dd><p>writes out xyz files with oscillations along each of the normal
-modes</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>prefix</strong> (<em>str</em><em>, </em><em>default &quot;nm&quot;</em>) – Prefix normal mode files</p></li>
-<li><p><strong>output_dir</strong> (<em>str</em><em>, </em><em>default &quot;normal_modes&quot;</em>) – Directory for outputs</p></li>
-<li><p><strong>normal_mode_numbers</strong> (<em>str / list</em><em>(</em><em>int</em><em>) </em><em>/ np.array</em><em>(</em><em>int</em><em>)</em><em>, </em><em>default &quot;all&quot;</em>) – List of normal mode numbers to write out or “all” to save all</p></li>
-<li><p><strong>temp</strong> (<em>float</em><em>, </em><em>default 300</em>) – Temperature for the oscillation</p></li>
-<li><p><strong>nimages</strong> (<em>int</em><em>, </em><em>default 32</em>) – Number of structures per oscillation/output file</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.generate.vib.generate_normal_modes_parallel_atoms">
-<span class="sig-prename descclassname"><span class="pre">wfl.generate.vib.</span></span><span class="sig-name descname"><span class="pre">generate_normal_modes_parallel_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.generate_normal_modes_parallel_atoms" title="Permalink to this definition">#</a></dt>
-<dd><p>Get normal mode information for all atoms in the input</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
-<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
-<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
-<li><p><strong>prop_prefix</strong> (<em>str / None</em>) – prefix for normal_mode_frequencies and normal_mode_displacements
-stored in atoms.info/arrays</p></li>
-<li><p><strong>parallel_hessian</strong> (<em>bool</em><em>, </em><em>default=True</em>) – whether to parallelize 6N calculations needed for Hessian
-approximation.</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>co</strong> – output configs</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.generate.vib.generate_normal_modes_parallel_hessian">
-<span class="sig-prename descclassname"><span class="pre">wfl.generate.vib.</span></span><span class="sig-name descname"><span class="pre">generate_normal_modes_parallel_hessian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_prefix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.generate_normal_modes_parallel_hessian" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.generate.vib.sample_normal_modes">
-<span class="sig-prename descclassname"><span class="pre">wfl.generate.vib.</span></span><span class="sig-name descname"><span class="pre">sample_normal_modes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_to_keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrays_to_keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.vib.sample_normal_modes" title="Permalink to this definition">#</a></dt>
-<dd><p>Multiple times displace along normal modes for all atoms in input</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<em>Atoms / list</em><em>(</em><em>Atoms</em><em>) </em><em>/ ConfigSet</em>) – Structures with normal mode information (eigenvalues &amp; eigenvectors)</p></li>
-<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – </p></li>
-<li><p><strong>temp</strong> (<em>float</em>) – Temperature for normal mode displacements</p></li>
-<li><p><strong>sample_size</strong> (<em>int</em>) – Now many perturbed structures per input structure to return</p></li>
-<li><p><strong>prop_prefix</strong> (<em>str / None</em>) – prefix for normal_mode_frequencies and normal_mode_displacements
-stored in atoms.info/arrays</p></li>
-<li><p><strong>info_to_keep</strong> (<em>str</em><em>, </em><em>default &quot;config_type&quot;</em>) – string of Atoms.info.keys() to keep</p></li>
-<li><p><strong>arrays_to_keep</strong> (<em>str</em><em>, </em><em>default None</em>) – string of Atoms.arrays.keys() entries to keep</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
 
 </div>
 <div class="section" id="module-wfl.generate">

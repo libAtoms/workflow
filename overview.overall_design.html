@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Utility functions &#8212; workflow  documentation</title>
+    <title>Overall design &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,8 +32,8 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Workflows" href="workflows.html" />
-    <link rel="prev" title="ACE fitting" href="operations.ace_fitting.html" />
+    <link rel="next" title="Input and output of atomic structures" href="overview.configset.html" />
+    <link rel="prev" title="Overview" href="overview.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -80,27 +80,27 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contents:
- </span>
-</p>
-<ul class="current nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="first_example.html">
-   First example
+   First Example
   </a>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="overview.html">
    Overview
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Overall design
+    </a>
+   </li>
    <li class="toctree-l2">
     <a class="reference internal" href="overview.configset.html">
      Input and output of atomic structures
@@ -111,31 +111,31 @@
      Automatic parallelization of tasks
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.queued.html">
+     Functions as independently queued jobs
+    </a>
+   </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="operations.html">
    Operations
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
+  <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
-     Calculators in workflow
+     Calculators in Workflow
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.generate.html">
-     Generating Configs
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
+     Generating Atomic Structures
     </a>
    </li>
    <li class="toctree-l2">
@@ -144,46 +144,36 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
+    <a class="reference internal" href="operations.select.html">
+     Selecting Configs
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
-     Multistage GAP fitting
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="operations.fitting.html">
+     Fitting potentials
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.ace_fitting.html">
-     ACE fitting
-    </a>
-   </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Utility functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="workflows.html">
-   Workflows
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.rss.html">
-     How to do GAP-RSS
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.mlip_fitting.html">
-     Fitting a MLIP
-    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.gap_fitting.html">
+       Fitting GAP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.multistage_gap_fitting.html">
+       Multistage GAP fitting
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.ace_fitting.html">
+       Fitting ACE
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -198,13 +188,23 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.index.html">
+     Index
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.dimers.html">
      Generating Dimer Structures
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
+    <a class="reference internal" href="examples.orca_cli.html">
+     ORCA via command line
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca_python.html">
+     ORCA via Python script
     </a>
    </li>
    <li class="toctree-l2">
@@ -213,26 +213,36 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
+     Normal Modes of molecules
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
+     SMILES to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Atoms
+      </span>
+     </code>
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.md.html">
-     MD
+     Molecular Dynamics
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="workflows.rss.html">
+   GAP-RSS
+  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
@@ -308,10 +318,17 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul class="simple">
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.scripts.html">
@@ -405,7 +422,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/operations.utils.md.txt"
+        <a href="_sources/overview.overall_design.rst.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -416,7 +433,7 @@ title="Download source file"
 <span class="headerbtn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.md</span>
+<span class="headerbtn__text-container">.rst</span>
 </a>
 
       </li>
@@ -454,7 +471,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Utility functions</h1>
+                <h1>Overall design</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -466,9 +483,54 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="utility-functions">
-<h1>Utility functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">#</a></h1>
-<p>Brief descriptions of selected things from <code class="docutils literal notranslate"><span class="pre">wfl.utils</span></code></p>
+  <div class="section" id="overall-design">
+<span id="id1"></span><h1>Overall design<a class="headerlink" href="#overall-design" title="Permalink to this headline">#</a></h1>
+<p>The main goal of the Workflow package is to make it easy operate on sets of input atomic
+configurations, typically doing the same operation to each one, and
+returning corresponding sets of output configurations.  There are also
+functions that do not fit this structure, but use the same data types,
+or are otherwise useful.</p>
+<p>Most of <a class="reference internal" href="operations.html#operations"><span class="std std-ref">operations</span></a> in Workflow take in</p>
+<ul class="simple">
+<li><p>an iterator, usually a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> (see below) which returns ASE <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects</p></li>
+<li><p>an <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> (see below) indicating where to store the returned ASE <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects</p></li>
+</ul>
+<p>and return</p>
+<ul class="simple">
+<li><p>a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> containing the output configurations.</p></li>
+</ul>
+<p>These two classes abstract the storage of atomic configurations in memory,
+files (CURRENTLY UNSUPPORTED: or the ABCD database).  A <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> used for input may be
+initialised with</p>
+<ul class="simple">
+<li><p>a list (or list of lists) of ASE <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects in memory</p></li>
+<li><p>one or more filenames that can be read by <code class="docutils literal notranslate"><span class="pre">ase.io.read()</span></code>, such as <code class="docutils literal notranslate"><span class="pre">.extxyz</span></code></p></li>
+<li><p>a list of <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> objects that use the same type of storage</p></li>
+<li><p>[CURRENTLY UNSUPPORTED] a query to an <a class="reference external" href="https://github.com/libAtoms/abcd">ABCD database</a></p></li>
+</ul>
+<p>Similarly, returned configurations can be held in memory or
+file(s) [currently unsupported: ABCD], depending on the arguments to the <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>
+constructor. The workflow function returns a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> generated by
+<code class="docutils literal notranslate"><span class="pre">OutputSpec.to_ConfigSet()</span></code>, which can be used to access the output
+configs.  This way, an operation may iterate over a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code>
+and write <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> to <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>, regardless of how the input
+configs were supplied or how or where to the output configs are going
+to be collected.</p>
+<p>In addition to this abstraction of <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> storage, the workflow makes
+it easy to parallelize operations over sets of configurations and/or
+run them as (possibly remote) queued jobs, and this has been implemented
+for most of its operations.  This is achieved by wrapping the operation in a
+call to <code class="docutils literal notranslate"><span class="pre">wfl.pipeline.autoparallelize</span></code>. In addition to parallelising
+on readily accessible cores, the operations may be executed in a number
+of independently queued jobs on an HPC cluster with the help of
+<a class="reference external" href="https://github.com/libAtoms/ExPyRe">ExPyRe</a>.</p>
+<p>Some parts of Workflow (e.g. how many parallel processes to run) are controlled via environment variables. The
+most commonly used ones are</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">WFL_NUM_PYTHON_SUBPROCESSES</span></code> which controls how many python processes (on the
+same node) are used to parallelize a single operation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WFL_EXPYRE_INFO</span></code> which controls what HPC resources will be used for a remote job</p></li>
+</ul>
 </div>
 
 
@@ -479,17 +541,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="operations.ace_fitting.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="overview.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">ACE fitting</p>
+            <p class="prev-next-title">Overview</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="workflows.html" title="next page">
+    <a class='right-next' id="next-link" href="overview.configset.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Workflows</p>
+        <p class="prev-next-title">Input and output of atomic structures</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

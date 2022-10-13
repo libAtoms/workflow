@@ -1,0 +1,749 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ORCA via command line &#8212; workflow  documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ORCA via Python script" href="examples.orca_python.html" />
+    <link rel="prev" title="Generating Dimer Structures" href="examples.dimers.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">workflow  documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="first_example.html">
+   First Example
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="overview.html">
+   Overview
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.overall_design.html">
+     Overall design
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.configset.html">
+     Input and output of atomic structures
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.parallelisation.html">
+     Automatic parallelization of tasks
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.queued.html">
+     Functions as independently queued jobs
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="operations.html">
+   Operations
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.calculators.html">
+     Calculators in Workflow
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.generate.html">
+     Generating Atomic Structures
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.descriptors.html">
+     Descriptors
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.select.html">
+     Selecting Configs
+    </a>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="operations.fitting.html">
+     Fitting potentials
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.gap_fitting.html">
+       Fitting GAP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.multistage_gap_fitting.html">
+       Multistage GAP fitting
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.ace_fitting.html">
+       Fitting ACE
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="examples.html">
+   Examples
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.index.html">
+     Index
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.dimers.html">
+     Generating Dimer Structures
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     ORCA via command line
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca_python.html">
+     ORCA via Python script
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.mace.html">
+     Parallelize MACE calculator
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.normal_modes.html">
+     Normal Modes of molecules
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.smiles.html">
+     SMILES to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Atoms
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.md.html">
+     Molecular Dynamics
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="workflows.rss.html">
+   GAP-RSS
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="modules.html">
+   Modules
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="wfl.html">
+     wfl package
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <label for="toctree-checkbox-6">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.autoparallelize.html">
+       wfl.autoparallelize package
+      </a>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="wfl.calculators.html">
+       wfl.calculators package
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+      <label for="toctree-checkbox-7">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.calculators.orca.html">
+         wfl.calculators.orca package
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.cli.html">
+       wfl.cli package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.descriptors.html">
+       wfl.descriptors package
+      </a>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="wfl.fit.html">
+       wfl.fit package
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+      <label for="toctree-checkbox-8">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.fit.gap.html">
+         wfl.fit.gap package
+        </a>
+       </li>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.fit.modify_database.html">
+         wfl.fit.modify_database package
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toctree-l3 has-children">
+      <a class="reference internal" href="wfl.generate.html">
+       wfl.generate package
+      </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul class="simple">
+      </ul>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.scripts.html">
+       wfl.scripts package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.select.html">
+       wfl.select package
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="wfl.utils.html">
+       wfl.utils package
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/examples.orca_cli.md.txt"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#evaluate-atomic-configurations-sequentially-on-a-single-core">
+   1. Evaluate atomic configurations sequentially on a single core
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parallelize-with-orca">
+   2.1 Parallelize with ORCA
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parallelize-with-workflow">
+   2.2 Parallelize with Workflow
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parallelize-with-orca-and-workflow">
+   2.3 Parallelize with ORCA and Workflow
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#evaluate-structures-in-multiple-queued-jobs-from-command-line">
+   3. Evaluate structures in multiple queued jobs from command line
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#complete-script">
+     Complete script
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>ORCA via command line</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#evaluate-atomic-configurations-sequentially-on-a-single-core">
+   1. Evaluate atomic configurations sequentially on a single core
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parallelize-with-orca">
+   2.1 Parallelize with ORCA
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parallelize-with-workflow">
+   2.2 Parallelize with Workflow
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parallelize-with-orca-and-workflow">
+   2.3 Parallelize with ORCA and Workflow
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#evaluate-structures-in-multiple-queued-jobs-from-command-line">
+   3. Evaluate structures in multiple queued jobs from command line
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#complete-script">
+     Complete script
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <div class="section" id="orca-via-command-line">
+<h1>ORCA via command line<a class="headerlink" href="#orca-via-command-line" title="Permalink to this headline">#</a></h1>
+<div class="section" id="evaluate-atomic-configurations-sequentially-on-a-single-core">
+<h2>1. Evaluate atomic configurations sequentially on a single core<a class="headerlink" href="#evaluate-atomic-configurations-sequentially-on-a-single-core" title="Permalink to this headline">#</a></h2>
+<p>The following command will evaluate <code class="docutils literal notranslate"><span class="pre">configs.xyz</span></code> with the ORCA DFT code. The Workflow code called with <code class="docutils literal notranslate"><span class="pre">wfl</span> <span class="pre">ref-method</span> <span class="pre">orca-eval</span> <span class="pre">...</span> </code> is an extension of the <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/calculators/orca.html#module-ase.calculators.orca">ASE ORCA calculator</a>. The extended calculator automates file handling: each structure is evaluated in a separate directory and only specified files are kept.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>scratchdir=/scratch-ssd/my_dir_on_scratch
+mkdir -p $scratchdir
+
+wfl -v ref-method orca-eval \
+    --scratchdir $scratchdir \
+    --workdir orca_workdir \
+    --output-prefix dft_ \
+    --orcasimpleinput &quot;UKS B3LYP def2-SV(P) def2/J D3BJ&quot; \
+    --orcablocks &quot;%scf Convergence Tight SmearTemp 5000 end&quot; \
+    --calculator-exec &quot;path/to/orca/orca_5.0.0/orca&quot; \
+    --output-file configs.dft.xyz \
+    --keep-files default \
+    configs.xyz 
+</pre></div>
+</div>
+<p>The parameters are</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">workdir</span></code> - this directory is where directories for each separate DFT calculation will be based.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">orcasimpleinput</span></code> - <a class="reference external" href="https://sites.google.com/site/orcainputlibrary/general-input?authuser=0#h.rafay5vzyzkw">ORCA simple input</a> line, during the calculation automatically prepended with <code class="docutils literal notranslate"><span class="pre">!</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">orcablocks</span></code> - <a class="reference external" href="https://sites.google.com/site/orcainputlibrary/general-input?authuser=0#h.k0jcjw8bcgcx">ORCA block input</a>, the rest of ORCA input file, excluding the coordinate definition.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output_prefix</span></code> - prefix to the results’ keys in <code class="docutils literal notranslate"><span class="pre">atoms.info</span></code> and <code class="docutils literal notranslate"><span class="pre">atoms.arrays</span></code>. Here DFT results will be saved to <code class="docutils literal notranslate"><span class="pre">dft_energy</span></code>, <code class="docutils literal notranslate"><span class="pre">dft_forces</span></code> and <code class="docutils literal notranslate"><span class="pre">dft_dipole</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">calculator-exec</span></code> - path to ORCA executable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scratchdir</span></code> - directory on a SSD for more efficient calculations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input</span></code> - <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> file to be evaluated.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output</span></code> - <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> to save configs with results to. This command will refuse to overwrite if the file exists.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--keep-files</span> <span class="pre">default</span></code> - only <code class="docutils literal notranslate"><span class="pre">.inp</span></code>, <code class="docutils literal notranslate"><span class="pre">.out</span></code>, <code class="docutils literal notranslate"><span class="pre">.ase</span></code>, <code class="docutils literal notranslate"><span class="pre">.engrad</span></code>, <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> and <code class="docutils literal notranslate"><span class="pre">_trj.xyz</span></code> files will be saved, where applicable, upon success. All files will be kept if the calculation failed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wfl</span> <span class="pre">-v</span> <span class="pre">ref-method</span> <span class="pre">orca-eval</span></code> - Workflow command to evaluate DFT, in verbose mode.</p></li>
+</ul>
+<p>With this command each structure will be evaluated sequentially on a single core.</p>
+</div>
+<div class="section" id="parallelize-with-orca">
+<h2>2.1 Parallelize with ORCA<a class="headerlink" href="#parallelize-with-orca" title="Permalink to this headline">#</a></h2>
+<p>Adding <code class="docutils literal notranslate"><span class="pre">PAL8</span></code> to the simple input (<code class="docutils literal notranslate"><span class="pre">orcasimpleinput=&quot;UKS</span> <span class="pre">B3LYP</span> <span class="pre">def2-SV(P)</span> <span class="pre">def2/J</span> <span class="pre">D3BJ</span> <span class="pre">PAL8&quot;</span></code>) will turn on <a class="reference external" href="https://sites.google.com/site/orcainputlibrary/setting-up-orca#h.p0hdj6lom1lz">ORCA’s parallelsation</a>. This command will still evaluate all structures in <code class="docutils literal notranslate"><span class="pre">config.xyz</span></code> in sequence, but each evaluation will use 8 cores and MPI within ORCA (no need to <code class="docutils literal notranslate"><span class="pre">mpirun</span> <span class="pre">-np</span> <span class="pre">8</span> <span class="pre">orca</span></code>)</p>
+</div>
+<div class="section" id="parallelize-with-workflow">
+<h2>2.2 Parallelize with Workflow<a class="headerlink" href="#parallelize-with-workflow" title="Permalink to this headline">#</a></h2>
+<p>Alternatively, it might be more useful to run ORCA itself sequentially (<code class="docutils literal notranslate"><span class="pre">orcasimpleinput=&quot;UKS</span> <span class="pre">B3LYP</span> <span class="pre">def2-SV(P)</span> <span class="pre">def2/J</span> <span class="pre">D3BJ&quot;</span></code>), but use Workflow to evaluate multiple structures at the same time in parallel. For that, <code class="docutils literal notranslate"><span class="pre">WFL_NUM_PYTHON_SUBPROCESSES</span></code> should be set to the number of processes to use (e.g. <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">WFL_NUM_PYTHON_SUBPROCESSES=8</span></code>). (N.B. as a rule of thumb, <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> must be set to <code class="docutils literal notranslate"><span class="pre">1</span></code>).</p>
+</div>
+<div class="section" id="parallelize-with-orca-and-workflow">
+<h2>2.3 Parallelize with ORCA and Workflow<a class="headerlink" href="#parallelize-with-orca-and-workflow" title="Permalink to this headline">#</a></h2>
+<p>Mixed-mode parallelization is not tested and not supported.</p>
+</div>
+<div class="section" id="evaluate-structures-in-multiple-queued-jobs-from-command-line">
+<h2>3. Evaluate structures in multiple queued jobs from command line<a class="headerlink" href="#evaluate-structures-in-multiple-queued-jobs-from-command-line" title="Permalink to this headline">#</a></h2>
+<p>The parallelization steps described above would normally be submitted as a job to a cluster queue. Workflow allows for the input configurations’ file to be chopped up and submitted as a separate jobs (most commonly using parallelization within each job) allowing for an even more efficient parallelization.</p>
+<p>First, one need a configuration (<code class="docutils literal notranslate"><span class="pre">config.json</span></code>) that specifies what “resources” are available on the “local” cluster. See <a class="reference internal" href="first_example.html"><span class="doc std std-doc">First Example</span></a> and <a class="reference external" href="https://libatoms.github.io/ExPyRe/">Expyre documentation</a> for more details.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s2">&quot;systems&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;local&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+        <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="s2">&quot;sge&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;commands&quot;</span><span class="p">:</span> <span class="p">[</span>  <span class="s2">&quot;echo $(date)&quot;</span><span class="p">,</span> <span class="s2">&quot;hostname&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;header&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;#$ -pe smp </span><span class="si">{num_cores_per_node}</span><span class="s2">&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;partitions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;any&quot;</span><span class="p">:</span>        <span class="p">{</span><span class="s2">&quot;num_cores&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span> <span class="s2">&quot;max_time&quot;</span><span class="p">:</span> <span class="s2">&quot;168h&quot;</span><span class="p">,</span> <span class="s2">&quot;max_mem&quot;</span><span class="p">:</span> <span class="s2">&quot;50GB&quot;</span><span class="p">},</span>
+                       <span class="s2">&quot;any@node15&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;num_cores&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span> <span class="s2">&quot;max_time&quot;</span><span class="p">:</span> <span class="s2">&quot;168h&quot;</span><span class="p">,</span> <span class="s2">&quot;max_mem&quot;</span><span class="p">:</span> <span class="s2">&quot;47GB&quot;</span><span class="p">}</span>
+                    <span class="p">}</span>
+            <span class="p">}</span>
+<span class="p">}}</span>
+</pre></div>
+</div>
+<p>For a job to run remotely, one needs to specify a “remote info” dictionary. In this example, the dictionary is stored in a <code class="docutils literal notranslate"><span class="pre">remoteinfo.json</span></code> file. Setting <code class="docutils literal notranslate"><span class="pre">WFL_EXPYRE_INFO</span></code> to path to <code class="docutils literal notranslate"><span class="pre">remoteinfo.json</span></code> will automatically turn on the job submission and parallelization.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">remote_info</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;generic.py::run&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;sys_name&quot;</span><span class="p">:</span> <span class="s2">&quot;local&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;job_name&quot;</span><span class="p">:</span> <span class="s2">&quot;dft&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;resources&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;num_cores&quot;</span> <span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;partitions&quot;</span><span class="p">:</span><span class="s2">&quot;any$&quot;</span><span class="p">,</span> <span class="s2">&quot;max_time&quot;</span><span class="p">:</span> <span class="s2">&quot;4h&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;partial_node&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span>
+        <span class="s2">&quot;num_inputs_per_queued_job&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="s2">&quot;pre_cmds&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;conda activate my_env&quot;</span><span class="p">]}}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">generic.py::run</span></code> - the signature of the function which should be parallelized by submitting multiple queued jobs. Scripts might have multiple functions that can be parallelized like this and it might make sense to only do that to some of them.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sys_name</span></code> - cluster name to execute the job on. One fo the entries in <code class="docutils literal notranslate"><span class="pre">config.json</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">job_name</span></code> - prefix for the job’s name on the queue (converted to <code class="docutils literal notranslate"><span class="pre">#$</span> <span class="pre">-N</span></code> bit of the header on SGE).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">resources</span></code> - what resources the job should require from the queue.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;num_cores&quot;:</span> <span class="pre">4</span></code> - ask for 4 cores. That’s executed by <code class="docutils literal notranslate"><span class="pre">&quot;header&quot;:</span> <span class="pre">[&quot;#$</span> <span class="pre">-pe</span> <span class="pre">smp</span> <span class="pre">{num_cores_per_node}&quot;]</span></code> of <code class="docutils literal notranslate"><span class="pre">config.json</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">partitions</span></code> - name of the queue, converted to <code class="docutils literal notranslate"><span class="pre">#$</span> <span class="pre">-q</span> <span class="pre">any</span></code> in this example that uses SGE. ExPyRe uses RegEx to find matching partition names, so <code class="docutils literal notranslate"><span class="pre">any$</span></code> will only pick the first of the two partitions specified in <code class="docutils literal notranslate"><span class="pre">config.json</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_time</span></code> - time requirement for the job, converted to <code class="docutils literal notranslate"><span class="pre">#$</span> <span class="pre">-l</span> <span class="pre">h_rt=4:00:00</span></code> in this example.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">partial_node</span></code> - assumes that the queue works in “node non-exclusive” way, multiple jobs may be run on a given node and allows picking a partition (<code class="docutils literal notranslate"><span class="pre">any</span></code> in this case) even if it has more cores available (32 here) than the number of cores needed for the job (4 in this case).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_inputs_per_queued_job</span></code> - how many structures to assign to a single queued job.</p></li>
+</ul>
+<div class="section" id="complete-script">
+<h3>Complete script<a class="headerlink" href="#complete-script" title="Permalink to this headline">#</a></h3>
+<p>Let us assume 100 structures in the <code class="docutils literal notranslate"><span class="pre">configs.xyz</span></code> file. Put together, this script will create 5 separate 4-core jobs (<code class="docutils literal notranslate"><span class="pre">100/num_inputs_per_queued_job</span></code>) with 20 atomic structures assigned to each. Within a given job, the configs will be evaluated 4 at a time (i.e. <code class="docutils literal notranslate"><span class="pre">WFL_NUM_PYTHON_SUBPROCESSES</span></code> will be <em>automatically</em> set to <code class="docutils literal notranslate"><span class="pre">4</span></code>), each ORCA command running in serial. NB <code class="docutils literal notranslate"><span class="pre">.expyre/config.json</span></code> must be present.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export WFL_EXPYRE_INFO=$PWD/remoteinfo.json
+cat &lt;&lt;EOF &gt; remoteinfo.json
+{
+&quot;generic.py::run&quot; : {
+    &quot;sys_name&quot;: &quot;local&quot;,
+    &quot;job_name&quot;: &quot;dft&quot;,
+    &quot;resources&quot;: {&quot;num_cores&quot; : 4, &quot;partitions&quot;:&quot;any$&quot;, &quot;max_time&quot;: &quot;4h&quot;},
+    &quot;partial_node&quot;:true,
+    &quot;num_inputs_per_queued_job&quot;: 20,
+    &quot;pre_cmds&quot;: [&quot;conda activate my_env&quot;]}
+}
+EOF
+
+mkdir -p _expyre
+
+scratchdir=/scratch-ssd/my_dir_on_scratch
+mkdir -p $scratchdir
+
+wfl -v ref-method orca-eval \
+    --scratchdir $scratchdir \
+    --workdir orca_workdir \
+    --output-prefix dft_ \
+    --orcasimpleinput &quot;UKS B3LYP def2-SV(P) def2/J D3BJ&quot; \
+    --orcablocks &quot;%scf Convergence Tight SmearTemp 5000 end&quot; \
+    --calculator-exec &quot;path/to/orca/orca_5.0.0/orca&quot; \
+    --output-file configs.dft.xyz \
+    --keep-files default \
+    configs.xyz 
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="examples.dimers.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Generating Dimer Structures</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="examples.orca_python.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">ORCA via Python script</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
+  
+      &copy; Copyright .<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ACE fitting &#8212; workflow  documentation</title>
+    <title>Fitting ACE &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -32,7 +32,7 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Utility functions" href="operations.utils.html" />
+    <link rel="next" title="Examples" href="examples.html" />
     <link rel="prev" title="Multistage GAP fitting" href="operations.multistage_gap_fitting.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -80,15 +80,10 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contents:
- </span>
-</p>
-<ul class="current nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="first_example.html">
-   First example
+   First Example
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -102,6 +97,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="overview.overall_design.html">
+     Overall design
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="overview.configset.html">
      Input and output of atomic structures
     </a>
@@ -109,6 +109,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="overview.parallelisation.html">
      Automatic parallelization of tasks
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="overview.queued.html">
+     Functions as independently queued jobs
     </a>
    </li>
   </ul>
@@ -125,17 +130,12 @@
   <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
-     Calculators in workflow
+     Calculators in Workflow
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.generate.html">
-     Generating Configs
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
+     Generating Atomic Structures
     </a>
    </li>
    <li class="toctree-l2">
@@ -144,46 +144,36 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="operations.gap_fitting.html">
-     Fitting GAP
+    <a class="reference internal" href="operations.select.html">
+     Selecting Configs
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.multistage_gap_fitting.html">
-     Multistage GAP fitting
+   <li class="toctree-l2 current active has-children">
+    <a class="reference internal" href="operations.fitting.html">
+     Fitting potentials
     </a>
-   </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     ACE fitting
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.utils.html">
-     Utility functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="workflows.html">
-   Workflows
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.rss.html">
-     How to do GAP-RSS
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="workflows.mlip_fitting.html">
-     Fitting a MLIP
-    </a>
+    <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul class="current">
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.gap_fitting.html">
+       Fitting GAP
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="operations.multistage_gap_fitting.html">
+       Multistage GAP fitting
+      </a>
+     </li>
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
+       Fitting ACE
+      </a>
+     </li>
+    </ul>
    </li>
   </ul>
  </li>
@@ -198,13 +188,23 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.index.html">
+     Index
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.dimers.html">
      Generating Dimer Structures
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca.html">
-     ORCA: all parallelisation options
+    <a class="reference internal" href="examples.orca_cli.html">
+     ORCA via command line
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.orca_python.html">
+     ORCA via Python script
     </a>
    </li>
    <li class="toctree-l2">
@@ -213,26 +213,36 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.mlip_fitting.html">
+     Fitting a MLIP
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes (non-periodic)
+     Normal Modes of molecules
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.smiles.html">
-     SMILES to .xyz
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.autopara.html">
-     Customise Auto-parallelized Functions
+     SMILES to
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Atoms
+      </span>
+     </code>
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="examples.md.html">
-     MD
+     Molecular Dynamics
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="workflows.rss.html">
+   GAP-RSS
+  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
@@ -308,10 +318,17 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul class="simple">
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.scripts.html">
@@ -454,7 +471,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>ACE fitting</h1>
+                <h1>Fitting ACE</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -466,9 +483,18 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="ace-fitting">
-<h1>ACE fitting<a class="headerlink" href="#ace-fitting" title="Permalink to this headline">#</a></h1>
-<p>Some description to interface to ACE</p>
+  <div class="section" id="fitting-ace">
+<h1>Fitting ACE<a class="headerlink" href="#fitting-ace" title="Permalink to this headline">#</a></h1>
+<p>Workflow provides a wrapper for the <a class="reference external" href="https://acesuit.github.io/ACE1pack.jl/stable/">ACE1pack</a> package. The function makes use of Workflow’s atomic structure handling to fit in with the rest of potential fitting infrastructure and makes use of <a class="reference external" href="https://libatoms.github.io/ExPyRe/">ExPyRe</a> for submitting just this fitting function as a (remotely) queued cluster job.</p>
+<p>The ace fitting function takes in a parameter dictionary, writes it to (temporary) JSON file and calls ACE1pack’s fitting script, <code class="docutils literal notranslate"><span class="pre">ace_fit.jl</span></code>. The executable (e.g. <code class="docutils literal notranslate"><span class="pre">/path/to/julia</span> <span class="pre">$HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl</span></code>) is found automatically, unless specified as an argument or via <code class="docutils literal notranslate"><span class="pre">WFL_ACE_FIT_COMMAND</span></code> variable.</p>
+<p>Examples of parameters may be found on <a class="reference external" href="https://acesuit.github.io/ACE1pack.jl/stable/command_line/">ACE1pack docummentation</a>. <code class="docutils literal notranslate"><span class="pre">wfl.fit.ace.fit()</span></code> does some preparation:</p>
+<ul class="simple">
+<li><p>converts stress to virial</p></li>
+<li><p>sets <code class="docutils literal notranslate"><span class="pre">energy_key</span></code>, etc based on <code class="docutils literal notranslate"><span class="pre">ref_property_prefix</span></code>, i.e. <code class="docutils literal notranslate"><span class="pre">ace_fit_params[&quot;data&quot;][&quot;energy_key&quot;]</span> <span class="pre">=</span> <span class="pre">f&quot;{ref_property_prefix}energy&quot;</span></code></p></li>
+<li><p>parses isolated atom values from the isolated atoms present among the fitting configs</p></li>
+<li><p>updates energy/force/virial weights from “energy/force/virial_sigma” <code class="docutils literal notranslate"><span class="pre">Atoms.info</span></code> entries.</p></li>
+</ul>
+<p>To avoid these modifications, <code class="docutils literal notranslate"><span class="pre">wfl.fit.ace.run_ace_fit()</span></code> can be called directly (which is what <code class="docutils literal notranslate"><span class="pre">wfl.fit.ace.fit()</span></code> calls after the modifications).</p>
 </div>
 
 
@@ -486,10 +512,10 @@ title="Print to PDF"
             <p class="prev-next-title">Multistage GAP fitting</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="operations.utils.html" title="next page">
+    <a class='right-next' id="next-link" href="examples.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Utility functions</p>
+        <p class="prev-next-title">Examples</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
