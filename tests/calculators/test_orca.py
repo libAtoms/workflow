@@ -119,7 +119,9 @@ def test_orca_with_generic(tmp_path):
                 keep_files = "default", 
                 mult=1)
 
-    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", autopara_info=AutoparaInfo(num_python_subprocesses=0))
+    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_")
+
+
     for at in outputs.to_ConfigSet():
         assert "orca_energy" in at.info or "orca_calculation_failed" in at.info
 
@@ -138,9 +140,10 @@ def test_orca_geometry_optimisation(tmp_path):
                 task="opt")
 
 
-    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", autopara_info=AutoparaInfo(num_python_subprocesses=0))
+    generic_result = generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_")
 
-    out = [at for at in outputs.to_ConfigSet()][0]
+
+    out = list(generic_result)[0]
 
     assert pytest.approx(out.get_distance(0, 1)) == 0.76812058465248
 
@@ -194,9 +197,11 @@ def test_run_npa(tmp_path):
 
     inputs = ConfigSet(atoms)
     outputs = OutputSpec()
-    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", autopara_info=AutoparaInfo(num_python_subprocesses=0), raise_calc_exceptions=True)
 
-    atoms = [at for at in outputs.to_ConfigSet()][0]
+    generic_results = generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", raise_calc_exceptions=True)
+
+
+    atoms = list(generic_results)[0]
     assert "orca_NPA_electron_population" in atoms.arrays
     assert "orca_NPA_charge" in atoms.arrays
 
