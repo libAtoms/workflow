@@ -24,7 +24,7 @@ def evaluate_basin_hopping(*args, **kwargs):
         output atomic configs
     workdir_root: path-like, default os.getcwd()
         directory to put calculation directories into
-    dir_prefix: str, default 'ORCA\_'
+    rundir_prefix: str, default 'ORCA\_'
         directory name prefix for calculations
     keep_files: "default" / bool
         what kind of files to keep from the run
@@ -72,7 +72,7 @@ class BasinHoppingORCA(Calculator):
         number of independent runs to perform, resultant energy/force
         is checked to be the same
 
-    scratch_path: path_like
+    scratchdir: path_like
         put temporary directories here for the calculations, one per task
         very efficient if you have an SSD scratch disk on nodes that
         perform the tasks
@@ -128,7 +128,7 @@ class BasinHoppingORCA(Calculator):
 
 
 
-    def __init__(self, atoms=None, n_hop=10, n_run=3, scratch_path=None,
+    def __init__(self, atoms=None, n_hop=10, n_run=3, scratchdir=None,
                  n_missing_tolerance=1, energy_tol=0.001,
                  forces_tol=0.05, seed="orca", n_orb=10, max_angle=60.,
                  smearing=5000., maxiter=500, chained_hops=True,
@@ -160,10 +160,10 @@ class BasinHoppingORCA(Calculator):
         self.chained_hops = chained_hops
         self.uhf = uhf
 
-        if scratch_path is not None:
-            self.scratch_path = scratch_path
+        if scratchdir is not None:
+            self.scratchdir = scratchdir
         else:
-            self.scratch_path = self.directory
+            self.scratchdir = self.directory
 
         # tolerances
         self.n_missing_tolerance = n_missing_tolerance
@@ -500,5 +500,5 @@ class BasinHoppingORCA(Calculator):
     def _make_tempdir(self, prefix="orca_", suffix=None):
         # makes a temporary directory in at the scratch path set
         # NOTE: this needs to be deleted afterwards!!!
-        return tempfile.mkdtemp(dir=self.scratch_path, prefix=prefix,
+        return tempfile.mkdtemp(dir=self.scratchdir, prefix=prefix,
                                 suffix=suffix)

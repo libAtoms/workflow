@@ -1,12 +1,24 @@
 from pathlib import Path
 import shutil
 import tempfile
+import warnings
 
 from .utils import clean_rundir as utils_clean_rundir
 
 class WFLFileIOCalculator():
     """Mixin class implementing some methods that should be available to every
     WFL calculator that does I/O via files, i.e. DFT calculators
+    
+    As a python mixin class, must be inherited from by the wrapping wfl calculator class _before_ the ASE calculator, i.e.
+    
+    .. code-block:: python
+    
+        from ase.calculators.dftcode import DftCodeCalculator as ASE_DftCodeCalculator
+        class DftCodeCalculator(WFLFileIOCalculator, ASE_DftCodeCalculator):
+            .
+            .
+            .
+
 
     Parameters
     ----------
@@ -51,7 +63,8 @@ class WFLFileIOCalculator():
 
         # set self.directory to where we want the calculation to actually run
         if self._wfl_scratchdir is not None:
-            directory = self._wfl_scratchdir / (str(self._cur_rundir.resolve()).replace("/", "", 1))
+            dir_name = str(self._cur_rundir.resolve()).replace("/", "", 1).replace("/", "_")
+            directory = self._wfl_scratchdir / dir_name
             directory.mkdir(parents=True, exist_ok=True)
             self.directory = directory
         else:
@@ -63,3 +76,8 @@ class WFLFileIOCalculator():
         if self._wfl_scratchdir is not None:
             for f in Path(self.directory).glob("*"):
                 shutil.move(f, self._cur_rundir)
+            if list(Path(self.directory).iterdir()) == []:
+                warnings.warn(f"scratchdir {self.directory} is not empty, not deleting.")
+            else:
+                Path(self.directory).rmdir()
+                self.directory = '.' 
