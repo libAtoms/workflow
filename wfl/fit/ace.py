@@ -265,11 +265,25 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
     run_dir.mkdir(exist_ok=True, parents=True)
 
+    def _no_numpy(item):
+        if isinstance(item, np.ndarray):
+            return _no_numpy(item.tolist())
+        elif isinstance(item, dict):
+            return {k: _no_numpy(v) for k, v in item.items()}
+        elif isinstance(item, (list, tuple)):
+            return [_no_numpy(v) for v in item]
+        elif isinstance(item, float):
+            return float(item)
+        elif isinstance(item, int):
+            return int(item)
+        else:
+            return item
+
     _write_fitting_configs(fitting_configs, ace_fit_params, ace_file_base)
 
     ace_fit_params_filename = Path(ace_file_base).parent / ("fit_params_" + Path(ace_file_base).name + ".yaml")
     with open(ace_fit_params_filename, "w") as f:
-        f.write(yaml.dump(ace_fit_params, indent=4))
+        f.write(yaml.dump(_no_numpy(ace_fit_params), indent=4))
 
     if ace_fit_command is None:
         ace_fit_command = ace_fit_jl_path()
