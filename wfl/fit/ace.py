@@ -279,13 +279,15 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
     run_dir.mkdir(exist_ok=True, parents=True)
 
-    def _no_numpy(item):
+    def _yaml_cleanup(item):
         if isinstance(item, np.ndarray):
-            return _no_numpy(item.tolist())
+            return _yaml_cleanup(item.tolist())
         elif isinstance(item, dict):
-            return {k: _no_numpy(v) for k, v in item.items()}
-        elif isinstance(item, (list, tuple)):
-            return [_no_numpy(v) for v in item]
+            return {_yaml_cleanup(k): _yaml_cleanup(v) for k, v in item.items()}
+        elif isinstance(item, list):
+            return [_yaml_cleanup(v) for v in item]
+        elif isinstance(item, tuple):
+            return "(" + ", ".join([f'"{subitem}"' if isinstance(subitem, str) else f'{subitem}' for subitem in item]) + ")"
         elif isinstance(item, float):
             return float(item)
         elif isinstance(item, int):
@@ -297,7 +299,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
     ace_fit_params_filename = Path(ace_file_base).parent / ("fit_params_" + Path(ace_file_base).name + ".yaml")
     with open(ace_fit_params_filename, "w") as f:
-        f.write(yaml.dump(_no_numpy(ace_fit_params), indent=4))
+        f.write(yaml.dump(_yaml_cleanup(ace_fit_params), indent=4))
 
     if ace_fit_command is None:
         ace_fit_command = ace_fit_jl_path()
