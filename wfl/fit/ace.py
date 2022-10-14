@@ -21,28 +21,38 @@ from wfl.fit.utils import ace_fit_jl_path
 from expyre import ExPyRe
 import wfl.scripts
 
-def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None, weight_from_sigma=False,
+def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
         ref_property_prefix='REF_', skip_if_present=False, run_dir='.', dry_run=False,
         verbose=True, remote_info=None, remote_label=None, wait_for_results=True):
     """Runs ace_fit on a set of fitting configs
+
+
+    **Environment Variables**
+
+    * WFL_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
+      contructor to be used to run fitting in separate queued job
+    * WFL_ACE_FIT_JULIA_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will
+      use julia multithreading (LSQ assembly)
+    * WFL_ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS
+      multithreading in ace_fit
+    * WFL_ACE_FIT_COMMAND: command to execute ace_fit.jl, e.g. 
+      ``julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl``
+
 
     Parameters
     ----------
     fitting_configs: ConfigSet
         set of configurations to fit
     ACE_name: str
-        name of ACE potential (i.e. stem for resulting .json file). Overwrites any filename given in `ace_fit_params`.
+        name of ACE potential (i.e. stem for resulting .json file). Overwrites any filename given in ``ace_fit_params``.
     ace_fit_params: dict
         parameters for ACE1pack.
-        Any file names (ACE, fitting configs) already present will be updated,
-        property keys to fit to will be prepended with `ref_property_prefix` and e0
-        set up, if needed.
+        Any file names (ACE, fitting configs) already present will be updated.
+        See :func:`wfl.fit.ace.prepare_params` for other parameters that will be set automatically.
     ace_fit_command: str, default None
         executable for ace_fit. 
-        e.g. "julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl" or similar. 
-        Alternatively set by WFL_ACE_FIT_COMMAND.
-    weight_from_sigma: bool, default False
-        get per-config weights from each config's \*_sigma
+        e.g. ``julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl`` or similar. 
+        Alternatively set by `WFL_ACE_FIT_COMMAND` env var.
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
     skip_if_present: bool, default False
@@ -53,10 +63,10 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None, weight_
         do a dry run, which returns the matrix size, rather than the potential name
     verbose: bool, default True
         print verbose output
-    remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
+    remote_info: dict or :class:`wfl.autoparallelize.remoteinfo.RemoteInfo`, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
-        will try to use env var WFL_EXPYRE_INFO used (see below). '_IGNORE' is for
+        will try to use env var WFL_EXPYRE_INFO used (see above). '_IGNORE' is for
         internal use, to ensure that remotely running job does not itself attempt to spawn another
         remotely running job.
     remote_label: str, default None
@@ -64,30 +74,23 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None, weight_
     wait_for_results: bool, default True
         wait for results of remotely executed job, otherwise return after starting job
 
+
     Returns
     -------
     ace_filename: Path of saved ACE json file (if not dry_run)
     OR
     size: (int, int) size of least-squares matrix (if dry_run)
-
-    Environment Variables
-    ---------------------
-    WFL_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
-        contructor to be used to run fitting in separate queued job
-    WFL_ACE_FIT_JULIA_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will use julia multithreading (LSQ assembly)
-    WFL_ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit
-    WFL_ACE_FIT_COMMAND: command to execute ace_fit.jl, e.g. "julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl"
     """
 
     fitting_configs = prepare_configs(fitting_configs, ref_property_prefix)
-    ace_fit_params = prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir, ref_property_prefix, weight_from_sigma)
+    ace_fit_params = prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir, ref_property_prefix)
 
     return run_ace_fit(fitting_configs, ace_fit_params,
                 skip_if_present=skip_if_present, run_dir=run_dir, ace_fit_command=ace_fit_command, dry_run=dry_run,
                 verbose=verbose, remote_info=remote_info, remote_label=remote_label, wait_for_results=wait_for_results)
 
 
-def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_property_prefix='REF_', weight_from_sigma=False):
+def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_property_prefix='REF_'):
     """Prepare ace_fit parameters so they are compatible with the rest of workflow.
     Runs ace_fit on a a set of fitting configs
 
@@ -100,13 +103,17 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
         set of configurations to fit
     ace_fit_params: dict
         dict with all fitting parameters for ACE1pack,
-        to be updated with data keys (with ref_property_prefix), and e0 values
+        to be updated with 
+
+        * ``(energy|force|virial)_key`` (with ref_property_prefix)
+        * ``ACE_fname``
+        * e0 values
+        * per-config E/F/V weight if it contains ``"weights": { "from_sigma": True }``
+
     run_dir: str or Path, default '.'
         path of directory to run in
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
-    weight_from_sigma: bool, default False
-        get per-config weights from each config's \*_sigma
 
     Returns
     -------
@@ -132,14 +139,18 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
 
     _prepare_e0(ace_fit_params, fitting_configs, ref_property_prefix)
 
-    if weight_from_sigma:
-        ace_fit_params["weights"] = {}
-        for at_i, at in enumerate(fitting_configs):
-            config_type = f"config_{at_i}"
-            at.info["config_type"] = config_type
-            ace_fit_params["weights"][config_type] = { "E": 1.0 / at.info.get("energy_sigma", 1.0),
-                                                       "F": 1.0 / at.info.get("force_sigma", 1.0),
-                                                       "V": 1.0 / at.info.get("virial_sigma", 1.0) }
+    from_sigma = ace_fit_params.get("weights", {}).get("from_sigma")
+    if from_sigma is not None:
+        del ace_fit_params["weights"]["from_sigma"]
+        if from_sigma:
+            ace_fit_params["weights"] = {}
+            for at_i, at in enumerate(fitting_configs):
+                at.info["pre_fit_config_type"] = at.info.get("config_type", "None")
+                config_type = f"config_{at_i}"
+                at.info["config_type"] = config_type
+                ace_fit_params["weights"][config_type] = { "E": 1.0 / at.info.get("energy_sigma", 1.0),
+                                                           "F": 1.0 / at.info.get("force_sigma", 1.0),
+                                                           "V": 1.0 / at.info.get("virial_sigma", 1.0) }
 
     return ace_fit_params
 
@@ -181,7 +192,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
         do a dry run, which returns the matrix size, rather than the potential file path
     verbose: bool, default True
         print verbose output
-    remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
+    remote_info: dict or :class:`wfl.autoparallelize.remoteinfo.RemoteInfo`, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
         will try to use env var WFL_EXPYRE_INFO used (see below). '_IGNORE' is for
