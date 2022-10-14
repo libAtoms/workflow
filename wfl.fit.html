@@ -603,29 +603,38 @@ title="Print to PDF"
 <span id="wfl-fit-ace-module"></span><h2>wfl.fit.ace module<a class="headerlink" href="#module-wfl.fit.ace" title="Permalink to this headline">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.fit.ace.fit">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.ace.</span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitting_configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ACE_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ace_fit_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ace_fit_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_from_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'REF_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_if_present</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.ace.fit" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.ace.</span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitting_configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ACE_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ace_fit_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ace_fit_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'REF_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_if_present</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.ace.fit" title="Permalink to this definition">#</a></dt>
 <dd><p>Runs ace_fit on a set of fitting configs</p>
+<p><strong>Environment Variables</strong></p>
+<ul class="simple">
+<li><p>WFL_EXPYRE_INFO: JSON dict or name of file containing JSON with kwargs for RemoteInfo
+contructor to be used to run fitting in separate queued job</p></li>
+<li><p>WFL_ACE_FIT_JULIA_THREADS: used to set JULIA_NUM_THREADS for ace_fit.jl, which will
+use julia multithreading (LSQ assembly)</p></li>
+<li><p>WFL_ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS
+multithreading in ace_fit</p></li>
+<li><p>WFL_ACE_FIT_COMMAND: command to execute ace_fit.jl, e.g.
+<code class="docutils literal notranslate"><span class="pre">julia</span> <span class="pre">$HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl</span></code></p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fitting_configs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – set of configurations to fit</p></li>
-<li><p><strong>ACE_name</strong> (<em>str</em>) – name of ACE potential (i.e. stem for resulting .json file). Overwrites any filename given in <cite>ace_fit_params</cite>.</p></li>
+<li><p><strong>ACE_name</strong> (<em>str</em>) – name of ACE potential (i.e. stem for resulting .json file). Overwrites any filename given in <code class="docutils literal notranslate"><span class="pre">ace_fit_params</span></code>.</p></li>
 <li><p><strong>ace_fit_params</strong> (<em>dict</em>) – parameters for ACE1pack.
-Any file names (ACE, fitting configs) already present will be updated,
-property keys to fit to will be prepended with <cite>ref_property_prefix</cite> and e0
-set up, if needed.</p></li>
+Any file names (ACE, fitting configs) already present will be updated.
+See <a class="reference internal" href="#wfl.fit.ace.prepare_params" title="wfl.fit.ace.prepare_params"><code class="xref py py-func docutils literal notranslate"><span class="pre">wfl.fit.ace.prepare_params()</span></code></a> for other parameters that will be set automatically.</p></li>
 <li><p><strong>ace_fit_command</strong> (<em>str</em><em>, </em><em>default None</em>) – executable for ace_fit.
-e.g. “julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl” or similar.
-Alternatively set by WFL_ACE_FIT_COMMAND.</p></li>
-<li><p><strong>weight_from_sigma</strong> (<em>bool</em><em>, </em><em>default False</em>) – get per-config weights from each config’s *_sigma</p></li>
+e.g. <code class="docutils literal notranslate"><span class="pre">julia</span> <span class="pre">$HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl</span></code> or similar.
+Alternatively set by <cite>WFL_ACE_FIT_COMMAND</cite> env var.</p></li>
 <li><p><strong>ref_property_prefix</strong> (<em>str</em><em>, </em><em>default 'REF_'</em>) – string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)</p></li>
 <li><p><strong>skip_if_present</strong> (<em>bool</em><em>, </em><em>default False</em>) – skip fitting if output is already present</p></li>
 <li><p><strong>run_dir</strong> (<em>str</em><em> or </em><em>Path</em><em>, </em><em>default '.'</em>) – directory to run in</p></li>
 <li><p><strong>dry_run</strong> (<em>bool</em><em>, </em><em>default False</em>) – do a dry run, which returns the matrix size, rather than the potential name</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default True</em>) – print verbose output</p></li>
-<li><p><strong>remote_info</strong> (<em>dict</em><em> or </em><em>wfl.autoparallelize.utils.RemoteInfo</em><em>, or </em><em>'_IGNORE'</em><em> or </em><em>None</em>) – If present and not None and not ‘_IGNORE’, RemoteInfo or dict with kwargs for RemoteInfo
+<li><p><strong>remote_info</strong> (dict or <a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.remoteinfo.RemoteInfo" title="wfl.autoparallelize.remoteinfo.RemoteInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.autoparallelize.remoteinfo.RemoteInfo</span></code></a>, or ‘_IGNORE’ or None) – If present and not None and not ‘_IGNORE’, RemoteInfo or dict with kwargs for RemoteInfo
 constructor which triggers running job in separately queued job on remote machine.  If None,
-will try to use env var WFL_EXPYRE_INFO used (see below). ‘_IGNORE’ is for
+will try to use env var WFL_EXPYRE_INFO used (see above). ‘_IGNORE’ is for
 internal use, to ensure that remotely running job does not itself attempt to spawn another
 remotely running job.</p></li>
 <li><p><strong>remote_label</strong> (<em>str</em><em>, </em><em>default None</em>) – label to use to match in WFL_EXPYRE_INFO</p></li>
@@ -637,12 +646,6 @@ remotely running job.</p></li>
 <li><p><strong>ace_filename</strong> (<em>Path of saved ACE json file (if not dry_run)</em>)</p></li>
 <li><p><em>OR</em></p></li>
 <li><p><strong>size</strong> (<em>(int, int) size of least-squares matrix (if dry_run)</em>)</p></li>
-<li><p><em>Environment Variables</em></p></li>
-<li><p><em>———————</em></p></li>
-<li><p><strong>WFL_EXPYRE_INFO</strong> (<em>JSON dict or name of file containing JSON with kwargs for RemoteInfo</em>) – contructor to be used to run fitting in separate queued job</p></li>
-<li><p><strong>WFL_ACE_FIT_JULIA_THREADS</strong> (<em>used to set JULIA_NUM_THREADS for ace_fit.jl, which will use julia multithreading (LSQ assembly)</em>)</p></li>
-<li><p><strong>WFL_ACE_FIT_BLAS_THREADS</strong> (<em>used by ace_fit.jl for number of threads to set for BLAS multithreading in ace_fit</em>)</p></li>
-<li><p><strong>WFL_ACE_FIT_COMMAND</strong> (<em>command to execute ace_fit.jl, e.g. “julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl”</em>)</p></li>
 </ul>
 </p>
 </dd>
@@ -657,7 +660,7 @@ remotely running job.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.fit.ace.prepare_params">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.ace.</span></span><span class="sig-name descname"><span class="pre">prepare_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ACE_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitting_configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ace_fit_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'REF_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_from_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.ace.prepare_params" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.ace.</span></span><span class="sig-name descname"><span class="pre">prepare_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ACE_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitting_configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ace_fit_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'REF_'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.ace.prepare_params" title="Permalink to this definition">#</a></dt>
 <dd><p>Prepare ace_fit parameters so they are compatible with the rest of workflow.
 Runs ace_fit on a a set of fitting configs</p>
 <dl class="field-list simple">
@@ -666,11 +669,17 @@ Runs ace_fit on a a set of fitting configs</p>
 <li><p><strong>ACE_name</strong> (<em>str</em>) – name of ACE model, used as initial part of final potential JSON file, as well as other scratch files.
 Overrides any previous ‘ACE_fname’ in ace_fit_params</p></li>
 <li><p><strong>fitting_configs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – set of configurations to fit</p></li>
-<li><p><strong>ace_fit_params</strong> (<em>dict</em>) – dict with all fitting parameters for ACE1pack,
-to be updated with data keys (with ref_property_prefix), and e0 values</p></li>
+<li><p><strong>ace_fit_params</strong> (<em>dict</em>) – <p>dict with all fitting parameters for ACE1pack,
+to be updated with</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">(energy|force|virial)_key</span></code> (with ref_property_prefix)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ACE_fname</span></code></p></li>
+<li><p>e0 values</p></li>
+<li><p>per-config E/F/V weight if it contains <code class="docutils literal notranslate"><span class="pre">&quot;weights&quot;:</span> <span class="pre">{</span> <span class="pre">&quot;from_sigma&quot;:</span> <span class="pre">True</span> <span class="pre">}</span></code></p></li>
+</ul>
+</p></li>
 <li><p><strong>run_dir</strong> (<em>str</em><em> or </em><em>Path</em><em>, </em><em>default '.'</em>) – path of directory to run in</p></li>
 <li><p><strong>ref_property_prefix</strong> (<em>str</em><em>, </em><em>default 'REF_'</em>) – string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)</p></li>
-<li><p><strong>weight_from_sigma</strong> (<em>bool</em><em>, </em><em>default False</em>) – get per-config weights from each config’s *_sigma</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -699,7 +708,7 @@ e.g. <cite>julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl</cite> 
 Alternatively set by WFL_ACE_FIT_COMMAND.</p></li>
 <li><p><strong>dry_run</strong> (<em>bool</em><em>, </em><em>default False</em>) – do a dry run, which returns the matrix size, rather than the potential file path</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default True</em>) – print verbose output</p></li>
-<li><p><strong>remote_info</strong> (<em>dict</em><em> or </em><em>wfl.autoparallelize.utils.RemoteInfo</em><em>, or </em><em>'_IGNORE'</em><em> or </em><em>None</em>) – If present and not None and not ‘_IGNORE’, RemoteInfo or dict with kwargs for RemoteInfo
+<li><p><strong>remote_info</strong> (dict or <a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.remoteinfo.RemoteInfo" title="wfl.autoparallelize.remoteinfo.RemoteInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.autoparallelize.remoteinfo.RemoteInfo</span></code></a>, or ‘_IGNORE’ or None) – If present and not None and not ‘_IGNORE’, RemoteInfo or dict with kwargs for RemoteInfo
 constructor which triggers running job in separately queued job on remote machine.  If None,
 will try to use env var WFL_EXPYRE_INFO used (see below). ‘_IGNORE’ is for
 internal use, to ensure that remotely running job does not itself attempt to spawn another
