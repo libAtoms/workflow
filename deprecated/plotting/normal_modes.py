@@ -71,8 +71,8 @@ def eigenvector_plot(nm1, nm2, prop_prefix1, prop_prefix2, label1=None,
         else:
             label2 = 'method 2'
 
-    vib1 = vib.Vibrations(nm1, prop_prefix1)
-    vib2 = vib.Vibrations(nm2, prop_prefix2)
+    vib1 = vib.NormalModes(nm1, prop_prefix1)
+    vib2 = vib.NormalModes(nm2, prop_prefix2)
 
     assert np.all(vib1.atoms.symbols == vib2.atoms.symbols)
     assert not np.all(vib1.frequencies == 0)

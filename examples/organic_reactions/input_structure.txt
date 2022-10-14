@@ -11,7 +11,7 @@ Input structure definition for configuration json file
       - cutoff:               float, [outer cutoff of dimer curves]
       - n_steps:              int, [number of equispaced steps to take]
       - r_min:                float, [minimal separation to calculate, should be quite low distance]
-    - vibrations:           dict, [settings of normal mode sampling]
+    - NormalModes:           dict, [settings of normal mode sampling]
       - n_free:               int choices=(2, 4), [number of samples to take per cartesian coord]
       - num_per_mode:         int, [number of samples to take per mode]
 

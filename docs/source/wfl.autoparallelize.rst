@@ -4,6 +4,14 @@ wfl.autoparallelize package
 Submodules
 ----------
 
+wfl.autoparallelize.autoparainfo module
+---------------------------------------
+
+.. automodule:: wfl.autoparallelize.autoparainfo
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 wfl.autoparallelize.base module
 -------------------------------
 

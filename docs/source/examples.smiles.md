@@ -1,23 +1,35 @@
-# SMILES to .xyz
+# SMILES to `Atoms` 
 
-Needs RDKit installed
+Conversion of [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system) to ASE's `Atoms` is done via [RDKit](http://rdkit.org/). To install: 
+
+```
+conda install -c conda-forge rdkit
+```
 
 ## Command line
 
 ```
-wfl generate-configs smiles -o at.xyz CCCCCC
+wfl generate-configs smiles -o configs.xyz CCCCCC CC c1ccccc1
 ```
 
 ## Python script
 
-Just the "task":
-```
-at = wfl.generate.smiles.smi_to_atoms("CCCCCC")
+Single operation:
+
+```python
+from wfl.generate import smiles
+atoms = smiles.smi_to_atoms("CCCCCC")
 ```
 
-Parallelised:
-```
+With Workflow's parallelization:
+
+```python
+from wfl.configset import ConfigSet
+from wfl.generate import smiles
+
 outputspec = OutputSpec("compounds.xyz")
 smiles = ["CO", "CCCC", "c1ccccc1"]
-wfl.generate.smiles.run(outputs=outputspec, smiles=smiles)
+smiles.run(smiles, outputs=outputspec)
 ```
+
+NB `smiles` has to be given as the first argument. 
