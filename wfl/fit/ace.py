@@ -16,7 +16,6 @@ from ase.stress import voigt_6_to_full_3x3_stress
 
 from wfl.configset import ConfigSet
 from wfl.autoparallelize.utils import get_remote_info
-from wfl.utils.julia import julia_exec_path
 from wfl.fit.utils import ace_fit_jl_path
 
 from expyre import ExPyRe
@@ -287,7 +286,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
         elif isinstance(item, list):
             return [_yaml_cleanup(v) for v in item]
         elif isinstance(item, tuple):
-            return "(" + ", ".join([f'"{subitem}"' if isinstance(subitem, str) else f'{subitem}' for subitem in item]) + ")"
+            return "(" + ", ".join([str(subitem) for subitem in item]) + ")"
         elif isinstance(item, float):
             return float(item)
         elif isinstance(item, int):
