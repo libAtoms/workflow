@@ -1060,7 +1060,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
         configs_flat_histo_with_desc = wfl.descriptors.quippy.calc(
             configs_init, OutputSpec(f'{file_label}_with_desc.{grp_label}.xyz', file_root=run_dir),
             config_selection_descriptor_strs, 'config_selection_desc',
-            local=config_selection_descriptor_local,
+            per_atom=config_selection_descriptor_local,
             verbose=verbose)
 
         # no kwargs as default
@@ -1100,7 +1100,7 @@ def calc_descriptors_to_file(run_dir, basename, grp_label, configs, descriptor_s
         return
 
     configs_with_descs = wfl.descriptors.quippy.calc(configs, OutputSpec(),
-                                                  descriptor_strs, 'config_selection_desc', local=descriptor_local,
+                                                  descriptor_strs, 'config_selection_desc', per_atom=descriptor_local,
                                                   verbose=verbose)
 
     np.savetxt(os.path.join(run_dir, f'tmp.{basename}.{grp_label}.average_desc.txt'),
