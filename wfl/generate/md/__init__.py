@@ -61,14 +61,14 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
     update_config_type: bool, default True
         append "MD" to at.info['config_type']
     traj_select_during_func: func(Atoms), default None
-        Function to sub-select configs from the first trajectory. 
+        Function to sub-select configs from the first trajectory.
         Used during MD loop with one config at a time, returning True/False
     traj_select_after_func: func(list(Atoms)), default None
-        Function to sub-select configs from the first trajectory. 
+        Function to sub-select configs from the first trajectory.
         Used at end of MD loop with entire trajectory as list, returns subset
     abort_check: default None,
         wfl.generate.md.abort_base.AbortBase - derived class that
-        checks the MD snapshots and aborts the simulation on some condition. 
+        checks the MD snapshots and aborts the simulation on some condition.
 
     Returns
     -------
@@ -222,8 +222,9 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
                     raise
 
         if len(traj) == 0 or traj[-1] != at:
-            at.info['MD_time_fs'] = cur_step * dt
-            traj.append(at_copy_save_results(at, results_prefix=results_prefix))
+            if traj_select_during_func is None or traj_select_during_func(at):
+                at.info['MD_time_fs'] = cur_step * dt
+                traj.append(at_copy_save_results(at, results_prefix=results_prefix))
 
         if traj_select_after_func is not None:
             traj = traj_select_after_func(traj)
@@ -249,6 +250,6 @@ def sample(*args, **kwargs):
         initializer = (np.random.seed, [])
     def_autopara_info={"initializer":initializer}
 
-    return autoparallelize(_sample_autopara_wrappable, *args, 
+    return autoparallelize(_sample_autopara_wrappable, *args,
         def_autopara_info=def_autopara_info, **kwargs)
 autoparallelize_docstring(sample, _sample_autopara_wrappable, "Atoms")
