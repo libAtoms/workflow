@@ -19,11 +19,17 @@ def ace_fit_jl_path():
 
     julia_exec = julia_exec_path()
 
+    ace_path_input = "import(ACE1pack)\nprint(pathof(ACE1pack))\n"
     try:
         ace_path = subprocess.check_output(shlex.split(julia_exec), text=True, shell=True, stderr=subprocess.STDOUT,
-                                           input="import(ACE1pack)\nprint(pathof(ACE1pack))\n")
+                                           input=ace_path_input)
     except subprocess.CalledProcessError as exc:
         raise RuntimeError("Failed to find path of ACE1pack") from exc
+
+    # some julia errors don't lead to a CalledProcessError
+    if len(ace_path.strip().split("\n")) > 1 or "Stacktrace:" in ace_path or "ERROR:" in ace_path:
+        raise RuntimeError("Failed to get ace_path\n" + ace_path)
+
     ace_path = Path(ace_path)
     ace_path = ace_path.resolve().parent.parent
 

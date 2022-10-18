@@ -111,6 +111,89 @@ def test_ace_fit(request, tmp_path, monkeypatch, run_dir='run_dir'):
     # rerun should reuse files, be much faster
     assert time_rerun < time_actual / 10
 
+def test_ace_fit_basis_size(request, tmp_path, monkeypatch, run_dir='run_dir'):
+    print('getting fitting data from ', request.fspath)
+
+    # kinda ugly, but remote running of multistage fit doesn't support absolute run_dir, so test
+    # with a relative one
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / run_dir).mkdir()
+
+    fit_config_file = os.path.join(os.path.dirname(request.fspath), 'assets', 'B_DFT_data.xyz')
+
+    # Simple basis
+    params = {
+        "basis": {
+            "ace": {"type": "ace", "species": ["B"], "N": 3, "maxdeg": 6},
+            "pair": {"type": "pair", "species": ["B"], "maxdeg": 4}},
+        "solver": {"type": "lsqr"}}
+
+    ACE_size = fit(
+        fitting_configs=ConfigSet(fit_config_file),
+        ACE_name="ACE.B_test",
+        ace_fit_params=params, 
+        ref_property_prefix="REF_",
+        run_dir=str(run_dir), 
+        dry_run=True, 
+        skip_if_present=False)
+
+    assert ACE_size == [1047, 29]
+
+    # different degree for one correlation order, int dict key
+    params = {
+        "basis": {
+            "ace": {"type": "ace",
+                    "species": ["B"],
+                    "N": 3,
+                    "maxdeg": 1.0,
+                    "degree": { "type": "sparseM",
+                                "Dd": { "default": 6,
+                                        3: 4
+                                      }
+                               }
+                    },
+            "pair": {"type": "pair", "species": ["B"], "maxdeg": 4}},
+        "solver": {"type": "lsqr"}}
+
+    ACE_size = fit(
+        fitting_configs=ConfigSet(fit_config_file),
+        ACE_name="ACE.B_test",
+        ace_fit_params=params, 
+        ref_property_prefix="REF_",
+        run_dir=str(run_dir), 
+        dry_run=True, 
+        skip_if_present=False)
+
+    assert ACE_size == [1047, 23]
+
+    # different degree for one species and correlation order, tuple dict key
+    params = {
+        "basis": {
+            "ace": {"type": "ace",
+                    "species": ["B"],
+                    "N": 3,
+                    "maxdeg": 1.0,
+                    "degree": { "type": "sparseM",
+                                "Dd": { "default": 6,
+                                        (3, "B"): 4
+                                      }
+                               }
+                    },
+            "pair": {"type": "pair", "species": ["B"], "maxdeg": 4}},
+        "solver": {"type": "lsqr"}}
+
+    ACE_size = fit(
+        fitting_configs=ConfigSet(fit_config_file),
+        ACE_name="ACE.B_test",
+        ace_fit_params=params, 
+        ref_property_prefix="REF_",
+        run_dir=str(run_dir), 
+        dry_run=True, 
+        skip_if_present=False)
+
+    assert ACE_size == [1047, 23]
+
+
 @pytest.mark.remote
 def test_ace_fit_remote(request, tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     env_vars = ['WFL_ACE_FIT_JULIA_THREADS=$( [ $EXPYRE_NUM_CORES_PER_NODE -gt 2 ] && echo 2 || echo $(( $EXPYRE_NUM_CORES_PER_NODE )) )',

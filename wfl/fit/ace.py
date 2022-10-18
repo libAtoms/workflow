@@ -4,6 +4,7 @@ import warnings
 import itertools
 import subprocess
 import json
+import yaml
 import shlex
 from copy import deepcopy
 from pathlib import Path
@@ -15,7 +16,6 @@ from ase.stress import voigt_6_to_full_3x3_stress
 
 from wfl.configset import ConfigSet
 from wfl.autoparallelize.utils import get_remote_info
-from wfl.utils.julia import julia_exec_path
 from wfl.fit.utils import ace_fit_jl_path
 
 from expyre import ExPyRe
@@ -143,14 +143,16 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
     if from_sigma is not None:
         del ace_fit_params["weights"]["from_sigma"]
         if from_sigma:
-            ace_fit_params["weights"] = {}
+            if "weights" not in ace_fit_params:
+                ace_fit_params["weights"] = {}
+            default_weights = ace_fit_params.get("weights", {}).get("default", {})
             for at_i, at in enumerate(fitting_configs):
                 at.info["pre_fit_config_type"] = at.info.get("config_type", "None")
                 config_type = f"config_{at_i}"
                 at.info["config_type"] = config_type
-                ace_fit_params["weights"][config_type] = { "E": 1.0 / at.info.get("energy_sigma", 1.0),
-                                                           "F": 1.0 / at.info.get("force_sigma", 1.0),
-                                                           "V": 1.0 / at.info.get("virial_sigma", 1.0) }
+                ace_fit_params["weights"][config_type] = { "E": default_weights.get("E", 1.0) / at.info.get("energy_sigma", 1.0),
+                                                           "F": default_weights.get("F", 1.0) / at.info.get("force_sigma", 1.0),
+                                                           "V": default_weights.get("V", 1.0) / at.info.get("virial_sigma", 1.0) }
 
     return ace_fit_params
 
@@ -276,11 +278,27 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
     run_dir.mkdir(exist_ok=True, parents=True)
 
+    def _yaml_cleanup(item):
+        if isinstance(item, np.ndarray):
+            return _yaml_cleanup(item.tolist())
+        elif isinstance(item, dict):
+            return {_yaml_cleanup(k): _yaml_cleanup(v) for k, v in item.items()}
+        elif isinstance(item, list):
+            return [_yaml_cleanup(v) for v in item]
+        elif isinstance(item, tuple):
+            return "(" + ", ".join([str(subitem) for subitem in item]) + ")"
+        elif isinstance(item, float):
+            return float(item)
+        elif isinstance(item, int):
+            return int(item)
+        else:
+            return item
+
     _write_fitting_configs(fitting_configs, ace_fit_params, ace_file_base)
 
-    ace_fit_params_filename = Path(ace_file_base).parent / ("fit_params_" + Path(ace_file_base).name + ".json")
+    ace_fit_params_filename = Path(ace_file_base).parent / ("fit_params_" + Path(ace_file_base).name + ".yaml")
     with open(ace_fit_params_filename, "w") as f:
-        f.write(json.dumps(ace_fit_params, indent=4))
+        f.write(yaml.dump(_yaml_cleanup(ace_fit_params), indent=4))
 
     if ace_fit_command is None:
         ace_fit_command = ace_fit_jl_path()
