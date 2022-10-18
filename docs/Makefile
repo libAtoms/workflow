@@ -19,4 +19,7 @@ export PYTHONPATH := $(PWD)/..:$(PYTHONPATH)
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
+	mv $(SOURCEDIR)/wfl.generate.md.rst $(SOURCEDIR)/wfl.generate.mds.rst
+	sed -i "s|wfl.generate.md|wfl.generate.mds|g" $(SOURCEDIR)/wfl.generate.rst
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
