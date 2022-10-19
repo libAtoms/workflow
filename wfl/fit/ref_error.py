@@ -70,8 +70,22 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
     elif category_keys is None:
         category_keys = []
 
-    # compute errors and store in all_errors (and weights in all_weights)
-    all_errors = {}
+    def _reshape_normalize(diff, at):
+        if per_component:
+            # one long vector
+            diff = diff.reshape((-1))
+        elif prop in atom_properties:
+            # flatten any vector/matrix dimensions so norm below is correct
+            diff = diff.reshape((len(at), -1))
+
+        if per_atom:
+            diff /= len(at)
+
+        return diff
+
+    # compute diffs and store in all_diffs, and weights in all_weights
+    all_diffs = {}
+    all_parity = { "ref": {}, "calc": {} }
     all_weights = {}
     for at in inputs:
         # turn category keys into a single string for dict key
@@ -140,40 +154,40 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                     ind_groups = [(Zs, "")]
 
             for ind_val, ind_label in ind_groups:
-                diff = calc_quant[inds == ind_val] - ref_quant[inds == ind_val]
+                ref_quant =  ref_quant[inds == ind_val]
+                calc_quant = calc_quant[inds == ind_val] 
 
-                if per_component:
-                    # one long vector
-                    diff = diff.reshape((-1))
-                elif prop in atom_properties:
-                    # flatten any vector/matrix dimensions so norm below is correct
-                    diff = diff.reshape((len(at), -1))
-
-                if per_atom:
-                    diff /= len(at)
+                diff = calc_quant - ref_quant
+                diff = _reshape_normalize(diff, at)
 
                 # do norm of diff along all vector dimensions
                 if len(diff.shape) > 1:
                     diff = np.linalg.norm(diff, axis=1)
 
-                _dict_add([all_errors, all_weights], [diff, _promote(weight, diff)], at_category, prop + ind_label)
+                ref_quant = _reshape_normalize(ref_quant, at)
+                calc_quant = _reshape_normalize(calc_quant, at)
 
-    all_errors["_ALL_"] = all_errors.pop("")
+                _dict_add([all_diffs, all_weights,            all_parity["ref"],   all_parity["calc"]], 
+                          [diff,      _promote(weight, diff), ref_quant,           calc_quant        ],
+                          at_category, prop + ind_label)
+
+    all_diffs["_ALL_"] = all_diffs.pop("")
     all_weights["_ALL_"] = all_weights.pop("")
 
-    for cat in all_errors:
-        for prop in all_errors[cat]:
-            errs = np.asarray(all_errors[cat][prop])
+    all_errors = {}
+    for cat in all_diffs:
+        all_errors[cat] = {}
+        for prop in all_diffs[cat]:
+            diffs = np.asarray(all_diffs[cat][prop])
             weights = np.asarray(all_weights[cat][prop])
 
-            ## RMS = np.sqrt(np.sum((errs ** 2) * weights) / np.sum(weights))
-            RMS = np.sqrt(np.sum(errs ** 2) / len(errs))
-            MAE = np.sum(np.abs(errs) * weights) / np.sum(weights)
-            num = len(errs)
+            RMS = np.sqrt(np.sum((diffs ** 2) * weights) / np.sum(weights))
+            MAE = np.sum(np.abs(diffs) * weights) / np.sum(weights)
+            num = len(diffs)
 
             all_errors[cat][prop] = {'RMS': RMS, 'MAE': MAE, 'num' : num}
 
-    return all_errors
+    return all_errors, all_diffs, all_parity
 
 
 def _promote(weight, val):
