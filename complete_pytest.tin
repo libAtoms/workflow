@@ -25,8 +25,15 @@ export MKL_NUM_THREADS=1
 # required for descriptor calc to not hang
 export OMP_NUM_THREADS=1
 
-rm -rf $HOME/pytest_wfl
-pytest -v -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
+if [ ! -z $WFL_PYTEST_DIR ]; then
+    echo "Running in non-standard $WFL_PYTEST_DIR" 1>&2
+    pytest_dir=$WFL_PYTEST_DIR
+else
+    pytest_dir=$HOME/pytest_wfl
+fi
+
+rm -rf $pytest_dir
+pytest -v -s --basetemp $pytest_dir --runremote --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
 
 l=`egrep '^=.*(passed|failed|skipped|xfailed)' complete_pytest.tin.out`
 
