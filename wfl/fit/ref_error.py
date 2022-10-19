@@ -49,6 +49,10 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
     if config_properties is None and atom_properties is None:
         config_properties = ["energy/atom", "virial/atom"]
         atom_properties = ["forces"]
+    if config_properties is None:
+        config_properties = []
+    if atom_properties is None:
+        atom_properties = []
 
     # optionally calculate properties to be compared to reference
     if not isinstance(calc_property_prefix, str):
@@ -132,7 +136,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                 Zs = at.numbers
                 inds = Zs
                 if by_species:
-                    ind_groups = [(Z, f" / Z={Z}") for Z in sorted(set(Zs))]
+                    ind_groups = [(Z, f"_{Z}") for Z in sorted(set(Zs))]
                 else:
                     ind_groups = [(Zs, "")]
 
@@ -153,7 +157,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                 if len(diff.shape) > 1:
                     diff = np.linalg.norm(diff, axis=1)
 
-                _dict_add([all_errors, all_weights], [diff, _promote(weight, diff)], at_category + ind_label, prop)
+                _dict_add([all_errors, all_weights], [diff, _promote(weight, diff)], at_category, prop + ind_label)
 
     all_errors["_ALL_"] = all_errors.pop("")
     all_weights["_ALL_"] = all_weights.pop("")

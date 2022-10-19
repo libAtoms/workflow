@@ -88,67 +88,70 @@ def test_ref_error(tmp_path, ref_atoms):
 
 
 def test_err_from_calc(ref_atoms):
-    ref_atoms_calc = calc_run(ref_atoms, LennardJones(sigma=0.75), output_prefix='calc_')
-    ref_err_dict = ref_erro_calc(ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_',
-                                 properties=['energy/atom', 'forces', 'virial/atom'])
+    ref_atoms_calc = generic_calc(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
+    ref_err_dict = ref_err_calc(ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_',
+                                config_properties=['energy/atom', 'virial/atom/comp'], atom_properties=["forces"])
 
     print(ref_err_dict)
-    assert approx(ref_err_dict['_ALL_']['energy/atom'][1]) == __ALL__energy_per_atom
-    assert approx(ref_err_dict['_ALL_']['forces'][1]) == __ALL__forces
-    assert approx(ref_err_dict['_ALL_']['virial/atom'][1]) == __ALL__virial_per_atom
-    assert ref_err_dict['_ALL_']['energy/atom'][0] == 10
-    assert ref_err_dict['_ALL_']['forces'][0] == 10 * 4
-    assert ref_err_dict['_ALL_']['virial/atom'][0] == 10 * 6
+    assert approx(ref_err_dict['_ALL_']['energy/atom']["RMS"]) == __ALL__energy_per_atom
+    assert approx(ref_err_dict['_ALL_']['forces']["RMS"]) == __ALL__forces
+    assert approx(ref_err_dict['_ALL_']['virial/atom/comp']["RMS"]) == __ALL__virial_per_atom
+    assert ref_err_dict['_ALL_']['energy/atom']["num"] == 10
+    assert ref_err_dict['_ALL_']['forces']["num"] == 10 * 4
+    assert ref_err_dict['_ALL_']['virial/atom/comp']["num"] == 10 * 6
 
 
 def test_ref_error_properties(ref_atoms):
-    ref_atoms_calc = calc_run(ref_atoms, LennardJones(sigma=0.75), output_prefix='calc_')
+    ref_atoms_calc = generic_calc(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     # both energy and per atom
     ref_err_dict = ref_err_calc(
-        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["energy", "energy_per_atom"])
+        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', config_properties=["energy", "energy/atom"],
+        category_keys=[])
 
     assert len(ref_err_dict.keys()) == 1
     assert len(ref_err_dict['_ALL_'].keys()) == 2
 
-    assert approx(ref_err_dict['_ALL_']['energy/atom'][1]) == __ALL__energy_per_atom
-    assert approx(ref_err_dict['_ALL_']['energy'][1]) == __ALL__energy
+    assert approx(ref_err_dict['_ALL_']['energy/atom']["RMS"]) == __ALL__energy_per_atom
+    assert approx(ref_err_dict['_ALL_']['energy']["RMS"]) == __ALL__energy
 
-    assert ref_err_dict['_ALL_']['energy'][0] == 10
-    assert ref_err_dict['_ALL_']['energy/atom'][0] == 10
+    assert ref_err_dict['_ALL_']['energy']["num"] == 10
+    assert ref_err_dict['_ALL_']['energy/atom']["num"] == 10
 
     # only energy
     ref_err_dict = ref_err_calc(
-        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["energy"])
+        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', config_properties=["energy"],
+        category_keys=[])
 
     assert len(ref_err_dict.keys()) == 1
     assert len(ref_err_dict['_ALL_'].keys()) == 1
 
-    assert ref_err_dict['_ALL_']['energy'][0] == 10
-    assert approx(ref_err_dict['_ALL_']['energy'][1]) == __ALL__energy
+    assert ref_err_dict['_ALL_']['energy']["num"] == 10
+    assert approx(ref_err_dict['_ALL_']['energy']["RMS"]) == __ALL__energy
 
     # only stress
     ref_err_dict = ref_err_calc(
-        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["stress", "virial"])
+        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', config_properties=["stress/comp", "virial/comp"],
+        category_keys=[])
 
     assert len(ref_err_dict.keys()) == 1
     assert len(ref_err_dict['_ALL_'].keys()) == 2
 
-    assert ref_err_dict['_ALL_']['stress'][0] == 60
-    assert approx(ref_err_dict['_ALL_']['stress'][1]) == __ALL__stress
+    assert ref_err_dict['_ALL_']['stress/comp']["num"] == 60
+    assert approx(ref_err_dict['_ALL_']['stress/comp']["RMS"]) == __ALL__stress
 
-    assert ref_err_dict['_ALL_']['virial'][0] == 60
-    assert approx(ref_err_dict['_ALL_']['virial'][1]) == __ALL__virial
+    assert ref_err_dict['_ALL_']['virial/comp']["num"] == 60
+    assert approx(ref_err_dict['_ALL_']['virial/comp']["RMS"]) == __ALL__virial
 
 
 def test_ref_error_forces(ref_atoms):
-    ref_atoms_calc = calc_run(ref_atoms, LennardJones(sigma=0.75), output_prefix='calc_')
+    ref_atoms_calc = generic_calc(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     # forces by element
     ref_err_dict = ref_err_calc(
-        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["forces/Z"])
-    assert ref_err_dict['_ALL_']['forces'][13][0] == 40
-    assert approx(ref_err_dict['_ALL_']['forces'][13][1]) == __ALL__forces
+        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', atom_properties=["forces/Z"])
+    assert ref_err_dict['_ALL_']['forces/Z_13']["num"] == 40
+    assert approx(ref_err_dict['_ALL_']['forces/Z_13']["RMS"]) == __ALL__forces
 
     # remove error info so next call won't complain
     for at in ref_atoms_calc:
@@ -158,14 +161,14 @@ def test_ref_error_forces(ref_atoms):
 
     # forces by component
     ref_err_dict = ref_err_calc(
-        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', properties=["forces/comp/Z"])
-    assert ref_err_dict['_ALL_']['forces'][13][0] == 120
-    assert approx(ref_err_dict['_ALL_']['forces'][13][1]) == 29490136730.741474
+        ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', atom_properties=["forces/comp/Z"])
+    assert ref_err_dict['_ALL_']['forces/comp/Z_13']["num"] == 120
+    assert approx(ref_err_dict['_ALL_']['forces/comp/Z_13']["RMS"]) == 29490136730.741474
 
 
 @pytest.mark.filterwarnings("ignore:missing reference:UserWarning")
 def test_ref_error_missing(ref_atoms):
-    ref_atoms_calc = calc_run(ref_atoms, LennardJones(sigma=0.75), output_prefix='calc_')
+    ref_atoms_calc = generic_calc(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     ref_atoms_list = [at for at in ref_atoms_calc]
 
@@ -181,29 +184,6 @@ def test_ref_error_missing(ref_atoms):
     ref_err_dict = ref_err_calc(
         ref_atoms_list, ref_property_prefix='REF_', calc_property_prefix='calc_', category_keys=[])
 
-    assert ref_err_dict["_ALL_"]["energy_per_atom"][0] == 7
-    assert ref_err_dict["_ALL_"]["forces"][0] == 24
-    assert ref_err_dict["_ALL_"]["virial_per_atom"][0] == 42
-
-
-def test_dict_tuple_keys_to_str():
-    in_dict = {"_just-a-str-key_": 0.12312,
-               ("a single element tuple",): 172398,
-               ("multi", "element", "tuple"): 1325235,
-               ("my value is a dict",): {"a": 34}}
-
-    out_ref = {"_just-a-str-key_": 0.12312,
-               "(a single element tuple)": 172398,
-               "(multi,element,tuple)": 1325235,
-               "(my value is a dict)": {"a": 34}}
-
-    out = dict_tuple_keys_to_str(in_dict)
-
-    print('out_ref')
-    pprint(out_ref)
-    print('out')
-    pprint(out)
-    for key, val in out.items():
-        print('key', key, 'val', val)
-        assert key in out_ref.keys()
-        assert out_ref[key] == val
+    assert ref_err_dict["_ALL_"]["energy/atom"]["num"] == 7
+    assert ref_err_dict["_ALL_"]["forces"]["num"] == 24
+    assert ref_err_dict["_ALL_"]["virial/atom"]["num"] == 7
