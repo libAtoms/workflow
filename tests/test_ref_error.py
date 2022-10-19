@@ -55,6 +55,7 @@ def test_ref_error(tmp_path, ref_atoms):
                                 category_keys='category', config_properties=["energy/atom", "virial/atom/comp"],
                                 atom_properties=["forces"])
 
+    print("test_ref_error")
     pprint(ref_err_dict)
     assert ref_err_dict.keys() == {'_ALL_', '0', '1', 'None'}
 
@@ -92,7 +93,6 @@ def test_err_from_calc(ref_atoms):
     ref_err_dict = ref_err_calc(ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_',
                                 config_properties=['energy/atom', 'virial/atom/comp'], atom_properties=["forces"])
 
-    print(ref_err_dict)
     assert approx(ref_err_dict['_ALL_']['energy/atom']["RMS"]) == __ALL__energy_per_atom
     assert approx(ref_err_dict['_ALL_']['forces']["RMS"]) == __ALL__forces
     assert approx(ref_err_dict['_ALL_']['virial/atom/comp']["RMS"]) == __ALL__virial_per_atom
@@ -166,7 +166,6 @@ def test_ref_error_forces(ref_atoms):
     assert approx(ref_err_dict['_ALL_']['forces/comp/Z_13']["RMS"]) == 29490136730.741474
 
 
-@pytest.mark.filterwarnings("ignore:missing reference:UserWarning")
 def test_ref_error_missing(ref_atoms):
     ref_atoms_calc = generic_calc(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
@@ -187,3 +186,24 @@ def test_ref_error_missing(ref_atoms):
     assert ref_err_dict["_ALL_"]["energy/atom"]["num"] == 7
     assert ref_err_dict["_ALL_"]["forces"]["num"] == 24
     assert ref_err_dict["_ALL_"]["virial/atom"]["num"] == 7
+
+
+def test_ref_error_subcar(ref_atoms):
+    ref_atoms_calc = generic_calc(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
+
+    ref_atoms_list = [at for at in ref_atoms_calc]
+
+    # forces by element
+    ref_err_dict = ref_err_calc(
+        ref_atoms_list, ref_property_prefix='REF_', calc_property_prefix='calc_', category_keys=["category", "subcategory"])
+
+    assert ref_err_dict["_ALL_"]["energy/atom"]["num"] == 10
+    assert ref_err_dict["_ALL_"]["forces"]["num"] == 40
+    assert ref_err_dict["_ALL_"]["virial/atom"]["num"] == 10
+
+    assert ref_err_dict["0 / 0"]["energy/atom"]["num"] == 2
+    assert ref_err_dict["0 / 1"]["energy/atom"]["num"] == 1
+    assert ref_err_dict["1 / 0"]["energy/atom"]["num"] == 1
+    assert ref_err_dict["1 / 1"]["energy/atom"]["num"] == 2
+    assert ref_err_dict["None / 0"]["energy/atom"]["num"] == 2
+    assert ref_err_dict["None / 1"]["energy/atom"]["num"] == 2
