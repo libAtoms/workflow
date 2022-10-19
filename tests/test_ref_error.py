@@ -210,10 +210,12 @@ def test_ref_error_subcat(ref_atoms):
 
 
 def test_ref_error_diffs(tmp_path, ref_atoms):
-    ref_error_dict, ref_error_diffs, _ = ref_err_calc(
+    ref_error_dict, ref_error_diffs, ref_error_parity = ref_err_calc(
         ref_atoms, LennardJones(sigma=0.75), 'REF_',
         category_keys='category', config_properties=["energy/atom", "virial/atom/comp"],
         atom_properties=["forces"])
 
     assert ref_error_dict["None"]["virial/atom/comp"]["num"] == 24
     assert len(ref_error_diffs["None"]["virial/atom/comp"]) == 24
+    assert len(ref_error_parity["ref"]["None"]["virial/atom/comp"]) == 24
+    assert len(ref_error_parity["calc"]["None"]["virial/atom/comp"]) == 24
