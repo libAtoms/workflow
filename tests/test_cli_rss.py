@@ -96,8 +96,8 @@ def do_full_test(runner, assets_dir, monkeypatch):
     # make sure env vars and basic files for buildcell, vasp are ready
     if "GAP_RSS_TEST_SETUP" in os.environ:
         # real VASP, make sure it is configured
-        assert "VASP_COMMAND" in os.environ
-        assert "VASP_COMMAND_GAMMA" in os.environ
+        assert "ASE_VASP_COMMAND" in os.environ
+        assert "ASE_VASP_COMMAND_GAMMA" in os.environ
         assert "VASP_PP_PATH" in os.environ
         # use real buildcell
         assert "GRIF_BUILDCELL_CMD" in os.environ
