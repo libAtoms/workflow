@@ -52,7 +52,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
 
     # default properties
     if config_properties is None and atom_properties is None:
-        config_properties = ["energy/atom", "virial/atom"]
+        config_properties = ["energy/atom", "virial/atom/comp"]
         atom_properties = ["forces"]
     if config_properties is None:
         config_properties = []
