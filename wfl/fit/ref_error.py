@@ -179,6 +179,8 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
 
     all_diffs["_ALL_"] = all_diffs.pop("")
     all_weights["_ALL_"] = all_weights.pop("")
+    for k in all_parity.keys():
+        all_parity[k]["_ALL_"] = all_parity[k].pop("")
 
     all_errors = {}
     for cat in all_diffs:
