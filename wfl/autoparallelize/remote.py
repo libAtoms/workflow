@@ -9,7 +9,7 @@ from .utils import grouper
 from .remoteinfo import RemoteInfo
 from .pool import do_in_pool
 
-from expyre import ExPyRe
+from expyre import ExPyRe, ExPyReJobDiedError
 
 
 def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1, iterable=None, outputspec=None, op=None, iterable_arg=0,
@@ -81,6 +81,21 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
             sys.stderr.write(f'Starting job for {xpr.id}\n')
         xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
                   exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
+
+    if remote_info.resubmit_killed_jobs:
+        # need to loop over all jobs and get results with timeout 0, to look for all failures
+        for xpr in xprs:
+            try:
+                ats_out, stdout, stderr = xpr.get_results(timeout=0, check_interval=0)
+            except ExPyReJobDiedError:
+                # job has actually failed, resubmit
+                warnings.warn("Failed job {xpr.id} died, resubmitting")
+                xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
+                          exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node, force_rerun=True)
+            except Exception:
+                # ignore all other exceptions here, including ExPyReTimeoutError and real remote exceptions,
+                # deal with them below
+                pass
 
     # gather results and write them to original outputspec
     at_i = 0
