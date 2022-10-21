@@ -40,7 +40,7 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
     xprs = []
     # place to keep track of input files, one per input item, so that output can go to corresponding file
     input_locs = []
-    # list of all items, wastes space so used only if remote_info.skip_failures is True
+    # list of all items, wastes space so used only if remote_info.ignore_failed_jobs is True
     all_items = []
     for chunk_i, items_gen in enumerate(items_inputs_generator):
         items = []
@@ -51,7 +51,7 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
             items.append(item)
             input_locs.append(cur_input_loc)
 
-        if remote_info.skip_failures:
+        if remote_info.ignore_failed_jobs:
             all_items.append(items)
 
         job_name = remote_info.job_name + f'_chunk_{chunk_i}'
@@ -92,7 +92,7 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
             ats_out, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
         except Exception as exc:
             warnings.warn(f'Failed in remote job {xpr.id} on {xpr.system_name}')
-            if not remote_info.skip_failures:
+            if not remote_info.ignore_failed_jobs:
                 raise
             if len(all_items) > 0 and isinstance(all_items[chunk_i][0], Atoms):
                 # get ready to write input configs to output
@@ -107,7 +107,7 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
 
         if ats_out is None:
             # Skip the right number of input files. If we're here,
-            # remote_info.skip_failures must be True, so all_items should be filled
+            # remote_info.ignore_failed_jobs must be True, so all_items should be filled
             at_i += len(all_items[chunk_i])
         else:
             for at in ats_out.groups():
