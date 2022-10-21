@@ -9,7 +9,7 @@ from wfl.calculators.generic import run as generic_calc
 
 def calc(inputs, calc_property_prefix, ref_property_prefix,
          config_properties=None, atom_properties=None, category_keys="config_type",
-         weight_property=None, autopara_info=None):
+         weight_property=None, calc_outputs=None, calc_autopara_info=None):
     """calculate error for calculation results relative to stored reference values
 
     Parameters
@@ -36,8 +36,11 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
         keys in Atoms.info, in addition to overall average _ALL_ category.
     weight_property: str, optional
         if present, Atoms.info key for weights to apply to RMSE calculation
-    autopara_info: AutoparaInfo, optional
-        if present, autoparallelization info for optional initial calculation of properties to be tested
+    calc_outputs: OutputSpec, optional
+        where to store configs with calculated properties from optional calculation of
+        properties to be tested
+    calc_autopara_info: AutoparaInfo, optional
+        autoparallelization info for optional initial calculation of properties to be tested
 
     Returns
     -------
@@ -58,9 +61,9 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
         calculator_properties = [re.sub(r"^virial$", "stress", re.sub(r"/atom\b", "", re.sub(r"/comp\b", "", re.sub(r"/Z\b", "", prop)))) for
                                  prop in config_properties + atom_properties]
         generic_calc_kwargs = {}
-        if autopara_info is not None:
-            generic_calc_kwargs = { "autopara_info": autopara_info }
-        inputs = generic_calc(inputs, OutputSpec(), calc_property_prefix, properties=calculator_properties, output_prefix="ref_error_calc_",
+        if calc_autopara_info is not None:
+            generic_calc_kwargs = { "autopara_info": calc_autopara_info }
+        inputs = generic_calc(inputs, calc_outputs, calc_property_prefix, properties=calculator_properties, output_prefix="ref_error_calc_",
                               **generic_calc_kwargs)
         calc_property_prefix = "ref_error_calc_"
 
