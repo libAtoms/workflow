@@ -44,7 +44,10 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
 
     Returns
     -------
-        errors: dict of energy per atom, force, virial per atom rms errors for each category
+        errors: dict of RMS and MAE errors for each category and property
+        diffs: dict with list of differences for each category and property
+        parity: dict with "ref" and "calc" keys, each containing list of property values for
+            each category and property, for parity plots
     """
 
     # default properties
