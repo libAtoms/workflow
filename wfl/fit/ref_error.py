@@ -20,7 +20,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
         prefix to info/array keys for calculated properties, or calculator constructor
     ref_property_prefix: str
         prefix to info/array keys for reference properties
-    config_properties: list(str), default ["energy/atom", "virial/atom"]
+    config_properties: list(str), default ["energy/atom", "virial/atom/comp"]
         list of ``Atoms.info`` calculated properties (to be prefixed by ``ref_property_prefix``
         or ``calc_property_prefix``) to compute error for.  ``virial`` will be reconstructed from ``stress``.
         Properties can end with ``/atom`` or ``/comp`` for different components being counted separately.
@@ -66,6 +66,8 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
         generic_calc_kwargs = {}
         if calc_autopara_info is not None:
             generic_calc_kwargs = { "autopara_info": calc_autopara_info }
+        if calc_outputs is None:
+            calc_outputs = OutputSpec()
         inputs = generic_calc(inputs, calc_outputs, calc_property_prefix, properties=calculator_properties, output_prefix="ref_error_calc_",
                               **generic_calc_kwargs)
         calc_property_prefix = "ref_error_calc_"
