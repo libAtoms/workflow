@@ -9,6 +9,8 @@ import numpy as np
 
 import ase.io
 from ase.atoms import Atoms
+
+from ase.calculators.calculator import PropertyNotImplementedError
 from ase.calculators.emt import EMT
 
 import pytest
@@ -20,6 +22,7 @@ from wfl.calculators import generic
 from wfl.generate import optimize
 from wfl.calculators import generic
 from wfl.calculators.vasp import Vasp
+from wfl.autoparallelize.autoparainfo import AutoparaInfo
 
 def test_generic_calc(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
@@ -217,3 +220,60 @@ def do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env):
         assert at_local.info['orig_file'] == at.info['orig_file']
         assert at_local.info['orig_file_seq_no'] == at.info['orig_file_seq_no']
         assert np.abs((at_local.info['optimize_energy'] - at.info['optimize_energy']) / at_local.info['optimize_energy']) < 1.0e-8
+
+
+def test_fail_immediately(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
+    for sys_name in expyre_systems:
+        if sys_name.startswith('_'):
+            continue
+
+        do_fail_immediately(tmp_path, sys_name, monkeypatch, remoteinfo_env)
+
+
+def do_fail_immediately(tmp_path, sys_name, monkeypatch, remoteinfo_env):
+    ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
+          'resources': {'max_time': '1m', 'num_nodes': 1},
+          'num_inputs_per_queued_job': 1, 'check_interval': 10}
+    remoteinfo_env(ri)
+
+    ri = {"test_fail_immediately": ri}
+    print("RemoteInfo", ri)
+
+    ats = [Atoms('C') for _ in range(3)]
+
+    calc = EMT()
+
+    ats[1].numbers = [14]
+
+    monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
+    with pytest.raises(PropertyNotImplementedError):
+        results = generic.run(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, raise_calc_exceptions=True,
+                              autopara_info=AutoparaInfo(remote_label="test_fail_immediately"))
+
+
+def test_ignore_failed_jobs(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
+    for sys_name in expyre_systems:
+        if sys_name.startswith('_'):
+            continue
+
+        do_ignore_failed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env)
+
+def do_ignore_failed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env):
+    ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
+          'resources': {'max_time': '1m', 'num_nodes': 1},
+          'num_inputs_per_queued_job': 1, 'check_interval': 10,
+          'ignore_failed_jobs': True}
+    remoteinfo_env(ri)
+
+    ri = {"test_ignore_failed_jobs": ri}
+    print("RemoteInfo", ri)
+
+    ats = [Atoms('C') for _ in range(3)]
+
+    calc = EMT()
+
+    ats[1].numbers = [14]
+
+    monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
+    results = generic.run(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, raise_calc_exceptions=True,
+                          autopara_info=AutoparaInfo(remote_label="test_ignore_failed_jobs"))
