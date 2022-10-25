@@ -67,12 +67,11 @@ def get_ref_error(in_file, out_file, gap_file, **kwargs):
     ref_property_prefix = kwargs.get('ref_property_prefix', 'DFT_')
     category_keys = kwargs.get('category_keys', None)
 
-    error = ref_calc(in_config, out_config, calculator,
-        ref_property_prefix, category_keys
-    )
+    error, _, _ = ref_calc(in_config, calculator, ref_property_prefix,
+                           category_keys=category_keys)
     error = error['_ALL_']
-    error['energy'] = error.pop('energy_per_atom')[1]
-    error['forces'] = error.pop('forces')[1]
+    error['energy'] = error.pop('energy/atom')["RMS"]
+    error['forces'] = error.pop('forces')["RMS"]
     return error
 
 

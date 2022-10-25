@@ -1,7 +1,5 @@
 import warnings
-from pathlib import Path
-from pprint import pprint
-import json
+import re
 
 import numpy as np
 
@@ -9,205 +7,216 @@ from wfl.configset import ConfigSet, OutputSpec
 from wfl.calculators.generic import run as generic_calc
 
 
-def calc(input_configs, output_configs, calculator,
-         ref_property_prefix, category_keys):
-    """Calculate errors for some potential relative to some reference data.
-    NOTE: several optional args such as properties and forces_by_components are not yet available.
-
-    Parameters
-    ----------
-    input_configs: ConfigSet
-        configs to check
-    output_configs: OutputSpec
-        optional location for calculated configs (otherwise will be in memory, and lost when function returns)
-    calculator: tuple(constructor, args, kwargs)
-        contructor for calculator with any args or kwargs
-    ref_property_prefix: str
-        prefix to property names for reference values
-    category_keys: list(str)
-        list of info keys to use to create categories that configs are grouped into
-
-    Returns
-    -------
-    error: dict
-        error for each quantity by group
-    """
-
-    # remove calc because multiprocessing.pool.map (used by the autoparallelize invoked in
-    # calc) will send an Atoms object with pickle, and you can't pickle
-    # an Atoms with a Potential attached as a calculator (weakref)
-    input_configs = ConfigSet(list(input_configs))
-    for at in input_configs:
-        at.calc = None
-
-    if output_configs is None:
-        output_configs = OutputSpec()
-
-    properties, calculator_properties = get_properties()
-
-    # NOTE: should this, which requires storing all calculation results (in memory or a file), be the abstraction,
-    # or should a single routine loop over atoms, do a calc, and accumulate error?
-    # current approach nicely parallelizes using existing calculator parallelization over ConfigSet
-    calculated_ats = generic_calc(input_configs, output_configs, calculator, properties=calculator_properties,
-                                  output_prefix='calc_')
-
-    return err_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_prefix='calc_',
-                                   properties=properties, category_keys=category_keys)
-
-
-def get_properties(properties=None):
-    if properties is None:
-        properties = ['energy_per_atom', 'forces', 'virial_per_atom']
-    calculator_properties = []
-    if 'energy' or 'energy_per_atom' in properties:
-        calculator_properties.append('energy')
-    if 'forces' in properties:
-        calculator_properties.append('forces')
-    if 'stress' or 'virial' or 'virial_per_atom' in properties:
-        calculator_properties.append('stress')
-    return properties, calculator_properties
-
-
-def err_from_calculated_ats(calculated_ats, ref_property_prefix, calc_property_prefix,
-                             properties=None, category_keys=None,
-                             forces_by_component=False, forces_by_element=False):
+def calc(inputs, calc_property_prefix, ref_property_prefix,
+         config_properties=None, atom_properties=None, category_keys="config_type",
+         weight_property=None, calc_outputs=None, calc_autopara_info=None):
     """calculate error for calculation results relative to stored reference values
 
     Parameters
     ----------
-    calculated_ats: iterable(Atoms)
-        input configurations with reference values and calculated in info/arrays
+    inputs: iterable(Atoms)
+        input configurations with reference and calculated values in Atoms.info/arrays
+    calc_property_prefix: str / Calculator / tuple(calculator_constructor, args, kwargs)
+        prefix to info/array keys for calculated properties, or calculator constructor
     ref_property_prefix: str
         prefix to info/array keys for reference properties
-    calc_property_prefix: str
-        prefix to info/array keys for calculated properties
-    properties: list(str)
-        list of 'energy', 'energy_per_atom', 'forces', 'stress', 'virial', 'virial_per_atom' to compute error for
-    category_keys: str / list(str), default None
-        results will be averaged by category, defined by a tuple containing the values of these
-        keys in atoms.info, in addition to overall average _ALL_ category.
-    forces_by_component: bool, default False
-        define force error as difference between each component, rather than norm of vector difference
-    forces_by_element: bool, default False
-        calculate force error for each element separately
+    config_properties: list(str), default ["energy/atom", "virial/atom/comp"]
+        list of ``Atoms.info`` calculated properties (to be prefixed by ``ref_property_prefix``
+        or ``calc_property_prefix``) to compute error for.  ``virial`` will be reconstructed from ``stress``.
+        Properties can end with ``/atom`` or ``/comp`` for different components being counted separately.
+        Default only used if neither ``config_properties`` nor ``atom_properties`` is present.
+    atom_properties: list(str), default ["forces"]
+        list of `Atoms.arrays` calculated properties (to be prefixed by ``ref_property_prefix``
+        or ``calc_property_prefix``) to compute error For.  Properties can end with ``/comp``
+        for different components being computed separately, and ``/Z`` for different atomic numbers
+        to be assigned to different categories.  Default only used if neither ``config_properties``
+        nor ``atom_properties`` is present.
+    category_keys: str / list(str), default "config_type"
+        results will be averaged by category, defined by a string containing the values of these
+        keys in Atoms.info, in addition to overall average _ALL_ category.
+    weight_property: str, optional
+        if present, Atoms.info key for weights to apply to RMSE calculation
+    calc_outputs: OutputSpec, optional
+        where to store configs with calculated properties from optional calculation of
+        properties to be tested
+    calc_autopara_info: AutoparaInfo, optional
+        autoparallelization info for optional initial calculation of properties to be tested
 
     Returns
     -------
-        errors: dict of energy per atom, force, virial per atom rms errors for each category
+        errors: dict of RMS and MAE errors for each category and property
+        diffs: dict with list of differences for each category and property
+        parity: dict with "ref" and "calc" keys, each containing list of property values for
+            each category and property, for parity plots
     """
 
-    properties, _ = get_properties(properties)
+    # default properties
+    if config_properties is None and atom_properties is None:
+        config_properties = ["energy/atom", "virial/atom/comp"]
+        atom_properties = ["forces"]
+    if config_properties is None:
+        config_properties = []
+    if atom_properties is None:
+        atom_properties = []
 
+    # optionally calculate properties to be compared to reference
+    if not isinstance(calc_property_prefix, str):
+        calculator_properties = [re.sub(r"^virial$", "stress", re.sub(r"/atom\b", "", re.sub(r"/comp\b", "", re.sub(r"/Z\b", "", prop)))) for
+                                 prop in config_properties + atom_properties]
+        generic_calc_kwargs = {}
+        if calc_autopara_info is not None:
+            generic_calc_kwargs = { "autopara_info": calc_autopara_info }
+        if calc_outputs is None:
+            calc_outputs = OutputSpec()
+        inputs = generic_calc(inputs, calc_outputs, calc_property_prefix, properties=calculator_properties, output_prefix="ref_error_calc_",
+                              **generic_calc_kwargs)
+        calc_property_prefix = "ref_error_calc_"
+
+    # clean up category_keys
     if isinstance(category_keys, str):
         category_keys = [category_keys]
-    if category_keys is not None and len(category_keys) == 0:
-        category_keys = None
+    elif category_keys is None:
+        category_keys = []
 
-    all_errors = {None: {}}
-    for at_i, at in enumerate(calculated_ats):
-        if category_keys is None:
-            category = None
-        else:
-            category = tuple([at.info.get(key, None) for key in category_keys])
-        if category not in all_errors:
-            all_errors[category] = {}
+    def _reshape_normalize(diff, at):
+        if per_component:
+            # one long vector
+            diff = diff.reshape((-1))
+        elif prop in atom_properties:
+            # flatten any vector/matrix dimensions so norm below is correct
+            diff = diff.reshape((len(at), -1))
 
-        at_errors = {}
+        if per_atom:
+            diff /= len(at)
 
-        def _get(key, display_name, per_atom_prop):
-            # simple getter for ref/calc properties
-            try:
-                if per_atom_prop:
-                    return at.arrays[key]
+        return diff
+
+    # compute diffs and store in all_diffs, and weights in all_weights
+    all_diffs = {}
+    all_parity = { "ref": {}, "calc": {} }
+    all_weights = {}
+    for at in inputs:
+        # turn category keys into a single string for dict key
+        at_category = " / ".join([str(at.info.get(k)) for k in category_keys])
+        weight = at.info.get(weight_property, 1.0)
+
+        if len(set(config_properties).intersection(set(atom_properties))) > 0:
+            raise ValueError(f"Property {set(config_properties).intersection(set(atom_properties))} "
+                             "appears in both config_properties and atom_properties")
+
+        for prop in config_properties + atom_properties:
+            prop_use = prop
+
+            # parse (and remove) "/..." suffixes
+            per_atom = re.search(r"/atom\b", prop_use)
+            prop_use = re.sub(r"/atom\b", "", prop_use)
+            per_component = re.search(r"/comp\b", prop)
+            prop_use = re.sub(r"/comp\b", "", prop_use)
+            by_species = re.search(r"/Z\b", prop_use)
+            prop_use = re.sub(r"/Z\b", "", prop_use)
+
+            # possibly reconstruct virial later
+            virial_from_stress = False
+            if prop_use == "virial":
+                prop_use = "stress"
+                virial_from_stress = True
+
+            # select dict and check for inconsistencies
+            if prop in config_properties:
+                if by_species:
+                    raise ValueError("/Z only possible in atom_properties")
+                data = at.info
+            else: # atom_properties
+                if per_atom:
+                    raise ValueError("/atom only possible in config_properties")
+                data = at.arrays
+
+            # grab data
+            ref_quant = data.get(ref_property_prefix + prop_use)
+            calc_quant = data.get(calc_property_prefix + prop_use)
+            # skip if data is missing
+            if ref_quant is None or calc_quant is None:
+                # a warning here?
+                continue
+
+            if virial_from_stress:
+                # ref quant was actually stress, automatically convert
+                ref_quant *= -at.get_volume()
+                calc_quant *= -at.get_volume()
+
+            # make everything into an array
+            if isinstance(ref_quant, (int, float)):
+                ref_quant = np.asarray([ref_quant])
+            if isinstance(calc_quant, (int, float)):
+                calc_quant = np.asarray([calc_quant])
+
+            if prop in config_properties:
+                inds = list(range(len(ref_quant)))
+                ind_groups = [(inds, "")]
+            else: # atom_properties
+                Zs = at.numbers
+                inds = Zs
+                if by_species:
+                    ind_groups = [(Z, f"_{Z}") for Z in sorted(set(Zs))]
                 else:
-                    return at.info[key]
-            except KeyError:
-                warnings.warn(
-                    f'missing {display_name} property from config {at_i} '
-                    f'type {at.info.get("config_type", None)}')
-                return None
+                    ind_groups = [(Zs, "")]
 
-        if 'energy' in properties or 'energy_per_atom' in properties:
-            e_ref = _get(ref_property_prefix + 'energy', "reference energy", False)
-            e_calc = _get(calc_property_prefix + 'energy', "calculated energy", False)
+            for ind_val, ind_label in ind_groups:
+                ref_quant =  ref_quant[inds == ind_val]
+                calc_quant = calc_quant[inds == ind_val] 
 
-            if e_ref is not None and e_calc is not None:
-                e_error = e_calc - e_ref
-                if 'energy' in properties:
-                    at_errors['energy'] = [e_error]
-                    at.info['energy_error'] = e_error
-                if 'energy_per_atom' in properties:
-                    at_errors['energy_per_atom'] = [e_error / len(at)]
-                    at.info['energy_per_atom_error'] = e_error
+                diff = calc_quant - ref_quant
+                diff = _reshape_normalize(diff, at)
 
-        if 'forces' in properties:
-            f_ref = _get(ref_property_prefix + 'forces', "reference forces", True)
-            f_calc = _get(calc_property_prefix + 'forces', "calculated forces", True)
+                # do norm of diff along all vector dimensions
+                if len(diff.shape) > 1:
+                    diff = np.linalg.norm(diff, axis=1)
 
-            if f_ref is not None and f_calc is not None:
-                f_errors = f_calc - f_ref
-                at.new_array('forces_error', f_errors)
-                if forces_by_component:
-                    f_errors = f_errors.reshape((-1))
-                    atomic_numbers = np.asarray([[Z, Z, Z] for Z in at.numbers]).reshape((-1))
-                else:
-                    f_errors = np.linalg.norm(f_errors, axis=1)
-                    atomic_numbers = at.numbers
-                if forces_by_element:
-                    at_errors['forces'] = {Z: f_errors[np.where(atomic_numbers == Z)[0]] for Z in set(at.numbers)}
-                else:
-                    at_errors['forces'] = f_errors
+                ref_quant = _reshape_normalize(ref_quant, at)
+                calc_quant = _reshape_normalize(calc_quant, at)
 
-        if 'stress' in properties or 'virial' in properties or 'virial_per_atom' in properties:
-            stress_ref = _get(ref_property_prefix + 'stress', "reference stress", False)
-            stress_calc = _get(calc_property_prefix + 'stress', "calculated stress", False)
+                _dict_add([all_diffs, all_weights,            all_parity["ref"],   all_parity["calc"]], 
+                          [diff,      _promote(weight, diff), ref_quant,           calc_quant        ],
+                          at_category, prop + ind_label)
 
-            if stress_ref is not None and stress_calc is not None:
-                stress_errors = stress_calc - stress_ref
-                vir_errors = -stress_errors * at.get_volume()
-                if 'stress' in properties:
-                    at_errors['stress'] = stress_errors
-                    at.info['stress_error'] = stress_errors
-                if 'virial' in properties:
-                    at_errors['virial'] = vir_errors
-                    at.info['virial_error'] = vir_errors
-                if 'virial_per_atom' in properties:
-                    at_errors['virial_per_atom'] = vir_errors / len(at)
-                    at.info['virial_per_atom_error'] = vir_errors
+    all_diffs["_ALL_"] = all_diffs.pop("")
+    all_weights["_ALL_"] = all_weights.pop("")
+    for k in all_parity.keys():
+        all_parity[k]["_ALL_"] = all_parity[k].pop("")
 
-        cats = [category]
-        if category is not None:
-            cats += [None]
+    all_errors = {}
+    for cat in all_diffs:
+        all_errors[cat] = {}
+        for prop in all_diffs[cat]:
+            diffs = np.asarray(all_diffs[cat][prop])
+            weights = np.asarray(all_weights[cat][prop])
+
+            RMS = np.sqrt(np.sum((diffs ** 2) * weights) / np.sum(weights))
+            MAE = np.sum(np.abs(diffs) * weights) / np.sum(weights)
+            num = len(diffs)
+
+            all_errors[cat][prop] = {'RMS': RMS, 'MAE': MAE, 'num' : num}
+
+    return all_errors, all_diffs, all_parity
+
+
+def _promote(weight, val):
+    try:
+        return weight * np.ones(val.shape)
+    except AttributeError:
+        return weight
+
+
+def _dict_add(dicts, values, at_category, prop):
+    if at_category == "":
+        cats = [at_category]
+    else:
+        cats = [at_category, ""]
+
+    for d, v in zip(dicts, values):
         for cat in cats:
-            for prop_k in at_errors:
-                # at_errors[prop_k] can be list or dict of lists, add same struct to all_errors
-                if prop_k not in all_errors[cat]:
-                    if isinstance(at_errors[prop_k], dict):
-                        all_errors[cat][prop_k] = {k: [] for k in at_errors[prop_k]}
-                    else:
-                        all_errors[cat][prop_k] = []
-                # fill in list/dict in all_errors
-                if isinstance(at_errors[prop_k], dict):
-                    for k in at_errors[prop_k]:
-                        if k not in all_errors[cat][prop_k]:
-                            all_errors[cat][prop_k][k] = []
-                        all_errors[cat][prop_k][k].extend(at_errors[prop_k][k])
-                else:
-                    all_errors[cat][prop_k].extend(at_errors[prop_k])
-
-    # compute RMS
-    for cat in all_errors.keys():
-        for prop in all_errors[cat]:
-            if isinstance(all_errors[cat][prop], dict):
-                for k in all_errors[cat][prop]:
-                    all_errors[cat][prop][k] = (len(all_errors[cat][prop][k]),
-                                                np.sqrt(np.mean(np.asarray(all_errors[cat][prop][k]) ** 2)))
-            else:
-                all_errors[cat][prop] = (
-                    len(all_errors[cat][prop]), np.sqrt(np.mean(np.asarray(all_errors[cat][prop]) ** 2)))
-
-    # convert None key to '_ALL_'
-    all_errors['_ALL_'] = all_errors[None]
-    del all_errors[None]
-
-    return all_errors
+            if cat not in d:
+                d[cat] = {}
+            if prop not in d[cat]:
+                d[cat][prop] = []
+            d[cat][prop].extend(v)
