@@ -10,7 +10,6 @@ import numpy as np
 import ase.io
 from ase.atoms import Atoms
 
-from ase.calculators.calculator import PropertyNotImplementedError
 from ase.calculators.emt import EMT
 
 import pytest
