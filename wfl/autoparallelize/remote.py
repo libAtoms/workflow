@@ -89,7 +89,7 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
                 ats_out, stdout, stderr = xpr.get_results(timeout=0, check_interval=0)
             except ExPyReJobDiedError:
                 # job has actually failed, resubmit
-                warnings.warn("Failed job {xpr.id} died, resubmitting")
+                warnings.warn(f"Failed job {xpr.id} died, wiping remote and resubmitting")
                 xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
                           exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node, force_rerun=True)
             except Exception:
@@ -101,7 +101,7 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
     at_i = 0
     for chunk_i, xpr in enumerate(xprs):
         if not quiet:
-            sys.stderr.write(f'Gathering results for {xpr.id}\n')
+            sys.stderr.write(f'Gathering results for {xpr.id} remote {xpr.remote_id}\n')
 
         try:
             ats_out, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
