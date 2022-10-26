@@ -25,23 +25,33 @@ export MKL_NUM_THREADS=1
 # required for descriptor calc to not hang
 export OMP_NUM_THREADS=1
 
-rm -rf $HOME/pytest_wfl
-pytest -v -s --basetemp $HOME/pytest_wfl --runremote --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
+if [ ! -z $WFL_PYTEST_DIR ]; then
+    echo "Running in non-standard $WFL_PYTEST_DIR" 1>&2
+    pytest_dir=$WFL_PYTEST_DIR
+else
+    pytest_dir=$HOME/pytest_wfl
+fi
+
+rm -rf $pytest_dir
+pytest -v -s --basetemp $pytest_dir --runremote --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
 
 l=`egrep '^=.*(passed|failed|skipped|xfailed)' complete_pytest.tin.out`
 
 echo "summary line $l"
-# ===== 107 passed, 8 skipped, 2 xfailed, 214 warnings in 3402.72s (0:56:42) =====
+# ========== 123 passed, 10 skipped, 235 warnings in 2887.66s (0:48:07) ==========
 
-declare -A expected_n=( ["passed"]="122" ["skipped"]="9" ["xfailed"]="2" )
+success=1
+declare -A expected_n=( ["passed"]="123" ["skipped"]="10" ["warnings"]=235 )
 echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' | while read out; do
     out_n=$(echo $out | sed -e 's/^=* //' -e 's/ .*//' -e 's/,//')
     out_cat=$(echo $out | sed -e 's/.* //' -e 's/,//')
     if [[ -z ${expected_n[$out_cat]} ]]; then
         echo "Unexpected result '$out_cat' num $out_n"
+        success=0
     else
         if [[ ${expected_n[$out_cat]} != $out_n ]]; then
             echo "Unexpected number $out_n for result '$out_cat', expected ${expected_n[$out_cat]}"
+            success=0
         fi
     fi
     if [[ $out_cat == "failed" ]]; then
@@ -50,8 +60,8 @@ echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' | while read out; do
     fi
 done
 
-if [ $? == 0 ]; then
+if [ $success == 1 ]; then
     echo "SUCCESSS"
 else
-    exit $?
+    exit 2
 fi

@@ -243,7 +243,7 @@ def test_vasp_scratchdir(tmp_path, monkeypatch):
     nfiles = len(list(os.scandir(run_dir[0])))
     assert nfiles == 18
 
-    scratch_dir = Path("/tmp") / str(run_dir[0].resolve()).replace("/", "", 1)
+    scratch_dir = Path("/tmp") / str(run_dir[0].resolve()).replace("/", "", 1).replace("/", "_")
     assert os.path.exists(scratch_dir)
     nfiles_scratch = len(list(os.scandir(scratch_dir)))
     assert nfiles_scratch == 0
