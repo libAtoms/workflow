@@ -26,7 +26,7 @@ from wfl.descriptors.quippy import calc as desc_calc
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.fit.gap.multistage import prep_params
 from wfl.fit.gap.multistage import fit as gap_fit
-from wfl.fit.ref_error import calc as ref_calc
+from wfl.fit.ref_error import calc as ref_error_calc
 from wfl.generate.md import sample as sample_md
 from wfl.generate.optimize import run as optimize
 from wfl.select.by_descriptor import greedy_fps_conf_global
@@ -67,9 +67,9 @@ def get_ref_error(in_file, out_file, gap_file, **kwargs):
     ref_property_prefix = kwargs.get('ref_property_prefix', 'DFT_')
     category_keys = kwargs.get('category_keys', None)
 
-    calc_inf_config = generic_calc(in_config, OutputSpec(), calculator, output_prefix='calc_')
-    error, _, _ = ref_calc(in_config, '_calc_', ref_property_prefix,
-                           category_keys=category_keys)
+    calc_in_config = generic_calc(in_config, OutputSpec(), calculator, output_prefix='calc_')
+    error, _, _ = ref_error_calc(calc_in_config, 'calc_', ref_property_prefix,
+                                 category_keys=category_keys)
     error = error['_ALL_']
     error['energy'] = error.pop('energy/atom')["RMS"]
     error['forces'] = error.pop('forces')["RMS"]
