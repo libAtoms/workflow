@@ -68,18 +68,42 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
     elif category_keys is None:
         category_keys = []
 
-    def _reshape_normalize(diff, at):
-        if per_component:
-            # one long vector
-            diff = diff.reshape((-1))
-        elif prop in atom_properties:
-            # flatten any vector/matrix dimensions so norm below is correct
-            diff = diff.reshape((len(at), -1))
+    def _reshape_normalize(quant, prop, atoms, per_atom):
+        """reshape and normalize quantity so its error can be calculated cleanly
+
+        Parameters
+        ----------
+        quant: scalar number or array of numbers
+            quantity whose error will be computed.  Can be scalar or arbitrary shape
+            array (if per-config) or array with leading dimension len(at) (if per-atom)
+        prop: str
+            name of property
+        atoms: Atoms
+            corresponding atoms object
+        per_atom: bool
+            quantity should be divided by len(atoms)
+
+        Returns
+        -------
+        quant: 2-d array containing reshaped quantity, with leading dimension 1 for per-config
+            or len(atoms) for per-atom
+        """
+        # convert scalars or lists into arrays
+        quant = np.asarray(quant)
+
+        # Reshape to 2-d, with leading dimension 1 for per-config, and len(atoms) for per-atom.
+        # This is the right shape to work with later flattening for per-property and norm calculation
+        # for vector property differences.
+        if prop in config_properties:
+            quant = quant.reshape((1, -1))
+        else:
+            # flatten all except per-atom dimension
+            quant = quant.reshape((len(atoms), -1))
 
         if per_atom:
-            diff /= len(at)
+            quant /= len(atoms)
 
-        return diff
+        return quant
 
     # compute diffs and store in all_diffs, and weights in all_weights
     all_diffs = {}
@@ -136,23 +160,21 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                 ref_quant *= -at.get_volume()
                 calc_quant *= -at.get_volume()
 
-            # make everything into an array
-            if isinstance(ref_quant, (int, float)):
-                ref_quant = np.asarray([ref_quant])
-            if isinstance(calc_quant, (int, float)):
-                calc_quant = np.asarray([calc_quant])
+            # make everything into an appropriately shaped and normalized array
+            ref_quant = _reshape_normalize(ref_quant, prop, at, per_atom)
+            calc_quant = _reshape_normalize(calc_quant, prop, at, per_atom)
 
             if prop in config_properties or not by_species:
                 # If quantities are not being split up by species, make a
                 # group that includes all atoms, so loop below that separates out
                 # things by Z will lump them all together.
-                atom_split_indices = list(range(len(ref_quant)))
+                atom_split_indices = np.asarray(range(len(ref_quant)))
                 atom_split_groups = [(atom_split_indices, "")]
             else: # atom_properties
                 # Make separate groups for each atomic number Z, so their errors
                 # can be tabulated separately.
                 Zs = at.numbers
-                atom_split_indices = Zs
+                atom_split_indices = np.asarray(Zs)
                 atom_split_groups = [(Z, f"_{Z}") for Z in sorted(set(Zs))]
 
             # Loop over groups that errors should be split up by within each configuration.
@@ -160,18 +182,20 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
             for atom_split_index_val, atom_split_index_label in atom_split_groups:
                 # use only subset of quantities that are relevant to this subset of atoms,
                 # normally either all atoms or the ones with one particular atomic number
-                ref_quant =  ref_quant[atom_split_indices == atom_split_index_val]
+                ref_quant = ref_quant[atom_split_indices == atom_split_index_val]
                 calc_quant = calc_quant[atom_split_indices == atom_split_index_val]
 
+                if per_component:
+                    # if per component, flatten all vector component so each is counted separately
+                    ref_quant = ref_quant.reshape((-1, 1))
+                    calc_quant = calc_quant.reshape((-1, 1))
+
                 diff = calc_quant - ref_quant
-                diff = _reshape_normalize(diff, at)
 
-                # do norm of diff along all vector dimensions
-                if len(diff.shape) > 1:
-                    diff = np.linalg.norm(diff, axis=1)
-
-                ref_quant = _reshape_normalize(ref_quant, at)
-                calc_quant = _reshape_normalize(calc_quant, at)
+                if len(diff.shape) != 2:
+                    raise RuntimeError(f"Should never have diff.shape={diff.shape} with dim != 2 (prop {prop + atom_split_index_label})")
+                # compute norm along vector components
+                diff = np.linalg.norm(diff, axis=1)
 
                 _dict_add([all_diffs, all_weights,            all_parity["ref"],   all_parity["calc"]], 
                           [diff,      _promote(weight, diff), ref_quant,           calc_quant        ],
