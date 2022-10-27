@@ -14,7 +14,7 @@ from wfl.utils.round_sig_figs import round_sig_figs
 
 # might be nice to combine Z, vol_per_atom, and bond_lengths into a single dict with Z as key and vol
 # and bond len as values
-def create_input(z, vol_per_atom, bond_lengths, filename, composition=None, RSS_min_vol_factor=0.5,
+def create_input(z, vol_per_atom, bond_lengths, filename=None, composition=None, RSS_min_vol_factor=0.5,
                  vol_range=(0.95, 1.05), min_sep_factor=0.9, symmops='1-8', natom=(6, 24), odd=None, verbose=False):
     if composition is None:
         composition = [1]
@@ -58,18 +58,24 @@ def create_input(z, vol_per_atom, bond_lengths, filename, composition=None, RSS_
         nform.append(int(nat / nat_per_fu))
     nform_str = '{' + ','.join([str(n) for n in nform]) + '}'
 
-    with open(filename, 'w') as fout:
-        # fixme: add docstring for the craziness of buildcell here
-        fout.write('#TARGVOL={}-{}\n'.format(round_sig_figs(target_volume * vol_range[0], 2),
-                                             round_sig_figs(target_volume * vol_range[1], 2)))
-        fout.write('#SPECIES={}\n'.format(species_str))
-        fout.write('#NFORM={}\n'.format(nform_str))
-        fout.write('#SYMMOPS={}\n'.format(symmops))
-        fout.write('#SLACK=0.25\n')
-        fout.write('#OVERLAP=0.1\n')
-        fout.write('#COMPACT\n')
-        fout.write('#MINSEP={}\n'.format(min_sep_str))
-        fout.write('##EXTRA_INFO RSS_min_vol_per_atom={}\n'.format(RSS_min_vol_factor * vol_per_atom))
+    output = ''
+    # fixme: add docstring for the craziness of buildcell here
+    output += '#TARGVOL={}-{}\n'.format(round_sig_figs(target_volume * vol_range[0], 2),
+                               round_sig_figs(target_volume * vol_range[1], 2))
+    output += '#SPECIES={}\n'.format(species_str)
+    output += '#NFORM={}\n'.format(nform_str)
+    output += '#SYMMOPS={}\n'.format(symmops)
+    output += '#SLACK=0.25\n'
+    output += '#OVERLAP=0.1\n'
+    output += '#COMPACT\n'
+    output += '#MINSEP={}\n'.format(min_sep_str)
+    output += '##EXTRA_INFO RSS_min_vol_per_atom={}\n'.format(RSS_min_vol_factor * vol_per_atom)
+
+    if filename is not None:
+        with open(filename, 'w') as fout:
+            fout.write(output)
+
+    return output
 
 
 # could this be replaced with function from ase.io.castep without too much loss of speed?
