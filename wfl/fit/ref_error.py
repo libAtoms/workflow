@@ -153,6 +153,8 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
             # Loop over groups that errors should be split up by within each configuration.
             # Only atomic number Z implemented so far (see above).
             for atom_split_index_val, atom_split_index_label in atom_split_groups:
+                # use only subset of quantities that are relevant to this subset of atoms,
+                # normally either all atoms or the ones with one particular atomic number
                 ref_quant =  ref_quant[atom_split_indices == atom_split_index_val]
                 calc_quant = calc_quant[atom_split_indices == atom_split_index_val]
 
