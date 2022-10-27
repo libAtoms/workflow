@@ -147,7 +147,8 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
             calc_quant = data.get(calc_property_prefix + prop_use)
             if ref_quant is None or calc_quant is None:
                 # skip if data is missing
-                warnings.warn(f"Missing property ref {ref_property_prefix + prop_use} or calc {calc_property_prefix + prop_use}")
+                warnings.warn(f"Missing property ref {ref_property_prefix + prop_use} is None {ref_quant is None} "
+                              f"or calc {calc_property_prefix + prop_use} is None {calc_quant is None}")
                 continue
 
             if virial_from_stress:
