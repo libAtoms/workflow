@@ -671,7 +671,7 @@ ignored if pressure is None, defaults to 3*temperature_tau</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output
 MD logs are not printed unless this is True</p></li>
 <li><p><strong>update_config_type</strong> (<em>bool</em><em>, </em><em>default True</em>) – append “MD” to at.info[‘config_type’]</p></li>
-<li><p><strong>traj_select_during_func</strong> (<em>func</em><em>(</em><em>Atoms</em><em>)</em><em>, </em><em>default None</em>) – Function to sub-select configs from the first trajectory.
+<li><p><strong>traj_select_during_func</strong> (<em>func</em><em>(</em><em>Atoms</em><em>)</em><em>, </em><em>default func</em><em>(</em><em>Atoms</em><em>) </em><em>-&gt; bool=True</em>) – Function to sub-select configs from the first trajectory.
 Used during MD loop with one config at a time, returning True/False</p></li>
 <li><p><strong>traj_select_after_func</strong> (<em>func</em><em>(</em><em>list</em><em>(</em><em>Atoms</em><em>)</em><em>)</em><em>, </em><em>default None</em>) – Function to sub-select configs from the first trajectory.
 Used at end of MD loop with entire trajectory as list, returns subset</p></li>
