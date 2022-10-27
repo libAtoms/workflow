@@ -150,20 +150,24 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
             if isinstance(calc_quant, (int, float)):
                 calc_quant = np.asarray([calc_quant])
 
-            if prop in config_properties:
-                inds = list(range(len(ref_quant)))
-                ind_groups = [(inds, "")]
+            if prop in config_properties or not by_species:
+                # If quantities are not being split up by species, make a
+                # group that includes all atoms, so loop below that separates out
+                # things by Z will lump them all together.
+                atom_split_indices = list(range(len(ref_quant)))
+                atom_split_groups = [(atom_split_indices, "")]
             else: # atom_properties
+                # Make separate groups for each atomic number Z, so their errors
+                # can be tabulated separately.
                 Zs = at.numbers
-                inds = Zs
-                if by_species:
-                    ind_groups = [(Z, f"_{Z}") for Z in sorted(set(Zs))]
-                else:
-                    ind_groups = [(Zs, "")]
+                atom_split_indices = Zs
+                atom_split_groups = [(Z, f"_{Z}") for Z in sorted(set(Zs))]
 
-            for ind_val, ind_label in ind_groups:
-                ref_quant =  ref_quant[inds == ind_val]
-                calc_quant = calc_quant[inds == ind_val] 
+            # Loop over groups that errors should be split up by within each configuration.
+            # Only atomic number Z implemented so far (see above).
+            for atom_split_index_val, atom_split_index_label in atom_split_groups:
+                ref_quant =  ref_quant[atom_split_indices == atom_split_index_val]
+                calc_quant = calc_quant[atom_split_indices == atom_split_index_val]
 
                 diff = calc_quant - ref_quant
                 diff = _reshape_normalize(diff, at)
@@ -177,7 +181,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
 
                 _dict_add([all_diffs, all_weights,            all_parity["ref"],   all_parity["calc"]], 
                           [diff,      _promote(weight, diff), ref_quant,           calc_quant        ],
-                          at_category, prop + ind_label)
+                          at_category, prop + atom_split_index_label)
 
     all_diffs["_ALL_"] = all_diffs.pop("")
     all_weights["_ALL_"] = all_weights.pop("")
