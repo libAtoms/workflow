@@ -51,8 +51,8 @@ def ref_atoms():
 
 
 def test_ref_error(tmp_path, ref_atoms):
-    ref_err_dict, _, _ = ref_err_calc(ref_atoms, LennardJones(sigma=0.75), 'REF_',
-                                      category_keys='category')
+    calc_ats = generic_calc(ConfigSet(ref_atoms), OutputSpec(), LennardJones(sigma=0.75), output_prefix='LJ_')
+    ref_err_dict, _, _ = ref_err_calc(calc_ats, 'LJ_', 'REF_', category_keys='category')
 
     print("test_ref_error")
     pprint(ref_err_dict)
@@ -210,8 +210,8 @@ def test_ref_error_subcat(ref_atoms):
 
 
 def test_ref_error_diffs(tmp_path, ref_atoms):
-    ref_error_dict, ref_error_diffs, ref_error_parity = ref_err_calc(
-        ref_atoms, LennardJones(sigma=0.75), 'REF_', category_keys='category')
+    calc_ats = generic_calc(ConfigSet(ref_atoms), OutputSpec(), LennardJones(sigma=0.75), output_prefix='LJ_')
+    ref_error_dict, ref_error_diffs, ref_error_parity = ref_err_calc(calc_ats, 'LJ_', 'REF_', category_keys='category')
 
     assert ref_error_dict["None"]["virial/atom/comp"]["num"] == 24
     assert len(ref_error_diffs["None"]["virial/atom/comp"]) == 24

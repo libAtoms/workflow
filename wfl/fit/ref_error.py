@@ -16,8 +16,8 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
     ----------
     inputs: iterable(Atoms)
         input configurations with reference and calculated values in Atoms.info/arrays
-    calc_property_prefix: str / Calculator / tuple(calculator_constructor, args, kwargs)
-        prefix to info/array keys for calculated properties, or calculator constructor
+    calc_property_prefix: str
+        prefix to info/array keys for calculated properties
     ref_property_prefix: str
         prefix to info/array keys for reference properties
     config_properties: list(str), default ["energy/atom", "virial/atom/comp"]
@@ -58,19 +58,6 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
         config_properties = []
     if atom_properties is None:
         atom_properties = []
-
-    # optionally calculate properties to be compared to reference
-    if not isinstance(calc_property_prefix, str):
-        calculator_properties = [re.sub(r"^virial$", "stress", re.sub(r"/atom\b", "", re.sub(r"/comp\b", "", re.sub(r"/Z\b", "", prop)))) for
-                                 prop in config_properties + atom_properties]
-        generic_calc_kwargs = {}
-        if calc_autopara_info is not None:
-            generic_calc_kwargs = { "autopara_info": calc_autopara_info }
-        if calc_outputs is None:
-            calc_outputs = OutputSpec()
-        inputs = generic_calc(inputs, calc_outputs, calc_property_prefix, properties=calculator_properties, output_prefix="ref_error_calc_",
-                              **generic_calc_kwargs)
-        calc_property_prefix = "ref_error_calc_"
 
     # clean up category_keys
     if isinstance(category_keys, str):
