@@ -186,6 +186,12 @@ def test_ref_error_missing(ref_atoms):
     assert ref_err_dict["_ALL_"]["forces"]["num"] == 24
     assert ref_err_dict["_ALL_"]["virial/atom"]["num"] == 7
 
+    # check that exception is raised if requested
+    with pytest.raises(ValueError):
+        ref_err_dict, _, _ = ref_err_calc(
+            ref_atoms_list, ref_property_prefix='REF_', calc_property_prefix='calc_', category_keys=[],
+            config_properties=["energy/atom", "virial/atom"], atom_properties=["forces"], missing_property_error=True)
+
 
 def test_ref_error_subcat(ref_atoms):
     ref_atoms_calc = generic_calc(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
