@@ -16,6 +16,47 @@ from wfl.utils.round_sig_figs import round_sig_figs
 # and bond len as values
 def create_input(z, vol_per_atom, bond_lengths, composition=None, RSS_min_vol_factor=0.5,
                  vol_range=(0.95, 1.05), min_sep_factor=0.9, symmops='1-8', natom=(6, 24), odd=None, verbose=False):
+    """
+    Create an input string suitable for a random structure search (RSS) via AIRSS' `buildcell`.
+
+    Parameters
+    ----------
+    z: int / list(int)
+        Atomic number(s) to be present in the system.
+    vol_per_atom: float / list(float)
+        Volume to be reserved per atom in the system
+        (thus, affects overall unit cell volume/system density).
+    bond_lengths: float / list(float)
+        Defines the separation between atoms.
+    composition: list(int), default None
+        Defines the stoichiometric ratio between species,
+        in case multiple species are present (i.e. `z` is a list)
+    RSS_min_vol_factor: float, default 0.5
+        Together with `vol_per_atom` defines the minimum volume
+        to be reserved per atom.
+    vol_range: tuple(2), default (0.95, 1.05)
+        Defines the variations allowed in the overall unit cell volume.
+    min_sep_factor: float, default 0.9
+        Together with `bond_lengths` defines the minimum distance
+        between atoms.
+    symmops: str, default '1-8'
+        Build structures have a specified number of symmetry operations.
+        For crystals, the allowed values are (1,2,3,4,6,8,12,16,24,48).
+        For clusters (indicated with #CLUSTER), the allowed values are
+        (1,2,3,5,4,6,7,8,9,10,11,12,24). Ranges are allowed (see default).
+    natom: tupe(2), default (6, 24)
+        Defines the range of total numbers of atoms to be present
+        in build structures.
+    odd: str, default None
+        If set to 'only', build structures are forced to have an odd value
+        for the total number of atoms in the system.
+    verbose: bool, default False
+        verbose output
+
+    Returns
+    -------
+    output: str suitable as input file contents to `buildcell`
+    """
     if composition is None:
         composition = [1]
     if isinstance(z, numbers.Integral):
