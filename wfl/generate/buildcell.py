@@ -14,7 +14,7 @@ from wfl.utils.round_sig_figs import round_sig_figs
 
 # might be nice to combine Z, vol_per_atom, and bond_lengths into a single dict with Z as key and vol
 # and bond len as values
-def create_input(z, vol_per_atom, bond_lengths, filename=None, composition=None, RSS_min_vol_factor=0.5,
+def create_input(z, vol_per_atom, bond_lengths, composition=None, RSS_min_vol_factor=0.5,
                  vol_range=(0.95, 1.05), min_sep_factor=0.9, symmops='1-8', natom=(6, 24), odd=None, verbose=False):
     if composition is None:
         composition = [1]
@@ -70,10 +70,6 @@ def create_input(z, vol_per_atom, bond_lengths, filename=None, composition=None,
     output += '#COMPACT\n'
     output += '#MINSEP={}\n'.format(min_sep_str)
     output += '##EXTRA_INFO RSS_min_vol_per_atom={}\n'.format(RSS_min_vol_factor * vol_per_atom)
-
-    if filename is not None:
-        with open(filename, 'w') as fout:
-            fout.write(output)
 
     return output
 
