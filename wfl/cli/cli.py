@@ -58,7 +58,7 @@ def subcli_descriptor(ctx):
     pass
 
 from wfl.cli.commands.descriptor import quippy 
-subcli_quippy.add_command(quippy)
+subcli_descriptor.add_command(quippy)
 
 
 
