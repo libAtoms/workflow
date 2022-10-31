@@ -722,8 +722,41 @@ requires max_cutoff</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.generate.buildcell.create_input">
-<span class="sig-prename descclassname"><span class="pre">wfl.generate.buildcell.</span></span><span class="sig-name descname"><span class="pre">create_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vol_per_atom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bond_lengths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">composition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RSS_min_vol_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vol_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.95,</span> <span class="pre">1.05)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_sep_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">natom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6,</span> <span class="pre">24)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">odd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.buildcell.create_input" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.buildcell.</span></span><span class="sig-name descname"><span class="pre">create_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vol_per_atom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bond_lengths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">composition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RSS_min_vol_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vol_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.95,</span> <span class="pre">1.05)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_sep_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">natom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6,</span> <span class="pre">24)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">odd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.buildcell.create_input" title="Permalink to this definition">#</a></dt>
+<dd><p>Create an input string suitable for a random structure search (RSS) via AIRSS’ <code class="docutils literal notranslate"><span class="pre">buildcell</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>int / list</em><em>(</em><em>int</em><em>)</em>) – Atomic number(s) to be present in the system.</p></li>
+<li><p><strong>vol_per_atom</strong> (<em>float / list</em><em>(</em><em>float</em><em>)</em>) – Volume to be reserved per atom in the system
+(thus, affects overall unit cell volume/system density).</p></li>
+<li><p><strong>bond_lengths</strong> (<em>float / list</em><em>(</em><em>float</em><em>)</em>) – Defines the separation between atoms.</p></li>
+<li><p><strong>composition</strong> (<em>list</em><em>(</em><em>int</em><em>)</em><em>, </em><em>default None</em>) – Defines the stoichiometric ratio between species,
+in case multiple species are present (i.e. <code class="docutils literal notranslate"><span class="pre">z</span></code> is a list)</p></li>
+<li><p><strong>RSS_min_vol_factor</strong> (<em>float</em><em>, </em><em>default 0.5</em>) – Together with <code class="docutils literal notranslate"><span class="pre">vol_per_atom</span></code> defines the minimum volume
+to be reserved per atom.</p></li>
+<li><p><strong>vol_range</strong> (<em>tuple</em><em>(</em><em>2</em><em>)</em><em>, </em><em>default</em><em> (</em><em>0.95</em><em>, </em><em>1.05</em><em>)</em>) – Defines the variations allowed in the overall unit cell volume.</p></li>
+<li><p><strong>min_sep_factor</strong> (<em>float</em><em>, </em><em>default 0.9</em>) – Together with <code class="docutils literal notranslate"><span class="pre">bond_lengths</span></code> defines the minimum distance
+between atoms.</p></li>
+<li><p><strong>symmops</strong> (<em>str</em><em>, </em><em>default '1-8'</em>) – Build structures have a specified number of symmetry operations.
+For crystals, the allowed values are (1,2,3,4,6,8,12,16,24,48).
+For clusters (indicated with #CLUSTER), the allowed values are
+(1,2,3,5,4,6,7,8,9,10,11,12,24). Ranges are allowed (see default).</p></li>
+<li><p><strong>natom</strong> (<em>tuple</em><em>(</em><em>2</em><em>)</em><em>, </em><em>default</em><em> (</em><em>6</em><em>, </em><em>24</em><em>)</em>) – Defines the range of total numbers of atoms to be present
+in build structures.</p></li>
+<li><p><strong>odd</strong> (<em>str</em><em>, </em><em>default None</em>) – Control odd/even numbers of atoms in cell. Use <code class="docutils literal notranslate"><span class="pre">&quot;only&quot;</span></code> to only produce cells with
+odd numbers of atoms, <code class="docutils literal notranslate"><span class="pre">&quot;also&quot;</span></code> to produce both odd and even, and <code class="docutils literal notranslate"><span class="pre">None</span></code> for even only.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str suitable as input file contents to <code class="docutils literal notranslate"><span class="pre">buildcell</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.generate.buildcell.run">
