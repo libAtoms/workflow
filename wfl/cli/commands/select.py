@@ -15,23 +15,10 @@ from .descriptor import calculate_descriptor
 @click.pass_context
 @opt.inputs
 @opt.outputs
-@opt.descriptor
 @opt.key
-def cur(ctx, inputs, outputs, n_configs, key, descriptor, keep_descriptor,
+def cur(ctx, inputs, outputs, n_configs, key, keep_descriptor,
                 kernel_exponent, deterministic):
     """Select structures by CUR"""    
-
-    if descriptor is None:
-        if descriptor_key is None:
-            raise RuntimeError('CUR-global needs --descriptor or --descriptor-key')
-    clean_tmp_files = False
-    if descriptor is not None:
-        # calculate descriptor
-        if key is None:
-            key = '_CUR_desc'
-        calculate_descriptor(inputs, OutputSpec('_tmp_desc.xyz'), descriptor, key, local=False, force=True)
-        inputs = ConfigSet(['_tmp_desc.xyz'])
-        clean_tmp_files = True
 
     wfl.select.by_descriptor.CUR_conf_global(
         inputs=inputs,
@@ -40,9 +27,7 @@ def cur(ctx, inputs, outputs, n_configs, key, descriptor, keep_descriptor,
         at_descs_info_key=key, kernel_exp=kernel_exponent, stochastic=not deterministic,
         keep_descriptor_info=keep_descriptor)
 
-    if clean_tmp_files:
-        for input_file in inputs:
-            Path(input_file).unlink()
+
 
 
 
