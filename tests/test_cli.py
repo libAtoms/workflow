@@ -1,13 +1,6 @@
-import os
-import click
-from click.testing import CliRunner
-import pytest
-from ase import Atoms
-from ase.io import write
-from wfl.cli.cli import cli
 
 @pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
-def test_orca_eval(cli_runner, tmp_path):
+def test_orca_eval(tmp_path):
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
     atoms = [atoms] * 3 
@@ -32,3 +25,4 @@ def test_orca_eval(cli_runner, tmp_path):
     result = runner.invoke(cli, " ".join(params))
 
     assert fn_out.exists()
+

@@ -1,5 +1,6 @@
 import click
 from wfl.cli import cli_options as opt
+import wfl.descriptors.quippy
 
 @click.command("quippy")
 @click.pass_context
@@ -18,6 +19,6 @@ def calculate_descriptor(inputs, outputs, descriptor, key, local, force):
         outputs=outputs,
         descs=descriptor,
         key=key,
-        local=local,
+        per_atom=local,
         force=force
     )

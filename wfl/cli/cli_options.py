@@ -35,9 +35,9 @@ def extra_info(f):
     return f
 
 def descriptor(f):
-    f = click.option("--descriptor", type=click.STRING, help="quippy.Descriptor arg string")(f)
+    f = click.option("--descriptor", type=click.STRING, required=True, help="quippy.Descriptor arg string")(f)
     return f
 
 def key(f):
-    f = click.option("--descriptor-key", type=click.STRING, help="Atoms.info (global) or Atoms.arrays (local) for descriptor vector")(f)
+    f = click.option("--key", required=True, type=click.STRING, help="Atoms.info (global) or Atoms.arrays (local) for descriptor vector")(f)
     return f
