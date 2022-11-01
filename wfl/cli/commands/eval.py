@@ -62,16 +62,15 @@ def ace(inputs, outputs, ace_fname, prop_prefix, num_inputs_per_python_subproces
 @click.option("--num-inputs-per-python-subprocess", default=10, show_default=True,
                 type=click.INT, help="Number of configs to be evaluated per each calculator initialization")
 @click.option("--dtype", default="float64", type=click.Choice(["float64", "float32"]), show_default=True, help="dtype MACE model was fitted with")
-@click.option("--device", default="cpu", show_default=True, type=click.Choice(["cpu", "cuda"]), help='model type')
 @click.pass_context
 @opt.inputs
 @opt.outputs
-def mace(inputs, outputs, mace_fname, prop_prefix, num_inputs_per_python_subprocess, dtype, device):
+def mace(inputs, outputs, mace_fname, prop_prefix, num_inputs_per_python_subprocess, dtype):
     """evaluates MACE"""
 
     from mace.calculators.mace import MACECalculator 
 
-    calc = (MACECalculator, [], {"model_path":mace_fname, "default_dtype":dtype, "device":device})
+    calc = (MACECalculator, [], {"model_path":mace_fname, "default_dtype":dtype, "device":'cpu'})
 
     generic.run(
         inputs=inputs, 
