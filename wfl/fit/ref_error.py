@@ -9,7 +9,7 @@ from wfl.calculators.generic import run as generic_calc
 
 def calc(inputs, calc_property_prefix, ref_property_prefix,
          config_properties=None, atom_properties=None, category_keys="config_type",
-         weight_property=None, calc_outputs=None, calc_autopara_info=None):
+         weight_property=None):
     """calculate error for calculation results relative to stored reference values
 
     Parameters
@@ -36,11 +36,6 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
         keys in Atoms.info, in addition to overall average _ALL_ category.
     weight_property: str, optional
         if present, Atoms.info key for weights to apply to RMSE calculation
-    calc_outputs: OutputSpec, optional
-        where to store configs with calculated properties from optional calculation of
-        properties to be tested
-    calc_autopara_info: AutoparaInfo, optional
-        autoparallelization info for optional initial calculation of properties to be tested
 
     Returns
     -------

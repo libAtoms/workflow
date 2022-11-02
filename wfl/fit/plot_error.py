@@ -38,18 +38,23 @@ def scatter(all_errors, all_diffs, all_parity, output='scatter.png'):
     colors = [cmap(idx) for idx in np.linspace(0, 1, 10)]
 
     for prop_idx, ((prop, differences), ref_vals, pred_vals, errors) \
-        in enumerate(zip(all_diffs.items(), all_parity["ref"], all_parity["pred"], all_errors)):
+        in enumerate(zip(all_diffs.items(), all_parity["ref"].values(), all_parity["calc"].values(), all_errors.values())):
 
         ax_parity = fig.add_subplot(gs[0, prop_idx])
-        ax_error = fig.add_subplot(gs[1, prop_idx], share_x=ax_parity)
+        ax_error = fig.add_subplot(gs[1, prop_idx], sharex=ax_parity)
 
         for cat_idx, category in enumerate(differences.keys()):
+            if category == "_ALL_":
+                continue
             
             color = colors[cat_idx]
-
-            label = f'{category}: {errors[category]["RMS"]} add_units'
+            label = f'{category}: {errors[category]["RMS"]:.4f} add_units'
             ax_parity.scatter(ref_vals[category], pred_vals[category], label=label, color=color)
-            ax_error.scatter(ref_vals[category], differences[category], color=color)
+            ref = list(np.concatenate(ref_vals[category]))
+            if prop=="forces" and category == "rad":
+                import pdb; pdb.set_trace()
+            # print(prop, category)
+            ax_error.scatter(ref, differences[category], color=color)
 
         annotate_parity(ax_parity, all_errors)
         annotate_error(ax_error, all_errors)
