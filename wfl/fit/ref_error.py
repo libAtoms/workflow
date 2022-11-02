@@ -63,7 +63,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
     if isinstance(category_keys, str):
         category_keys = [category_keys]
     elif category_keys is None:
-        category_keys = []
+        category_keys = [None]
 
     def _reshape_normalize(quant, prop, atoms, per_atom):
         """reshape and normalize quantity so its error can be calculated cleanly
@@ -106,14 +106,13 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
     all_diffs = {}
     all_parity = { "ref": {}, "calc": {} }
     all_weights = {}
+
+    missed_prop_counter = {}
+
     for at in inputs:
         # turn category keys into a single string for dict key
         at_category = " / ".join([str(at.info.get(k)) for k in category_keys])
         weight = at.info.get(weight_property, 1.0)
-
-        if len(set(config_properties).intersection(set(atom_properties))) > 0:
-            raise ValueError(f"Property {set(config_properties).intersection(set(atom_properties))} "
-                             "appears in both config_properties and atom_properties")
 
         for prop in config_properties + atom_properties:
             prop_use = prop
@@ -146,9 +145,11 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
             ref_quant = data.get(ref_property_prefix + prop_use)
             calc_quant = data.get(calc_property_prefix + prop_use)
             if ref_quant is None or calc_quant is None:
-                # skip if data is missing
-                warnings.warn(f"Missing property ref {ref_property_prefix + prop_use} is None {ref_quant is None} "
-                              f"or calc {calc_property_prefix + prop_use} is None {calc_quant is None}")
+                # warn if data is missing by reporting summary at the very end
+                if prop_use not in missed_prop_counter:
+                    missed_prop_counter[prop_use] = 0
+                missed_prop_counter[prop_use] += 1
+
                 continue
 
             if virial_from_stress:
@@ -197,23 +198,23 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                           [diff,      _promote(weight, diff), ref_quant,           calc_quant        ],
                           at_category, prop + atom_split_index_label)
 
-    all_diffs["_ALL_"] = all_diffs.pop("")
-    all_weights["_ALL_"] = all_weights.pop("")
-    for k in all_parity.keys():
-        all_parity[k]["_ALL_"] = all_parity[k].pop("")
+    if len(missed_prop_counter.keys()) > 0:
+        for missed_prop, count in missed_prop_counter.items():
+            warnings.warn(f"Missing reference or calculated property '{missed_prop}', {count} times")
+            
 
     all_errors = {}
-    for cat in all_diffs:
-        all_errors[cat] = {}
-        for prop in all_diffs[cat]:
-            diffs = np.asarray(all_diffs[cat][prop])
-            weights = np.asarray(all_weights[cat][prop])
+    for prop in all_diffs:
+        all_errors[prop] = {}
+        for cat in all_diffs[prop]:
+            diffs = np.asarray(all_diffs[prop][cat])
+            weights = np.asarray(all_weights[prop][cat])
 
             RMS = np.sqrt(np.sum((diffs ** 2) * weights) / np.sum(weights))
             MAE = np.sum(np.abs(diffs) * weights) / np.sum(weights)
             num = len(diffs)
 
-            all_errors[cat][prop] = {'RMS': RMS, 'MAE': MAE, 'num' : num}
+            all_errors[prop][cat] = {'RMS': RMS, 'MAE': MAE, 'num' : num}
 
     return all_errors, all_diffs, all_parity
 
@@ -226,15 +227,15 @@ def _promote(weight, val):
 
 
 def _dict_add(dicts, values, at_category, prop):
-    if at_category == "":
+    if at_category == "_ALL_":
         cats = [at_category]
     else:
-        cats = [at_category, ""]
+        cats = [at_category, "_ALL_"]
 
     for d, v in zip(dicts, values):
         for cat in cats:
-            if cat not in d:
-                d[cat] = {}
-            if prop not in d[cat]:
-                d[cat][prop] = []
-            d[cat][prop].extend(v)
+            if prop not in d:
+                d[prop] = {}
+            if cat not in d[prop]:
+                d[prop][cat] = []
+            d[prop][cat].extend(v)
