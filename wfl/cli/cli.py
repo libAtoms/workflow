@@ -42,7 +42,7 @@ import wfl.calculators.generic
 
 
 from wfl.fit import gap as fit_gap
-import wfl.fit.ref_error
+import wfl.fit.error
 import wfl.fit.utils
 
 
@@ -601,7 +601,7 @@ def orca_eval(ctx, inputs, output_file, output_prefix, workdir,
 @click.option("--outfile", "-o", type=click.STRING, help="output file, - for stdout", default='-')
 @click.option("--intermed-file", type=click.STRING,
               help="intermediate file to contain calculator results, keep in memory if None")
-def ref_error(ctx, inputs, pre_calc, calc, calc_args, calc_kwargs, ref_prefix, properties,
+def error(ctx, inputs, pre_calc, calc, calc_args, calc_kwargs, ref_prefix, properties,
               category_keys, outfile, intermed_file):
     verbose = ctx.obj["verbose"]
 
@@ -622,9 +622,9 @@ def ref_error(ctx, inputs, pre_calc, calc, calc_args, calc_kwargs, ref_prefix, p
                              ['energy', 'forces', 'stress', 'virial']}
         inputs = ConfigSet(inputs)
 
-    errs = wfl.fit.ref_error.calc(inputs, cs_out,
-                                  calculator=(
-                                  eval(calc), json.loads(calc_args), json.loads(calc_kwargs)),
+    errs = wfl.fit.error.calc(inputs, cs_out,
+                              calculator=(
+                              eval(calc), json.loads(calc_args), json.loads(calc_kwargs)),
                                   ref_property_keys=ref_property_keys,
                                   properties=[p.strip() for p in properties.split(',')],
                                   category_keys=category_keys.split(', '))

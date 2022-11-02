@@ -8,7 +8,7 @@ from pprint import pprint
 
 from wfl.calculators.generic import run as generic_calc
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.fit.ref_error import calc as ref_err_calc
+from wfl.fit.error import calc as ref_err_calc
 from wfl.utils.misc import dict_tuple_keys_to_str
 
 # values to check against
@@ -50,11 +50,11 @@ def ref_atoms():
     return ats_eval
 
 
-def test_ref_error(tmp_path, ref_atoms):
+def test_error(tmp_path, ref_atoms):
     calc_ats = generic_calc(ConfigSet(ref_atoms), OutputSpec(), LennardJones(sigma=0.75), output_prefix='LJ_')
     ref_err_dict, _, _ = ref_err_calc(calc_ats, 'LJ_', 'REF_', category_keys='category')
 
-    print("test_ref_error")
+    print("test_error")
     pprint(ref_err_dict)
     assert ref_err_dict.keys() == {'_ALL_', '0', '1', 'None'}
 
@@ -99,7 +99,7 @@ def test_err_from_calc(ref_atoms):
     assert ref_err_dict['_ALL_']['virial/atom/comp']["num"] == 10 * 6
 
 
-def test_ref_error_properties(ref_atoms):
+def test_error_properties(ref_atoms):
     ref_atoms_calc = generic_calc(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     # both energy and per atom
@@ -142,7 +142,7 @@ def test_ref_error_properties(ref_atoms):
     assert approx(ref_err_dict['_ALL_']['virial/comp']["RMS"]) == __ALL__virial
 
 
-def test_ref_error_forces(ref_atoms):
+def test_error_forces(ref_atoms):
     ref_atoms_calc = generic_calc(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     # forces by element
@@ -164,7 +164,7 @@ def test_ref_error_forces(ref_atoms):
     assert approx(ref_err_dict['_ALL_']['forces/comp/Z_13']["RMS"]) == 29490136730.741474
 
 
-def test_ref_error_missing(ref_atoms):
+def test_error_missing(ref_atoms):
     ref_atoms_calc = generic_calc(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     ref_atoms_list = [at for at in ref_atoms_calc]
@@ -187,7 +187,7 @@ def test_ref_error_missing(ref_atoms):
     assert ref_err_dict["_ALL_"]["virial/atom"]["num"] == 7
 
 
-def test_ref_error_subcat(ref_atoms):
+def test_error_subcat(ref_atoms):
     ref_atoms_calc = generic_calc(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
 
     ref_atoms_list = [at for at in ref_atoms_calc]
@@ -209,11 +209,11 @@ def test_ref_error_subcat(ref_atoms):
     assert ref_err_dict["None / 1"]["energy/atom"]["num"] == 2
 
 
-def test_ref_error_diffs(tmp_path, ref_atoms):
+def test_error_diffs(tmp_path, ref_atoms):
     calc_ats = generic_calc(ConfigSet(ref_atoms), OutputSpec(), LennardJones(sigma=0.75), output_prefix='LJ_')
-    ref_error_dict, ref_error_diffs, ref_error_parity = ref_err_calc(calc_ats, 'LJ_', 'REF_', category_keys='category')
+    error_dict, error_diffs, error_parity = ref_err_calc(calc_ats, 'LJ_', 'REF_', category_keys='category')
 
-    assert ref_error_dict["None"]["virial/atom/comp"]["num"] == 24
-    assert len(ref_error_diffs["None"]["virial/atom/comp"]) == 24
-    assert len(ref_error_parity["ref"]["None"]["virial/atom/comp"]) == 24
-    assert len(ref_error_parity["calc"]["None"]["virial/atom/comp"]) == 24
+    assert error_dict["None"]["virial/atom/comp"]["num"] == 24
+    assert len(error_diffs["None"]["virial/atom/comp"]) == 24
+    assert len(error_parity["ref"]["None"]["virial/atom/comp"]) == 24
+    assert len(error_parity["calc"]["None"]["virial/atom/comp"]) == 24
