@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pytest
 from ase.atoms import Atoms
@@ -9,6 +10,7 @@ from pprint import pprint
 from wfl.calculators.generic import run as generic_calc
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.fit.error import calc as ref_err_calc
+from wfl.fit.error import scatter as plot_error
 from wfl.utils.misc import dict_tuple_keys_to_str
 
 # values to check against
@@ -215,3 +217,22 @@ def test_error_diffs(tmp_path, ref_atoms):
     assert len(error_diffs["virial/atom/comp"]["None"]) == 24
     assert len(error_parity["ref"]["virial/atom/comp"]["None"]) == 24
     assert len(error_parity["calc"]["virial/atom/comp"]["None"]) == 24
+
+
+def test_plot_error(tmp_path):
+    filename = os.path.join(os.path.abspath(os.path.dirname(__file__)),  'assets', 'configs_for_error_test.xyz')
+    inputs = ConfigSet(filename)
+
+    errors, diffs, parity = ref_err_calc(
+        inputs=inputs, 
+        calc_property_prefix='mace_',
+        ref_property_prefix='dft_',
+        config_properties=["energy/atom", "energy"],
+        atom_properties=["forces/comp/Z", "forces/comp"],
+        category_keys="mol_or_rad"
+    )
+
+    plot_error(errors, diffs, parity, ref_property_prefix='dft_', calc_property_prefix='mace_', output=tmp_path/"error_plot.png")
+
+    assert False
+

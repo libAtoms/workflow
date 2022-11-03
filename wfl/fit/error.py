@@ -259,7 +259,7 @@ def scatter(all_errors, all_diffs, all_parity, output='parity.png', ref_property
             
             color = colors[cat_idx]
                 
-            label = f'{category}: {errors[category][error_type]*1e3:.2f} {units(prop, "error")}'
+            label = f'{category}: {errors[category][error_type]*1e3:.2f} {_units(prop, "error")}'
             ax_parity.scatter(ref_vals[category], pred_vals[category], label=label, edgecolors=color, facecolors='none')
             ax_error.scatter(ref_vals[category], np.array(differences[category])*1e3, edgecolors=color, facecolors='none')
 
