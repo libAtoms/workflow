@@ -33,11 +33,3 @@ def extra_info(f):
     """Parse key=val string and return a dictionary"""
     f = click.option("--extra-info", "-i", callback=_parse_extra_info, help="Extra key=val pairs to add to Atoms.info")(f)
     return f
-
-def descriptor(f):
-    f = click.option("--descriptor", type=click.STRING, required=True, help="quippy.Descriptor arg string")(f)
-    return f
-
-def key(f):
-    f = click.option("--key", required=True, type=click.STRING, help="Atoms.info (global) or Atoms.arrays (local) for descriptor vector")(f)
-    return f
