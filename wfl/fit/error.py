@@ -3,7 +3,8 @@ import re
 from collections import Counter
 
 import numpy as np
-import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.cm import get_cmap
 
 
 
@@ -218,39 +219,72 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
     return all_errors, all_diffs, all_parity
 
 
-def scatter(all_errors, all_diffs, all_parity, output='parity.png', ref_property_prefix=None, calc_property_prefix=None, error_type="RMSE"):
+def value_error_scatter(all_errors, all_diffs, all_parity, output, ref_property_prefix="reference ",
+                        calc_property_prefix="calculated ", error_type="RMSE", plot_parity=True,
+                        plot_error=True, cmap_name_bins=None):
+    """generate parity plot (calculated values vs. reference values) and/or scatterplot of 
+    errors vs. values
+
+    Parameters
+    ----------
+    all_errors: dict
+        dict of errors returned by error.calc (first returned item)
+    all_diffs: dict
+        dict of property differences returned by error.calc (second returned item)
+    all_parity: dict
+        dict of property values for parity returned by error.calc (second returned item)
+    output: str
+        output filename
+    ref_property_prefix: str, default "reference "
+        prefix for reference property labels
+    ref_property_prefix: str, default "calculated "
+        prefix for reference property labels
+    error_type: str, default "RMSE"
+        type of error matching key in all_errors dict
+    cmap_name_bins: tuple(str, int), default None
+        colormap to use, if None use number of categories based default
+    """
 
     assert error_type in ["RMSE", "MAE"], f"'error_type' must be 'RMSE' or 'MAE', not {error_type}."
 
-    if ref_property_prefix is None:
-        ref_property_prefix = "reference "
-    if calc_property_prefix is None:
-        calc_property_prefix = "calculated "
-
-    num_rows = 2   # one for parity, one for errors
-    num_columns = len(all_errors.keys()) # two plots for each property
+    num_rows = sum([plot_parity, plot_error])   # one for parity, one for errors
+    num_columns = len(all_errors.keys()) # one column per property
     side = 4.5
-    fig = plt.figure(figsize=(side * num_columns, side * num_rows))
+    fig = Figure(figsize=(side * num_columns, side * num_rows))
     gs = fig.add_gridspec(num_rows, num_columns, wspace=0.25, hspace=0.25)
 
 
     props = list(all_errors.keys())
     num_cat = len(list(all_errors[props[0]].keys()))
-    
-    if num_cat < 11:
-        cmap = plt.get_cmap('tab10')
-        colors = [cmap(idx) for idx in np.linspace(0, 1, 10)]
-        show_legend = True 
+
+    # set up colormap
+    if cmap_name_bins is not None:
+        assert len(cmap_name_bins) == 2
+        cmap = get_cmap(cmap_name_bins[0])
+        colors = [cmap(idx) for idx in lp.linspace(0, 1, cmap_n_bins[1])]
     else:
-        cmap = plt.get_cmap("hsv")
-        colors = [cmap(idx) for idx in np.linspace(0, 1, num_cat)]
-        show_legend = False
+        if num_cat < 11:
+            cmap = get_cmap('tab10')
+            colors = [cmap(idx) for idx in np.linspace(0, 1, 10)]
+        else:
+            cmap = get_cmap("hsv")
+            colors = [cmap(idx) for idx in np.linspace(0, 1, num_cat)]
+    show_legend = num_cat <= 10
 
-    for prop_idx, ((prop, differences), ref_vals, pred_vals, errors) \
-        in enumerate(zip(all_diffs.items(), all_parity["ref"].values(), all_parity["calc"].values(), all_errors.values())):
+    plot_iter = zip(all_diffs.items(), all_parity["ref"].values(), all_parity["calc"].values(),
+                    all_errors.values())
+    for prop_idx, ((prop, differences), ref_vals, pred_vals, errors) in enumerate(plot_iter):
 
-        ax_parity = fig.add_subplot(gs[0, prop_idx])
-        ax_error = fig.add_subplot(gs[1, prop_idx], sharex=ax_parity)
+        gs_idx = 0
+        if plot_parity:
+            ax_parity = fig.add_subplot(gs[gs_idx, prop_idx])
+            gs_idx += 1
+        else:
+            ax_parity = None
+        if plot_error:
+            ax_error = fig.add_subplot(gs[gs_idx, prop_idx], sharex=ax_parity)
+        else:
+            ax_error = None
 
         for cat_idx, category in enumerate(differences.keys()):
             if category == "_ALL_":
@@ -259,13 +293,20 @@ def scatter(all_errors, all_diffs, all_parity, output='parity.png', ref_property
             color = colors[cat_idx]
                 
             label = f'{category}: {errors[category][error_type]*1e3:.2f} {_units(prop, "error")}'
-            ax_parity.scatter(ref_vals[category], pred_vals[category], label=label, edgecolors=color, facecolors='none')
-            ax_error.scatter(ref_vals[category], np.array(differences[category])*1e3, edgecolors=color, facecolors='none')
+            if ax_parity is not None:
+                ax_parity.scatter(ref_vals[category], pred_vals[category], label=label,
+                                  edgecolors=color, facecolors='none')
+            if ax_error is not None:
+                ax_error.scatter(ref_vals[category], np.array(differences[category])*1e3,
+                                 edgecolors=color, facecolors='none')
 
-        _annotate_parity_plot(ax_parity, prop, ref_property_prefix, calc_property_prefix, show_legend, error_type)
-        _annotate_error_plot(ax_error, prop, ref_property_prefix, calc_property_prefix)
+        if ax_parity is not None:
+            _annotate_parity_plot(ax_parity, prop, ref_property_prefix, calc_property_prefix,
+                                  show_legend, error_type)
+        if ax_error is not None:
+            _annotate_error_plot(ax_error, prop, ref_property_prefix, calc_property_prefix)
 
-    plt.savefig(output, dpi=300)
+    fig.savefig(output, dpi=300, bbox_inches="tight")
 
 
 def _promote(weight, val):

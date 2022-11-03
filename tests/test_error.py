@@ -1,4 +1,6 @@
 import os
+import warnings
+
 import numpy as np
 import pytest
 from ase.atoms import Atoms
@@ -10,7 +12,7 @@ from pprint import pprint
 from wfl.calculators.generic import run as generic_calc
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.fit.error import calc as ref_err_calc
-from wfl.fit.error import scatter as plot_error
+from wfl.fit.error import value_error_scatter as plot_error
 from wfl.utils.misc import dict_tuple_keys_to_str
 
 # values to check against
@@ -232,5 +234,9 @@ def test_plot_error(tmp_path):
         category_keys="mol_or_rad"
     )
 
-    plot_error(errors, diffs, parity, ref_property_prefix='dft_', calc_property_prefix='mace_', output=tmp_path/"error_plot.png")
+    plot_error(errors, diffs, parity, ref_property_prefix='dft_', calc_property_prefix='mace_', output=tmp_path/"error_plot_both.png")
+    plot_error(errors, diffs, parity, ref_property_prefix='dft_', calc_property_prefix='mace_', output=tmp_path/"error_plot_parity_only.png", plot_parity=True, plot_error=False)
+    plot_error(errors, diffs, parity, ref_property_prefix='dft_', calc_property_prefix='mace_', output=tmp_path/"error_plot_error_only.png", plot_parity=False, plot_error=True)
+
+    warnings.warn(f"error plots in {tmp_path}/error_plot*.png")
 
