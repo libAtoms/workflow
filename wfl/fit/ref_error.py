@@ -39,7 +39,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
 
     Returns
     -------
-        errors: dict of RMS and MAE errors for each category and property
+        errors: dict of RMSE and MAE for each category and property
         diffs: dict with list of differences for each category and property
         parity: dict with "ref" and "calc" keys, each containing list of property values for
             each category and property, for parity plots
@@ -169,7 +169,6 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                 atom_split_indices = np.asarray(Zs)
                 atom_split_groups = [(Z, f"_{Z}") for Z in sorted(set(Zs))]
 
-            # import pdb; pdb.set_trace()
             # Loop over groups that errors should be split up by within each configuration.
             # Only atomic number Z implemented so far (see above).
             for atom_split_index_val, atom_split_index_label in atom_split_groups:
@@ -210,11 +209,11 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
             diffs = np.asarray(all_diffs[prop][cat])
             weights = np.asarray(all_weights[prop][cat])
 
-            RMS = np.sqrt(np.sum((diffs ** 2) * weights) / np.sum(weights))
+            RMSE = np.sqrt(np.sum((diffs ** 2) * weights) / np.sum(weights))
             MAE = np.sum(np.abs(diffs) * weights) / np.sum(weights)
             num = len(diffs)
 
-            all_errors[prop][cat] = {'RMS': RMS, 'MAE': MAE, 'num' : num}
+            all_errors[prop][cat] = {'RMSE': RMSE, 'MAE': MAE, 'num' : num}
 
     return all_errors, all_diffs, all_parity
 
