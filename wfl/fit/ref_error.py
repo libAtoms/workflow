@@ -104,7 +104,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
 
     missed_prop_counter = {}
 
-    for at in inputs:
+    for at_idx, at in enumerate(inputs):
         # turn category keys into a single string for dict key
         at_category = " / ".join([str(at.info.get(k)) for k in category_keys])
         weight = at.info.get(weight_property, 1.0)
@@ -169,32 +169,33 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                 atom_split_indices = np.asarray(Zs)
                 atom_split_groups = [(Z, f"_{Z}") for Z in sorted(set(Zs))]
 
+            # import pdb; pdb.set_trace()
             # Loop over groups that errors should be split up by within each configuration.
             # Only atomic number Z implemented so far (see above).
             for atom_split_index_val, atom_split_index_label in atom_split_groups:
                 # use only subset of quantities that are relevant to this subset of atoms,
                 # normally either all atoms or the ones with one particular atomic number
-                ref_quant = ref_quant[atom_split_indices == atom_split_index_val]
-                calc_quant = calc_quant[atom_split_indices == atom_split_index_val]
+                selected_ref_quant = ref_quant[atom_split_indices == atom_split_index_val]
+                selected_calc_quant = calc_quant[atom_split_indices == atom_split_index_val]
 
                 if per_component:
                     # if per component, flatten all vector component so each is counted separately
-                    ref_quant = ref_quant.reshape((-1, 1))
-                    calc_quant = calc_quant.reshape((-1, 1))
+                    selected_ref_quant = selected_ref_quant.reshape((-1, 1))
+                    selected_calc_quant = selected_calc_quant.reshape((-1, 1))
 
-                diff = calc_quant - ref_quant
+                diff = selected_calc_quant - selected_ref_quant
 
                 if len(diff.shape) != 2:
                     raise RuntimeError(f"Should never have diff.shape={diff.shape} with dim != 2 (prop {prop + atom_split_index_label})")
                 # compute norm along vector components
                 diff = np.linalg.norm(diff, axis=1)
                 if not per_component:
-                    ref_quant = np.linalg.norm(ref_quant, axis=1)
-                    calc_quant = np.linalg.norm(calc_quant, axis=1)
+                    selected_ref_quant = np.linalg.norm(selected_ref_quant, axis=1)
+                    selected_calc_quant = np.linalg.norm(selected_calc_quant, axis=1)
 
 
                 _dict_add([all_diffs, all_weights,            all_parity["ref"],   all_parity["calc"]], 
-                          [diff,      _promote(weight, diff), ref_quant,           calc_quant        ],
+                          [diff,      _promote(weight, diff), selected_ref_quant,           selected_calc_quant        ],
                           at_category, prop + atom_split_index_label)
 
     if len(missed_prop_counter.keys()) > 0:
