@@ -188,6 +188,10 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                     raise RuntimeError(f"Should never have diff.shape={diff.shape} with dim != 2 (prop {prop + atom_split_index_label})")
                 # compute norm along vector components
                 diff = np.linalg.norm(diff, axis=1)
+                if not per_component:
+                    ref_quant = np.linalg.norm(ref_quant, axis=1)
+                    calc_quant = np.linalg.norm(calc_quant, axis=1)
+
 
                 _dict_add([all_diffs, all_weights,            all_parity["ref"],   all_parity["calc"]], 
                           [diff,      _promote(weight, diff), ref_quant,           calc_quant        ],
