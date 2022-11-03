@@ -219,9 +219,9 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
     return all_errors, all_diffs, all_parity
 
 
-def value_error_scatter(all_errors, all_diffs, all_parity, output, ref_property_prefix="reference ",
-                        calc_property_prefix="calculated ", error_type="RMSE", plot_parity=True,
-                        plot_error=True, cmap_name_bins=None):
+def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=None,
+                        ref_property_prefix="reference ", calc_property_prefix="calculated ", error_type="RMSE",
+                        plot_parity=True, plot_error=True, cmap_name_bins=None):
     """generate parity plot (calculated values vs. reference values) and/or scatterplot of 
     errors vs. values
 
@@ -235,6 +235,8 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, ref_property_
         dict of property values for parity returned by error.calc (second returned item)
     output: str
         output filename
+    properties: list(str), default None
+        properties to plot, if None plot all
     ref_property_prefix: str, default "reference "
         prefix for reference property labels
     ref_property_prefix: str, default "calculated "
@@ -253,9 +255,10 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, ref_property_
     fig = Figure(figsize=(side * num_columns, side * num_rows))
     gs = fig.add_gridspec(num_rows, num_columns, wspace=0.25, hspace=0.25)
 
+    if properties is None:
+        properties = list(all_errors.keys())
 
-    props = list(all_errors.keys())
-    num_cat = len(list(all_errors[props[0]].keys()))
+    num_cat = len(list(all_errors[properties[0]].keys()))
 
     # set up colormap
     if cmap_name_bins is not None:
@@ -271,9 +274,13 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, ref_property_
             colors = [cmap(idx) for idx in np.linspace(0, 1, num_cat)]
     show_legend = num_cat <= 10
 
-    plot_iter = zip(all_diffs.items(), all_parity["ref"].values(), all_parity["calc"].values(),
-                    all_errors.values())
-    for prop_idx, ((prop, differences), ref_vals, pred_vals, errors) in enumerate(plot_iter):
+    sel_diffs = [all_diffs[prop] for prop in properties]
+    sel_parity_ref = [all_parity["ref"][prop] for prop in properties]
+    sel_parity_calc = [all_parity["calc"][prop] for prop in properties]
+    sel_errors = [all_errors[prop] for prop in properties]
+
+    plot_iter = zip(properties, sel_diffs, sel_parity_ref, sel_parity_calc, sel_errors)
+    for prop_idx, (prop, differences, ref_vals, pred_vals, errors) in enumerate(plot_iter):
 
         gs_idx = 0
         if plot_parity:
