@@ -4,21 +4,23 @@ from quippy.potential import Potential
 
 from wfl.autoparallelize.autoparainfo import AutoparaInfo
 from wfl.cli import cli_options as opt
+from wfl.calculators import generic
 
 
 @click.command("gap")
-@click.option("--gap-fname", '-g', type=click.Path(), help="Path to GAP XML")
-@click.option("--prop-prefix", '-p', default='gap_', show_default=True,
-                help='Prefix to be pre-pended to all evaluate properties')
-@click.option("--num-inputs-per-python-subprocess", default=10, show_default=True,
-                type=click.INT, help="Number of configs to be evaluated per each calculator initialization")
 @click.pass_context
 @opt.inputs
 @opt.outputs
-def gap(inputs, outputs, gap_fname, prop_prefix, num_inputs_per_python_subprocess):
+@opt.param_fname
+@opt.prop_prefix
+@opt.num_inputs_per_python_subprocess
+def gap(inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
     """evaluates GAP"""
+    
+    if prop_prefix is None:
+        prop_prefix="gap_"
 
-    calc = (Potential, [], {"param_filename":gap_fname})
+    calc = (Potential, [], {"param_filename":param_fname})
 
     generic.run(
         inputs=inputs, 
@@ -28,24 +30,25 @@ def gap(inputs, outputs, gap_fname, prop_prefix, num_inputs_per_python_subproces
         autopara_info=AutoparaInfo(num_inputs_per_python_subprocess = num_inputs_per_python_subprocess))
 
 
-def pyjulip_ace(ace_fname):
+def pyjulip_ace(param_fname):
     import pyjulip
-    return pyjulip.ACE1(ace_fname)
+    return pyjulip.ACE1(param_fname)
 
 
 @click.command("ace")
-@click.option("--ace-fname", '-a', type=click.Path(), help="Path to ACE JSON")
-@click.option("--prop-prefix", '-p', default='ace_', show_default=True,
-                help='Prefix to be pre-pended to all evaluate properties')
-@click.option("--num-inputs-per-python-subprocess", default=10, show_default=True,
-                type=click.INT, help="Number of configs to be evaluated per each calculator initialization")
 @click.pass_context
 @opt.inputs
 @opt.outputs
-def ace(inputs, outputs, ace_fname, prop_prefix, num_inputs_per_python_subprocess):
+@opt.param_fname
+@opt.prop_prefix
+@opt.num_inputs_per_python_subprocess
+def ace(inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
     """evaluates ACE"""
 
-    calc = (pyjulip_ace, [ace_fname], {})
+    if prop_prefix is None:
+        prop_prefix = 'ace_'
+
+    calc = (pyjulip_ace, [param_fname], {})
 
     generic.run(
         inputs=inputs, 
@@ -56,21 +59,19 @@ def ace(inputs, outputs, ace_fname, prop_prefix, num_inputs_per_python_subproces
 
 
 @click.command("mace")
-@click.option("--mace-fname", '-m', type=click.Path(), help="Path to MACE filename")
-@click.option("--prop-prefix", '-p', default='mace_', show_default=True,
-                help='Prefix to be pre-pended to all evaluate properties')
-@click.option("--num-inputs-per-python-subprocess", default=10, show_default=True,
-                type=click.INT, help="Number of configs to be evaluated per each calculator initialization")
 @click.option("--dtype", default="float64", type=click.Choice(["float64", "float32"]), show_default=True, help="dtype MACE model was fitted with")
 @click.pass_context
 @opt.inputs
 @opt.outputs
-def mace(inputs, outputs, mace_fname, prop_prefix, num_inputs_per_python_subprocess, dtype):
+@opt.param_fname
+@opt.prop_prefix
+@opt.num_inputs_per_python_subprocess
+def mace(inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess, dtype):
     """evaluates MACE"""
 
     from mace.calculators.mace import MACECalculator 
 
-    calc = (MACECalculator, [], {"model_path":mace_fname, "default_dtype":dtype, "device":'cpu'})
+    calc = (MACECalculator, [], {"model_path":param_fname, "default_dtype":dtype, "device":'cpu'})
 
     generic.run(
         inputs=inputs, 
