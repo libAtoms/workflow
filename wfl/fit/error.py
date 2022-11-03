@@ -264,7 +264,7 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
     if cmap_name_bins is not None:
         assert len(cmap_name_bins) == 2
         cmap = get_cmap(cmap_name_bins[0])
-        colors = [cmap(idx) for idx in lp.linspace(0, 1, cmap_n_bins[1])]
+        colors = [cmap(idx) for idx in np.linspace(0, 1, cmap_name_bins[1])]
     else:
         if num_cat < 11:
             cmap = get_cmap('tab10')
