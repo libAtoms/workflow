@@ -1,12 +1,25 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import gridspec
 
-def annotate_parity(ax, property):
-    ax.legend(f"RMS per category")
-    ax.set_title(f"{property} arity plot")
-    ax.set_xlabel(f"Reference {property}, units")
-    ax.set_ylabel(f"Predicted {property}, units")
+units_dict = {
+    "energy/atom": {"parity": "eV/at", "error": "meV/at"},
+    "energy": {"parity": "eV", "error": "meV"},
+    "forces": {"parity": "eV/Å", "error": "meV/Å"}
+}
+def units(prop, plt_type):
+    if "forces" in prop:
+        prop = "forces"
+    try:
+        return units_dict[prop][plt_type]
+    except KeyError:
+        return "unknown units"
+
+
+def annotate_parity(ax, property, ref_property_prefix, calc_property_prefix):
+    ax.legend(title=f"RMSE per category")
+    ax.set_title(f"{property} parity plot")
+    ax.set_xlabel(f"{ref_property_prefix}{property}, {units(property, 'parity')}")
+    ax.set_ylabel(f"{calc_property_prefix}{property}, {units(property, 'parity')}")
 
     xmin, xmax = ax.get_xlim()
     ymin, ymax = ax.get_ylim()
@@ -18,15 +31,20 @@ def annotate_parity(ax, property):
     ax.grid(color='lightgrey', ls=':')
 
 
-def annotate_error(ax, property):
+def annotate_error(ax, property, ref_property_prefix, calc_property_prefix):
     ax.set_title(f"{property} error plot")
-    ax.set_xlabel(f"Reference {property}, units")
-    ax.set_ylabel("error, units") 
-    ax.axhline(0, color='k', lw=0.8)
+    ax.set_xlabel(f"{ref_property_prefix}{property}, {units(property, 'parity')}")
+    ax.set_ylabel(f"{calc_property_prefix}{property} error, {units(property, 'error')}") 
     ax.grid(color='lightgrey', ls=':')
+    ax.set_yscale('log')
 
 
-def scatter(all_errors, all_diffs, all_parity, output='scatter.png'):
+def scatter(all_errors, all_diffs, all_parity, output='scatter.png', ref_property_prefix=None, calc_property_prefix=None):
+
+    if ref_property_prefix is None:
+        ref_property_prefix = "reference "
+    if calc_property_prefix is None:
+        calc_property_prefix = "calculated "
 
     num_rows = 2   # one for parity, one for errors
     num_columns = len(all_errors.keys()) # two plots for each property
@@ -48,16 +66,13 @@ def scatter(all_errors, all_diffs, all_parity, output='scatter.png'):
                 continue
             
             color = colors[cat_idx]
-            label = f'{category}: {errors[category]["RMS"]:.4f} add_units'
+                
+            label = f'{category}: {errors[category]["RMS"]*1e3:.2f} {units(prop, "error")}'
             ax_parity.scatter(ref_vals[category], pred_vals[category], label=label, color=color)
-            ref = list(np.concatenate(ref_vals[category]))
-            if prop=="forces" and category == "rad":
-                import pdb; pdb.set_trace()
-            # print(prop, category)
-            ax_error.scatter(ref, differences[category], color=color)
+            ax_error.scatter(ref_vals[category], np.array(differences[category])*1e3, color=color)
 
-        annotate_parity(ax_parity, all_errors)
-        annotate_error(ax_error, all_errors)
+        annotate_parity(ax_parity, prop, ref_property_prefix, calc_property_prefix)
+        annotate_error(ax_error, prop, ref_property_prefix, calc_property_prefix)
 
     plt.savefig(output, dpi=300)
 
