@@ -234,5 +234,3 @@ def test_plot_error(tmp_path):
 
     plot_error(errors, diffs, parity, ref_property_prefix='dft_', calc_property_prefix='mace_', output=tmp_path/"error_plot.png")
 
-    assert False
-
