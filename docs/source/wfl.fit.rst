@@ -24,7 +24,7 @@ wfl.fit.ace module
 wfl.fit.ref\_error module
 -------------------------
 
-.. automodule:: wfl.fit.ref_error
+.. automodule:: wfl.fit.error
    :members:
    :undoc-members:
    :show-inheritance:
