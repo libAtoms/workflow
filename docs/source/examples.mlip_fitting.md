@@ -3,7 +3,7 @@
 
 The following serves as a basic example of how to fit MLIPs (in this case a GAP for Cu slabs) using the ground functionalities of the wfl package. In theory you need no other previous installations other than wfl, ase, and working versions of QUIP and quippy.
 
-# Table of contents
+## Table of contents
 1. [General workflow and setup](general)
 2. [Fitting the initial GAP](fitting-initial)
 3. [Preparing the iterative process](preparing-iter)
