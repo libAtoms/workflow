@@ -364,6 +364,7 @@ class OutputSpec:
         self.files = files
         self.configs = None
         self.file_root = Path(file_root if file_root is not None else "")
+        self.write_kwargs = write_kwargs.copy()
 
         if self.files is not None:
             # store in file(s)
