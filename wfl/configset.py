@@ -458,7 +458,7 @@ class OutputSpec:
                     input_CS_loc = ConfigSet._loc_sep + str(self.cur_store_loc)
 
                 self._open_file(0)
-                OutputSpec._write_to_file(self.cur_file, configs, input_CS_loc)
+                self._write_to_file(configs, input_CS_loc)
                 self.first_store_call = False
                 return
 
@@ -472,7 +472,7 @@ class OutputSpec:
             sub_loc = input_CS_loc.split(ConfigSet._loc_sep)[2:]
             if len(sub_loc) > 0:
                 sub_loc = [""] + sub_loc
-            OutputSpec._write_to_file(self.cur_file, configs, ConfigSet._loc_sep.join(sub_loc))
+            self._write_to_file(configs, ConfigSet._loc_sep.join(sub_loc))
         else:
             # store in self.configs
             if len(input_CS_loc) == 0:
@@ -544,15 +544,11 @@ class OutputSpec:
         return cs
 
 
-    @staticmethod
-    def _write_to_file(fd, file_type, configs, store_loc_stem):
+    def _write_to_file(self, configs, store_loc_stem):
         """Write one or more Atoms to a file, storing their locations
 
         Parameters
         ----------
-
-        fd: file object
-            file to write to
 
         configs: Atoms / iterable(Atoms / iterable(Atoms / iterable))
             configurations to write
@@ -564,13 +560,13 @@ class OutputSpec:
         if isinstance(configs, Atoms):
             if store_loc_stem is not None and len(store_loc_stem) > 0:
                 configs.info["_ConfigSet_loc"] = store_loc_stem
-            ase.io.write(fd, configs, **self._cur_write_kwargs)
+            ase.io.write(self.cur_file, configs, **self._cur_write_kwargs)
         else:
             # iterable, possibly nested
             for item_i, item in enumerate(configs):
                 # WARNING: this will fail if store_loc_stem is None.  Is this what we want?
                 item_loc = store_loc_stem + ConfigSet._loc_sep + str(item_i)
-                OutputSpec._write_to_file(fd, file_type, item, item_loc)
+                self._write_to_file(item, item_loc)
 
 
     def _open_file(self, file_ind):
