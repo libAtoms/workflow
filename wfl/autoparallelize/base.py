@@ -56,7 +56,7 @@ _autopara_docstring_params_pre = [
 _autopara_docstring_params_post = [
     [["param", "autopara_info"],
      "information for automatic parallelization",
-     "autopara_info", "AutoParaInfo", True, None]
+     "autopara_info", "AutoParaInfo / dict", True, None]
 ]
 
 _autopara_docstring_returns = [["returns"],
@@ -163,6 +163,8 @@ def autoparallelize(func, *args, def_autopara_info={}, **kwargs):
 
     # create autopara_info from explicitly passed AutoparaInfo object, otherwise an empty object
     autopara_info = kwargs.pop("autopara_info", AutoparaInfo())
+    if isinstance(autopara_info, dict):
+        autopara_info = AutoparaInfo(**autpara_info)
     # update values, if any are not set, with defaults that were set by decorating code
     autopara_info.update_defaults(def_autopara_info)
 
