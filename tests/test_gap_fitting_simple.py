@@ -78,34 +78,6 @@ def test_dict_to_gap_fit_string():
 
 
 @pytest.mark.skipif(not shutil.which("gap_fit"), reason="gap_fit not in PATH")  # skips it if gap_fit not in path
-def test_fitting_gap_cli(quippy, tmp_path):
-    runner = CliRunner()
-    assets_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'assets')
-    param_filename = os.path.join(assets_dir, 'simple_gap_fit_parameters.yml')
-    gap_train_fname = os.path.join(assets_dir, 'simple_gap_training_set.xyz')
-
-    gap_file = os.path.join(tmp_path, 'gap_test.xml')
-
-    # functions wrapped in click
-    command = ["fitting", "simple-gap", "--atoms-filename", gap_train_fname, "-g", gap_file, "-p", param_filename, "--fit" ]
-    result = runner.invoke(cli, command)
-    if result.exit_code != 0:
-        print('OUTPUT')
-        print(result.output)
-        print('Exception')
-        print(result.exception)
-        print('Exception info')
-        print(result.exc_info)
-        import traceback
-        traceback.print_exception(*result.exc_info)
-    assert result.exit_code == 0
-
-    print('only test is checking for existence of', gap_file, 'and related')
-    assert os.path.isfile(gap_file)
-    assert os.path.isfile(gap_file.replace('.xml', '_output.txt'))
-
-
-@pytest.mark.skipif(not shutil.which("gap_fit"), reason="gap_fit not in PATH")  # skips it if gap_fit not in path
 @pytest.mark.remote
 def test_fitting_gap_cli_remote(quippy, tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     mypath = Path(__file__).parent.parent
