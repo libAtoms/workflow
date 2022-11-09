@@ -1,4 +1,5 @@
 import os
+import shutil
 import json
 import pytest
 
@@ -12,7 +13,8 @@ def _get_coding_blocks(nb_file):
 @pytest.mark.parametrize(
     ('nb_file', 'idx_execute'),
     (
-        pytest.param('examples.buildcell.ipynb', 'all', id='buildcell'),
+        pytest.param('examples.buildcell.ipynb', 'all', id='buildcell',
+            marks=pytest.mark.skipif(not shutil.which("buildcell"), reason="buildcell not in PATH")),
     )
 )
 def test_example(tmp_path, nb_file, idx_execute):
