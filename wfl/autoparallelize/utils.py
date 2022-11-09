@@ -51,7 +51,7 @@ def get_remote_info(remote_info, remote_label, env_var="WFL_EXPYRE_INFO"):
     if remote_info is None and env_var in os.environ:
         try:
             env_var_stream = io.StringIO(os.environ[env_var])
-            remote_info = yaml.safe_loads(env_var_stream)
+            remote_info = yaml.safe_load(env_var_stream)
         except Exception as exc:
             remote_info = os.environ[env_var]
             if ' ' in remote_info:
