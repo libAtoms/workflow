@@ -1,6 +1,5 @@
 import sys
 import os
-import json
 import warnings
 import re
 import docstring_parser
