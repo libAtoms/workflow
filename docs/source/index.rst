@@ -43,6 +43,7 @@ Contents
     Operations <operations.rst>
     Examples <examples.rst>
     GAP-RSS <workflows.rss.rst>
+    Command line interface <command_line.automatic_docs.rst>
     Modules <modules.rst>
 
 * :ref:`genindex`
