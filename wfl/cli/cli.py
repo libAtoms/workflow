@@ -37,8 +37,9 @@ subcli_generate.add_command(buildcell)
 def subcli_select(ctx):
     pass
 
-from wfl.cli.commands.select import cur
+from wfl.cli.commands.select import cur, by_lambda
 subcli_select.add_command(cur)
+subcli_select.add_command(by_lambda)
 
 
 @cli.group("eval")
