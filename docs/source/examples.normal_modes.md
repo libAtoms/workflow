@@ -15,7 +15,7 @@ from wfl.generate import normal_modes as nm
 
 mols = [molecule("CH4"), molecule("H2O")]
 configset = ConfigSet(mols)
-OutputSpec = OutputSpec("molecules.normal_modes.xyz")
+outputspec = OutputSpec("molecules.normal_modes.xyz")
 
 calc = (XTB, [], {'method':'GFN2-xTB'})
 prop_prefix = 'xtb2_'
