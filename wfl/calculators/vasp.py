@@ -188,7 +188,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
             raise RuntimeError("Refusing to run without explicit ENCUT")
         # should we require anything except ENCUT?
 
-        calculation_succceeded = False
+        calculation_succeeded = False
         try:
             super().calculate(atoms=atoms, properties=properties_use, system_changes=system_changes)
             calculation_succeeded = True

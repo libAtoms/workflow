@@ -142,14 +142,15 @@ def test_subselector_function_during(cu_slab):
 
     calc = EMT()
 
-    inputs = ConfigSet(cu_slab)
-    outputs = OutputSpec()
+    for steps in [300, 301]:
+        inputs = ConfigSet(cu_slab)
+        outputs = OutputSpec()
 
-    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
-                           temperature = 500.0, traj_select_during_func=select_every_10_steps_for_tests_during)
+        atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=steps, dt=1.0,
+                               temperature = 500.0, traj_select_during_func=select_every_10_steps_for_tests_during)
 
-    atoms_traj = list(atoms_traj)
-    assert len(atoms_traj) == 31
+        atoms_traj = list(atoms_traj)
+        assert len(atoms_traj) == 31
 
 
 def test_md_abort_function(cu_slab):
