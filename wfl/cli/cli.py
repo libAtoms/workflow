@@ -1,8 +1,6 @@
 import warnings
 
 import click
-from wfl.cli import cli_options as opt
-
 
 
 @click.group("wfl")

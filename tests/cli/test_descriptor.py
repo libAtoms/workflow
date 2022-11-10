@@ -11,14 +11,11 @@ from ase import Atoms
 from ase.io import write, read
 
 from wfl.cli.cli import cli
-from wfl.configset import ConfigSet, OutputSpec
 
 try:
-    from wfl.descriptors.quippy import calc
     from quippy.descriptors import Descriptor
 except ModuleNotFoundError:
     pytestmark = pytest.mark.skip(reason='no quippy')
-
 
 
 def get_ats():
@@ -48,7 +45,6 @@ def test_descriptor_quippy(tmp_path):
 
     runner = CliRunner()
     result = runner.invoke(cli, ' '.join(params))
-
 
     target = Descriptor(
         descriptor_str).calc(ats[0])['data'][0]

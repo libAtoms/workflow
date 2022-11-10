@@ -6,7 +6,7 @@ import wfl.descriptors.quippy
 @click.pass_context
 @click.option("--local", is_flag=True, help="calculate a local (per-atom) descriptor")
 @click.option("--force", is_flag=True, help="overwrite existing info or arrays item if present")
-@click.option("--descriptor", type=click.STRING, required=True, help="quippy.Descriptor arg string")
+@click.option("--descriptor", type=click.STRING, required=True, help="quippy.descriptors.Descriptor arg string")
 @click.option("--key", required=True, type=click.STRING, help="Atoms.info (global) or Atoms.arrays (local) for descriptor vector")
 @opt.inputs
 @opt.outputs

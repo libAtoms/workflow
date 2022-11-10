@@ -76,21 +76,3 @@ def test_dict_to_gap_fit_string():
 
     assert gap_fit_string == expected_gap_fit_string
 
-
-@pytest.mark.skipif(not shutil.which("gap_fit"), reason="gap_fit not in PATH")  # skips it if gap_fit not in path
-@pytest.mark.remote
-def test_fitting_gap_cli_remote(quippy, tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
-    mypath = Path(__file__).parent.parent
-    ri = {'resources' : {'max_time': '10m', 'num_nodes': 1}}
-
-    for sys_name in expyre_systems:
-        if sys_name.startswith('_'):
-            continue
-
-        ri['sys_name'] = sys_name
-        ri['job_name'] = 'pytest_gap_fit_'+sys_name
-
-        remoteinfo_env(ri)
-
-        monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
-        test_fitting_gap_cli(quippy, tmp_path)
