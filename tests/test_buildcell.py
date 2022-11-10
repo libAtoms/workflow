@@ -1,5 +1,6 @@
 import os
 import json
+import shutil
 
 import pytest
 
@@ -31,8 +32,13 @@ def do_buildcell_remote(tmp_path, sys_name, monkeypatch, remoteinfo_env):
 
 
 def do_buildcell(tmp_path, filename):
-    if 'WFL_PYTEST_BUILDCELL' not in os.environ:
-        pytest.skip('buildcell tests need WFL_PYTEST_BUILDCELL with path to buildcell executable')
+
+    if 'WFL_PYTEST_BUILDCELL' in os.environ:
+        buildcell_cmd = os.environ['WFL_PYTEST_BUILDCELL']
+    elif shutil.which("buildcell"):
+        buildcell_cmd = shutil.which("buildcell")
+    else:
+        pytest.skip('buildcell tests need WFL_PYTEST_BUILDCELL with path to buildcell executable or having it locatable via PATH')
 
     buildcell_input="""#TARGVOL=19-21
 #SPECIES=Li%NUM=1
@@ -44,8 +50,8 @@ def do_buildcell(tmp_path, filename):
 #MINSEP=0.5 Li-Li=2.7
 ##EXTRA_INFO RSS_min_vol_per_atom=10.0"""
 
-    co = buildcell.run(range(100), OutputSpec(tmp_path / filename), 
-                       buildcell_cmd=os.environ['WFL_PYTEST_BUILDCELL'], buildcell_input=buildcell_input)
+    co = buildcell.run(range(100), OutputSpec(tmp_path / filename),
+                       buildcell_cmd=buildcell_cmd, buildcell_input=buildcell_input)
 
     assert len(list(co)) == 100
 
