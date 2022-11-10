@@ -22,6 +22,7 @@ Examples often show examples of more than one thing. Below is a list of common o
 ## Generate structures
 
 - [Generate Dimer Structures](examples.dimers.md) 
+- [Random Structures via buildcell](examples.buildcell.ipynb)
 - From SMILES string: [SMILES to `Atoms`](examples.smiles.md)
 - Geometry optimisation: [Fitting a MLIP](examples.mlip_fitting.md)
 - Sample molecular normal modes: [Normal Modes (non-periodic)](examples.normal_modes.md)

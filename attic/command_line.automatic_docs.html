@@ -30,6 +30,7 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -193,6 +194,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../examples.dimers.html">
      Generating Dimer Structures
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../examples.buildcell.html">
+     Random Structures via buildcell
     </a>
    </li>
    <li class="toctree-l2">
@@ -774,7 +780,7 @@ title="Print to PDF"
 <p class="rubric">Options</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-v">
-<span id="cmdoption-wfl-verbose"></span><span class="sig-name descname"><span class="pre">-v</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-v" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-v</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-v" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <div class="section" id="wfl-descriptor">
@@ -821,7 +827,7 @@ title="Print to PDF"
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-descriptor-calc-arg-INPUTS">
-<span id="cmdoption-wfl-descriptor-calc-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-descriptor-calc-arg-INPUTS" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-descriptor-calc-arg-INPUTS" title="Permalink to this definition">#</a></dt>
 <dd><p>Optional argument(s)</p>
 </dd></dl>
 
@@ -841,26 +847,26 @@ title="Print to PDF"
 <p class="rubric">Options</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-file-op-gather-o">
-<span id="cmdoption-wfl-file-op-gather-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-file-op-gather-o" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-file-op-gather-o" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>Required</strong> Output filename, see Configset for details</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-file-op-gather-i">
-<span id="cmdoption-wfl-file-op-gather-index"></span><span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--index</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;index&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-file-op-gather-i" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--index</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;index&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-file-op-gather-i" title="Permalink to this definition">#</a></dt>
 <dd><p>Pass this index to configset globally</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-file-op-gather-f">
-<span id="cmdoption-wfl-file-op-gather-force"></span><span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--force</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-file-op-gather-f" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--force</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-file-op-gather-f" title="Permalink to this definition">#</a></dt>
 <dd><p>force writing</p>
 </dd></dl>
 
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-file-op-gather-arg-INPUTS">
-<span id="cmdoption-wfl-file-op-gather-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-file-op-gather-arg-INPUTS" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-file-op-gather-arg-INPUTS" title="Permalink to this definition">#</a></dt>
 <dd><p>Optional argument(s)</p>
 </dd></dl>
 
@@ -879,13 +885,13 @@ see issue: <a class="reference external" href="https://gitlab.com/ase/ase/-/issu
 <p class="rubric">Options</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-file-op-strip-i">
-<span id="cmdoption-wfl-file-op-strip-keep-info"></span><span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--keep-info</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;keep_info&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-file-op-strip-i" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--keep-info</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;keep_info&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-file-op-strip-i" title="Permalink to this definition">#</a></dt>
 <dd><p>Keys to keep from info if present</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-file-op-strip-a">
-<span id="cmdoption-wfl-file-op-strip-keep-array"></span><span class="sig-name descname"><span class="pre">-a</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--keep-array</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;keep_array&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-file-op-strip-a" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-a</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--keep-array</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;keep_array&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-file-op-strip-a" title="Permalink to this definition">#</a></dt>
 <dd><p>Keys to keep from arrays if present</p>
 </dd></dl>
 
@@ -897,20 +903,20 @@ see issue: <a class="reference external" href="https://gitlab.com/ase/ase/-/issu
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-file-op-strip-o">
-<span id="cmdoption-wfl-file-op-strip-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-file-op-strip-o" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-file-op-strip-o" title="Permalink to this definition">#</a></dt>
 <dd><p>Output filename, see Configset for details</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-file-op-strip-f">
-<span id="cmdoption-wfl-file-op-strip-force"></span><span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--force</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-file-op-strip-f" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--force</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-file-op-strip-f" title="Permalink to this definition">#</a></dt>
 <dd><p>force writing</p>
 </dd></dl>
 
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-file-op-strip-arg-INPUTS">
-<span id="cmdoption-wfl-file-op-strip-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-file-op-strip-arg-INPUTS" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-file-op-strip-arg-INPUTS" title="Permalink to this definition">#</a></dt>
 <dd><p>Optional argument(s)</p>
 </dd></dl>
 
@@ -930,37 +936,37 @@ see issue: <a class="reference external" href="https://gitlab.com/ase/ase/-/issu
 <p class="rubric">Options</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-fitting-multistage-gap-G">
-<span id="cmdoption-wfl-fitting-multistage-gap-g"></span><span id="cmdoption-wfl-fitting-multistage-gap-GAP-name"></span><span id="cmdoption-wfl-fitting-multistage-gap-gap-name"></span><span class="sig-name descname"><span class="pre">-G</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--GAP-name</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;gap_name&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-G" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-G</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--GAP-name</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;gap_name&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-G" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>Required</strong> name of final GAP file, not including xml suffix</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-fitting-multistage-gap-P">
-<span id="cmdoption-wfl-fitting-multistage-gap-p"></span><span id="cmdoption-wfl-fitting-multistage-gap-params-file"></span><span class="sig-name descname"><span class="pre">-P</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--params-file</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;params_file&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-P" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-P</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--params-file</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;params_file&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-P" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>Required</strong> fit parameters JSON file</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-fitting-multistage-gap-0">
-<span id="cmdoption-wfl-fitting-multistage-gap-property_prefix"></span><span id="cmdoption-wfl-fitting-multistage-gap-property-prefix"></span><span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--property_prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;property_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-0" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--property_prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;property_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-0" title="Permalink to this definition">#</a></dt>
 <dd><p>prefix to reference property keys</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-fitting-multistage-gap-m">
-<span id="cmdoption-wfl-fitting-multistage-gap-database-modify-mod"></span><span class="sig-name descname"><span class="pre">-m</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--database-modify-mod</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;database_modify_mod&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-m" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-m</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--database-modify-mod</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;database_modify_mod&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-m" title="Permalink to this definition">#</a></dt>
 <dd><p>python module that defines a ‘modify()’ function for operations like setting per-config fitting error</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-fitting-multistage-gap-d">
-<span id="cmdoption-wfl-fitting-multistage-gap-run-dir"></span><span class="sig-name descname"><span class="pre">-d</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--run-dir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;run_dir&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-d" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-d</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--run-dir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;run_dir&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-d" title="Permalink to this definition">#</a></dt>
 <dd><p>subdirectory to run in</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-fitting-multistage-gap-fitting-error">
-<span id="cmdoption-wfl-fitting-multistage-gap-no-fitting-error"></span><span class="sig-name descname"><span class="pre">--fitting-error</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-fitting-error</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-fitting-error" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">--fitting-error</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-fitting-error</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-fitting-error" title="Permalink to this definition">#</a></dt>
 <dd><p>calculate error for fitting configs</p>
 </dd></dl>
 
@@ -973,7 +979,7 @@ see issue: <a class="reference external" href="https://gitlab.com/ase/ase/-/issu
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-fitting-multistage-gap-arg-INPUTS">
-<span id="cmdoption-wfl-fitting-multistage-gap-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-arg-INPUTS" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-fitting-multistage-gap-arg-INPUTS" title="Permalink to this definition">#</a></dt>
 <dd><p>Required argument(s)</p>
 </dd></dl>
 
@@ -987,7 +993,7 @@ see issue: <a class="reference external" href="https://gitlab.com/ase/ase/-/issu
 <p class="rubric">Options</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-fitting-simple-gap-g">
-<span id="cmdoption-wfl-fitting-simple-gap-gap-file"></span><span class="sig-name descname"><span class="pre">-g</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--gap-file</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;gap_file&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-simple-gap-g" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-g</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--gap-file</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;gap_file&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-simple-gap-g" title="Permalink to this definition">#</a></dt>
 <dd><p>GAP filename, overrides optionin parameters file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default</dt>
@@ -1004,7 +1010,7 @@ see issue: <a class="reference external" href="https://gitlab.com/ase/ase/-/issu
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-fitting-simple-gap-p">
-<span id="cmdoption-wfl-fitting-simple-gap-param-file"></span><span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--param-file</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;param_file&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-simple-gap-p" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--param-file</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;param_file&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-simple-gap-p" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>Required</strong> yml file with gap parameters</p>
 </dd></dl>
 
@@ -1016,7 +1022,7 @@ see issue: <a class="reference external" href="https://gitlab.com/ase/ase/-/issu
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-fitting-simple-gap-o">
-<span id="cmdoption-wfl-fitting-simple-gap-output-file"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output-file</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output_file&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-simple-gap-o" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output-file</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output_file&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-fitting-simple-gap-o" title="Permalink to this definition">#</a></dt>
 <dd><p>filename where to save gap output, defaults to gap_basename + _output.txt</p>
 </dd></dl>
 
@@ -1028,7 +1034,7 @@ see issue: <a class="reference external" href="https://gitlab.com/ase/ase/-/issu
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-fitting-simple-gap-v">
-<span id="cmdoption-wfl-fitting-simple-gap-verbose"></span><span class="sig-name descname"><span class="pre">-v</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-fitting-simple-gap-v" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-v</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-fitting-simple-gap-v" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -1078,7 +1084,7 @@ specified species, volumes, distances, symmetries, etc.</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-generate-configs-repeat-buildcell-N">
-<span id="cmdoption-wfl-generate-configs-repeat-buildcell-n"></span><span id="cmdoption-wfl-generate-configs-repeat-buildcell-n-configs"></span><span class="sig-name descname"><span class="pre">-N</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--n-configs</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;n_configs&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-generate-configs-repeat-buildcell-N" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-N</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--n-configs</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;n_configs&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-generate-configs-repeat-buildcell-N" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>Required</strong> number of configs to generate</p>
 </dd></dl>
 
@@ -1104,20 +1110,20 @@ specified species, volumes, distances, symmetries, etc.</p>
 <p class="rubric">Options</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-generate-configs-smiles-o">
-<span id="cmdoption-wfl-generate-configs-smiles-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-generate-configs-smiles-o" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-generate-configs-smiles-o" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>Required</strong> Output filename, see Configset for details</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-generate-configs-smiles-i">
-<span id="cmdoption-wfl-generate-configs-smiles-info"></span><span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--info</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;info&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-generate-configs-smiles-i" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--info</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;info&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-generate-configs-smiles-i" title="Permalink to this definition">#</a></dt>
 <dd><p>Extra info to add to Atoms.info</p>
 </dd></dl>
 
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-generate-configs-smiles-arg-SMILES">
-<span id="cmdoption-wfl-generate-configs-smiles-arg-smiles"></span><span class="sig-name descname"><span class="pre">SMILES</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-generate-configs-smiles-arg-SMILES" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">SMILES</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-generate-configs-smiles-arg-SMILES" title="Permalink to this definition">#</a></dt>
 <dd><p>Optional argument(s)</p>
 </dd></dl>
 
@@ -1140,26 +1146,26 @@ does not support globbed filenames as xyz input</p>
 <p class="rubric">Options</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-processing-committee-p">
-<span id="cmdoption-wfl-processing-committee-prefix"></span><span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-committee-p" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-committee-p" title="Permalink to this definition">#</a></dt>
 <dd><p>Prefix to put on the first</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-processing-committee-g">
-<span id="cmdoption-wfl-processing-committee-gap-fn"></span><span class="sig-name descname"><span class="pre">-g</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--gap-fn</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;gap_fn&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-committee-g" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-g</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--gap-fn</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;gap_fn&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-committee-g" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>Required</strong> gap filenames, globbed</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-processing-committee-f">
-<span id="cmdoption-wfl-processing-committee-force"></span><span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--force</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-processing-committee-f" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--force</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-processing-committee-f" title="Permalink to this definition">#</a></dt>
 <dd><p>force writing</p>
 </dd></dl>
 
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-processing-committee-arg-INPUTS">
-<span id="cmdoption-wfl-processing-committee-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-processing-committee-arg-INPUTS" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-processing-committee-arg-INPUTS" title="Permalink to this definition">#</a></dt>
 <dd><p>Optional argument(s)</p>
 </dd></dl>
 
@@ -1172,49 +1178,49 @@ does not support globbed filenames as xyz input</p>
 <p class="rubric">Options</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-processing-reference-error-pre">
-<span id="cmdoption-wfl-processing-reference-error-pre-calc"></span><span class="sig-name descname"><span class="pre">-pre</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--pre-calc</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;pre_calc&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-pre" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-pre</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--pre-calc</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;pre_calc&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-pre" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>Required</strong> string to exec() that sets up for calculator, e.g. imports</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-processing-reference-error-c">
-<span id="cmdoption-wfl-processing-reference-error-calc"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--calc</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;calc&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-c" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--calc</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;calc&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-c" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>Required</strong> string to ‘eval()’ that returns calculator constructor</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-processing-reference-error-a">
-<span id="cmdoption-wfl-processing-reference-error-calc-args"></span><span class="sig-name descname"><span class="pre">-a</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--calc-args</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;calc_args&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-a" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-a</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--calc-args</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;calc_args&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-a" title="Permalink to this definition">#</a></dt>
 <dd><p>json list of calculator constructor args</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-processing-reference-error-k">
-<span id="cmdoption-wfl-processing-reference-error-calc-kwargs"></span><span class="sig-name descname"><span class="pre">-k</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--calc-kwargs</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;calc_kwargs&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-k" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-k</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--calc-kwargs</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;calc_kwargs&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-k" title="Permalink to this definition">#</a></dt>
 <dd><p>json dict of calculator constructor kwargs</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-processing-reference-error-r">
-<span id="cmdoption-wfl-processing-reference-error-ref-prefix"></span><span class="sig-name descname"><span class="pre">-r</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--ref-prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;ref_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-r" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-r</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--ref-prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;ref_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-r" title="Permalink to this definition">#</a></dt>
 <dd><p>string to prepend to info/array keys for reference energy, forces, virial. If None, use SinglePointCalculator results</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-processing-reference-error-p">
-<span id="cmdoption-wfl-processing-reference-error-properties"></span><span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--properties</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;properties&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-p" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--properties</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;properties&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-p" title="Permalink to this definition">#</a></dt>
 <dd><p>command separated list of properties to use</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-processing-reference-error-C">
-<span id="cmdoption-wfl-processing-reference-error-category_keys"></span><span id="cmdoption-wfl-processing-reference-error-category-keys"></span><span class="sig-name descname"><span class="pre">-C</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--category_keys</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;category_keys&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-C" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-C</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--category_keys</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;category_keys&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-C" title="Permalink to this definition">#</a></dt>
 <dd><p>comma separated list of info keys to use for doing per-category error</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-processing-reference-error-o">
-<span id="cmdoption-wfl-processing-reference-error-outfile"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--outfile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;outfile&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-o" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--outfile</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;outfile&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-o" title="Permalink to this definition">#</a></dt>
 <dd><p>output file, - for stdout</p>
 </dd></dl>
 
@@ -1227,7 +1233,7 @@ does not support globbed filenames as xyz input</p>
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-processing-reference-error-arg-INPUTS">
-<span id="cmdoption-wfl-processing-reference-error-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-arg-INPUTS" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-processing-reference-error-arg-INPUTS" title="Permalink to this definition">#</a></dt>
 <dd><p>Optional argument(s)</p>
 </dd></dl>
 
@@ -1294,7 +1300,7 @@ does not support globbed filenames as xyz input</p>
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-ref-method-castep-eval-arg-INPUTS">
-<span id="cmdoption-wfl-ref-method-castep-eval-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-ref-method-castep-eval-arg-INPUTS" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-ref-method-castep-eval-arg-INPUTS" title="Permalink to this definition">#</a></dt>
 <dd><p>Optional argument(s)</p>
 </dd></dl>
 
@@ -1342,7 +1348,7 @@ does not support globbed filenames as xyz input</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-tmp">
-<span id="cmdoption-wfl-ref-method-orca-eval-scratchdir"></span><span class="sig-name descname"><span class="pre">-tmp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--scratchdir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;scratchdir&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-tmp" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-tmp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--scratchdir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;scratchdir&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-tmp" title="Permalink to this definition">#</a></dt>
 <dd><p>Directory to use as scratch for calculations, SSD recommended, default: cwd</p>
 </dd></dl>
 
@@ -1373,7 +1379,7 @@ does not support globbed filenames as xyz input</p>
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-arg-INPUTS">
-<span id="cmdoption-wfl-ref-method-orca-eval-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-arg-INPUTS" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-arg-INPUTS" title="Permalink to this definition">#</a></dt>
 <dd><p>Optional argument(s)</p>
 </dd></dl>
 
@@ -1409,7 +1415,7 @@ does not support globbed filenames as xyz input</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-basin-hopping-calc-kwargs">
-<span id="cmdoption-wfl-ref-method-orca-eval-basin-hopping-kw"></span><span class="sig-name descname"><span class="pre">--calc-kwargs</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--kw</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;calc_kwargs&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-basin-hopping-calc-kwargs" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">--calc-kwargs</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--kw</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;calc_kwargs&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-basin-hopping-calc-kwargs" title="Permalink to this definition">#</a></dt>
 <dd><p>Kwargs for calculation, overwritten by other options</p>
 </dd></dl>
 
@@ -1427,19 +1433,19 @@ does not support globbed filenames as xyz input</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-basin-hopping-tmp">
-<span id="cmdoption-wfl-ref-method-orca-eval-basin-hopping-scratch-path"></span><span class="sig-name descname"><span class="pre">-tmp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--scratch-path</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;scratch_path&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-basin-hopping-tmp" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-tmp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--scratch-path</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;scratch_path&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-basin-hopping-tmp" title="Permalink to this definition">#</a></dt>
 <dd><p>Directory to use as scratch for calculations, SSD recommended, default: cwd</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-basin-hopping-nr">
-<span id="cmdoption-wfl-ref-method-orca-eval-basin-hopping-n-run"></span><span class="sig-name descname"><span class="pre">-nr</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--n-run</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;n_run&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nr" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-nr</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--n-run</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;n_run&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nr" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>Required</strong> Number of global optimisation runs for each frame</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-basin-hopping-nh">
-<span id="cmdoption-wfl-ref-method-orca-eval-basin-hopping-n-hop"></span><span class="sig-name descname"><span class="pre">-nh</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--n-hop</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;n_hop&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nh" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-nh</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--n-hop</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;n_hop&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-basin-hopping-nh" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>Required</strong> Number of hopping steps to take per run</p>
 </dd></dl>
 
@@ -1458,7 +1464,7 @@ does not support globbed filenames as xyz input</p>
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-ref-method-orca-eval-basin-hopping-arg-INPUTS">
-<span id="cmdoption-wfl-ref-method-orca-eval-basin-hopping-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-basin-hopping-arg-INPUTS" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-ref-method-orca-eval-basin-hopping-arg-INPUTS" title="Permalink to this definition">#</a></dt>
 <dd><p>Optional argument(s)</p>
 </dd></dl>
 
@@ -1522,7 +1528,7 @@ does not support globbed filenames as xyz input</p>
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-ref-method-vasp-eval-arg-INPUTS">
-<span id="cmdoption-wfl-ref-method-vasp-eval-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-ref-method-vasp-eval-arg-INPUTS" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-ref-method-vasp-eval-arg-INPUTS" title="Permalink to this definition">#</a></dt>
 <dd><p>Optional argument(s)</p>
 </dd></dl>
 
@@ -1541,50 +1547,50 @@ does not support globbed filenames as xyz input</p>
 <p class="rubric">Options</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-select-configs-CUR-global-output-file">
-<span id="cmdoption-wfl-select-configs-cur-global-output-file"></span><span class="sig-name descname"><span class="pre">--output-file</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output_file&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-output-file" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">--output-file</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output_file&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-output-file" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>Required</strong></p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-select-configs-CUR-global-N">
-<span id="cmdoption-wfl-select-configs-cur-global-n"></span><span id="cmdoption-wfl-select-configs-CUR-global-n-configs"></span><span id="cmdoption-wfl-select-configs-cur-global-n-configs"></span><span class="sig-name descname"><span class="pre">-N</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--n-configs</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;n_configs&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-N" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">-N</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--n-configs</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;n_configs&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-N" title="Permalink to this definition">#</a></dt>
 <dd><p><strong>Required</strong> number of configs to select</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-select-configs-CUR-global-descriptor-key">
-<span id="cmdoption-wfl-select-configs-cur-global-descriptor-key"></span><span class="sig-name descname"><span class="pre">--descriptor-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;descriptor_key&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-descriptor-key" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">--descriptor-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;descriptor_key&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-descriptor-key" title="Permalink to this definition">#</a></dt>
 <dd><p>Atoms.info key for descriptor vector</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-select-configs-CUR-global-descriptor">
-<span id="cmdoption-wfl-select-configs-cur-global-descriptor"></span><span class="sig-name descname"><span class="pre">--descriptor</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;descriptor&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-descriptor" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">--descriptor</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;descriptor&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-descriptor" title="Permalink to this definition">#</a></dt>
 <dd><p>quippy.Descriptor arg string</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-select-configs-CUR-global-keep_descriptor">
-<span id="cmdoption-wfl-select-configs-cur-global-keep-descriptor"></span><span class="sig-name descname"><span class="pre">--keep_descriptor</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-keep_descriptor" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">--keep_descriptor</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-keep_descriptor" title="Permalink to this definition">#</a></dt>
 <dd><p>keep the descriptor value in the final config file</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-select-configs-CUR-global-kernel_exponent">
-<span id="cmdoption-wfl-select-configs-cur-global-kernel-exponent"></span><span class="sig-name descname"><span class="pre">--kernel_exponent</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;kernel_exponent&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-kernel_exponent" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">--kernel_exponent</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;kernel_exponent&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-kernel_exponent" title="Permalink to this definition">#</a></dt>
 <dd><p>exponent of dot-product for kernel</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-select-configs-CUR-global-deterministic">
-<span id="cmdoption-wfl-select-configs-cur-global-deterministic"></span><span class="sig-name descname"><span class="pre">--deterministic</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-deterministic" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">--deterministic</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-deterministic" title="Permalink to this definition">#</a></dt>
 <dd><p>use deterministic (not stochastic) CUR selection</p>
 </dd></dl>
 
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-wfl-select-configs-CUR-global-arg-INPUTS">
-<span id="cmdoption-wfl-select-configs-cur-global-arg-inputs"></span><span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-arg-INPUTS" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">INPUTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-wfl-select-configs-CUR-global-arg-INPUTS" title="Permalink to this definition">#</a></dt>
 <dd><p>Optional argument(s)</p>
 </dd></dl>
 

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Generating Atomic Structures &#8212; workflow  documentation</title>
+    <title>Random Structures via buildcell &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -31,10 +31,12 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Descriptors" href="operations.descriptors.html" />
-    <link rel="prev" title="Calculators in Workflow" href="operations.calculators.html" />
+    <link rel="next" title="ORCA via command line" href="examples.orca_cli.html" />
+    <link rel="prev" title="Generating Dimer Structures" href="examples.dimers.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -119,23 +121,23 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="operations.html">
    Operations
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
+  <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="operations.calculators.html">
      Calculators in Workflow
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.generate.html">
      Generating Atomic Structures
     </a>
    </li>
@@ -178,16 +180,16 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="examples.html">
    Examples
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
   <label for="toctree-checkbox-4">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="examples.index.html">
      Index
@@ -198,8 +200,8 @@
      Generating Dimer Structures
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.buildcell.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      Random Structures via buildcell
     </a>
    </li>
@@ -433,7 +435,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/operations.generate.md.txt"
+        <a href="_sources/examples.buildcell.ipynb.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -444,7 +446,7 @@ title="Download source file"
 <span class="headerbtn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.md</span>
+<span class="headerbtn__text-container">.ipynb</span>
 </a>
 
       </li>
@@ -470,140 +472,23 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
-</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#atoms-and-dimers">
-   Atoms and Dimers
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#smiles-to-atoms">
-   SMILES to Atoms
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#buildcell">
-   BuildCell
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#super-cells">
-   Super Cells
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#molecular-dynamics">
-   Molecular Dynamics
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#geometry-optimization">
-   Geometry Optimization
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#minima-hopping">
-   Minima Hopping
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#structures-for-phonons">
-   Structures for phonons
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#normal-modes-of-molecules">
-   Normal Modes of Molecules
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
     </div>
     <div class="article row">
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Generating Atomic Structures</h1>
+                <h1>Random Structures via buildcell</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#atoms-and-dimers">
-   Atoms and Dimers
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#smiles-to-atoms">
-   SMILES to Atoms
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#buildcell">
-   BuildCell
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#super-cells">
-   Super Cells
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#molecular-dynamics">
-   Molecular Dynamics
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#geometry-optimization">
-   Geometry Optimization
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#minima-hopping">
-   Minima Hopping
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#structures-for-phonons">
-   Structures for phonons
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#normal-modes-of-molecules">
-   Normal Modes of Molecules
-  </a>
- </li>
-</ul>
-
-                        </nav>
                     </div>
                 </div>
             </div>
@@ -611,51 +496,293 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="generating-atomic-structures">
-<h1>Generating Atomic Structures<a class="headerlink" href="#generating-atomic-structures" title="Permalink to this headline">#</a></h1>
-<p>This page (and submodules of <code class="docutils literal notranslate"><span class="pre">wfl.generate</span></code>) gives a brief overview self-contained operations in Workflow that loosely cover creating new atomic structures or modifying existing ones. All but “atoms and dimers” functions below make use of Workflow’s autoparallelization functionality.</p>
-<div class="section" id="atoms-and-dimers">
-<h2>Atoms and Dimers<a class="headerlink" href="#atoms-and-dimers" title="Permalink to this headline">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.atoms_and_dimers.prepare()</span></code> makes a set of dimer (two-atom) configurations for specified elements and specified distance range. See documentation and example <a class="reference internal" href="examples.dimers.html"><span class="doc std std-doc">Generating Dimer Structures</span></a>.</p>
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 0;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+.jp-RenderedHTMLCommon thead,
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+.jp-RenderedHTMLCommon th,
+div.rendered_html th {
+  font-weight: bold;
+}
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.jp-RenderedHTMLCommon tbody tr:hover,
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="section" id="Random-Structures-via-buildcell">
+<h1>Random Structures via buildcell<a class="headerlink" href="#Random-Structures-via-buildcell" title="Permalink to this headline">#</a></h1>
+<p>In Workflow random structures can be generated via the <code class="docutils literal notranslate"><span class="pre">wfl.generate.buildcell.run()</span></code> routine. It’s functionality builds on <a class="reference external" href="https://airss-docs.github.io/technical-reference/buildcell-manual">AIRSS</a>’s <code class="docutils literal notranslate"><span class="pre">buildcell</span></code> to constructs sensible random structures.</p>
+<p>The example below illustrates its application for the random generation of aluminum unit cells. Here, we are aiming for a total of 20 structures and, thus, set <code class="docutils literal notranslate"><span class="pre">inputs</span></code> to an iterable of that length. Next, we define an <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> to handle the output structures that will be generated. In order to have a proper <code class="docutils literal notranslate"><span class="pre">buildcell_input</span></code> available, we are using the <code class="docutils literal notranslate"><span class="pre">wfl.generate.buildcell.create_input()</span></code> routine in this example where we pass arguments that characterise the systems we are aiming
+to generate. Finally, we set the <code class="docutils literal notranslate"><span class="pre">buildcell_cmd</span></code> appropriately to the <code class="docutils literal notranslate"><span class="pre">buildcell</span></code> executable we use on our machine and run the script to obtain the desired number of random Al-based unit cells.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
 </div>
-<div class="section" id="smiles-to-atoms">
-<h2>SMILES to Atoms<a class="headerlink" href="#smiles-to-atoms" title="Permalink to this headline">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.smiles.run()</span></code> converts <a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system">SMILES</a> (e.g. “CCCC” for n-butane) to ASE’s <code class="docutils literal notranslate"><span class="pre">Atoms</span></code>. See example <a class="reference internal" href="examples.smiles.html"><span class="doc std std-doc">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></span></a></p>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
+
+from wfl.generate import buildcell
+from wfl.configset import OutputSpec
+
+
+inputs = range(20)
+outputspec = OutputSpec(&#39;buildcell_output.xyz&#39;)
+
+buildcell_input = buildcell.create_input(z=13, vol_per_atom=10, bond_lengths=2)
+
+outputs = buildcell.run(
+    inputs=inputs,
+    outputs=outputspec,
+    buildcell_input=buildcell_input,
+    buildcell_cmd=&#39;buildcell&#39;,
+    )
+
+assert len(list(outputs)) == len(inputs)
+assert os.path.exists(outputspec.files[0]), f&#39;{outputspec.files[0]} not found!&#39;
+</pre></div>
 </div>
-<div class="section" id="buildcell">
-<h2>BuildCell<a class="headerlink" href="#buildcell" title="Permalink to this headline">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.buildcell.run()</span></code> wrapps <a class="reference external" href="https://airss-docs.github.io/technical-reference/buildcell-manual">AIRSS</a>’s <code class="docutils literal notranslate"><span class="pre">buildcell</span></code> that constructs sensible random structures. See documentation and example <a class="reference internal" href="examples.buildcell.html"><span class="doc std std-doc">Random Structures via buildcell</span></a>.</p>
-</div>
-<div class="section" id="super-cells">
-<h2>Super Cells<a class="headerlink" href="#super-cells" title="Permalink to this headline">#</a></h2>
-<p>Functions in <code class="docutils literal notranslate"><span class="pre">wfl.generate.supercells</span></code> creates supercells from given primitive cells. These include</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">largest_bulk()</span></code> - makes largest bulk-like supercell with no more than specified number of atoms.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">vacancy()</span></code> - makes a vacancy in a largest bulk-like supercell from above.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">antisite()</span></code> - makes antisites in a largest bulk-like supercell from above.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">interstitial()</span></code> - makes interstitials in a largest bulk-like supercell from above.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">surface()</span></code> - makes a surface supercell.</p></li>
-</ul>
-</div>
-<div class="section" id="molecular-dynamics">
-<h2>Molecular Dynamics<a class="headerlink" href="#molecular-dynamics" title="Permalink to this headline">#</a></h2>
-<p>Molecular dynamics submodule aimed at sampling atomic configurations. Allows for NVE (Velocity Verlet), NPT (Berendsen) and NVT (Berendsen) integrators. Has hooks for custom functions that sample configs from the trajectory on-the-fly and/or at the end of the individual simulation and also for stopping the simulation early if some condition is met (e.g. MD is unstable).</p>
-</div>
-<div class="section" id="geometry-optimization">
-<h2>Geometry Optimization<a class="headerlink" href="#geometry-optimization" title="Permalink to this headline">#</a></h2>
-<p>`wfl.generate.optimize.run() optimizes geometry with the given calculator and PreconLBFGS, including symmetry constraints.</p>
-</div>
-<div class="section" id="minima-hopping">
-<h2>Minima Hopping<a class="headerlink" href="#minima-hopping" title="Permalink to this headline">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.minimahopping.run()</span></code> wraps ASE’s <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/optimize.html#minima-hopping">Minima hopping</a> code. This algorithm utilizes a series of alternating steps of NVE molecular dynamics and local optimizations.</p>
-</div>
-<div class="section" id="structures-for-phonons">
-<h2>Structures for phonons<a class="headerlink" href="#structures-for-phonons" title="Permalink to this headline">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.phonopy.run()</span></code> creates displaced configs with phonopy or phono3py.</p>
-</div>
-<div class="section" id="normal-modes-of-molecules">
-<h2>Normal Modes of Molecules<a class="headerlink" href="#normal-modes-of-molecules" title="Permalink to this headline">#</a></h2>
-<p>Calculates normal mode directions and frequencies of molecules. From these can generate a Boltzmann sample of random displacements along multiple normal modes. See example on <a class="reference internal" href="examples.normal_modes.html"><span class="doc std std-doc">Normal modes of molecules</span></a>.</p>
 </div>
 </div>
 
@@ -667,17 +794,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="operations.calculators.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="examples.dimers.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Calculators in Workflow</p>
+            <p class="prev-next-title">Generating Dimer Structures</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="operations.descriptors.html" title="next page">
+    <a class='right-next' id="next-link" href="examples.orca_cli.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Descriptors</p>
+        <p class="prev-next-title">ORCA via command line</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
