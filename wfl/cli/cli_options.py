@@ -7,7 +7,7 @@ def _to_ConfigSet(ctx, param, value):
     return ConfigSet(value)
 
 def inputs(f):
-    """Add a standard option for the OutputSpec outputs"""
+    """Add a standard option for the ConfigSet inputs"""
     f = click.option("--inputs", "-i", required=True, multiple=True, callback=_to_ConfigSet,
                     help='Input xyz file(s) to create ConfigSet from')(f) 
     return f
@@ -18,7 +18,7 @@ def _to_OutputSpec(ctx, param, value):
 
 
 def outputs(f):
-    """Add a standard option for the ConfigSet inputs"""
+    """Add a standard option for the OutputSpec outputs"""
     f = click.option('--outputs', '-o', required=True, callback=_to_OutputSpec,
                      help="Ouput file to create OutputSpec from.")(f)
     return f
