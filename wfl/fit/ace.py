@@ -467,7 +467,7 @@ def _prepare_e0(ace_fit_params, fitting_configs, ref_property_prefix,
     if len(list(isolated_atoms)) > 0 and "e0" in ace_fit_params:
         raise RuntimeError("Got e0 both in isolated atoms and in ace_fit_params")
 
-    if len(isolated_atoms) > 0:
+    if len(list(isolated_atoms)) > 0:
         e0 = {}
         for at in isolated_atoms:
             e0[str(at.symbols)] = at.info[f"{ref_property_prefix}energy"]

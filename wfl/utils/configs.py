@@ -32,7 +32,7 @@ def find_isolated_atoms(inputs, outputs, isolated_atom_info_key="config_type",
 
     isolated_atoms = []
     for at in inputs:
-        if at.info[isolated_atom_info_key] in isolated_atom_info_value:
+        if isolated_atom_info_key in at.info and at.info[isolated_atom_info_key] in isolated_atom_info_value:
             if len(at) != 1:
                 raise RuntimeError(f'Config marked as an isolated atom, but has more than one atom in `Atoms`.')
             isolated_atoms.append(at)
@@ -42,7 +42,7 @@ def find_isolated_atoms(inputs, outputs, isolated_atom_info_key="config_type",
         if count != 1:
             raise RuntimeError(f"Isolated atom for element {symbol} found more than once ({count} times).")
 
-    outputs.write(isolated_atoms)
+    outputs.store(isolated_atoms)
     outputs.close()
     return outputs.to_ConfigSet()
 
