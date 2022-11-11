@@ -1,6 +1,5 @@
 import warnings
 import re
-from collections import Counter
 
 import numpy as np
 from matplotlib.figure import Figure
@@ -232,7 +231,7 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
     all_diffs: dict
         dict of property differences returned by error.calc (second returned item)
     all_parity: dict
-        dict of property values for parity returned by error.calc (second returned item)
+        dict of property values for parity returned by error.calc (third returned item)
     output: str
         output filename
     properties: list(str), default None
@@ -244,7 +243,7 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
     error_type: str, default "RMSE"
         type of error matching key in all_errors dict
     cmap_name_bins: tuple(str, int), default None
-        colormap to use, if None use number of categories based default
+        colormap to use and number of bins. If None use number of categories based default
     """
 
     assert error_type in ["RMSE", "MAE"], f"'error_type' must be 'RMSE' or 'MAE', not {error_type}."
@@ -381,34 +380,4 @@ def _annotate_error_plot(ax, property, ref_property_prefix, calc_property_prefix
     ax.grid(color='lightgrey', ls=':')
     ax.set_yscale('log')
 
-
-def get_atomization_energy(inputs, outputs, prop_prefix, property="energy", isolated_atoms=None):
-
-    if outputs.is_done():
-        return outputs.to_ConfigSet()
-
-    isolated_atoms_from_inputs = [at for at in inputs if len(at) == 1]
-    if isolated_atoms is not None and len(isolated_atoms_from_inputs) > 0:
-        raise RuntimeError("Got isolated atoms as argument and found in inputs.")
-    elif isolated_atoms is None and len(isolated_atoms_from_inputs) == 0:
-        raise RuntimeError("Need isolated atoms to calculate atomization energy")
-    if len(isolated_atoms_from_inputs)> 0:
-        isolated_atoms = isolated_atoms_from_inputs
-
-    isolated_at_data = {}
-    for at in isolated_atoms:
-        isolated_at_data[list(at.symbols)[0]] = at.info[f'{prop_prefix}{property}']
-
-    for at in inputs:
-        counted_ats = Counter(list(at.symbols))
-        assert counted_ats.keys() == isolated_at_data.keys(), f"have isolated atom energies for {isolated_at_data.keys()}, but config has {counted_ats.keys()} elements."
-        binding_energy = at.info[f'{prop_prefix}{property}']
-        for symbol, count in counted_ats.items():
-            binding_energy -= count * isolated_at_data[symbol]
-
-        at.info[f"{prop_prefix}atomization_{property}"] = -1 * binding_energy 
-        outputs.store(at)
-
-    outputs.close()
-    return outputs.to_ConfigSet()
 
