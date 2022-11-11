@@ -204,11 +204,6 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca_cli.html">
-     ORCA via command line
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="examples.orca_python.html">
      ORCA via Python script
     </a>
@@ -248,6 +243,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="workflows.rss.html">
    GAP-RSS
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="command_line.automatic_docs.html">
+   Command line interface
   </a>
  </li>
  <li class="toctree-l1 current active has-children">
@@ -292,10 +292,22 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.cli.html">
        wfl.cli package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+      <label for="toctree-checkbox-8">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.cli.commands.html">
+         wfl.cli.commands package
+        </a>
+       </li>
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.descriptors.html">
@@ -306,8 +318,8 @@
       <a class="reference internal" href="wfl.fit.html">
        wfl.fit package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
-      <label for="toctree-checkbox-8">
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
        <i class="fas fa-chevron-down">
        </i>
       </label>
@@ -328,8 +340,8 @@
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
-      <label for="toctree-checkbox-9">
+      <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
+      <label for="toctree-checkbox-10">
        <i class="fas fa-chevron-down">
        </i>
       </label>
@@ -608,7 +620,7 @@ title="Print to PDF"
 <li><p><strong>mat</strong> (<em>np.array</em><em>(</em><em>vec_len</em><em>, </em><em>n_vecs</em><em>) or </em><em>(</em><em>n_vecs</em><em>, </em><em>n_vecs</em><em>)</em>) – rectangular array of descriptors as column vectors or square kernel matrix</p></li>
 <li><p><strong>num</strong> (<em>int</em>) – number to select</p></li>
 <li><p><strong>stochastic</strong> (<em>bool</em><em>, </em><em>default True</em>) – use stochastic selection algorithm</p></li>
-<li><p><strong>stochastic_seed</strong> (<em>bool</em><em>, </em><em>default None</em>) – fix seed of random number generator</p></li>
+<li><p><strong>stochastic_seed</strong> (<em>int</em><em>, </em><em>default None</em>) – fix seed of random number generator</p></li>
 <li><p><strong>exclude_list</strong> (<em>list</em><em>(</em><em>int</em><em>)</em><em>, </em><em>default None</em>) – list of descriptor indices to exclude</p></li>
 </ul>
 </dd>
@@ -631,7 +643,7 @@ title="Print to PDF"
 <li><p><strong>inputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – atomic configs to select from</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – where to write output to</p></li>
 <li><p><strong>num</strong> (<em>int</em>) – number to select</p></li>
-<li><p><strong>stochastic_seed</strong> (<em>bool</em><em>, </em><em>default None</em>) – fix seed of random number generator</p></li>
+<li><p><strong>stochastic_seed</strong> (<em>int</em><em>, </em><em>default None</em>) – fix seed of random number generator</p></li>
 <li><p><strong>at_descs</strong> (<em>np.array</em><em>(</em><em>n_descs</em><em>, </em><em>desc_len</em><em>)</em><em>, </em><em>mutually exclusive with at_descs_info_key</em>) – list of descriptor vectors</p></li>
 <li><p><strong>at_descs_info_key</strong> (<em>str</em><em>, </em><em>mutually exclusive with at_descs</em>) – key to Atoms.info dict containing per-config descriptor vector</p></li>
 <li><p><strong>kernel_exp</strong> (<em>float</em><em>, </em><em>default None</em>) – exponent to compute kernel (if other than 1)</p></li>

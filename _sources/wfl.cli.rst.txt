@@ -1,6 +1,14 @@
 wfl.cli package
 ===============
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   wfl.cli.commands
+
 Submodules
 ----------
 

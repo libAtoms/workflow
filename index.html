@@ -203,11 +203,6 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca_cli.html">
-     ORCA via command line
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="examples.orca_python.html">
      ORCA via Python script
     </a>
@@ -247,6 +242,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="workflows.rss.html">
    GAP-RSS
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="command_line.automatic_docs.html">
+   Command line interface
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -291,10 +291,22 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.cli.html">
        wfl.cli package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+      <label for="toctree-checkbox-8">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.cli.commands.html">
+         wfl.cli.commands package
+        </a>
+       </li>
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.descriptors.html">
@@ -305,8 +317,8 @@
       <a class="reference internal" href="wfl.fit.html">
        wfl.fit package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
-      <label for="toctree-checkbox-8">
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
        <i class="fas fa-chevron-down">
        </i>
       </label>
@@ -327,8 +339,8 @@
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
-      <label for="toctree-checkbox-9">
+      <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
+      <label for="toctree-checkbox-10">
        <i class="fas fa-chevron-down">
        </i>
       </label>
@@ -553,7 +565,7 @@ title="Print to PDF"
   <div class="section" id="welcome-to-workflow-s-documentation">
 <h1>Welcome to Workflow’s documentation!<a class="headerlink" href="#welcome-to-workflow-s-documentation" title="Permalink to this headline">#</a></h1>
 <p>A Python toolkit for building interatomic potential creation and atomistic simulation workflows.</p>
-<p>The main functions of Workflow is to efficiently parallelise operations over a set of atomic configurations (Atomic Simulation Environment’s “Atoms” objects). Given an operation that is defined to act a single configuration (e.g. evaluate energy of a structure with CASTEP ASE calculator), Workflow may apply the operation to multiple configurations in parallel. Workflow also interfaces with [ExPyRe](<a class="reference external" href="https://github.com/libAtoms/ExPyRe/tree/main/expyre">https://github.com/libAtoms/ExPyRe/tree/main/expyre</a>) to manage evaluation of (autoparallelized) python functions via a queueing system on a (remote) cluster.</p>
+<p>The main function of Workflow is to efficiently parallelise operations over a set of atomic configurations (Atomic Simulation Environment’s “Atoms” objects). Given an operation that is defined to act a single configuration (e.g. evaluate energy of a structure with CASTEP ASE calculator), Workflow may apply the operation to multiple configurations in parallel. Workflow also interfaces with <a class="reference external" href="https://github.com/libAtoms/ExPyRe/tree/main/expyre">ExPyRe</a> to manage evaluation of (autoparallelized) python functions via a queueing system on a (remote) cluster.</p>
 <p>Basic use of the workflow is introduced through an <a class="reference internal" href="first_example.html#first-example"><span class="std std-ref">example</span></a>.  The overall design of the workflow-specific code structures (e.g. how configurations are handled, mechanism to parallelise operations and to submit as queued jobs) are covered in <a class="reference internal" href="overview.html#overview"><span class="std std-ref">Overview</span></a>. Currently implemented self-contained per-configuration operations are sketched out in <a class="reference internal" href="operations.html#operations"><span class="std std-ref">Operations</span></a>. Description of GAP-RSS workflow, built out of these modular operations is described in <a class="reference internal" href="workflows.rss.html#rss"><span class="std std-ref">GAP-RSS</span></a>. There are also  <a class="reference internal" href="examples.html#examples"><span class="std std-ref">examples</span></a> of common tasks to get started with and a <a class="reference internal" href="modules.html#api"><span class="std std-ref">Python API</span></a>.</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">#</a></h2>
@@ -597,7 +609,6 @@ title="Print to PDF"
 <li class="toctree-l2"><a class="reference internal" href="examples.index.html">Index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.dimers.html">Generating Dimer Structures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.buildcell.html">Random Structures via buildcell</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.orca_cli.html">ORCA via command line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.orca_python.html">ORCA via Python script</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.mace.html">Parallelize MACE calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html">Fitting a MLIP</a></li>
@@ -616,6 +627,14 @@ title="Print to PDF"
 <li class="toctree-l2"><a class="reference internal" href="workflows.rss.html#rss-step">RSS step</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workflows.rss.html#md-step">MD step</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workflows.rss.html#job-script-and-runtime-settings">Job script and runtime settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="command_line.automatic_docs.html">Command line interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-descriptor">descriptor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-error">error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-eval">eval</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-generate">generate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-select">select</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a><ul>

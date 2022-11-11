@@ -204,11 +204,6 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca_cli.html">
-     ORCA via command line
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="examples.orca_python.html">
      ORCA via Python script
     </a>
@@ -248,6 +243,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="workflows.rss.html">
    GAP-RSS
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="command_line.automatic_docs.html">
+   Command line interface
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -292,10 +292,22 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.cli.html">
        wfl.cli package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+      <label for="toctree-checkbox-8">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.cli.commands.html">
+         wfl.cli.commands package
+        </a>
+       </li>
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.descriptors.html">
@@ -306,8 +318,8 @@
       <a class="reference internal" href="wfl.fit.html">
        wfl.fit package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
-      <label for="toctree-checkbox-8">
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
        <i class="fas fa-chevron-down">
        </i>
       </label>
@@ -328,8 +340,8 @@
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
-      <label for="toctree-checkbox-9">
+      <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
+      <label for="toctree-checkbox-10">
        <i class="fas fa-chevron-down">
        </i>
       </label>
@@ -563,14 +575,14 @@ title="Print to PDF"
 <span class="kn">from</span> <span class="nn">wfl.generate</span> <span class="kn">import</span> <span class="n">normal_modes</span> <span class="k">as</span> <span class="n">nm</span> 
 
 <span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">molecule</span><span class="p">(</span><span class="s2">&quot;CH4&quot;</span><span class="p">),</span> <span class="n">molecule</span><span class="p">(</span><span class="s2">&quot;H2O&quot;</span><span class="p">)]</span>
-<span class="n">ConfigSet</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
-<span class="n">OutputSpec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;molecules.normal_modes.xyz&quot;</span><span class="p">)</span>
+<span class="n">configset</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
+<span class="n">outputspec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;molecules.normal_modes.xyz&quot;</span><span class="p">)</span>
 
 <span class="n">calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">XTB</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span><span class="s1">&#39;GFN2-xTB&#39;</span><span class="p">})</span>
 <span class="n">prop_prefix</span> <span class="o">=</span> <span class="s1">&#39;xtb2_&#39;</span>
 
-<span class="n">nm</span><span class="o">.</span><span class="n">generate_normal_modes_parallel_hessian</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">ConfigSet</span><span class="p">,</span>
-                                    <span class="n">outputs</span><span class="o">=</span><span class="n">OutputSpec</span><span class="p">,</span>
+<span class="n">nm</span><span class="o">.</span><span class="n">generate_normal_modes_parallel_hessian</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">configset</span><span class="p">,</span>
+                                    <span class="n">outputs</span><span class="o">=</span><span class="n">outputspec</span><span class="p">,</span>
                                     <span class="n">calculator</span><span class="o">=</span><span class="n">calc</span><span class="p">,</span>
                                     <span class="n">prop_prefix</span><span class="o">=</span><span class="n">prop_prefix</span><span class="p">)</span>
 </pre></div>
@@ -587,14 +599,14 @@ title="Print to PDF"
 <span class="kn">from</span> <span class="nn">wfl.autoparallelize.autoparainfo</span> <span class="kn">import</span> <span class="n">AutoparaInfo</span>
 
 <span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">molecule</span><span class="p">(</span><span class="s2">&quot;CH4&quot;</span><span class="p">),</span> <span class="n">molecule</span><span class="p">(</span><span class="s2">&quot;H2O&quot;</span><span class="p">)]</span>
-<span class="n">ConfigSet</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
-<span class="n">OutputSpec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;molecules.normal_modes.xyz&quot;</span><span class="p">)</span>
+<span class="n">configset</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
+<span class="n">outputspec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;molecules.normal_modes.xyz&quot;</span><span class="p">)</span>
 
 <span class="n">calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">XTB</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span><span class="s1">&#39;GFN2-xTB&#39;</span><span class="p">})</span>
 <span class="n">prop_prefix</span> <span class="o">=</span> <span class="s1">&#39;xtb2_&#39;</span>
 
-<span class="n">nm</span><span class="o">.</span><span class="n">generate_normal_modes_parallel_atoms</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">ConfigSet</span><span class="p">,</span>
-                                         <span class="n">outputs</span><span class="o">=</span><span class="n">OutputSpec</span><span class="p">,</span>
+<span class="n">nm</span><span class="o">.</span><span class="n">generate_normal_modes_parallel_atoms</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">configset</span><span class="p">,</span>
+                                         <span class="n">outputs</span><span class="o">=</span><span class="n">outputspec</span><span class="p">,</span>
                                          <span class="n">calculator</span><span class="o">=</span><span class="n">calc</span><span class="p">,</span>
                                          <span class="n">prop_prefix</span><span class="o">=</span><span class="n">prop_prefix</span><span class="p">,</span>
                                          <span class="n">autopara_info</span> <span class="o">=</span> <span class="n">AutoparaInfo</span><span class="p">(</span>

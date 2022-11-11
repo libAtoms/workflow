@@ -14,14 +14,14 @@ from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate import normal_modes as nm 
 
 mols = [molecule("CH4"), molecule("H2O")]
-ConfigSet = ConfigSet(mols)
-OutputSpec = OutputSpec("molecules.normal_modes.xyz")
+configset = ConfigSet(mols)
+outputspec = OutputSpec("molecules.normal_modes.xyz")
 
 calc = (XTB, [], {'method':'GFN2-xTB'})
 prop_prefix = 'xtb2_'
 
-nm.generate_normal_modes_parallel_hessian(inputs=ConfigSet,
-                                    outputs=OutputSpec,
+nm.generate_normal_modes_parallel_hessian(inputs=configset,
+                                    outputs=outputspec,
                                     calculator=calc,
                                     prop_prefix=prop_prefix)
 ```
@@ -40,14 +40,14 @@ from wfl.generate import normal_modes as nm
 from wfl.autoparallelize.autoparainfo import AutoparaInfo
 
 mols = [molecule("CH4"), molecule("H2O")]
-ConfigSet = ConfigSet(mols)
-OutputSpec = OutputSpec("molecules.normal_modes.xyz")
+configset = ConfigSet(mols)
+outputspec = OutputSpec("molecules.normal_modes.xyz")
 
 calc = (XTB, [], {'method':'GFN2-xTB'})
 prop_prefix = 'xtb2_'
 
-nm.generate_normal_modes_parallel_atoms(inputs=ConfigSet,
-                                         outputs=OutputSpec,
+nm.generate_normal_modes_parallel_atoms(inputs=configset,
+                                         outputs=outputspec,
                                          calculator=calc,
                                          prop_prefix=prop_prefix,
                                          autopara_info = AutoparaInfo(

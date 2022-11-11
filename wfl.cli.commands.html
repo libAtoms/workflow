@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calculators in Workflow &#8212; workflow  documentation</title>
+    <title>wfl.cli.commands package &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -33,8 +33,8 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Generating Atomic Structures" href="operations.generate.html" />
-    <link rel="prev" title="Operations" href="operations.html" />
+    <link rel="next" title="wfl.descriptors package" href="wfl.descriptors.html" />
+    <link rel="prev" title="wfl.cli package" href="wfl.cli.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -119,18 +119,18 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="operations.html">
    Operations
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="operations.calculators.html">
      Calculators in Workflow
     </a>
    </li>
@@ -250,26 +250,26 @@
    Command line interface
   </a>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="modules.html">
    Modules
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
   <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
-   <li class="toctree-l2 has-children">
+  <ul class="current">
+   <li class="toctree-l2 current active has-children">
     <a class="reference internal" href="wfl.html">
      wfl package
     </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
     <label for="toctree-checkbox-6">
      <i class="fas fa-chevron-down">
      </i>
     </label>
-    <ul>
+    <ul class="current">
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.autoparallelize.html">
        wfl.autoparallelize package
@@ -292,18 +292,18 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3 has-children">
+     <li class="toctree-l3 current active has-children">
       <a class="reference internal" href="wfl.cli.html">
        wfl.cli package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+      <input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
       <label for="toctree-checkbox-8">
        <i class="fas fa-chevron-down">
        </i>
       </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.cli.commands.html">
+      <ul class="current">
+       <li class="toctree-l4 current active">
+        <a class="current reference internal" href="#">
          wfl.cli.commands package
         </a>
        </li>
@@ -445,7 +445,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/operations.calculators.md.txt"
+        <a href="_sources/wfl.cli.commands.rst.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -456,7 +456,7 @@ title="Download source file"
 <span class="headerbtn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.md</span>
+<span class="headerbtn__text-container">.rst</span>
 </a>
 
       </li>
@@ -505,23 +505,38 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallelize-with-generic-run">
-   Parallelize with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     generic.run()
-    </span>
-   </code>
+  <a class="reference internal nav-link" href="#submodules">
+   Submodules
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#file-based-calculators">
-   File-based calculators
+  <a class="reference internal nav-link" href="#module-wfl.cli.commands.descriptor">
+   wfl.cli.commands.descriptor module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#special-calculators">
-   Special calculators
+  <a class="reference internal nav-link" href="#module-wfl.cli.commands.error">
+   wfl.cli.commands.error module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.cli.commands.eval">
+   wfl.cli.commands.eval module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.cli.commands.generate">
+   wfl.cli.commands.generate module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.cli.commands.select">
+   wfl.cli.commands.select module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.cli.commands">
+   Module contents
   </a>
  </li>
 </ul>
@@ -533,7 +548,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Calculators in Workflow</h1>
+                <h1>wfl.cli.commands package</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -544,23 +559,38 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallelize-with-generic-run">
-   Parallelize with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     generic.run()
-    </span>
-   </code>
+  <a class="reference internal nav-link" href="#submodules">
+   Submodules
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#file-based-calculators">
-   File-based calculators
+  <a class="reference internal nav-link" href="#module-wfl.cli.commands.descriptor">
+   wfl.cli.commands.descriptor module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#special-calculators">
-   Special calculators
+  <a class="reference internal nav-link" href="#module-wfl.cli.commands.error">
+   wfl.cli.commands.error module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.cli.commands.eval">
+   wfl.cli.commands.eval module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.cli.commands.generate">
+   wfl.cli.commands.generate module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.cli.commands.select">
+   wfl.cli.commands.select module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.cli.commands">
+   Module contents
   </a>
  </li>
 </ul>
@@ -573,31 +603,38 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="calculators-in-workflow">
-<h1>Calculators in Workflow<a class="headerlink" href="#calculators-in-workflow" title="Permalink to this headline">#</a></h1>
-<p>In principle, any ASE calculator can be parallelized using Workflow. The parallelization happens at <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> object level. That is, if we wanted to get single-point energies &amp; forces on 16 <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> structures and using 16 cores, all 16 <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects would get processed at the same time, each on a single core.</p>
-<div class="section" id="parallelize-with-generic-run">
-<h2>Parallelize with <code class="docutils literal notranslate"><span class="pre">generic.run()</span></code><a class="headerlink" href="#parallelize-with-generic-run" title="Permalink to this headline">#</a></h2>
-<p>In ASE, we iterate over all <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects, initialize a calculator, set it to an <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> object and call it to evaluate energies and forces sequentially. In Workflow, with <code class="docutils literal notranslate"><span class="pre">generic.run</span></code> we define a way to initialize a calculator, define where from and to read and write configurations (<code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>) and set a directive for how many cores to parallelize over.</p>
-<p>The calculator has to be defined as a tuple of <code class="docutils literal notranslate"><span class="pre">(Calculator,</span> <span class="pre">[args],</span> <span class="pre">**kwargs)</span></code>, for example</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dftb_calc</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">quippy</span><span class="o">.</span><span class="n">potentials</span><span class="o">.</span><span class="n">Potential</span><span class="p">,</span> 
-    <span class="p">[</span><span class="s2">&quot;TB DFTB&quot;</span><span class="p">],</span> 
-    <span class="p">{</span><span class="s2">&quot;param_filename&quot;</span><span class="p">:</span> <span class="p">:</span><span class="s2">&quot;tightbind.parms.DFTB.mio-0-1.xm&quot;</span><span class="p">}</span>
-    <span class="p">)</span>
-</pre></div>
+  <div class="section" id="wfl-cli-commands-package">
+<h1>wfl.cli.commands package<a class="headerlink" href="#wfl-cli-commands-package" title="Permalink to this headline">#</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
 </div>
-<p>Further see <a class="reference internal" href="overview.parallelisation.html"><span class="doc std std-doc">autoparallelization page</span></a> and <a class="reference internal" href="examples.index.html"><span class="doc std std-doc">examples page</span></a>.</p>
+<div class="section" id="module-wfl.cli.commands.descriptor">
+<span id="wfl-cli-commands-descriptor-module"></span><h2>wfl.cli.commands.descriptor module<a class="headerlink" href="#module-wfl.cli.commands.descriptor" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.cli.commands.descriptor.calculate_descriptor">
+<span class="sig-prename descclassname"><span class="pre">wfl.cli.commands.descriptor.</span></span><span class="sig-name descname"><span class="pre">calculate_descriptor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descriptor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.cli.commands.descriptor.calculate_descriptor" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="file-based-calculators">
-<h2>File-based calculators<a class="headerlink" href="#file-based-calculators" title="Permalink to this headline">#</a></h2>
-<p>ASE’s calculators that write &amp; read files to &amp; from disk must to be modified if they were to be parallelized via Workflow’s <code class="docutils literal notranslate"><span class="pre">generic</span></code> calculator. Specifically, each instance of calculator must execute the calculation in a separate folder so processes running in parallel don’t attempt to read and write to the same files. Workflow handles the files, as well as creation and clean-up of temporary directories.</p>
-<p>Currently, [ORCA], VASP and QuantumEspresso are compatible with the <code class="docutils literal notranslate"><span class="pre">generic</span></code> calculator; CASTEP parallelization is accessed via <code class="docutils literal notranslate"><span class="pre">calculators.dft.evaluate_dft()</span></code>.</p>
+<div class="section" id="module-wfl.cli.commands.error">
+<span id="wfl-cli-commands-error-module"></span><h2>wfl.cli.commands.error module<a class="headerlink" href="#module-wfl.cli.commands.error" title="Permalink to this headline">#</a></h2>
 </div>
-<div class="section" id="special-calculators">
-<h2>Special calculators<a class="headerlink" href="#special-calculators" title="Permalink to this headline">#</a></h2>
-<p>Finally, there is a (currently broken) non-conventional “Basin Hopping” calculator implementation for ORCA.
-<code class="docutils literal notranslate"><span class="pre">BasinHoppingORCA()</span></code> runs multiple single point evaluations perturbing the initial guess of the wavefunction each time. It returns the results corresponding to the global minimum and lowest-energy solution.</p>
+<div class="section" id="module-wfl.cli.commands.eval">
+<span id="wfl-cli-commands-eval-module"></span><h2>wfl.cli.commands.eval module<a class="headerlink" href="#module-wfl.cli.commands.eval" title="Permalink to this headline">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.cli.commands.eval.pyjulip_ace">
+<span class="sig-prename descclassname"><span class="pre">wfl.cli.commands.eval.</span></span><span class="sig-name descname"><span class="pre">pyjulip_ace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_fname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.cli.commands.eval.pyjulip_ace" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-wfl.cli.commands.generate">
+<span id="wfl-cli-commands-generate-module"></span><h2>wfl.cli.commands.generate module<a class="headerlink" href="#module-wfl.cli.commands.generate" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="module-wfl.cli.commands.select">
+<span id="wfl-cli-commands-select-module"></span><h2>wfl.cli.commands.select module<a class="headerlink" href="#module-wfl.cli.commands.select" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="module-wfl.cli.commands">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.cli.commands" title="Permalink to this headline">#</a></h2>
 </div>
 </div>
 
@@ -609,17 +646,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="operations.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="wfl.cli.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Operations</p>
+            <p class="prev-next-title">wfl.cli package</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="operations.generate.html" title="next page">
+    <a class='right-next' id="next-link" href="wfl.descriptors.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Generating Atomic Structures</p>
+        <p class="prev-next-title">wfl.descriptors package</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

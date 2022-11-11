@@ -34,7 +34,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Parallelize MACE calculator" href="examples.mace.html" />
-    <link rel="prev" title="ORCA via command line" href="examples.orca_cli.html" />
+    <link rel="prev" title="Random Structures via buildcell" href="examples.buildcell.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -203,11 +203,6 @@
      Random Structures via buildcell
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca_cli.html">
-     ORCA via command line
-    </a>
-   </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
      ORCA via Python script
@@ -248,6 +243,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="workflows.rss.html">
    GAP-RSS
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="command_line.automatic_docs.html">
+   Command line interface
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -292,10 +292,22 @@
        </li>
       </ul>
      </li>
-     <li class="toctree-l3">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.cli.html">
        wfl.cli package
       </a>
+      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+      <label for="toctree-checkbox-8">
+       <i class="fas fa-chevron-down">
+       </i>
+      </label>
+      <ul>
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.cli.commands.html">
+         wfl.cli.commands package
+        </a>
+       </li>
+      </ul>
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.descriptors.html">
@@ -306,8 +318,8 @@
       <a class="reference internal" href="wfl.fit.html">
        wfl.fit package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
-      <label for="toctree-checkbox-8">
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <label for="toctree-checkbox-9">
        <i class="fas fa-chevron-down">
        </i>
       </label>
@@ -328,8 +340,8 @@
       <a class="reference internal" href="wfl.generate.html">
        wfl.generate package
       </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
-      <label for="toctree-checkbox-9">
+      <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
+      <label for="toctree-checkbox-10">
        <i class="fas fa-chevron-down">
        </i>
       </label>
@@ -541,10 +553,13 @@ title="Print to PDF"
                <span class="s2">&quot;keep_files&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;orca_kwargs: </span><span class="si">{</span><span class="n">orca_kwargs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-<span class="c1"># calculator</span>
+<span class="c1"># optionally, can define a post-processing function. </span>
+<span class="c1"># here uses JANPA to calculate local charges from wavefunction.</span>
 <span class="n">janpa_home_dir</span> <span class="o">=</span> <span class="s2">&quot;/path/to/janpa/dir&quot;</span> 
 <span class="n">post_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">natural_population_analysis</span><span class="p">,</span> <span class="n">janpa_home_dir</span><span class="p">)</span>
 <span class="n">orca_kwargs</span><span class="p">[</span><span class="s2">&quot;post_process&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post_func</span>
+
+<span class="c1"># calculator</span>
 <span class="n">calculator</span> <span class="o">=</span> <span class="p">(</span><span class="n">ORCA</span><span class="p">,</span> <span class="p">[],</span> <span class="n">orca_kwargs</span><span class="p">)</span>
 
 <span class="c1"># run calculation</span>
@@ -583,11 +598,11 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="examples.orca_cli.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="examples.buildcell.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">ORCA via command line</p>
+            <p class="prev-next-title">Random Structures via buildcell</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="examples.mace.html" title="next page">

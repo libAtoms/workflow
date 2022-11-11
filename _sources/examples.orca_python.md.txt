@@ -49,10 +49,13 @@ orca_kwargs = {"orcablocks": "%scf Convergence Tight SmearTemp 5000 end",
                "keep_files": False}
 print(f'orca_kwargs: {orca_kwargs}')
 
-# calculator
+# optionally, can define a post-processing function. 
+# here uses JANPA to calculate local charges from wavefunction.
 janpa_home_dir = "/path/to/janpa/dir" 
 post_func = partial(natural_population_analysis, janpa_home_dir)
 orca_kwargs["post_process"] = post_func
+
+# calculator
 calculator = (ORCA, [], orca_kwargs)
 
 # run calculation
