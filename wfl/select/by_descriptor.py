@@ -35,7 +35,7 @@ def CUR(mat, num, stochastic=True, stochastic_seed=None, exclude_list=None):
         number to select
     stochastic: bool, default True
         use stochastic selection algorithm
-    stochastic_seed: bool, default None
+    stochastic_seed: int, default None
         fix seed of random number generator
     exclude_list: list(int), default None
         list of descriptor indices to exclude
@@ -169,7 +169,7 @@ def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
         where to write output to
     num: int
         number to select
-    stochastic_seed: bool, default None
+    stochastic_seed: int, default None
         fix seed of random number generator
     at_descs: np.array(n_descs, desc_len), mutually exclusive with at_descs_info_key
         list of descriptor vectors

@@ -94,6 +94,10 @@ jobs:
           cp src/buildcell/src/buildcell $HOME/bin/
           cd ..
 
+      - name: Add buildcell to system path
+        run: |
+          echo $HOME/bin >> $GITHUB_PATH
+
       - name: Install MPI dependencies
         if: env.use-mpi
         run: |

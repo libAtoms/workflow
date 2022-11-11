@@ -1,56 +1,13 @@
-"""
-Command line interface to the package
-"""
-
-import distutils.util
-import glob
-import json
-import os
-import sys
 import warnings
-from pprint import pformat, pprint
-from pathlib import Path
 
-import ase.data
-import ase.io
 import click
-import numpy as np
-import yaml
-
-try:
-    import quippy
-except ModuleNotFoundError:
-    pass
-# noinspection PyProtectedMember
-from ase.io.extxyz import key_val_str_to_dict
-
-from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate import normal_modes as nm 
-import wfl.generate.smiles
-import wfl.utils.misc
-import wfl.generate.buildcell
-import wfl.select.by_descriptor
-import wfl.descriptors.quippy
-
-from wfl.utils import gap_xml_tools
-
-from wfl.calculators.dft import evaluate_dft
-from wfl.calculators import committee
-import wfl.calculators.orca
-import wfl.calculators.orca.basinhopping
-import wfl.calculators.generic
-
-
-from wfl.fit import gap as fit_gap
-import wfl.fit.error
-import wfl.fit.utils
 
 
 @click.group("wfl")
 @click.option("--verbose", "-v", is_flag=True)
 @click.pass_context
 def cli(ctx, verbose):
-    """GAP workflow command line interface.
+    """Workflow command line interface.
     """
     ctx.ensure_object(dict)
     ctx.obj["verbose"] = verbose
@@ -59,35 +16,39 @@ def cli(ctx, verbose):
     if not verbose:
         warnings.filterwarnings("ignore", category=UserWarning, module="ase.io.extxyz")
 
+from wfl.cli.commands.error import show
+cli.add_command(show)
 
-@cli.group("file-op")
+
+@cli.group("generate")
 @click.pass_context
-def subcli_file_operations(ctx):
+def subcli_generate(ctx):
     pass
 
+from wfl.cli.commands.generate import smiles, buildcell
+subcli_generate.add_command(smiles)
+subcli_generate.add_command(buildcell)
 
-@cli.group("processing")
+
+@cli.group("select")
 @click.pass_context
-def subcli_processing(ctx):
+def subcli_select(ctx):
     pass
 
+from wfl.cli.commands.select import cur, by_lambda
+subcli_select.add_command(cur)
+subcli_select.add_command(by_lambda)
 
-@cli.group("select-configs")
+
+@cli.group("eval")
 @click.pass_context
-def subcli_select_configs(ctx):
+def subcli_eval(ctx):
     pass
 
-
-@cli.group("generate-configs")
-@click.pass_context
-def subcli_generate_configs(ctx):
-    pass
-
-
-@cli.group("select-configs")
-@click.pass_context
-def subcli_select_configs(ctx):
-    pass
+from wfl.cli.commands.eval import gap, ace, mace 
+subcli_eval.add_command(gap)
+subcli_eval.add_command(ace)
+subcli_eval.add_command(mace)
 
 
 @cli.group("descriptor")
@@ -95,19 +56,14 @@ def subcli_select_configs(ctx):
 def subcli_descriptor(ctx):
     pass
 
-
-@cli.group("ref-method")
-@click.pass_context
-def subcli_calculators(ctx):
-    pass
+from wfl.cli.commands.descriptor import quippy 
+subcli_descriptor.add_command(quippy)
 
 
-@cli.group("fitting")
-@click.pass_context
-def subcli_fitting(ctx):
-    pass
 
 
+
+<<<<<<< HEAD
 
 @subcli_generate_configs.command('smiles')
 @click.pass_context
@@ -731,3 +687,5 @@ def simple_gap_fit(ctx, gap_file, atoms_filename, param_file,
 
 if __name__ == '__main__':
     cli()
+=======
+>>>>>>> main

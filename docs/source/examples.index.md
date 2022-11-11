@@ -6,9 +6,7 @@ Examples often show examples of more than one thing. Below is a list of common o
 
 ## Evaluate structures with a calculator
  
-- ORCA:
-    - [ORCA via command line](examples.orca_cli.md)
-    - ORCA via python script](examples.orca_python.md)
+- ORCA: [ORCA via python script](examples.orca_python.md)
 - MACE: [Parallelize MACE calculator](examples.mace.md)
 - EMT: 
     - [First example](first_example.md)
@@ -22,6 +20,7 @@ Examples often show examples of more than one thing. Below is a list of common o
 ## Generate structures
 
 - [Generate Dimer Structures](examples.dimers.md) 
+- [Random Structures via buildcell](examples.buildcell.ipynb)
 - From SMILES string: [SMILES to `Atoms`](examples.smiles.md)
 - Geometry optimisation: [Fitting a MLIP](examples.mlip_fitting.md)
 - Sample molecular normal modes: [Normal Modes (non-periodic)](examples.normal_modes.md)
@@ -36,7 +35,6 @@ Examples often show examples of more than one thing. Below is a list of common o
 ## Remote execution
 
 - Overview: [Functions as independently queued jobs](overview.queued.md)
-- [ORCA via command line](examples.orca_cli.md)
 - [ORCA via python script](examples.orca_python.md)
 - Run ACE MD: [MD](examples.md.md)
 
@@ -63,7 +61,6 @@ Examples often show examples of more than one thing. Below is a list of common o
 
 ## Command line 
 
-- [ORCA via command line](examples.orca_cli.md)
 - Generate structures from SMILES: [SMILES to `Atoms`](examples.smiles.md) 
 
 
