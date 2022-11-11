@@ -26,7 +26,10 @@ def _select_autopara_wrappable(inputs, at_filter):
     return outputs
 
 def by_bool_func(*args, **kwargs):
-    at_filter = args[2]
+    if "at_filter" in kwargs:
+        at_filter = kwargs["at_filter"]
+    else:
+        at_filter = args[2]
     # disable parallelization by passing num_python_subprocesses=0
     if isinstance(at_filter, LambdaType) and at_filter.__name__ == "<lambda>":
         # turn of autoparallelization for lambdas, which cannot be pickled

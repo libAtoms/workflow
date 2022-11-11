@@ -9,7 +9,7 @@ Welcome to Workflow's documentation!
 
 A Python toolkit for building interatomic potential creation and atomistic simulation workflows. 
 
-The main functions of Workflow is to efficiently parallelise operations over a set of atomic configurations (Atomic Simulation Environment's "Atoms" objects). Given an operation that is defined to act a single configuration (e.g. evaluate energy of a structure with CASTEP ASE calculator), Workflow may apply the operation to multiple configurations in parallel. Workflow also interfaces with [ExPyRe](https://github.com/libAtoms/ExPyRe/tree/main/expyre) to manage evaluation of (autoparallelized) python functions via a queueing system on a (remote) cluster. 
+The main function of Workflow is to efficiently parallelise operations over a set of atomic configurations (Atomic Simulation Environment's "Atoms" objects). Given an operation that is defined to act a single configuration (e.g. evaluate energy of a structure with CASTEP ASE calculator), Workflow may apply the operation to multiple configurations in parallel. Workflow also interfaces with `ExPyRe <https://github.com/libAtoms/ExPyRe/tree/main/expyre>`_ to manage evaluation of (autoparallelized) python functions via a queueing system on a (remote) cluster. 
 
 Basic use of the workflow is introduced through an :ref:`example <first_example>`.  The overall design of the workflow-specific code structures (e.g. how configurations are handled, mechanism to parallelise operations and to submit as queued jobs) are covered in :ref:`Overview <overview>`. Currently implemented self-contained per-configuration operations are sketched out in :ref:`Operations <operations>`. Description of GAP-RSS workflow, built out of these modular operations is described in :ref:`GAP-RSS <rss>`. There are also  :ref:`examples <examples>` of common tasks to get started with and a :ref:`Python API <api>`. 
 
@@ -43,6 +43,7 @@ Contents
     Operations <operations.rst>
     Examples <examples.rst>
     GAP-RSS <workflows.rss.rst>
+    Command line interface <command_line.automatic_docs.rst>
     Modules <modules.rst>
 
 * :ref:`genindex`

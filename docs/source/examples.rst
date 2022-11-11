@@ -13,7 +13,6 @@ Self-contained code snippets of common things that can be done with Workflow.
    examples.index.md
    examples.dimers.md
    examples.buildcell.ipynb
-   examples.orca_cli.md
    examples.orca_python.md
    examples.mace.md
    examples.mlip_fitting.md
