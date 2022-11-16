@@ -21,10 +21,10 @@ wfl.fit.ace module
    :undoc-members:
    :show-inheritance:
 
-wfl.fit.ref\_error module
--------------------------
+wfl.fit.error module
+--------------------
 
-.. automodule:: wfl.fit.ref_error
+.. automodule:: wfl.fit.error
    :members:
    :undoc-members:
    :show-inheritance:

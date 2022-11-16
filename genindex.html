@@ -773,6 +773,8 @@ title="Fullscreen mode"
 </li>
       <li><a href="wfl.utils.html#wfl.utils.at_copy_save_results.at_copy_save_results">at_copy_save_results() (in module wfl.utils.at_copy_save_results)</a>
 </li>
+      <li><a href="wfl.utils.html#wfl.utils.configs.atomization_energy">atomization_energy() (in module wfl.utils.configs)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wfl.generate.md_PROTECT.html#wfl.generate.md.abort.AbortOnCollision.atoms_ok">atoms_ok() (wfl.generate.md.abort.AbortOnCollision method)</a>
@@ -814,7 +816,7 @@ title="Fullscreen mode"
       <li><a href="wfl.descriptors.html#wfl.descriptors.quippy.calc">calc() (in module wfl.descriptors.quippy)</a>
 
       <ul>
-        <li><a href="wfl.fit.html#wfl.fit.ref_error.calc">(in module wfl.fit.ref_error)</a>
+        <li><a href="wfl.fit.html#wfl.fit.error.calc">(in module wfl.fit.error)</a>
 </li>
       </ul></li>
       <li><a href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.calc_descriptors_to_file">calc_descriptors_to_file() (in module wfl.cli.gap_rss_iter_fit)</a>
@@ -935,8 +937,6 @@ title="Fullscreen mode"
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="wfl.fit.html#wfl.fit.ref_error.err_from_calculated_ats">err_from_calculated_ats() (in module wfl.fit.ref_error)</a>
-</li>
       <li><a href="wfl.calculators.html#wfl.calculators.espresso.Espresso">Espresso (class in wfl.calculators.espresso)</a>
 </li>
       <li><a href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.evals_to_freqs">evals_to_freqs() (wfl.generate.normal_modes.NormalModes static method)</a>
@@ -945,10 +945,10 @@ title="Fullscreen mode"
 </li>
       <li><a href="wfl.calculators.orca.html#wfl.calculators.orca.basinhopping.evaluate_basin_hopping">evaluate_basin_hopping() (in module wfl.calculators.orca.basinhopping)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wfl.calculators.html#wfl.calculators.dft.evaluate_dft">evaluate_dft() (in module wfl.calculators.dft)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.evaluate_iter_and_fit_all">evaluate_iter_and_fit_all() (in module wfl.cli.gap_rss_iter_fit)</a>
 </li>
       <li><a href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.evaluate_ref">evaluate_ref() (in module wfl.cli.gap_rss_iter_fit)</a>
@@ -966,6 +966,8 @@ title="Fullscreen mode"
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wfl.utils.html#wfl.utils.convex_hull.find_hull">find_hull() (in module wfl.utils.convex_hull)</a>
+</li>
+      <li><a href="wfl.utils.html#wfl.utils.configs.find_isolated_atoms">find_isolated_atoms() (in module wfl.utils.configs)</a>
 </li>
       <li><a href="wfl.utils.html#wfl.utils.find_voids.find_voids">find_voids() (in module wfl.utils.find_voids)</a>
 </li>
@@ -1005,15 +1007,13 @@ title="Fullscreen mode"
 </li>
       <li><a href="wfl.calculators.orca.html#wfl.calculators.orca.ORCA.get_default_multiplicity">get_default_multiplicity() (wfl.calculators.orca.ORCA static method)</a>
 </li>
-      <li><a href="wfl.calculators.orca.html#wfl.calculators.orca.basinhopping.BasinHoppingORCA.get_homo">get_homo() (wfl.calculators.orca.basinhopping.BasinHoppingORCA method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="wfl.calculators.orca.html#wfl.calculators.orca.basinhopping.BasinHoppingORCA.get_homo">get_homo() (wfl.calculators.orca.basinhopping.BasinHoppingORCA method)</a>
+</li>
       <li><a href="wfl.calculators.orca.html#wfl.calculators.orca.basinhopping.BasinHoppingORCA.get_multiplicity">get_multiplicity() (wfl.calculators.orca.basinhopping.BasinHoppingORCA method)</a>
 </li>
       <li><a href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.get_old_fitting_files">get_old_fitting_files() (in module wfl.cli.gap_rss_iter_fit)</a>
-</li>
-      <li><a href="wfl.fit.html#wfl.fit.ref_error.get_properties">get_properties() (in module wfl.fit.ref_error)</a>
 </li>
       <li><a href="wfl.autoparallelize.html#wfl.autoparallelize.utils.get_remote_info">get_remote_info() (in module wfl.autoparallelize.utils)</a>
 </li>
@@ -1195,6 +1195,8 @@ title="Fullscreen mode"
 </li>
         <li><a href="wfl.fit.html#module-wfl.fit.ace">wfl.fit.ace</a>
 </li>
+        <li><a href="wfl.fit.html#module-wfl.fit.error">wfl.fit.error</a>
+</li>
         <li><a href="wfl.fit.gap.html#module-wfl.fit.gap">wfl.fit.gap</a>
 </li>
         <li><a href="wfl.fit.gap.html#module-wfl.fit.gap.glue_2b">wfl.fit.gap.glue_2b</a>
@@ -1212,8 +1214,6 @@ title="Fullscreen mode"
         <li><a href="wfl.fit.modify_database.html#module-wfl.fit.modify_database.scale_orig">wfl.fit.modify_database.scale_orig</a>
 </li>
         <li><a href="wfl.fit.modify_database.html#module-wfl.fit.modify_database.simple_factor_nonperiodic">wfl.fit.modify_database.simple_factor_nonperiodic</a>
-</li>
-        <li><a href="wfl.fit.html#module-wfl.fit.ref_error">wfl.fit.ref_error</a>
 </li>
         <li><a href="wfl.fit.html#module-wfl.fit.utils">wfl.fit.utils</a>
 </li>
@@ -1258,6 +1258,8 @@ title="Fullscreen mode"
         <li><a href="wfl.utils.html#module-wfl.utils">wfl.utils</a>
 </li>
         <li><a href="wfl.utils.html#module-wfl.utils.at_copy_save_results">wfl.utils.at_copy_save_results</a>
+</li>
+        <li><a href="wfl.utils.html#module-wfl.utils.configs">wfl.utils.configs</a>
 </li>
         <li><a href="wfl.utils.html#module-wfl.utils.convex_hull">wfl.utils.convex_hull</a>
 </li>
@@ -1496,6 +1498,8 @@ title="Fullscreen mode"
       <li><a href="wfl.generate.html#wfl.generate.supercells.vacancy">vacancy() (in module wfl.generate.supercells)</a>
 </li>
       <li><a href="wfl.select.html#wfl.select.selection_space.val_relative_to_nearby_composition_volume_min">val_relative_to_nearby_composition_volume_min() (in module wfl.select.selection_space)</a>
+</li>
+      <li><a href="wfl.fit.html#wfl.fit.error.value_error_scatter">value_error_scatter() (in module wfl.fit.error)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -1950,6 +1954,13 @@ title="Fullscreen mode"
 </li>
       </ul></li>
       <li>
+    wfl.fit.error
+
+      <ul>
+        <li><a href="wfl.fit.html#module-wfl.fit.error">module</a>
+</li>
+      </ul></li>
+      <li>
     wfl.fit.gap
 
       <ul>
@@ -2010,13 +2021,6 @@ title="Fullscreen mode"
 
       <ul>
         <li><a href="wfl.fit.modify_database.html#module-wfl.fit.modify_database.simple_factor_nonperiodic">module</a>
-</li>
-      </ul></li>
-      <li>
-    wfl.fit.ref_error
-
-      <ul>
-        <li><a href="wfl.fit.html#module-wfl.fit.ref_error">module</a>
 </li>
       </ul></li>
       <li>
@@ -2171,6 +2175,13 @@ title="Fullscreen mode"
 
       <ul>
         <li><a href="wfl.utils.html#module-wfl.utils.at_copy_save_results">module</a>
+</li>
+      </ul></li>
+      <li>
+    wfl.utils.configs
+
+      <ul>
+        <li><a href="wfl.utils.html#module-wfl.utils.configs">module</a>
 </li>
       </ul></li>
       <li>

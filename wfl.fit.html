@@ -520,8 +520,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.fit.ref_error">
-   wfl.fit.ref_error module
+  <a class="reference internal nav-link" href="#module-wfl.fit.error">
+   wfl.fit.error module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -569,8 +569,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.fit.ref_error">
-   wfl.fit.ref_error module
+  <a class="reference internal nav-link" href="#module-wfl.fit.error">
+   wfl.fit.error module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -626,7 +626,7 @@ title="Print to PDF"
 <span id="wfl-fit-ace-module"></span><h2>wfl.fit.ace module<a class="headerlink" href="#module-wfl.fit.ace" title="Permalink to this headline">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.fit.ace.fit">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.ace.</span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitting_configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ACE_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ace_fit_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ace_fit_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'REF_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_if_present</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.ace.fit" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.ace.</span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitting_configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ACE_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ace_fit_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ace_fit_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'REF_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_if_present</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isolated_atom_info_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'config_type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isolated_atom_info_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.ace.fit" title="Permalink to this definition">#</a></dt>
 <dd><p>Runs ace_fit on a set of fitting configs</p>
 <p><strong>Environment Variables</strong></p>
 <ul class="simple">
@@ -662,6 +662,9 @@ internal use, to ensure that remotely running job does not itself attempt to spa
 remotely running job.</p></li>
 <li><p><strong>remote_label</strong> (<em>str</em><em>, </em><em>default None</em>) – label to use to match in WFL_EXPYRE_INFO</p></li>
 <li><p><strong>wait_for_results</strong> (<em>bool</em><em>, </em><em>default True</em>) – wait for results of remotely executed job, otherwise return after starting job</p></li>
+<li><p><strong>isolated_atom_info_key</strong> (<em>str</em><em>, </em><em>default &quot;config_type&quot;</em>) – key for Atoms.info to select isolated atoms by, if not given in ace_fit_params.</p></li>
+<li><p><strong>isolated_atom_info_value</strong> (<em>str</em><em>, </em><em>default &quot;default&quot;</em>) – value of Atoms.info[isolated_atom_info_key] to match isolated atoms on
+“default” matches “isolated_atom” or “IsolatedAtom”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -683,7 +686,7 @@ remotely running job.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.fit.ace.prepare_params">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.ace.</span></span><span class="sig-name descname"><span class="pre">prepare_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ACE_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitting_configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ace_fit_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'REF_'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.ace.prepare_params" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.ace.</span></span><span class="sig-name descname"><span class="pre">prepare_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ACE_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitting_configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ace_fit_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'REF_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isolated_atom_info_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'config_type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isolated_atom_info_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.ace.prepare_params" title="Permalink to this definition">#</a></dt>
 <dd><p>Prepare ace_fit parameters so they are compatible with the rest of workflow.
 Runs ace_fit on a a set of fitting configs</p>
 <dl class="field-list simple">
@@ -758,62 +761,64 @@ remotely running job.</p></li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-wfl.fit.ref_error">
-<span id="wfl-fit-ref-error-module"></span><h2>wfl.fit.ref_error module<a class="headerlink" href="#module-wfl.fit.ref_error" title="Permalink to this headline">#</a></h2>
+<div class="section" id="module-wfl.fit.error">
+<span id="wfl-fit-error-module"></span><h2>wfl.fit.error module<a class="headerlink" href="#module-wfl.fit.error" title="Permalink to this headline">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.ref_error.calc">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.ref_error.</span></span><span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category_keys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.ref_error.calc" title="Permalink to this definition">#</a></dt>
-<dd><p>Calculate errors for some potential relative to some reference data.
-NOTE: several optional args such as properties and forces_by_components are not yet available.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_configs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – configs to check</p></li>
-<li><p><strong>output_configs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a>) – optional location for calculated configs (otherwise will be in memory, and lost when function returns)</p></li>
-<li><p><strong>calculator</strong> (<em>tuple</em><em>(</em><em>constructor</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – contructor for calculator with any args or kwargs</p></li>
-<li><p><strong>ref_property_prefix</strong> (<em>str</em>) – prefix to property names for reference values</p></li>
-<li><p><strong>category_keys</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – list of info keys to use to create categories that configs are grouped into</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>error</strong> – error for each quantity by group</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.ref_error.err_from_calculated_ats">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.ref_error.</span></span><span class="sig-name descname"><span class="pre">err_from_calculated_ats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calculated_ats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_property_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces_by_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces_by_element</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.ref_error.err_from_calculated_ats" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="wfl.fit.error.calc">
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_property_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'config_type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_property</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.calc" title="Permalink to this definition">#</a></dt>
 <dd><p>calculate error for calculation results relative to stored reference values</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>calculated_ats</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input configurations with reference values and calculated in info/arrays</p></li>
-<li><p><strong>ref_property_prefix</strong> (<em>str</em>) – prefix to info/array keys for reference properties</p></li>
+<li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input configurations with reference and calculated values in Atoms.info/arrays</p></li>
 <li><p><strong>calc_property_prefix</strong> (<em>str</em>) – prefix to info/array keys for calculated properties</p></li>
-<li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – list of ‘energy’, ‘energy_per_atom’, ‘forces’, ‘stress’, ‘virial’, ‘virial_per_atom’ to compute error for</p></li>
-<li><p><strong>category_keys</strong> (<em>str / list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default None</em>) – results will be averaged by category, defined by a tuple containing the values of these
-keys in atoms.info, in addition to overall average _ALL_ category.</p></li>
-<li><p><strong>forces_by_component</strong> (<em>bool</em><em>, </em><em>default False</em>) – define force error as difference between each component, rather than norm of vector difference</p></li>
-<li><p><strong>forces_by_element</strong> (<em>bool</em><em>, </em><em>default False</em>) – calculate force error for each element separately</p></li>
+<li><p><strong>ref_property_prefix</strong> (<em>str</em>) – prefix to info/array keys for reference properties</p></li>
+<li><p><strong>config_properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>&quot;energy/atom&quot;</em><em>, </em><em>&quot;virial/atom/comp&quot;</em><em>]</em>) – list of <code class="docutils literal notranslate"><span class="pre">Atoms.info</span></code> calculated properties (to be prefixed by <code class="docutils literal notranslate"><span class="pre">ref_property_prefix</span></code>
+or <code class="docutils literal notranslate"><span class="pre">calc_property_prefix</span></code>) to compute error for.  <code class="docutils literal notranslate"><span class="pre">virial</span></code> will be reconstructed from <code class="docutils literal notranslate"><span class="pre">stress</span></code>.
+Properties can end with <code class="docutils literal notranslate"><span class="pre">/atom</span></code> or <code class="docutils literal notranslate"><span class="pre">/comp</span></code> for different components being counted separately.
+Default only used if neither <code class="docutils literal notranslate"><span class="pre">config_properties</span></code> nor <code class="docutils literal notranslate"><span class="pre">atom_properties</span></code> is present.</p></li>
+<li><p><strong>atom_properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>&quot;forces&quot;</em><em>]</em>) – list of <cite>Atoms.arrays</cite> calculated properties (to be prefixed by <code class="docutils literal notranslate"><span class="pre">ref_property_prefix</span></code>
+or <code class="docutils literal notranslate"><span class="pre">calc_property_prefix</span></code>) to compute error For.  Properties can end with <code class="docutils literal notranslate"><span class="pre">/comp</span></code>
+for different components being computed separately, and <code class="docutils literal notranslate"><span class="pre">/Z</span></code> for different atomic numbers
+to be assigned to different categories.  Default only used if neither <code class="docutils literal notranslate"><span class="pre">config_properties</span></code>
+nor <code class="docutils literal notranslate"><span class="pre">atom_properties</span></code> is present.</p></li>
+<li><p><strong>category_keys</strong> (<em>str / list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default &quot;config_type&quot;</em>) – results will be averaged by category, defined by a string containing the values of these
+keys in Atoms.info, in addition to overall average _ALL_ category.</p></li>
+<li><p><strong>weight_property</strong> (<em>str</em><em>, </em><em>optional</em>) – if present, Atoms.info key for weights to apply to RMSE calculation</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>errors</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict of energy per atom, force, virial per atom rms errors for each category</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>errors</strong> (<em>dict of RMSE and MAE for each category and property</em>)</p></li>
+<li><p><strong>diffs</strong> (<em>dict with list of differences for each category and property</em>)</p></li>
+<li><p><strong>parity</strong> (<em>dict with “ref” and “calc” keys, each containing list of property values for</em>) – each category and property, for parity plots</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.ref_error.get_properties">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.ref_error.</span></span><span class="sig-name descname"><span class="pre">get_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.ref_error.get_properties" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="wfl.fit.error.value_error_scatter">
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">value_error_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_diffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_parity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'reference</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calculated</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RMSE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_parity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap_name_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.value_error_scatter" title="Permalink to this definition">#</a></dt>
+<dd><p>generate parity plot (calculated values vs. reference values) and/or scatterplot of
+errors vs. values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>all_errors</strong> (<em>dict</em>) – dict of errors returned by error.calc (first returned item)</p></li>
+<li><p><strong>all_diffs</strong> (<em>dict</em>) – dict of property differences returned by error.calc (second returned item)</p></li>
+<li><p><strong>all_parity</strong> (<em>dict</em>) – dict of property values for parity returned by error.calc (third returned item)</p></li>
+<li><p><strong>output</strong> (<em>str</em>) – output filename</p></li>
+<li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default None</em>) – properties to plot, if None plot all</p></li>
+<li><p><strong>ref_property_prefix</strong> (<em>str</em><em>, </em><em>default &quot;calculated &quot;</em>) – prefix for reference property labels</p></li>
+<li><p><strong>ref_property_prefix</strong> – prefix for reference property labels</p></li>
+<li><p><strong>error_type</strong> (<em>str</em><em>, </em><em>default &quot;RMSE&quot;</em>) – type of error matching key in all_errors dict</p></li>
+<li><p><strong>cmap_name_bins</strong> (<em>tuple</em><em>(</em><em>str</em><em>, </em><em>int</em><em>)</em><em>, </em><em>default None</em>) – colormap to use and number of bins. If None use number of categories based default</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 <div class="section" id="module-wfl.fit.utils">

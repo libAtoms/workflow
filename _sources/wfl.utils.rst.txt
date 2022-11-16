@@ -12,6 +12,14 @@ wfl.utils.at\_copy\_save\_results module
    :undoc-members:
    :show-inheritance:
 
+wfl.utils.configs module
+------------------------
+
+.. automodule:: wfl.utils.configs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 wfl.utils.convex\_hull module
 -----------------------------
 
