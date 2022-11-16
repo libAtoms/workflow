@@ -60,6 +60,3 @@ from wfl.cli.commands.descriptor import quippy
 subcli_descriptor.add_command(quippy)
 
 
-
-
-

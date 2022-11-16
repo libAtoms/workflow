@@ -32,7 +32,7 @@ except ModuleNotFoundError:
 import wfl
 import wfl.descriptors.quippy
 import wfl.descriptor_heuristics
-import wfl.fit.ref_error
+import wfl.fit.error
 from wfl.fit.gap import multistage as gap_multistage
 import wfl.generate.atoms_and_dimers
 import wfl.generate.buildcell
@@ -400,7 +400,7 @@ def do_fit_and_test(cur_iter, run_dir, params, fitting_configs, testing_configs=
 
     if params.get('fit/calc_fitting_error', default=True):
         co = OutputSpec(f'fitting.error_database.GAP_iter_{cur_iter}.xyz', file_root=run_dir)
-        fitting_error = wfl.fit.ref_error.calc(fitting_configs, co, calculator,
+        fitting_error = wfl.fit.error.calc(fitting_configs, co, calculator,
                 'REF_', ['config_type', 'gap_rss_iter'])
         with open(GAP_xml_file + '.fitting_err.json', 'w') as fout:
             json.dump(dict_tuple_keys_to_str(fitting_error), fout)
@@ -408,7 +408,7 @@ def do_fit_and_test(cur_iter, run_dir, params, fitting_configs, testing_configs=
         pprint.pprint(fitting_error)
     if testing_configs is not None:
         co = OutputSpec(f'testing.error_database.GAP_iter_{cur_iter}.xyz', file_root=run_dir)
-        testing_error = wfl.fit.ref_error.calc(testing_configs, co, calculator,
+        testing_error = wfl.fit.error.calc(testing_configs, co, calculator,
                 'REF_', ['config_type', 'gap_rss_iter'])
         with open(GAP_xml_file + '.testing_err.json', 'w') as fout:
             json.dump(dict_tuple_keys_to_str(testing_error), fout)

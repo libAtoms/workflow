@@ -14,16 +14,18 @@ import numpy as np
 import ase.io
 from ase.stress import voigt_6_to_full_3x3_stress
 
-from wfl.configset import ConfigSet
+from wfl.configset import OutputSpec 
 from wfl.autoparallelize.utils import get_remote_info
 from wfl.fit.utils import ace_fit_jl_path
+from wfl.utils.configs import find_isolated_atoms
 
 from expyre import ExPyRe
 import wfl.scripts
 
 def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
         ref_property_prefix='REF_', skip_if_present=False, run_dir='.', dry_run=False,
-        verbose=True, remote_info=None, remote_label=None, wait_for_results=True):
+        verbose=True, remote_info=None, remote_label=None, wait_for_results=True,
+        isolated_atom_info_key="config_type", isolated_atom_info_value="default"):
     """Runs ace_fit on a set of fitting configs
 
 
@@ -73,6 +75,11 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
         label to use to match in WFL_EXPYRE_INFO
     wait_for_results: bool, default True
         wait for results of remotely executed job, otherwise return after starting job
+    isolated_atom_info_key: str, default "config_type"
+        key for Atoms.info to select isolated atoms by, if not given in ace_fit_params.
+    isolated_atom_info_value: str, default "default"
+        value of Atoms.info[isolated_atom_info_key] to match isolated atoms on
+        "default" matches "isolated_atom" or "IsolatedAtom".
 
 
     Returns
@@ -83,14 +90,17 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
     """
 
     fitting_configs = prepare_configs(fitting_configs, ref_property_prefix)
-    ace_fit_params = prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir, ref_property_prefix)
+    ace_fit_params = prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir, ref_property_prefix,
+                                    isolated_atom_info_key=isolated_atom_info_key, 
+                                    isolated_atom_info_value=isolated_atom_info_value)
 
     return run_ace_fit(fitting_configs, ace_fit_params,
                 skip_if_present=skip_if_present, run_dir=run_dir, ace_fit_command=ace_fit_command, dry_run=dry_run,
                 verbose=verbose, remote_info=remote_info, remote_label=remote_label, wait_for_results=wait_for_results)
 
 
-def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_property_prefix='REF_'):
+def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_property_prefix='REF_',
+                    isolated_atom_info_key="config_type", isolated_atom_info_value="default"):
     """Prepare ace_fit parameters so they are compatible with the rest of workflow.
     Runs ace_fit on a a set of fitting configs
 
@@ -137,7 +147,8 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
         warnings.warn(f"Overriding 'ACE_fname' in ace_fit_params '{ace_fit_params['ACE_fname']}' with '{ace_filename}'")
     ace_fit_params["ACE_fname"] = ace_filename
 
-    _prepare_e0(ace_fit_params, fitting_configs, ref_property_prefix)
+    _prepare_e0(ace_fit_params, fitting_configs, ref_property_prefix,
+                isolated_atom_info_key=isolated_atom_info_key, isolated_atom_info_value=isolated_atom_info_value)
 
     from_sigma = ace_fit_params.get("weights", {}).get("from_sigma")
     if from_sigma is not None:
@@ -443,13 +454,20 @@ def _stress_to_virial(fitting_configs, ref_property_prefix):
             at.info[ref_property_prefix + 'virial'] = np.array((-stress * at.get_volume()).ravel())
 
 
-def _prepare_e0(ace_fit_params, fitting_configs, ref_property_prefix):
+def _prepare_e0(ace_fit_params, fitting_configs, ref_property_prefix,
+                isolated_atom_info_key="config_type", isolated_atom_info_value="default"):
 
-    isolated_atoms = [at for at in fitting_configs if len(at) == 1]
-    if len(isolated_atoms) > 0 and "e0" in ace_fit_params:
+    isolated_atoms = find_isolated_atoms(
+        inputs=fitting_configs,
+        outputs=OutputSpec(),
+        isolated_atom_info_key=isolated_atom_info_key,
+        isolated_atom_info_value=isolated_atom_info_value
+    )
+
+    if len(list(isolated_atoms)) > 0 and "e0" in ace_fit_params:
         raise RuntimeError("Got e0 both in isolated atoms and in ace_fit_params")
 
-    if len(isolated_atoms) > 0:
+    if len(list(isolated_atoms)) > 0:
         e0 = {}
         for at in isolated_atoms:
             e0[str(at.symbols)] = at.info[f"{ref_property_prefix}energy"]
