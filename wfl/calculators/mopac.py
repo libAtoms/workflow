@@ -34,10 +34,10 @@ class MOPAC(WFLFileIOCalculator, ASE_MOPAC):
         try:
             super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
             calculation_succeeded=True
-            if 'DFT_FAILED_MOPAC' in atoms.info:
-                del atoms.info['DFT_FAILED_MOPAC']
+            if 'FAILED_MOPAC' in atoms.info:
+                del atoms.info['FAILED_MOPAC']
         except Exception as exc:
-            atoms.info['DFT_FAILED_MOPAC'] = True
+            atoms.info['FAILED_MOPAC'] = True
             calculation_succeeded=False
             raise exc
         finally:
