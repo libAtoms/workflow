@@ -174,14 +174,3 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
         return properties
 
 
-    def cleanup(self):
-        """Clean all (empty) directories that could not have been removed
-        immediately after the calculation, for example, because other parallel
-        process might be using them.
-        Done because `self.workdir_root` gets created upon initialisation, but we
-        can't ever be sure it's not needed anymore, so let's not do it automatically."""
-        if any(self.workdir_root.iterdir()):
-            print(f'{self.workdir_root.name} is not empty, not removing')
-        else:
-            self.workdir_root.rmdir()
-
