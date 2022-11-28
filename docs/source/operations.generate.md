@@ -4,12 +4,12 @@ This page (and submodules of `wfl.generate`) gives a brief overview self-contain
 
 ## Atoms and Dimers
 
-`wfl.generate.atoms_and_dimers.prepare()` makes a set of dimer (two-atom) configurations for specified elements and specified distance range. See documentation and example [Generating Dimer Structures](examples.dimers.md). 
+`wfl.generate.atoms_and_dimers.prepare()` makes a set of dimer (two-atom) configurations for specified elements and specified distance range. See documentation and example [Generating Dimer Structures](examples.dimers.ipynb).
 
 
 ## SMILES to Atoms
 
-`wfl.generate.smiles.run()` converts [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system) (e.g. "CCCC" for n-butane) to ASE's `Atoms`. See example [SMILES to `Atoms`](examples.smiles.md)
+`wfl.generate.smiles.run()` converts [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system) (e.g. "CCCC" for n-butane) to ASE's `Atoms`. See example [SMILES to `Atoms`](examples.smiles.md).
 
 
 ## BuildCell
