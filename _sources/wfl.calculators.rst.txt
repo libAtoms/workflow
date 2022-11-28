@@ -52,6 +52,14 @@ wfl.calculators.generic module
    :undoc-members:
    :show-inheritance:
 
+wfl.calculators.mopac module
+----------------------------
+
+.. automodule:: wfl.calculators.mopac
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 wfl.calculators.utils module
 ----------------------------
 

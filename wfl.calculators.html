@@ -540,6 +540,11 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.calculators.mopac">
+   wfl.calculators.mopac module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.calculators.utils">
    wfl.calculators.utils module
   </a>
@@ -611,6 +616,11 @@ title="Print to PDF"
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.calculators.generic">
    wfl.calculators.generic module
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-wfl.calculators.mopac">
+   wfl.calculators.mopac module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -800,16 +810,6 @@ Reimplements &amp; extends GenericFileIOCalculator.calculate() for the developme
 or FileIOCalculator.calculate() for the v3.22.1</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.cleanup">
-<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.Espresso.cleanup" title="Permalink to this definition">#</a></dt>
-<dd><p>Clean all (empty) directories that could not have been removed
-immediately after the calculation, for example, because other parallel
-process might be using them.
-Done because <cite>self.workdir_root</cite> gets created upon initialisation, but we
-can’t ever be sure it’s not needed anymore, so let’s not do it automatically.</p>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.implemented_properties">
 <span class="sig-name descname"><span class="pre">implemented_properties</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['energy',</span> <span class="pre">'forces',</span> <span class="pre">'stress']</span></em><a class="headerlink" href="#wfl.calculators.espresso.Espresso.implemented_properties" title="Permalink to this definition">#</a></dt>
@@ -859,6 +859,31 @@ None for SinglePointCalculator instead of info/arrays.</p></li>
 <dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-wfl.calculators.mopac">
+<span id="wfl-calculators-mopac-module"></span><h2>wfl.calculators.mopac module<a class="headerlink" href="#module-wfl.calculators.mopac" title="Permalink to this headline">#</a></h2>
+<p>MOPAC interface</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.calculators.mopac.MOPAC">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.calculators.mopac.</span></span><span class="sig-name descname"><span class="pre">MOPAC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rundir_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'run_MOPAC_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratchdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_exec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.mopac.MOPAC" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator" title="wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator"><code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ase.calculators.mopac.MOPAC</span></code></p>
+<p>Extension of ASE’s MOPAC claculator so that it can be used by wfl.calculators.generic (mainly each calculation is run in a separate directory)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.mopac.MOPAC.calculate">
+<span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['energy',</span> <span class="pre">'forces']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_changes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['positions',</span> <span class="pre">'numbers',</span> <span class="pre">'cell',</span> <span class="pre">'pbc',</span> <span class="pre">'initial_charges',</span> <span class="pre">'initial_magmoms']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.mopac.MOPAC.calculate" title="Permalink to this definition">#</a></dt>
+<dd><p>Do the calculation. Handles the working directories in addition to regular
+ASE calculation operations (writing input, executing, reading_results)
+Reimplements &amp; extends GenericFileIOCalculator.calculate() for the development version of ASE
+or FileIOCalculator.calculate() for the v3.22.1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wfl.calculators.mopac.MOPAC.wfl_generic_def_autopara_info">
+<span class="sig-name descname"><span class="pre">wfl_generic_def_autopara_info</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'num_inputs_per_python_subprocess':</span> <span class="pre">1}</span></em><a class="headerlink" href="#wfl.calculators.mopac.MOPAC.wfl_generic_def_autopara_info" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -1044,6 +1069,16 @@ list(str)   : list of file globs to save</p>
 <dt class="sig sig-object py" id="wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.clean_rundir">
 <span class="sig-name descname"><span class="pre">clean_rundir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_default_keep_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculation_succeeded</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.clean_rundir" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.cleanup" title="Permalink to this definition">#</a></dt>
+<dd><p>Clean all (empty) directories that could not have been removed
+immediately after the calculation, for example, because other parallel
+process might be using them.
+Done because <cite>self.workdir_root</cite> gets created upon initialisation, but we
+can’t ever be sure it’s not needed anymore, so let’s not do it automatically.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.setup_rundir">
