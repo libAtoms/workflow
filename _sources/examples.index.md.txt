@@ -19,7 +19,7 @@ Examples often show examples of more than one thing. Below is a list of common o
 
 ## Generate structures
 
-- [Generate Dimer Structures](examples.dimers.md) 
+- [Generate Dimer Structures](examples.dimers.ipynb) 
 - [Random Structures via buildcell](examples.buildcell.ipynb)
 - From SMILES string: [SMILES to `Atoms`](examples.smiles.md)
 - Geometry optimisation: [Fitting a MLIP](examples.mlip_fitting.md)
