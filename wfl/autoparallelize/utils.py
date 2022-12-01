@@ -1,6 +1,7 @@
 import sys
 import os
-import json
+import io
+import yaml
 import traceback as tb
 import re
 import warnings
@@ -38,7 +39,7 @@ def get_remote_info(remote_info, remote_label, env_var="WFL_EXPYRE_INFO"):
 
     remote_info: RemoteInfo, default content of env var WFL_EXPYRE_INFO
         information for running on remote machine.  If None, use WFL_EXPYRE_INFO env var, as
-        json file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
+        json/yaml file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
         RemoteInfo kwrgs with keys that match end of stack trace with function names separated by '.'.
     remote_label: str, default None
         remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine filename '::' calling function
@@ -49,16 +50,17 @@ def get_remote_info(remote_info, remote_label, env_var="WFL_EXPYRE_INFO"):
     """
     if remote_info is None and env_var in os.environ:
         try:
-            remote_info = json.loads(os.environ[env_var])
+            env_var_stream = io.StringIO(os.environ[env_var])
+            remote_info = yaml.safe_load(env_var_stream)
         except Exception as exc:
             remote_info = os.environ[env_var]
             if ' ' in remote_info:
                 # if it's not JSON, it must be a filename, so presence of space is suspicious
-                warnings.warn(f'remote_info "{remote_info}" from WFL_EXPYRE_INFO has whitespace, but not parseable as JSON with error {exc}')
+                warnings.warn(f'remote_info "{remote_info}" from WFL_EXPYRE_INFO has whitespace, but not parseable as JSON/YAML with error {exc}')
         if isinstance(remote_info, str):
             # filename
             with open(remote_info) as fin:
-                remote_info = json.load(fin)
+                remote_info = yaml.safe_load(fin)
         if 'sys_name' in remote_info:
             # remote_info directly in top level dict
             warnings.warn(f'env var {env_var} appears to be a RemoteInfo kwargs, using directly')
