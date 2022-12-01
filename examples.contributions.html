@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>wfl.fit.modify_database package &#8212; workflow  documentation</title>
+    <title>Contributing Examples &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -33,8 +33,8 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="wfl.generate package" href="wfl.generate.html" />
-    <link rel="prev" title="wfl.fit.gap package" href="wfl.fit.gap.html" />
+    <link rel="next" title="How to do GAP-RSS" href="workflows.rss.html" />
+    <link rel="prev" title="Molecular Dynamics" href="examples.md.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -178,16 +178,16 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="examples.html">
    Examples
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
   <label for="toctree-checkbox-4">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="examples.index.html">
      Index
@@ -238,8 +238,8 @@
      Molecular Dynamics
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.contributions.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      Contributing Examples
     </a>
    </li>
@@ -255,26 +255,26 @@
    Command line interface
   </a>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="modules.html">
    Modules
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
   <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
-   <li class="toctree-l2 current active has-children">
+  <ul>
+   <li class="toctree-l2 has-children">
     <a class="reference internal" href="wfl.html">
      wfl package
     </a>
-    <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
     <label for="toctree-checkbox-6">
      <i class="fas fa-chevron-down">
      </i>
     </label>
-    <ul class="current">
+    <ul>
      <li class="toctree-l3">
       <a class="reference internal" href="wfl.autoparallelize.html">
        wfl.autoparallelize package
@@ -319,23 +319,23 @@
        wfl.descriptors package
       </a>
      </li>
-     <li class="toctree-l3 current active has-children">
+     <li class="toctree-l3 has-children">
       <a class="reference internal" href="wfl.fit.html">
        wfl.fit package
       </a>
-      <input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
       <label for="toctree-checkbox-9">
        <i class="fas fa-chevron-down">
        </i>
       </label>
-      <ul class="current">
+      <ul>
        <li class="toctree-l4">
         <a class="reference internal" href="wfl.fit.gap.html">
          wfl.fit.gap package
         </a>
        </li>
-       <li class="toctree-l4 current active">
-        <a class="current reference internal" href="#">
+       <li class="toctree-l4">
+        <a class="reference internal" href="wfl.fit.modify_database.html">
          wfl.fit.modify_database package
         </a>
        </li>
@@ -450,7 +450,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/wfl.fit.modify_database.rst.txt"
+        <a href="_sources/examples.contributions.md.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -461,7 +461,7 @@ title="Download source file"
 <span class="headerbtn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.rst</span>
+<span class="headerbtn__text-container">.md</span>
 </a>
 
       </li>
@@ -510,28 +510,18 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
+  <a class="reference internal nav-link" href="#preparing-the-example">
+   Preparing the Example
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull">
-   wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull module
+  <a class="reference internal nav-link" href="#hiding-tests-in-the-online-documentation">
+   Hiding Tests in the Online Documentation
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.fit.modify_database.scale_orig">
-   wfl.fit.modify_database.scale_orig module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.fit.modify_database.simple_factor_nonperiodic">
-   wfl.fit.modify_database.simple_factor_nonperiodic module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.fit.modify_database">
-   Module contents
+  <a class="reference internal nav-link" href="#updating-related-files">
+   Updating Related Files
   </a>
  </li>
 </ul>
@@ -543,7 +533,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>wfl.fit.modify_database package</h1>
+                <h1>Contributing Examples</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -554,28 +544,18 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
+  <a class="reference internal nav-link" href="#preparing-the-example">
+   Preparing the Example
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull">
-   wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull module
+  <a class="reference internal nav-link" href="#hiding-tests-in-the-online-documentation">
+   Hiding Tests in the Online Documentation
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.fit.modify_database.scale_orig">
-   wfl.fit.modify_database.scale_orig module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.fit.modify_database.simple_factor_nonperiodic">
-   wfl.fit.modify_database.simple_factor_nonperiodic module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.fit.modify_database">
-   Module contents
+  <a class="reference internal nav-link" href="#updating-related-files">
+   Updating Related Files
   </a>
  </li>
 </ul>
@@ -588,85 +568,27 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="section" id="wfl-fit-modify-database-package">
-<h1>wfl.fit.modify_database package<a class="headerlink" href="#wfl-fit-modify-database-package" title="Permalink to this headline">#</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+  <div class="section" id="contributing-examples">
+<h1>Contributing Examples<a class="headerlink" href="#contributing-examples" title="Permalink to this headline">#</a></h1>
+<p>Examples complementing the ones provided in the current documentation are always welcome!
+In case you have an example and you would like to see it here, feel free to contribute it.
+In doing so please make sure to account for the remarks described in the following.</p>
+<div class="section" id="preparing-the-example">
+<h2>Preparing the Example<a class="headerlink" href="#preparing-the-example" title="Permalink to this headline">#</a></h2>
+<p>An example should be provided in terms of a jupyter notebook. Besides a descriptive title (and possibly sub-titles) these notebooks should include some explanatory text (<code class="docutils literal notranslate"><span class="pre">cell</span> <span class="pre">type</span></code> is <code class="docutils literal notranslate"><span class="pre">Markdown</span></code>)
+and two types of code blocks (<code class="docutils literal notranslate"><span class="pre">cell</span> <span class="pre">type</span></code> is <code class="docutils literal notranslate"><span class="pre">Code</span></code>). The first type is used to provide the actual code for the example illustrating the explicit commands used to achieve the operation described in the text.
+Code blocks of the second type will not be displayed in the online documentation, but are used for testing purposes only. Consequently, these need to contain some sort of checks (e.g. <code class="docutils literal notranslate"><span class="pre">assert</span></code> statements)
+that raise an Error in case executing the code of the first type is not working as intended.</p>
 </div>
-<div class="section" id="module-wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull">
-<span id="wfl-fit-modify-database-gap-rss-set-config-sigmas-from-convex-hull-module"></span><h2>wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull module<a class="headerlink" href="#module-wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull" title="Permalink to this headline">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull.modify">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull.</span></span><span class="sig-name descname"><span class="pre">modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overall_error_scale_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_error_scale_factors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'REF_'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull.modify" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull.piecewise_linear">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull.</span></span><span class="sig-name descname"><span class="pre">piecewise_linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.gap_rss_set_config_sigmas_from_convex_hull.piecewise_linear" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="hiding-tests-in-the-online-documentation">
+<h2>Hiding Tests in the Online Documentation<a class="headerlink" href="#hiding-tests-in-the-online-documentation" title="Permalink to this headline">#</a></h2>
+<p>Before saving the jupyter notebook in <code class="docutils literal notranslate"><span class="pre">./docs/source/</span></code> under <code class="docutils literal notranslate"><span class="pre">examples.&lt;descriptive_name&gt;.ipynb</span></code> make sure to <code class="docutils literal notranslate"><span class="pre">Restart</span> <span class="pre">Kernel</span> <span class="pre">and</span> <span class="pre">Clear</span> <span class="pre">All</span> <span class="pre">Outputs</span></code> in order to provide it in a defined state.
+Afterwards open the file with you favorite text editor, search for all of your code blocks of the second type and add <code class="docutils literal notranslate"><span class="pre">&quot;nbsphinx&quot;:</span> <span class="pre">&quot;hidden&quot;</span></code> to the <code class="docutils literal notranslate"><span class="pre">&quot;metadata&quot;:</span> <span class="pre">{}</span></code>.</p>
 </div>
-<div class="section" id="module-wfl.fit.modify_database.scale_orig">
-<span id="wfl-fit-modify-database-scale-orig-module"></span><h2>wfl.fit.modify_database.scale_orig module<a class="headerlink" href="#module-wfl.fit.modify_database.scale_orig" title="Permalink to this headline">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.modify_database.scale_orig.modify">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.scale_orig.</span></span><span class="sig-name descname"><span class="pre">modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property_factors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_type_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.scale_orig.modify" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="module-wfl.fit.modify_database.simple_factor_nonperiodic">
-<span id="wfl-fit-modify-database-simple-factor-nonperiodic-module"></span><h2>wfl.fit.modify_database.simple_factor_nonperiodic module<a class="headerlink" href="#module-wfl.fit.modify_database.simple_factor_nonperiodic" title="Permalink to this headline">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.modify_database.simple_factor_nonperiodic.list_to_sigma_dict">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.simple_factor_nonperiodic.</span></span><span class="sig-name descname"><span class="pre">list_to_sigma_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma_values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.simple_factor_nonperiodic.list_to_sigma_dict" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.modify_database.simple_factor_nonperiodic.modify">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.simple_factor_nonperiodic.</span></span><span class="sig-name descname"><span class="pre">modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overall_error_scale_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_error_scale_factors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'REF_'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.simple_factor_nonperiodic.modify" title="Permalink to this definition">#</a></dt>
-<dd><p>Modify the database (atoms objects) with a simple scaling of default_sigma values</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>configs</strong> (<em>list</em><em>(</em><em>Atoms</em><em>)</em>) – </p></li>
-<li><p><strong>overall_error_scale_factor</strong> (<em>float</em><em>, </em><em>default=1.0</em>) – </p></li>
-<li><p><strong>field_error_scale_factors</strong> (<em>dict</em>) – this is a trick for now</p></li>
-<li><p><strong>property_prefix</strong> – </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.modify_database.simple_factor_nonperiodic.modify_cell">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.simple_factor_nonperiodic.</span></span><span class="sig-name descname"><span class="pre">modify_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ase.atoms.Atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.simple_factor_nonperiodic.modify_cell" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.modify_database.simple_factor_nonperiodic.modify_with_factor">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.modify_database.simple_factor_nonperiodic.</span></span><span class="sig-name descname"><span class="pre">modify_with_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">at</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">virial_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hessian_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.modify_database.simple_factor_nonperiodic.modify_with_factor" title="Permalink to this definition">#</a></dt>
-<dd><p>Set the kernel regularisation values and remove results if given but not</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>at</strong> – </p></li>
-<li><p><strong>factor</strong> (<em>float</em><em>, </em><em>default=1.0</em>) – </p></li>
-<li><p><strong>energy_sigma</strong> – </p></li>
-<li><p><strong>force_sigma</strong> – </p></li>
-<li><p><strong>virial_sigma</strong> – </p></li>
-<li><p><strong>hessian_sigma</strong> – </p></li>
-<li><p><strong>property_prefix</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="module-wfl.fit.modify_database">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.fit.modify_database" title="Permalink to this headline">#</a></h2>
+<div class="section" id="updating-related-files">
+<h2>Updating Related Files<a class="headerlink" href="#updating-related-files" title="Permalink to this headline">#</a></h2>
+<p>Update the <code class="docutils literal notranslate"><span class="pre">examples.rst</span></code> file by adding a line with your <code class="docutils literal notranslate"><span class="pre">examples.&lt;descriptive_name&gt;.ipynb</span></code>, as well as the <code class="docutils literal notranslate"><span class="pre">examples.index.md</span></code> file by updating the list of common operations with links to your example.</p>
+<p>To have the examples actually been tested open the file <code class="docutils literal notranslate"><span class="pre">./tests/test_doc_examples.py</span></code> and add a test for the code blocks in your jupyter notebook. In the simplest case this only requires adding a new <code class="docutils literal notranslate"><span class="pre">pytest.param('examples.&lt;descriptive_name&gt;.ipynb',</span> <span class="pre">'all',</span> <span class="pre">id='&lt;descriptive</span> <span class="pre">name&gt;')</span></code> to the <code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.parametrize</span></code>.</p>
 </div>
 </div>
 
@@ -678,17 +600,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="wfl.fit.gap.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="examples.md.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">wfl.fit.gap package</p>
+            <p class="prev-next-title">Molecular Dynamics</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="wfl.generate.html" title="next page">
+    <a class='right-next' id="next-link" href="workflows.rss.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">wfl.generate package</p>
+        <p class="prev-next-title">How to do GAP-RSS</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
