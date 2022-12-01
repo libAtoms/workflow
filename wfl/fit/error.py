@@ -298,7 +298,7 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
             
             color = colors[cat_idx]
                 
-            label = f'{category}: {errors[category][error_type]*1e3:.2f} {_units(prop, "error")}'
+            label = f'{category}: {errors[category][error_type]*1e3:.2f} {select_units(prop, "error")}'
             if ax_parity is not None:
                 ax_parity.scatter(ref_vals[category], pred_vals[category], label=label,
                                   edgecolors=color, facecolors='none')
@@ -337,7 +337,7 @@ def _dict_add(dicts, values, at_category, prop):
             d[prop][cat].extend(v)
 
 
-def _units(prop, plt_type):
+def select_units(prop, plt_type):
 
     units_dict = {
     "energy/atom": {"parity": "eV/at", "error": "meV/at"},
@@ -360,8 +360,8 @@ def _annotate_parity_plot(ax, property, ref_property_prefix, calc_property_prefi
     if show_legend:
         ax.legend(title=f"{error_type} per category")
     ax.set_title(f"{property} ")
-    ax.set_xlabel(f"{ref_property_prefix}{property}, {_units(property, 'parity')}")
-    ax.set_ylabel(f"{calc_property_prefix}{property}, {_units(property, 'parity')}")
+    ax.set_xlabel(f"{ref_property_prefix}{property}, {select_units(property, 'parity')}")
+    ax.set_ylabel(f"{calc_property_prefix}{property}, {select_units(property, 'parity')}")
 
     xmin, xmax = ax.get_xlim()
     ymin, ymax = ax.get_ylim()
@@ -375,8 +375,8 @@ def _annotate_parity_plot(ax, property, ref_property_prefix, calc_property_prefi
 
 def _annotate_error_plot(ax, property, ref_property_prefix, calc_property_prefix):
     ax.set_title(f"{property} error")
-    ax.set_xlabel(f"{ref_property_prefix}{property}, {_units(property, 'parity')}")
-    ax.set_ylabel(f"{calc_property_prefix}{property} error, {_units(property, 'error')}") 
+    ax.set_xlabel(f"{ref_property_prefix}{property}, {select_units(property, 'parity')}")
+    ax.set_ylabel(f"{calc_property_prefix}{property} error, {select_units(property, 'error')}") 
     ax.grid(color='lightgrey', ls=':')
     ax.set_yscale('log')
 

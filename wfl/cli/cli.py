@@ -16,8 +16,15 @@ def cli(ctx, verbose):
     if not verbose:
         warnings.filterwarnings("ignore", category=UserWarning, module="ase.io.extxyz")
 
-from wfl.cli.commands.error import show
-cli.add_command(show)
+@cli.group("error")
+@click.pass_context
+def subcli_error(ctx):
+    pass
+
+from wfl.cli.commands.error import table, scatter
+subcli_error.add_command(table)
+subcli_error.add_command(scatter)
+
 
 
 @cli.group("generate")
