@@ -220,7 +220,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
 
 def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=None,
                         ref_property_prefix="reference ", calc_property_prefix="calculated ", error_type="RMSE",
-                        plot_parity=True, plot_error=True, cmap_name_bins=None):
+                        plot_parity=True, plot_error=True, cmap=None):
     """generate parity plot (calculated values vs. reference values) and/or scatterplot of 
     errors vs. values
 
@@ -242,9 +242,8 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
         prefix for reference property labels
     error_type: str, default "RMSE"
         type of error matching key in all_errors dict
-    cmap_name_bins: tuple(str, int), default None
-        colormap name (the str in tuple) to use and number of bins (the int in tuple). 
-        If None use number of categories based default
+    cmap: str, default None
+        colormap name to use. If None use default based on number of categories.
     """
 
     assert error_type in ["RMSE", "MAE"], f"'error_type' must be 'RMSE' or 'MAE', not {error_type}."
@@ -261,10 +260,9 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
     num_cat = len(list(all_errors[properties[0]].keys()))
 
     # set up colormap
-    if cmap_name_bins is not None:
-        assert len(cmap_name_bins) == 2
-        cmap = get_cmap(cmap_name_bins[0])
-        colors = [cmap(idx) for idx in np.linspace(0, 1, cmap_name_bins[1])]
+    if cmap is not None:
+        cmap = get_cmap(cmap)
+        colors = [cmap(idx) for idx in np.linspace(0, 1, num_cat)]
     else:
         if num_cat < 11:
             cmap = get_cmap('tab10')
