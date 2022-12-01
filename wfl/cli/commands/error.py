@@ -1,5 +1,6 @@
 import click
 import pandas as pd
+import numpy as np
 from wfl.cli import cli_options as opt
 from wfl.fit.error import calc as ref_err_calc
 from wfl.fit.error import select_units
@@ -31,10 +32,6 @@ def table(ctx, inputs, calc_property_prefix, ref_property_prefix,
           config_properties, atom_properties, category_keys,
           weight_property, precision):
         """Prints error summary table"""
-        # TODO
-        # - atomization energy
-        # - multiple files for intpus - for isolated atoms and not
-        # - rename "num" to "count"
 
         errors, diffs, parity = ref_err_calc(
             inputs=inputs, 

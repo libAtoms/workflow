@@ -52,10 +52,11 @@ subcli_select.add_command(by_lambda)
 def subcli_eval(ctx):
     pass
 
-from wfl.cli.commands.eval import gap, ace, mace 
+from wfl.cli.commands.eval import gap, ace, mace, atomization_energy 
 subcli_eval.add_command(gap)
 subcli_eval.add_command(ace)
 subcli_eval.add_command(mace)
+subcli_eval.add(atomization_energy)
 
 
 @cli.group("descriptor")
