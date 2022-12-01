@@ -65,30 +65,30 @@ def test_error(tmp_path, ref_atoms):
     assert approx(ref_err_dict['energy/atom']["_ALL_"]['RMSE']) == __ALL__energy_per_atom
     assert approx(ref_err_dict['forces']['_ALL_']['RMSE']) == __ALL__forces
     assert approx(ref_err_dict['virial/atom/comp']['_ALL_']['RMSE']) == __ALL__virial_per_atom
-    assert ref_err_dict['energy/atom']['_ALL_']['num'] == 10
-    assert ref_err_dict['forces']['_ALL_']['num'] == 10 * 4
-    assert ref_err_dict['virial/atom/comp']['_ALL_']['num'] == 10 * 6
+    assert ref_err_dict['energy/atom']['_ALL_']["count"] == 10
+    assert ref_err_dict['forces']['_ALL_']["count"] == 10 * 4
+    assert ref_err_dict['virial/atom/comp']['_ALL_']["count"] == 10 * 6
 
     assert approx(ref_err_dict['energy/atom']["0"]['RMSE']) == __0__energy_per_atom
     assert approx(ref_err_dict['forces']["0"]['RMSE']) == __0__forces
     assert approx(ref_err_dict['virial/atom/comp']["0"]['RMSE']) == __0__virial_per_atom
-    assert ref_err_dict['energy/atom']["0"]['num'] == 3
-    assert ref_err_dict['forces']["0"]['num'] == 3 * 4
-    assert ref_err_dict['virial/atom/comp']["0"]['num'] == 3 * 6
+    assert ref_err_dict['energy/atom']["0"]["count"] == 3
+    assert ref_err_dict['forces']["0"]["count"] == 3 * 4
+    assert ref_err_dict['virial/atom/comp']["0"]["count"] == 3 * 6
 
     assert approx(ref_err_dict['energy/atom']["1"]['RMSE']) == __1__energy_per_atom
     assert approx(ref_err_dict['forces']["1"]['RMSE']) == __1__forces
     assert approx(ref_err_dict['virial/atom/comp']["1"]['RMSE']) == __1__virial_per_atom
-    assert ref_err_dict['energy/atom']["1"]['num'] == 3
-    assert ref_err_dict['forces']["1"]['num'] == 3 * 4
-    assert ref_err_dict['virial/atom/comp']["1"]['num'] == 3 * 6
+    assert ref_err_dict['energy/atom']["1"]["count"] == 3
+    assert ref_err_dict['forces']["1"]["count"] == 3 * 4
+    assert ref_err_dict['virial/atom/comp']["1"]["count"] == 3 * 6
 
     assert approx(ref_err_dict['energy/atom']["None"]['RMSE']) == __None__energy_per_atom
     assert approx(ref_err_dict['forces']["None"]['RMSE']) == __None__forces
     assert approx(ref_err_dict['virial/atom/comp']["None"]['RMSE']) == __None__virial_per_atom
-    assert ref_err_dict['energy/atom']["None"]['num'] == 4
-    assert ref_err_dict['forces']["None"]['num'] == 4 * 4
-    assert ref_err_dict['virial/atom/comp']["None"]['num'] == 4 * 6
+    assert ref_err_dict['energy/atom']["None"]["count"] == 4
+    assert ref_err_dict['forces']["None"]["count"] == 4 * 4
+    assert ref_err_dict['virial/atom/comp']["None"]["count"] == 4 * 6
 
 
 def test_err_from_calc(ref_atoms):
@@ -98,9 +98,9 @@ def test_err_from_calc(ref_atoms):
     assert approx(ref_err_dict['energy/atom']['_ALL_']["RMSE"]) == __ALL__energy_per_atom
     assert approx(ref_err_dict['forces']['_ALL_']["RMSE"]) == __ALL__forces
     assert approx(ref_err_dict['virial/atom/comp']['_ALL_']["RMSE"]) == __ALL__virial_per_atom
-    assert ref_err_dict['energy/atom']['_ALL_']["num"] == 10
-    assert ref_err_dict['forces']['_ALL_']["num"] == 10 * 4
-    assert ref_err_dict['virial/atom/comp']['_ALL_']["num"] == 10 * 6
+    assert ref_err_dict['energy/atom']['_ALL_']["count"] == 10
+    assert ref_err_dict['forces']['_ALL_']["count"] == 10 * 4
+    assert ref_err_dict['virial/atom/comp']['_ALL_']["count"] == 10 * 6
 
 
 def test_error_properties(ref_atoms):
@@ -115,8 +115,8 @@ def test_error_properties(ref_atoms):
     assert approx(ref_err_dict['energy/atom']['_ALL_']["RMSE"]) == __ALL__energy_per_atom
     assert approx(ref_err_dict['energy']['_ALL_']["RMSE"]) == __ALL__energy
 
-    assert ref_err_dict['energy']['_ALL_']["num"] == 10
-    assert ref_err_dict['energy/atom']['_ALL_']["num"] == 10
+    assert ref_err_dict['energy']['_ALL_']["count"] == 10
+    assert ref_err_dict['energy/atom']['_ALL_']["count"] == 10
 
     # only energy
     ref_err_dict, _, _ = ref_err_calc(
@@ -126,7 +126,7 @@ def test_error_properties(ref_atoms):
     assert len(ref_err_dict.keys()) == 1
     assert len(ref_err_dict["energy"].keys()) == 2
 
-    assert ref_err_dict['energy']['_ALL_']["num"] == 10
+    assert ref_err_dict['energy']['_ALL_']["count"] == 10
     assert approx(ref_err_dict['energy']['_ALL_']["RMSE"]) == __ALL__energy
 
     # only stress
@@ -137,10 +137,10 @@ def test_error_properties(ref_atoms):
     assert len(ref_err_dict.keys()) == 2
     assert len(ref_err_dict["stress/comp"].keys()) == 2
 
-    assert ref_err_dict['stress/comp']['_ALL_']["num"] == 60
+    assert ref_err_dict['stress/comp']['_ALL_']["count"] == 60
     assert approx(ref_err_dict['stress/comp']['_ALL_']["RMSE"]) == __ALL__stress
 
-    assert ref_err_dict['virial/comp']['_ALL_']["num"] == 60
+    assert ref_err_dict['virial/comp']['_ALL_']["count"] == 60
     assert approx(ref_err_dict['virial/comp']['_ALL_']["RMSE"]) == __ALL__virial
 
 
@@ -150,7 +150,7 @@ def test_error_forces(ref_atoms):
     # forces by element
     ref_err_dict, _, _ = ref_err_calc(
         ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', atom_properties=["forces/Z"])
-    assert ref_err_dict['forces/Z_13']['_ALL_']["num"] == 40
+    assert ref_err_dict['forces/Z_13']['_ALL_']["count"] == 40
     assert approx(ref_err_dict['forces/Z_13']['_ALL_']["RMSE"]) == __ALL__forces
 
     # remove error info so next call won't complain
@@ -162,7 +162,7 @@ def test_error_forces(ref_atoms):
     # forces by component
     ref_err_dict, _, _ = ref_err_calc(
         ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_', atom_properties=["forces/comp/Z"])
-    assert ref_err_dict['forces/comp/Z_13']['_ALL_']["num"] == 120
+    assert ref_err_dict['forces/comp/Z_13']['_ALL_']["count"] == 120
     assert approx(ref_err_dict['forces/comp/Z_13']['_ALL_']["RMSE"]) == 29490136730.741474
 
 
@@ -184,9 +184,9 @@ def test_error_missing(ref_atoms):
         ref_atoms_list, ref_property_prefix='REF_', calc_property_prefix='calc_', category_keys=[],
         config_properties=["energy/atom", "virial/atom"], atom_properties=["forces"])
 
-    assert ref_err_dict["energy/atom"]["_ALL_"]["num"] == 7
-    assert ref_err_dict["forces"]["_ALL_"]["num"] == 24
-    assert ref_err_dict["virial/atom"]["_ALL_"]["num"] == 7
+    assert ref_err_dict["energy/atom"]["_ALL_"]["count"] == 7
+    assert ref_err_dict["forces"]["_ALL_"]["count"] == 24
+    assert ref_err_dict["virial/atom"]["_ALL_"]["count"] == 7
 
 
 def test_error_subcat(ref_atoms):
@@ -199,23 +199,23 @@ def test_error_subcat(ref_atoms):
         ref_atoms_list, ref_property_prefix='REF_', calc_property_prefix='calc_', category_keys=["category", "subcategory"],
         config_properties=["energy/atom", "virial/atom"], atom_properties=["forces"])
 
-    assert ref_err_dict["energy/atom"]["_ALL_"]["num"] == 10
-    assert ref_err_dict["forces"]["_ALL_"]["num"] == 40
-    assert ref_err_dict["virial/atom"]["_ALL_"]["num"] == 10
+    assert ref_err_dict["energy/atom"]["_ALL_"]["count"] == 10
+    assert ref_err_dict["forces"]["_ALL_"]["count"] == 40
+    assert ref_err_dict["virial/atom"]["_ALL_"]["count"] == 10
 
-    assert ref_err_dict["energy/atom"]["0 / 0"]["num"] == 2
-    assert ref_err_dict["energy/atom"]["0 / 1"]["num"] == 1
-    assert ref_err_dict["energy/atom"]["1 / 0"]["num"] == 1
-    assert ref_err_dict["energy/atom"]["1 / 1"]["num"] == 2
-    assert ref_err_dict["energy/atom"]["None / 0"]["num"] == 2
-    assert ref_err_dict["energy/atom"]["None / 1"]["num"] == 2
+    assert ref_err_dict["energy/atom"]["0 / 0"]["count"] == 2
+    assert ref_err_dict["energy/atom"]["0 / 1"]["count"] == 1
+    assert ref_err_dict["energy/atom"]["1 / 0"]["count"] == 1
+    assert ref_err_dict["energy/atom"]["1 / 1"]["count"] == 2
+    assert ref_err_dict["energy/atom"]["None / 0"]["count"] == 2
+    assert ref_err_dict["energy/atom"]["None / 1"]["count"] == 2
 
 
 def test_error_diffs(tmp_path, ref_atoms):
     calc_ats = generic_calc(ConfigSet(ref_atoms), OutputSpec(), LennardJones(sigma=0.75), output_prefix='LJ_')
     error_dict, error_diffs, error_parity = ref_err_calc(calc_ats, 'LJ_', 'REF_', category_keys='category')
 
-    assert error_dict["virial/atom/comp"]["None"]["num"] == 24
+    assert error_dict["virial/atom/comp"]["None"]["count"] == 24
     assert len(error_diffs["virial/atom/comp"]["None"]) == 24
     assert len(error_parity["ref"]["virial/atom/comp"]["None"]) == 24
     assert len(error_parity["calc"]["virial/atom/comp"]["None"]) == 24

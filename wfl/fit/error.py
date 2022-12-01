@@ -213,7 +213,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
             MAE = np.sum(np.abs(diffs) * weights) / np.sum(weights)
             num = len(diffs)
 
-            all_errors[prop][cat] = {'RMSE': RMSE, 'MAE': MAE, 'num' : num}
+            all_errors[prop][cat] = {'RMSE': RMSE, 'MAE': MAE, 'count' : num}
 
     return all_errors, all_diffs, all_parity
 
