@@ -31,13 +31,12 @@ from wfl.fit.error import select_units, value_error_scatter
 @click.option("--error-type", default="RMSE", show_default=True, type=click.Choice(["RMSE", "MAE"]), 
     help="Which error to report in legend")
 @click.option("--cmap", help="Colormap to use for plot if not default")
-@click.option("--cmap_bins", type=click.INT, help="Number of colormap bins")
 @click.pass_context
 @opt.inputs
 def show_error(ctx, inputs, calc_property_prefix, ref_property_prefix, 
           config_properties, atom_properties, category_keys,
           weight_property, precision, fig_name, error_type, 
-          cmap, cmap_bins):
+          cmap):
     """Prints error summary table"""
     # TODO
     # - clean up cmap
@@ -56,14 +55,6 @@ def show_error(ctx, inputs, calc_property_prefix, ref_property_prefix,
 
     if fig_name:
 
-        cmap_check = np.sum([cmap is None, cmap_bins is None])
-        if cmap_check not in [0, 2]:
-            raise ValueError("Both 'cmap' and 'cmap_bins' must be given")
-        if cmap_check == 2:
-            cmap_name_bins = None
-        else:
-            cmap_name_bins = (cmap, cmap_bins)
-
         value_error_scatter(
             all_errors = errors, 
             all_diffs=diffs,
@@ -72,7 +63,7 @@ def show_error(ctx, inputs, calc_property_prefix, ref_property_prefix,
             ref_property_prefix=ref_property_prefix,
             calc_property_prefix=calc_property_prefix,
             error_type = error_type,
-            cmap_name_bins=cmap_name_bins
+            cmap=cmap
         )
 
 
