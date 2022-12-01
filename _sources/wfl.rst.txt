@@ -36,6 +36,14 @@ wfl.descriptor\_heuristics module
    :undoc-members:
    :show-inheritance:
 
+wfl.map module
+--------------
+
+.. automodule:: wfl.map
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

@@ -816,7 +816,7 @@ function, others wait to do mpipool stuff.  Initialises
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>remote_info</strong> (<a class="reference internal" href="#wfl.autoparallelize.remoteinfo.RemoteInfo" title="wfl.autoparallelize.remoteinfo.RemoteInfo"><em>RemoteInfo</em></a><em>, </em><em>default content of env var WFL_EXPYRE_INFO</em>) – information for running on remote machine.  If None, use WFL_EXPYRE_INFO env var, as
-json file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
+json/yaml file if string, as RemoteInfo kwargs dict if keys include sys_name, or as dict of
 RemoteInfo kwrgs with keys that match end of stack trace with function names separated by ‘.’.</p></li>
 <li><p><strong>remote_label</strong> (<em>str</em><em>, </em><em>default None</em>) – remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine filename ‘::’ calling function</p></li>
 </ul>

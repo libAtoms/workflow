@@ -804,7 +804,7 @@ odd numbers of atoms, <code class="docutils literal notranslate"><span class="pr
 </dd>
 </dl>
 <dl class="simple">
-<dt>autopara_info<span class="classifier">AutoParaInfo, optional</span></dt><dd><p>information for automatic parallelization</p>
+<dt>autopara_info<span class="classifier">AutoParaInfo / dict, optional</span></dt><dd><p>information for automatic parallelization</p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -839,7 +839,7 @@ odd numbers of atoms, <code class="docutils literal notranslate"><span class="pr
 <li><p><strong>totalsteps</strong> (<em>int</em><em>, </em><em>default 10</em>) – number of steps</p></li>
 <li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip optimizations that raise an exception</p></li>
 <li><p><strong>opt_kwargs</strong> – keyword arguments for MinimaHopping</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -988,7 +988,7 @@ modes</p>
 stored in atoms.info/arrays</p></li>
 <li><p><strong>parallel_hessian</strong> (<em>bool</em><em>, </em><em>default=True</em>) – whether to parallelize 6N calculations needed for Hessian
 approximation.</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1051,7 +1051,7 @@ Currently implemented: “last_converged”, which takes the last config, if con
 optimisation logs are not printed unless this is True</p></li>
 <li><p><strong>update_config_type</strong> (<em>bool</em><em>, </em><em>default True</em>) – append at.info[‘optimize_config_type’] at.info[‘config_type’]</p></li>
 <li><p><strong>opt_kwargs</strong> – keyword arguments for PreconLBFGS</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1101,7 +1101,7 @@ optimisation logs are not printed unless this is True</p></li>
 <li><p><strong>useBasicKnowledge</strong> (<em>bool</em><em>, </em><em>default True</em>) – impose basic knowledge such as flat aromatic rings</p></li>
 <li><p><strong>useExpTorsionAnglePrefs</strong> (<em>bool</em><em>, </em><em>default True</em>) – impose experimental torsion angle preferences</p></li>
 <li><p><strong>extra_info</strong> (<em>dict</em><em>, </em><em>default {}</em>) – extra fields to place into created atoms info dict</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1139,7 +1139,7 @@ optimisation logs are not printed unless this is True</p></li>
 <li><p><strong>cluster_r</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – if &gt; 0.0, multiply by 1st nn distance of initial antisite, and make antisites in cluster of
 atoms within this distance of initial antisite.</p></li>
 <li><p><strong>Zs</strong> (<em>iterable</em><em>(</em><em>int</em><em>)</em><em>, </em><em>default None</em>) – list of atomic numbers to be used to create antisites.  If none or length 0, use set of species already present in each config for itself.</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1165,7 +1165,7 @@ atoms within this distance of initial antisite.</p></li>
 <li><p><strong>interstitial_probability_radius_exponent</strong> (<em>float</em><em>, </em><em>default 3.0</em>) – probability of selecting an interstitial void is proportional to its radius to this power</p></li>
 <li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
 <li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1190,7 +1190,7 @@ atoms within this distance of initial antisite.</p></li>
 <li><p><strong>pert</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of random displacement</p></li>
 <li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
 <li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1221,7 +1221,7 @@ vectors with indices up to +/- max_surface_cell_indices</p></li>
 <li><p><strong>pert</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of random displacement</p></li>
 <li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
 <li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1249,7 +1249,7 @@ vectors with indices up to +/- max_surface_cell_indices</p></li>
 <li><p><strong>n_vac</strong> (<em>int</em><em>, </em><em>default 1</em>) – number of vacancies to create in each supercell</p></li>
 <li><p><strong>cluster_r</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – if &gt; 0.0, multiply by 1st nn distance of initial vacancy, and make vacancies in cluster of
 atoms within this distance of initial vacancy.</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
