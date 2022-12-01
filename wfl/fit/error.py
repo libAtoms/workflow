@@ -238,12 +238,13 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
         properties to plot, if None plot all
     ref_property_prefix: str, default "reference "
         prefix for reference property labels
-    ref_property_prefix: str, default "calculated "
+    calc_property_prefix: str, default "calculated "
         prefix for reference property labels
     error_type: str, default "RMSE"
         type of error matching key in all_errors dict
     cmap_name_bins: tuple(str, int), default None
-        colormap to use and number of bins. If None use number of categories based default
+        colormap name (the str in tuple) to use and number of bins (the int in tuple). 
+        If None use number of categories based default
     """
 
     assert error_type in ["RMSE", "MAE"], f"'error_type' must be 'RMSE' or 'MAE', not {error_type}."

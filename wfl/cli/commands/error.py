@@ -3,9 +3,10 @@ import pandas as pd
 import numpy as np
 from wfl.cli import cli_options as opt
 from wfl.fit.error import calc as ref_err_calc
-from wfl.fit.error import select_units
+from wfl.fit.error import select_units, value_error_scatter
 
-@click.command("table")
+
+@click.command("error")
 @click.option('--calc-property-prefix', '-cpp', required=True, 
     help="prefix for calculated (predicted) properties (energy, forces, ...)")
 @click.option("--ref-property-prefix", '-rpp', required=True, 
@@ -26,28 +27,63 @@ from wfl.fit.error import select_units
          "keys in Atoms.info, in addition to overall average _ALL_ category.")
 @click.option("--weight-property", '-wp', help="Atoms.info key for weights to apply to RMSE calculation")
 @click.option("--precision", '-p', type=click.INT, default=2, help="precision for printing table")
+@click.option("--fig-name", "-f", help="Filename for figure. Do not plot if not given. ")
+@click.option("--error-type", default="RMSE", show_default=True, type=click.Choice(["RMSE", "MAE"]), 
+    help="Which error to report in legend")
+@click.option("--cmap", help="Colormap to use for plot if not default")
+@click.option("--cmap_bins", type=click.INT, help="Number of colormap bins")
 @click.pass_context
 @opt.inputs
-def table(ctx, inputs, calc_property_prefix, ref_property_prefix, 
+def show_error(ctx, inputs, calc_property_prefix, ref_property_prefix, 
           config_properties, atom_properties, category_keys,
-          weight_property, precision):
-        """Prints error summary table"""
+          weight_property, precision, fig_name, error_type, 
+          cmap, cmap_bins):
+    """Prints error summary table"""
+    # TODO
+    # - clean up cmap
 
-        errors, diffs, parity = ref_err_calc(
-            inputs=inputs, 
-            calc_property_prefix=calc_property_prefix,
+    errors, diffs, parity = ref_err_calc(
+        inputs=inputs, 
+        calc_property_prefix=calc_property_prefix,
+        ref_property_prefix=ref_property_prefix,
+        config_properties=config_properties,
+        atom_properties=atom_properties,
+        category_keys=category_keys,
+        weight_property=weight_property)
+
+    df = format_errors(errors)
+    print_df(df, precision)
+
+    if fig_name:
+
+        cmap_check = np.sum([cmap is None, cmap_bins is None])
+        if cmap_check not in [0, 2]:
+            raise ValueError("Both 'cmap' and 'cmap_bins' must be given")
+        if cmap_check == 2:
+            cmap_name_bins = None
+        else:
+            cmap_name_bins = (cmap, cmap_bins)
+
+        value_error_scatter(
+            all_errors = errors, 
+            all_diffs=diffs,
+            all_parity=parity,
+            output=fig_name,
             ref_property_prefix=ref_property_prefix,
-            config_properties=config_properties,
-            atom_properties=atom_properties,
-            category_keys=category_keys,
-            weight_property=weight_property)
+            calc_property_prefix=calc_property_prefix,
+            error_type = error_type,
+            cmap_name_bins=cmap_name_bins
+        )
 
-        df = format_errors(errors)
-        pd.set_option('display.max_rows', None)
-        pd.set_option('display.max_columns', None)
-        pd.set_option('display.colheader_justify', 'center')
-        pd.set_option('display.precision', precision)
-        print(df)
+
+def print_df(df, precision=3):
+
+    pd.set_option('display.max_rows', None)
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.colheader_justify', 'center')
+    pd.set_option('display.precision', precision)
+    print(df)
+
 
 def format_errors(errors):
     # make dataframe in the correct orientation 
@@ -60,9 +96,3 @@ def format_errors(errors):
     df["units"] = [select_units(prop, "error") for prop, _ in df.index]
 
     return df
-
-
-
-@click.command("scatter")
-def scatter():
-    pass
