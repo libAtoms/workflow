@@ -408,8 +408,16 @@ def errors_dumps(errors, precision=2, file=sys.stdout):
 def errors_to_dataframe(errors):
     """converts errors dictionary to dataframe"""
 
-    # make dataframe in the correct orientation 
-    df = pd.DataFrame.from_dict(errors, orient="index").stack()
+    # orient dataframe nicely 
+    df = pd.DataFrame.from_dict(errors, orient="index")
+
+    # sort columns alphabetically 
+    new_columns =  [col for col in df.columns if col != "_ALL_"]
+    new_columns = natural_sort(new_columns) + ["_ALL_"]
+    df = df[new_columns] 
+
+    # orient dataframe nicely
+    df = df.stack()
     df = pd.json_normalize(df).set_index(df.index)
 
     # change and label units
@@ -419,3 +427,7 @@ def errors_to_dataframe(errors):
 
     return df
 
+def natural_sort(l):
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+    return sorted(l, key=alphanum_key)
