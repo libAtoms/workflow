@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from wfl.cli import cli_options as opt
 from wfl.fit.error import calc as ref_err_calc
-from wfl.fit.error import select_units, value_error_scatter
+from wfl.fit.error import value_error_scatter, errors_dumps
 
 
 @click.command("error")
@@ -50,8 +50,7 @@ def show_error(ctx, inputs, calc_property_prefix, ref_property_prefix,
         category_keys=category_keys,
         weight_property=weight_property)
 
-    df = format_errors(errors)
-    print_df(df, precision)
+    errors_dumps(errors, precision)
 
     if fig_name:
 
@@ -67,23 +66,3 @@ def show_error(ctx, inputs, calc_property_prefix, ref_property_prefix,
         )
 
 
-def print_df(df, precision=3):
-
-    pd.set_option('display.max_rows', None)
-    pd.set_option('display.max_columns', None)
-    pd.set_option('display.colheader_justify', 'center')
-    pd.set_option('display.precision', precision)
-    print(df)
-
-
-def format_errors(errors):
-    # make dataframe in the correct orientation 
-    df = pd.DataFrame.from_dict(errors, orient="index").stack()
-    df = pd.json_normalize(df).set_index(df.index)
-
-    # change and label units
-    df["MAE"] = df["MAE"].apply(lambda x: x*1e3)
-    df["RMSE"] = df["RMSE"].apply(lambda x: x*1e3)
-    df["units"] = [select_units(prop, "error") for prop, _ in df.index]
-
-    return df

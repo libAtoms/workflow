@@ -1,10 +1,10 @@
 import warnings
+import sys
 import re
-
+import pandas as pd
 import numpy as np
 from matplotlib.figure import Figure
 from matplotlib.cm import get_cmap
-
 
 
 def calc(inputs, calc_property_prefix, ref_property_prefix,
@@ -379,4 +379,39 @@ def _annotate_error_plot(ax, property, ref_property_prefix, calc_property_prefix
     ax.grid(color='lightgrey', ls=':')
     ax.set_yscale('log')
 
+
+def errors_dumps(errors, precision=2, file=sys.stdout):
+    """converts errors dictionary to dataframe and prints nicely.
+    
+    Parameters
+    ----------
+    errors: dict
+        Dictionary returned by wfl.fit.error.calculate()
+    precision: int, default 2
+        Float precision when printing
+    file: obj, default sys.stdout
+        Object to write the table to. 
+    """
+
+    df = errors_to_dataframe(errors) 
+    with pd.option_context('display.max_rows', None,
+                           'display.max_columns', None,
+                           'display.precision', precision,
+                           'display.colheader_justify', 'center'):
+        print(df, file=sys.stdout)
+
+
+def errors_to_dataframe(errors):
+    """converts errors dictionary to dataframe"""
+
+    # make dataframe in the correct orientation 
+    df = pd.DataFrame.from_dict(errors, orient="index").stack()
+    df = pd.json_normalize(df).set_index(df.index)
+
+    # change and label units
+    df["MAE"] = df["MAE"].apply(lambda x: x*1e3)
+    df["RMSE"] = df["RMSE"].apply(lambda x: x*1e3)
+    df["units"] = [select_units(prop, "error") for prop, _ in df.index]
+
+    return df
 
