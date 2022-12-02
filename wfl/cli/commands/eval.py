@@ -14,7 +14,7 @@ from wfl.calculators import generic
 @opt.param_fname
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
-def gap(inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
+def gap(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
     """evaluates GAP"""
     
     if prop_prefix is None:
@@ -42,7 +42,7 @@ def pyjulip_ace(param_fname):
 @opt.param_fname
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
-def ace(inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
+def ace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
     """evaluates ACE"""
 
     if prop_prefix is None:
@@ -66,7 +66,7 @@ def ace(inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subproc
 @opt.param_fname
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
-def mace(inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess, dtype):
+def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess, dtype):
     """evaluates MACE"""
 
     from mace.calculators.mace import MACECalculator 
