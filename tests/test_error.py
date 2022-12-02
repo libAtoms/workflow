@@ -237,7 +237,7 @@ def test_plot_error(tmp_path):
     plot_error(errors, diffs, parity, ref_property_prefix='dft_', calc_property_prefix='mace_', output=tmp_path/"error_plot_both.png")
     plot_error(errors, diffs, parity, properties=["energy", "energy/atom"],
                ref_property_prefix='dft_', calc_property_prefix='mace_', 
-               cmap_name_bins=("tab10", 10), output=tmp_path/"error_plot_selected_both.png")
+               cmap="tab10", output=tmp_path/"error_plot_selected_both.png")
 
     plot_error(errors, diffs, parity, ref_property_prefix='dft_', calc_property_prefix='mace_', output=tmp_path/"error_plot_parity_only.png", plot_parity=True, plot_error=False)
     plot_error(errors, diffs, parity, ref_property_prefix='dft_', calc_property_prefix='mace_', output=tmp_path/"error_plot_error_only.png", plot_parity=False, plot_error=True)
