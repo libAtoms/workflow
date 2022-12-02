@@ -49,7 +49,7 @@ class WFLFileIOCalculator():
 
         self._wfl_rundir_prefix = Path(rundir_prefix)
         if self._wfl_rundir_prefix.is_absolute():
-            if self._wfl_workdir is not None:
+            if workdir is not None:
                 raise ValueError(f"Can not specify workdir {workdir} if rundir_prefix {rundir_prefix} is an absolute path")
         self._wfl_workdir = Path(workdir) if workdir is not None else Path(".")
         self._wfl_scratchdir = Path(scratchdir) if scratchdir is not None else None
@@ -76,11 +76,15 @@ class WFLFileIOCalculator():
         if self._wfl_scratchdir is not None:
             for f in Path(self.directory).glob("*"):
                 shutil.move(f, self._cur_rundir)
-            if list(Path(self.directory).iterdir()) == []:
-                warnings.warn(f"scratchdir {self.directory} is not empty, not deleting.")
-            else:
-                Path(self.directory).rmdir()
-                self.directory = '.' 
+            if Path(self.directory).exists():
+                if list(Path(self.directory).iterdir()) == []:
+                    warnings.warn(f"scratchdir {self.directory} is not empty, not deleting.")
+                else:
+                    Path(self.directory).rmdir()
+                    self.directory = '.' 
+            # remove self._cur_rundir if nothing was moved from scratchdir
+            if list(self._cur_rundir.iterdir()) == []:
+                self._cur_rundir.rmdir()
 
 
     def cleanup(self):
