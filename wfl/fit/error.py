@@ -45,6 +45,10 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
             each category and property, for parity plots
     """
 
+    if len(config_properties) == 0 and len(atom_properties) == 0:
+        # trigger default behavior
+        config_properties = None
+        atom_properties = None
     # default properties
     if config_properties is None and atom_properties is None:
         config_properties = ["energy/atom", "virial/atom/comp"]
