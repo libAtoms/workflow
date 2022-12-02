@@ -359,11 +359,15 @@ class OutputSpec:
     overwrite: str, default True
         Overwrite already existing files.  Defaults to True so that object creation
         doesn't fail if write loop has been completed (detectable with `OutputSpec.done()`).
+
+    flush: bool, default False
+        flush output after every write
     """
-    def __init__(self, files=None, *, file_root=None, overwrite=True, write_kwargs={}):
+    def __init__(self, files=None, *, file_root=None, overwrite=True, flush=False, write_kwargs={}):
         self.files = files
         self.configs = None
         self.file_root = Path(file_root if file_root is not None else "")
+        self.flush = flush
         self.write_kwargs = write_kwargs.copy()
 
         if self.files is not None:
@@ -562,6 +566,8 @@ class OutputSpec:
             if store_loc_stem is not None and len(store_loc_stem) > 0:
                 configs.info["_ConfigSet_loc"] = store_loc_stem
             ase.io.write(self.cur_file, configs, **self._cur_write_kwargs)
+            if self.flush:
+                self.cur_file.flush()
         else:
             # iterable, possibly nested
             for item_i, item in enumerate(configs):
@@ -595,3 +601,5 @@ class OutputSpec:
         if "format" not in self._cur_write_kwargs:
             self._cur_write_kwargs["format"] = ase.io.formats.filetype(tmp_filename, read=False)
         self.cur_file = open(tmp_filename, "a")
+        if self.flush:
+            self.cur_file.flush()
