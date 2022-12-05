@@ -66,21 +66,34 @@ class WFLFileIOCalculator():
             dir_name = str(self._cur_rundir.resolve()).replace("/", "", 1).replace("/", "_")
             directory = self._wfl_scratchdir / dir_name
             directory.mkdir(parents=True, exist_ok=True)
-            self.directory = directory
         else:
-            self.directory = self._cur_rundir
+            directory = self._cur_rundir
 
+        if self.__name__ == "Castep":
+            self._directory = directory
+        else:
+            self.directory = directory
 
     def clean_rundir(self, _default_keep_files, calculation_succeeded):
-        utils_clean_rundir(self.directory, self._wfl_keep_files, _default_keep_files, calculation_succeeded)
+
+        # Castep stores results differently ...
+        if self.__name__ == "Castep":
+            directory = self._directory
+        else:
+            directory = self.directory
+            
+        utils_clean_rundir(directory, self._wfl_keep_files, _default_keep_files, calculation_succeeded)
         if self._wfl_scratchdir is not None:
-            for f in Path(self.directory).glob("*"):
+            for f in Path(directory).glob("*"):
                 shutil.move(f, self._cur_rundir)
-            if list(Path(self.directory).iterdir()) == []:
-                warnings.warn(f"scratchdir {self.directory} is not empty, not deleting.")
+            if list(Path(directory).iterdir()) == []:
+                warnings.warn(f"scratchdir {directory} is not empty, not deleting.")
             else:
-                Path(self.directory).rmdir()
-                self.directory = '.' 
+                Path(directory).rmdir()
+                if self.__name__ == "Castep":
+                    self._direcotyr = '.'
+                else:
+                    self.directory = '.' 
 
 
     def cleanup(self):

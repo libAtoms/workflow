@@ -77,11 +77,6 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
                          workdir=workdir, scratchdir=scratchdir, **kwargs)
 
-        # TODO remove this?
-        # we modify the parameters in self.calculate() based on the individual atoms object,
-        # so let's make a copy of the initial parameters
-        self.initial_parameters = deepcopy(self.parameters)
-
 
     def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
         """Do the calculation. Handles the working directories in addition to regular
@@ -99,7 +94,7 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
         self.setup_rundir()
 
         try:
-            super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
+            super().calculate(atoms=atoms)
             calculation_succeeded=True
             if 'DFT_FAILED_CASTEP' in atoms.info:
                 del atoms.info['DFT_FAILED_CASTEP']
@@ -112,16 +107,13 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
             # always (ever?) raise an exception when it fails.  Instead, you get things like 
             # stress being None, which lead to TypeError when save_results calls get_stress().
             for property in properties:
-                if self.results[property] is None:
-                    calculation_succeeded =False
+                result = self.get_property(property)
+                if result is None:
+                    calculation_succeeded = False
                     atoms.info["DFT_FAILED_CASTEP"] = True
-
+            
             # from WFLFileIOCalculator
             self.clean_rundir(_default_keep_files, calculation_succeeded)
-
-            # Return the parameters to what they were when the calculator was initialised.
-            # There is likely a more ASE-appropriate way with self.set() and self.reset(), etc.
-            self.parameters = deepcopy(self.initial_parameters)
 
             if nonperiodic:
                 # reset it, because Castep overwrites the PBC to True without question
@@ -133,7 +125,7 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
         # first determine if we do a non-periodic calculation.
         # and update the properties that we will use.
         nonperiodic, properties = handle_nonperiodic(self.atoms, properties)
-        self.parameters["calculate_stress"] = "stress" in properties
+        self.param.__setattr__("calculate_stress", "stress" in properties)
 
         return  nonperiodic, properties
 
