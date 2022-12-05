@@ -61,7 +61,7 @@ def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_
             at.info[f'{output_prefix}calculation_failed'] = True
 
         # clean up invalid properties, will be fixed in quip Potential soon?
-        if 'virial' in at.calc.results:
+        if hasattr(at.calc, "results") and 'virial' in at.calc.results:
             del at.calc.results['virial']
 
         if calculation_succeeded:
