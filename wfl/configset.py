@@ -360,10 +360,10 @@ class OutputSpec:
         Overwrite already existing files.  Defaults to True so that object creation
         doesn't fail if write loop has been completed (detectable with `OutputSpec.done()`).
 
-    flush: bool, default False
+    flush: bool, default True
         flush output after every write
     """
-    def __init__(self, files=None, *, file_root=None, overwrite=True, flush=False, write_kwargs={}):
+    def __init__(self, files=None, *, file_root=None, overwrite=True, flush=True, write_kwargs={}):
         self.files = files
         self.configs = None
         self.file_root = Path(file_root if file_root is not None else "")
