@@ -44,13 +44,16 @@ jobs:
         run: conda install -c conda-forge phono3py h5py
 
       - name: Install dependencies from pip (some will already be taken care of by conda's phonop3py and its dependencies)
-        run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib phonopy phono3py rdkit-pypi flake8 pytest pytest-cov
+        run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib phonopy phono3py rdkit-pypi flake8 pytest pytest-cov nbsphinx
 
       - name: Install Quippy from PyPI
         run: pip install quippy-ase
 
       - name: Install wfl (expyre and universalSOAP are dependencies)
         run: pip install .
+
+      - name: Install pandoc
+        run: sudo apt-get install pandoc
 
       - name: Build documentation
         run: |

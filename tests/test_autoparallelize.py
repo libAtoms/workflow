@@ -18,6 +18,18 @@ def test_empty_iterator(tmp_path):
     assert len([at for at in co]) == 0
 
 
+def test_autopara_info_dict():
+    np.random.seed(5)
+
+    ats = []
+    nconf = 60
+    for _ in range(nconf):
+        ats.append(Atoms(['Al'] * nconf, scaled_positions=np.random.uniform(size=(nconf, 3)), cell=[10, 10, 10], pbc=[True] * 3))
+
+    co = generic.run(ConfigSet(ats), OutputSpec(), EMT(), output_prefix="_auto_", autopara_info={"num_python_subprocesses": 1})
+    assert len(list(co)) == nconf
+
+
 @pytest.mark.perf
 def test_pool_speedup():
     np.random.seed(5)
