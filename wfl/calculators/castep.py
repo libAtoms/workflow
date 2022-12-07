@@ -94,6 +94,7 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
 
         # from WFLFileIOCalculator
         self.setup_rundir()
+        self._directory = self.director
 
         try:
             super().calculate(atoms=atoms)
