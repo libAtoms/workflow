@@ -545,7 +545,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.generate.phonopy">
+  <a class="reference internal nav-link" href="#wfl-generate-phonopy-module">
    wfl.generate.phonopy module
   </a>
  </li>
@@ -624,7 +624,7 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.generate.phonopy">
+  <a class="reference internal nav-link" href="#wfl-generate-phonopy-module">
    wfl.generate.phonopy module
   </a>
  </li>
@@ -1084,34 +1084,8 @@ optimisation logs are not printed unless this is True</p></li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-wfl.generate.phonopy">
-<span id="wfl-generate-phonopy-module"></span><h2>wfl.generate.phonopy module<a class="headerlink" href="#module-wfl.generate.phonopy" title="Permalink to this headline">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.generate.phonopy.run">
-<span class="sig-prename descclassname"><span class="pre">wfl.generate.phonopy.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.phonopy.run" title="Permalink to this definition">#</a></dt>
-<dd><p>create displaced configs with phonopy or phono3py for each structure in inputs</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
-<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
-<li><p><strong>displacements</strong> (<em>list</em><em>(</em><em>float</em><em>)</em>) – list of displacement magnitudes to use</p></li>
-<li><p><strong>strain_displs</strong> (<em>list</em><em>(</em><em>float</em><em>)</em>) – list of deformation gradient magnitudes to use</p></li>
-<li><p><strong>ph2_supercell</strong> (<em>int</em><em> or </em><em>int 3-vector</em><em> or </em><em>3x3 matrix</em><em>, </em><em>default None</em>) – supercell to use for harmonic force constant displacements</p></li>
-<li><p><strong>ph2_supercell</strong> – if not None, supercell to use for cubic force constant displacements</p></li>
-<li><p><strong>pair_cutoff</strong> (<em>float</em><em>, </em><em>default None</em>) – if not None, max distance between pairs of atoms displaced for cubic force constants</p></li>
-<li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>co</strong> – output configs</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="wfl-generate-phonopy-module">
+<h2>wfl.generate.phonopy module<a class="headerlink" href="#wfl-generate-phonopy-module" title="Permalink to this headline">#</a></h2>
 </div>
 <div class="section" id="module-wfl.generate.smiles">
 <span id="wfl-generate-smiles-module"></span><h2>wfl.generate.smiles module<a class="headerlink" href="#module-wfl.generate.smiles" title="Permalink to this headline">#</a></h2>
