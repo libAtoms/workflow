@@ -30,5 +30,3 @@ def test_error_table(tmp_path):
     result = runner.invoke(cli, command)
     assert result.exit_code == 0
 
-    # assert False
-

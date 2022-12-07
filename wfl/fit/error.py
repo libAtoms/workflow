@@ -45,12 +45,9 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
             each category and property, for parity plots
     """
 
-    if len(config_properties) == 0 and len(atom_properties) == 0:
-        # trigger default behavior
-        config_properties = None
-        atom_properties = None
     # default properties
-    if config_properties is None and atom_properties is None:
+    if ((config_properties is None or len(config_properties) == 0) and 
+        (atom_properties is None or len(atom_properties) == 0)):
         config_properties = ["energy/atom", "virial/atom/comp"]
         atom_properties = ["forces"]
     if config_properties is None:
@@ -145,9 +142,9 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
             calc_quant = data.get(calc_property_prefix + prop_use)
             if ref_quant is None or calc_quant is None:
                 # warn if data is missing by reporting summary at the very end
-                if prop_use not in missed_prop_counter:
-                    missed_prop_counter[prop_use] = 0
-                missed_prop_counter[prop_use] += 1
+                if prop not in missed_prop_counter:
+                    missed_prop_counter[prop] = 0
+                missed_prop_counter[prop] += 1
 
                 continue
 
@@ -203,7 +200,11 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
 
     if len(missed_prop_counter.keys()) > 0:
         for missed_prop, count in missed_prop_counter.items():
-            warnings.warn(f"Missing reference or calculated property '{missed_prop}', {count} times")
+            if count == len(list(inputs)):
+                raise RuntimeError(f"Missing reference ({ref_property_prefix}) or calculated ({calc_property_prefix}) "\
+                                    f"property '{missed_prop}' in all of the configs. Is the spelling correct? ")
+            else:
+                warnings.warn(f"Missing reference or calculated property '{missed_prop}', {count} times")
             
 
     all_errors = {}
@@ -218,6 +219,10 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
             num = len(diffs)
 
             all_errors[prop][cat] = {'RMSE': RMSE, 'MAE': MAE, 'count' : num}
+
+    # if len(all_diffs) == 0:
+    #     raise RuntimeError(f"No values were found to calculate error from."\
+    #                        f"This might be because of misspelled property prefixes ({calc_property_prefix} or {ref_property_prefix})") 
 
     return all_errors, all_diffs, all_parity
 
@@ -384,7 +389,7 @@ def _annotate_error_plot(ax, property, ref_property_prefix, calc_property_prefix
     ax.set_yscale('log')
 
 
-def errors_dumps(errors, precision=2, file=sys.stdout):
+def errors_dumps(errors, precision=2):
     """converts errors dictionary to dataframe and prints nicely.
     
     Parameters
@@ -398,11 +403,12 @@ def errors_dumps(errors, precision=2, file=sys.stdout):
     """
 
     df = errors_to_dataframe(errors) 
-    with pd.option_context('display.max_rows', None,
-                           'display.max_columns', None,
-                           'display.precision', precision,
-                           'display.colheader_justify', 'center'):
-        print(df, file=sys.stdout)
+    df_str = df.to_string(
+        max_rows = None, 
+        max_cols = None, 
+        float_format = "{{:.{:d}f}}".format(precision).format,
+    )
+    return df_str
 
 
 def errors_to_dataframe(errors):

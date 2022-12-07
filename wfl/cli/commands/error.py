@@ -10,7 +10,7 @@ from wfl.fit.error import value_error_scatter, errors_dumps
 @click.option('--calc-property-prefix', '-cpp', required=True, 
     help="prefix for calculated (predicted) properties (energy, forces, ...)")
 @click.option("--ref-property-prefix", '-rpp', required=True, 
-    help="prefix for properties taken as reference (e.g. from electronic strucutre codes)")
+    help="prefix for properties taken as reference (e.g. from electronic structure codes)")
 @click.option("--config-properties", '-cp', multiple=True, 
     help="Multiple ``Atoms.info`` calculated properties (to be prefixed by ``ref_property_prefix`` or ``calc_property_prefix``) to"\
          " compute error for.  ``virial`` will be reconstructed from ``stress``. Properties can end with ``/atom`` or "\
@@ -50,9 +50,7 @@ def show_error(ctx, inputs, calc_property_prefix, ref_property_prefix,
         category_keys=category_keys,
         weight_property=weight_property)
     
-    print(errors)
-
-    errors_dumps(errors, precision)
+    print(errors_dumps(errors, precision))
 
     if fig_name:
 
