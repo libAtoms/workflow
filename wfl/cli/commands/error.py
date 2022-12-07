@@ -49,8 +49,9 @@ def show_error(ctx, inputs, calc_property_prefix, ref_property_prefix,
         atom_properties=atom_properties,
         category_keys=category_keys,
         weight_property=weight_property)
-    
-    print(errors_dumps(errors, precision))
+
+    # print(errors) 
+    print(errors_dumps(errors, error_type, precision))
 
     if fig_name:
 

@@ -389,7 +389,7 @@ def _annotate_error_plot(ax, property, ref_property_prefix, calc_property_prefix
     ax.set_yscale('log')
 
 
-def errors_dumps(errors, precision=2):
+def errors_dumps(errors, error_type=None, precision=2):
     """converts errors dictionary to dataframe and prints nicely.
     
     Parameters
@@ -402,7 +402,7 @@ def errors_dumps(errors, precision=2):
         Object to write the table to. 
     """
 
-    df = errors_to_dataframe(errors) 
+    df = errors_to_dataframe(errors, error_type=error_type) 
     df_str = df.to_string(
         max_rows = None, 
         max_cols = None, 
@@ -411,7 +411,7 @@ def errors_dumps(errors, precision=2):
     return df_str
 
 
-def errors_to_dataframe(errors):
+def errors_to_dataframe(errors, error_type=None):
     """converts errors dictionary to dataframe"""
 
     # orient dataframe nicely 
@@ -422,14 +422,20 @@ def errors_to_dataframe(errors):
     new_columns = natural_sort(new_columns) + ["_ALL_"]
     df = df[new_columns] 
 
-    # orient dataframe nicely
-    df = df.stack()
-    df = pd.json_normalize(df).set_index(df.index)
 
-    # change and label units
-    df["MAE"] = df["MAE"].apply(lambda x: x*1e3)
-    df["RMSE"] = df["RMSE"].apply(lambda x: x*1e3)
-    df["units"] = [select_units(prop, "error") for prop, _ in df.index]
+    if not error_type:
+        # orient dataframe nicely
+        df = df.stack()
+        df = pd.json_normalize(df).set_index(df.index)
+
+         # change and label units
+        df["MAE"] = df["MAE"].apply(lambda x: x*1e3)
+        df["RMSE"] = df["RMSE"].apply(lambda x: x*1e3)
+        df["units"] = [select_units(prop, "error") for prop, _ in df.index]
+
+    else:
+        df = df.applymap(lambda x: x[error_type]*1e3).transpose()
+
 
     return df
 
