@@ -530,11 +530,6 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.calculators.dft">
-   wfl.calculators.dft module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.calculators.espresso">
    wfl.calculators.espresso module
   </a>
@@ -609,11 +604,6 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.calculators.dft">
-   wfl.calculators.dft module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-wfl.calculators.espresso">
    wfl.calculators.espresso module
   </a>
@@ -678,40 +668,61 @@ title="Print to PDF"
 </div>
 <div class="section" id="module-wfl.calculators.castep">
 <span id="wfl-calculators-castep-module"></span><h2>wfl.calculators.castep module<a class="headerlink" href="#module-wfl.calculators.castep" title="Permalink to this headline">#</a></h2>
-<p>CASTEP calculator with functionality to use both MPI and multiprocessing</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.calculators.castep.evaluate_autopara_wrappable">
-<span class="sig-prename descclassname"><span class="pre">wfl.calculators.castep.</span></span><span class="sig-name descname"><span class="pre">evaluate_autopara_wrappable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'run_CASTEP_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CASTEP_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.castep.evaluate_autopara_wrappable" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate a configuration with CASTEP</p>
+<p>Quantum Castep interface</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.calculators.castep.Castep">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.calculators.castep.</span></span><span class="sig-name descname"><span class="pre">Castep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rundir_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'run_CASTEP_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratchdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculator_exec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.castep.Castep" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator" title="wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator"><code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ase.calculators.castep.Castep</span></code></p>
+<p>Extension of ASE’s Castep calculator that can be used by wfl.calculators.generic</p>
+<p>“directory” argument cannot be present. Use rundir_prefix and workdir instead.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>Atoms / list</em><em>(</em><em>Atoms</em><em>)</em>) – input atomic configs</p></li>
-<li><p><strong>workdir_root</strong> (<em>path-like</em><em>, </em><em>default os.getcwd</em><em>(</em><em>)</em>) – directory to put calculation directories into</p></li>
-<li><p><strong>dir_prefix</strong> (<em>str</em><em>, </em><em>default 'CASTEP_run_'</em>) – directory name prefix for calculations</p></li>
-<li><p><strong>calculator_command</strong> – </p></li>
-<li><p><strong>calculator_kwargs</strong> (<em>dict</em>) – </p></li>
-<li><p><strong>output_prefix</strong> (<em>str / None</em><em>, </em><em>default 'CASTEP_'</em>) – prefix for info/arrays keys, None for SinglePointCalculator</p></li>
-<li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default None</em>) – ase-compatible property names, None for default list (energy, forces, stress)</p></li>
-<li><p><strong>keep_files</strong> (<em>bool / None / &quot;default&quot; / list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default &quot;default&quot;</em>) – <p>what kind of files to keep from the run</p>
-<blockquote>
-<div><ul>
+<li><p><strong>keep_files</strong> (<em>bool / None / &quot;default&quot; / list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default &quot;default&quot;</em>) – <dl class="simple">
+<dt>what kind of files to keep from the run</dt><dd><ul>
 <li><p>True : everything kept</p></li>
 <li><p>None, False : nothing kept, unless calculation fails</p></li>
-<li><p>”default”   : only ones needed for NOMAD uploads (‘*.castep’, ‘*.param’, ‘*.cell’)</p></li>
+<li><p>”default”   : only ones needed for NOMAD uploads (‘*.pwo’)</p></li>
 <li><p>list(str)   : list of file globs to save</p></li>
 </ul>
-</div></blockquote>
-</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>atoms</strong> – Atoms or list(Atoms) with calculated properties</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Atoms or list(Atoms)</p>
 </dd>
 </dl>
+</p></li>
+<li><p><strong>rundir_prefix</strong> (<em>str / Path</em><em>, </em><em>default 'run_CASTEP_'</em>) – Run directory name prefix</p></li>
+<li><p><strong>workdir</strong> (<em>str / Path</em><em>, </em><em>default . at calculate time</em>) – Path in which rundir will be created.</p></li>
+<li><p><strong>scratchdir</strong> (<em>str / Path</em><em>, </em><em>default None</em>) – temporary directory to execute calculations in and delete or copy back results (set by
+“keep_files”) if needed.  For example, directory on a local disk with fast file I/O.</p></li>
+<li><p><strong>calculator_exec</strong> (<em>str</em>) – command for Castep, without any prefix or redirection set.
+for example: “mpirun -n 4 castep.mpi”
+Alternative for “castep_command”, for consistency with other wfl calculators.</p></li>
+<li><p><strong>**kwargs</strong> (<em>arguments for ase.calculators.Castep.Castep</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.castep.Castep.calculate">
+<span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['energy',</span> <span class="pre">'forces',</span> <span class="pre">'stress']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_changes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['positions',</span> <span class="pre">'numbers',</span> <span class="pre">'cell',</span> <span class="pre">'pbc',</span> <span class="pre">'initial_charges',</span> <span class="pre">'initial_magmoms']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.castep.Castep.calculate" title="Permalink to this definition">#</a></dt>
+<dd><p>Do the calculation. Handles the working directories in addition to regular
+ASE calculation operations (writing input, executing, reading_results)
+Reimplements &amp; extends GenericFileIOCalculator.calculate() for the development version of ASE
+or FileIOCalculator.calculate() for the v3.22.1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wfl.calculators.castep.Castep.implemented_properties">
+<span class="sig-name descname"><span class="pre">implemented_properties</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['energy',</span> <span class="pre">'forces',</span> <span class="pre">'stress']</span></em><a class="headerlink" href="#wfl.calculators.castep.Castep.implemented_properties" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.calculators.castep.Castep.setup_calc_params">
+<span class="sig-name descname"><span class="pre">setup_calc_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.castep.Castep.setup_calc_params" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wfl.calculators.castep.Castep.wfl_generic_def_autopara_info">
+<span class="sig-name descname"><span class="pre">wfl_generic_def_autopara_info</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'num_inputs_per_python_subprocess':</span> <span class="pre">1}</span></em><a class="headerlink" href="#wfl.calculators.castep.Castep.wfl_generic_def_autopara_info" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -742,32 +753,6 @@ index of the model in the committee of models</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Atoms / list(Atoms)</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="module-wfl.calculators.dft">
-<span id="wfl-calculators-dft-module"></span><h2>wfl.calculators.dft module<a class="headerlink" href="#module-wfl.calculators.dft" title="Permalink to this headline">#</a></h2>
-<p>This is a unified wrapper for Plane Wave DFT codes.</p>
-<p>Currently implemented codes:
-- CASTEP
-- VASP
-- Quantum Espresso</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.calculators.dft.evaluate_dft">
-<span class="sig-prename descclassname"><span class="pre">wfl.calculators.dft.</span></span><span class="sig-name descname"><span class="pre">evaluate_dft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.dft.evaluate_dft" title="Permalink to this definition">#</a></dt>
-<dd><p>evaluate configurations with a DFT calculator</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>*args</strong> – positional arguments for actual DFT calculator</p></li>
-<li><p><strong>**kwargs</strong> – keyword args for actual DFT calculator
-must include calculator_name in [“CASTEP”, “VASP”]</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ConfigSet of configurations with calculated properties</p>
 </dd>
 </dl>
 </dd></dl>
@@ -894,28 +879,6 @@ or FileIOCalculator.calculate() for the v3.22.1</p>
 </div>
 <div class="section" id="module-wfl.calculators.utils">
 <span id="wfl-calculators-utils-module"></span><h2>wfl.calculators.utils module<a class="headerlink" href="#module-wfl.calculators.utils" title="Permalink to this headline">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.calculators.utils.clean_failed_results">
-<span class="sig-prename descclassname"><span class="pre">wfl.calculators.utils.</span></span><span class="sig-name descname"><span class="pre">clean_failed_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculation_succeeded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.utils.clean_failed_results" title="Permalink to this definition">#</a></dt>
-<dd><p>cleans stored calculations if calculation did not succeed or any results are None, after call to save_results()</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> – see save_results()</p></li>
-<li><p><strong>properties</strong> – see save_results()</p></li>
-<li><p><strong>results_prefix</strong> – see save_results()</p></li>
-<li><p><strong>calculation_succeeded</strong> (<em>bool</em>) – whether calculation appears (so far) to have succeeded based on actual calculator run and success of save_reults() call</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>calculation_succeeded</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool, updated status of calculation success based on whether any results were None</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.calculators.utils.clean_rundir">
 <span class="sig-prename descclassname"><span class="pre">wfl.calculators.utils.</span></span><span class="sig-name descname"><span class="pre">clean_rundir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rundir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_keep_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculation_succeeded</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.utils.clean_rundir" title="Permalink to this definition">#</a></dt>

@@ -28,14 +28,6 @@ wfl.calculators.committee module
    :undoc-members:
    :show-inheritance:
 
-wfl.calculators.dft module
---------------------------
-
-.. automodule:: wfl.calculators.dft
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 wfl.calculators.espresso module
 -------------------------------
 
