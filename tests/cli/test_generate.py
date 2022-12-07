@@ -11,9 +11,11 @@ def test_generate_smiles(tmp_path):
         'generate', 
         'smiles', 
         f'-o {str(fn_out)}', 
-        '-i "config_type=rdkit" '
+        '-ei "config_type=rdkit" '
         'CCC'
     ]
+
+    print(" ".join(params))
 
     runner = CliRunner()
     result = runner.invoke(cli, " ".join(params))
@@ -21,6 +23,7 @@ def test_generate_smiles(tmp_path):
     ats = read(fn_out)
     assert len(ats) ==11
     assert ats.info["config_type"] == "rdkit"
+
 
 
 def test_generate_buildcell():
