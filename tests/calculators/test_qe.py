@@ -15,7 +15,6 @@ from pytest import approx, fixture, raises, skip
 
 # from wfl.calculators.espresso import evaluate_autopara_wrappable, qe_kpoints_and_kwargs
 import wfl.calculators.espresso
-from wfl.calculators.dft import evaluate_dft
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize.autoparainfo import AutoparaInfo

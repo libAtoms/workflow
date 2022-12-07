@@ -47,45 +47,6 @@ def handle_nonperiodic(atoms, properties, allow_mixed=False):
     return nonperiodic, use_properties
 
 
-def clean_failed_results(atoms, properties, results_prefix=None, calculation_succeeded=True):
-    """cleans stored calculations if calculation did not succeed or any results are None, after call to save_results()
-
-    Parameters
-    ----------
-    atoms, properties, results_prefix
-        see save_results()
-
-    calculation_succeeded: bool
-        whether calculation appears (so far) to have succeeded based on actual calculator run and success of save_reults() call
-
-    Returns
-    -------
-    calculation_succeeded: bool, updated status of calculation success based on whether any results were None
-    """
-    failed = not calculation_succeeded
-    if results_prefix is None:
-        # check SinglePointCalculator.results, delete it if there is a problem with any value
-        if not failed:
-            failed = any([v is None for v in atoms.calc.results.values()])
-        if failed:
-            atoms.calc = None
-        # extra results not possible to save if results_prefix is None
-    else:
-        if not failed:
-            failed = (any([v is None for k, v in atoms.info.items() if k.startswith(results_prefix)]) or
-                      any([v is None for k, v in atoms.arrays.items() if k.startswith(results_prefix)]))
-        if failed:
-            info_results_keys = [k for k in atoms.info if k.startswith(results_prefix)]
-            for k in info_results_keys:
-                del atoms.info[k]
-            arrays_results_keys = [k for k in atoms.arrays if k.startswith(results_prefix)]
-            for k in arrays_results_keys:
-                del atoms.arrays[k]
-        # extra results will also start with results_prefix, so will be cleaned up above
-
-    return not failed
-
-
 def save_results(atoms, properties, results_prefix=None):
     """saves results of a calculation in a SinglePointCalculator or info/arrays keys
 
