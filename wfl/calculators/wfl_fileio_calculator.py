@@ -5,6 +5,8 @@ import warnings
 
 from .utils import clean_rundir as utils_clean_rundir
 
+from ase.calculators.castep import Castep as ASE_Castep
+
 class WFLFileIOCalculator():
     """Mixin class implementing some methods that should be available to every
     WFL calculator that does I/O via files, i.e. DFT calculators
@@ -69,19 +71,33 @@ class WFLFileIOCalculator():
         else:
             directory = self._cur_rundir
 
-        self.directory = directory
+        # ASE's Castep unconventionally uses `_directory` and has its own setter  
+        # and getter functions that only allows setting non-preditermined attributes
+        # if they start with an underscore.  
+        if isinstance(self, ASE_Castep):
+            self._directory = directory
+        else:
+            self.directory = directory
 
     def clean_rundir(self, _default_keep_files, calculation_succeeded):
-        utils_clean_rundir(self.directory, self._wfl_keep_files, _default_keep_files, calculation_succeeded)
+
+        # ASE's Castep unconventionally uses `_directory` and has its own setter  
+        # and getter functions that only allows setting non-preditermined attributes
+        # if they start with an underscore.
+        if isinstance(self, ASE_Castep):
+            directory = self._directory 
+        else:
+            directory = self.directory 
+
+        utils_clean_rundir(directory, self._wfl_keep_files, _default_keep_files, calculation_succeeded)
         if self._wfl_scratchdir is not None:
-            for f in Path(self.directory).glob("*"):
+            for f in Path(directory).glob("*"):
                 shutil.move(f, self._cur_rundir)
-            if Path(self.directory).exists():
-                if list(Path(self.directory).iterdir()) != []:
-                    warnings.warn(f"scratchdir {self.directory} is not empty, not deleting.")
+            if Path(directory).exists():
+                if list(Path(directory).iterdir()) != []:
+                    warnings.warn(f"scratchdir {directory} is not empty, not deleting.")
                 else:
-                    Path(self.directory).rmdir()
-                    self.directory = '.' 
+                    Path(directory).rmdir()
             # remove self._cur_rundir if nothing was moved from scratchdir
             if list(self._cur_rundir.iterdir()) == []:
                 self._cur_rundir.rmdir()

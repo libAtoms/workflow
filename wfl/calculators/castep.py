@@ -77,8 +77,6 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
                          workdir=workdir, scratchdir=scratchdir, **kwargs)
 
-        self.directory = self._directory
-
 
     def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
         """Do the calculation. Handles the working directories in addition to regular
@@ -94,7 +92,6 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
 
         # from WFLFileIOCalculator
         self.setup_rundir()
-        self._directory = self.director
 
         try:
             super().calculate(atoms=atoms)
