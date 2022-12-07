@@ -30,11 +30,13 @@ class ConfigSet:
 
     file_root: str / Path. default None
         path component to prepend to all file names
+    read_kwargs: dict, default {"index": ":", "parallel": False}
+        optional kwargs passed to ase.io.iread function, overriding these default values
     """
 
     _loc_sep = " / "
 
-    def __init__(self, items, *, file_root=None, _open_reader=None, _cur_at=None, _file_loc=None):
+    def __init__(self, items, *, file_root=None, read_kwargs={}, _open_reader=None, _cur_at=None, _file_loc=None):
         # deal with private arguments
         if sum([_open_reader is None, _cur_at is None, _file_loc is None]) not in (0, 3):
             raise ValueError(f"Need either both or neither of _open_reader {_open_reader} _file_loc {_file_loc}")
@@ -43,6 +45,8 @@ class ConfigSet:
         self._file_loc = _file_loc if _file_loc is not None else ""
         file_root = Path(file_root) if file_root is not None else Path("")
 
+        self.read_kwargs = {"index": ":", "parallel": False}
+        self.read_kwargs.update(read_kwargs)
 
         # self.items can be
         #   Path or list(Path) or list(...(list(Atoms)))
@@ -130,7 +134,7 @@ class ConfigSet:
         if isinstance(self.items, Path):
             # yield Atoms from one file
             ## print("DEBUG __iter__ one file", self.items)
-            for at_i, at in enumerate(ase.io.iread(self.items, ":")):
+            for at_i, at in enumerate(ase.io.iread(self.items, **self.read_kwargs)):
                 loc = at.info.get("_ConfigSet_loc", ConfigSet._loc_sep + str(at_i))
                 if loc.startswith(self._file_loc):
                     ## print("DEBUG matching loc", loc, "file_loc", self._file_loc)
@@ -142,7 +146,7 @@ class ConfigSet:
         elif isinstance(self.items[0], Path):
             # yield Atoms from each file, prepending number of file to current loc
             for file_i, filepath in enumerate(self.items):
-                for at_i, at in enumerate(ase.io.iread(filepath, ":")):
+                for at_i, at in enumerate(ase.io.iread(filepath, **self.read_kwargs)):
                     loc = ConfigSet._loc_sep + str(file_i) + at.info.get("_ConfigSet_loc", ConfigSet._loc_sep + str(at_i))
                     if loc.startswith(self._file_loc):
                         loc = loc.replace(self._file_loc, "", 1)
@@ -189,7 +193,7 @@ class ConfigSet:
             if self._open_reader is None or self._cur_at[0] is None:
                 # initialize reading of file
                 ## print("DEBUG initializing reader", self.items)
-                self._open_reader = ase.io.iread(self.items, ":")
+                self._open_reader = ase.io.iread(self.items, **self.read_kwargs)
                 self._cur_at = [None]
                 ## print("DEBUG setting initial self._cur_at = [None]")
                 try:
@@ -215,7 +219,7 @@ class ConfigSet:
                 ## print("DEBUG starting second skipping")
                 # Failed to find config that matches self._file_loc from current position of reader.
                 # Search again from start (in case we're doing something out of order)
-                self._open_reader = ase.io.iread(self.items, ":")
+                self._open_reader = ase.io.iread(self.items, **self.read_kwargs)
                 try:
                     at_loc = advance()
                     # Skip any that don't match self._file_loc
@@ -356,10 +360,11 @@ class OutputSpec:
         Overwrite already existing files.  Defaults to True so that object creation
         doesn't fail if write loop has been completed (detectable with `OutputSpec.done()`).
     """
-    def __init__(self, files=None, *, file_root=None, overwrite=True):
+    def __init__(self, files=None, *, file_root=None, overwrite=True, write_kwargs={}):
         self.files = files
         self.configs = None
         self.file_root = Path(file_root if file_root is not None else "")
+        self.write_kwargs = write_kwargs.copy()
 
         if self.files is not None:
             # store in file(s)
@@ -382,7 +387,6 @@ class OutputSpec:
             self.configs = []
 
         self.cur_file_ind = None
-        self.cur_file_type = None
         self.cur_file = None
 
         self.closed = False
@@ -455,7 +459,7 @@ class OutputSpec:
                     input_CS_loc = ConfigSet._loc_sep + str(self.cur_store_loc)
 
                 self._open_file(0)
-                OutputSpec._write_to_file(self.cur_file, self.cur_file_type, configs, input_CS_loc)
+                self._write_to_file(configs, input_CS_loc)
                 self.first_store_call = False
                 return
 
@@ -469,8 +473,7 @@ class OutputSpec:
             sub_loc = input_CS_loc.split(ConfigSet._loc_sep)[2:]
             if len(sub_loc) > 0:
                 sub_loc = [""] + sub_loc
-            OutputSpec._write_to_file(self.cur_file, self.cur_file_type, configs,
-                                      ConfigSet._loc_sep.join(sub_loc))
+            self._write_to_file(configs, ConfigSet._loc_sep.join(sub_loc))
         else:
             # store in self.configs
             if len(input_CS_loc) == 0:
@@ -542,18 +545,11 @@ class OutputSpec:
         return cs
 
 
-    @staticmethod
-    def _write_to_file(fd, file_type, configs, store_loc_stem):
+    def _write_to_file(self, configs, store_loc_stem):
         """Write one or more Atoms to a file, storing their locations
 
         Parameters
         ----------
-
-        fd: file object
-            file to write to
-
-        file_type: str
-            file type passed to ase.io.write(..., format=file_type)
 
         configs: Atoms / iterable(Atoms / iterable(Atoms / iterable))
             configurations to write
@@ -565,13 +561,13 @@ class OutputSpec:
         if isinstance(configs, Atoms):
             if store_loc_stem is not None and len(store_loc_stem) > 0:
                 configs.info["_ConfigSet_loc"] = store_loc_stem
-            ase.io.write(fd, configs, format=file_type)
+            ase.io.write(self.cur_file, configs, **self._cur_write_kwargs)
         else:
             # iterable, possibly nested
             for item_i, item in enumerate(configs):
                 # WARNING: this will fail if store_loc_stem is None.  Is this what we want?
                 item_loc = store_loc_stem + ConfigSet._loc_sep + str(item_i)
-                OutputSpec._write_to_file(fd, file_type, item, item_loc)
+                self._write_to_file(item, item_loc)
 
 
     def _open_file(self, file_ind):
@@ -595,5 +591,7 @@ class OutputSpec:
 
         tmp_filename = self.file_root / self.files[self.cur_file_ind].parent / ("tmp." + self.files[self.cur_file_ind].name)
 
-        self.cur_file_type = ase.io.formats.filetype(tmp_filename, read=False)
+        self._cur_write_kwargs = self.write_kwargs.copy()
+        if "format" not in self._cur_write_kwargs:
+            self._cur_write_kwargs["format"] = ase.io.formats.filetype(tmp_filename, read=False)
         self.cur_file = open(tmp_filename, "a")
