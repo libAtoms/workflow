@@ -69,7 +69,8 @@ def get_ref_error(in_file, out_file, gap_file, **kwargs):
 
     calc_in_config = generic_calc(in_config, OutputSpec(), calculator, output_prefix='calc_')
     error, _, _ = ref_error_calc(calc_in_config, 'calc_', ref_property_prefix,
-                                 category_keys=category_keys)
+                                 category_keys=category_keys, config_properties=["energy/atom"], atom_properties=["forces"])
+
     error = {'energy': error['energy/atom']['_ALL_']['RMSE'],
              'forces': error['forces']['_ALL_']['RMSE']}
     return error
