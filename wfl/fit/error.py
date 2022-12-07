@@ -310,7 +310,7 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
             color = colors[cat_idx]
 
             units_factor = select_units(prop, "error")
-            label = f'{category}: {errors[category][error_type] * unit_factor[1]:.2f} {units_factor[0]}'
+            label = f'{category}: {errors[category][error_type] * units_factor[1]:.2f} {units_factor[0]}'
             if ax_parity is not None:
                 ax_parity.scatter(ref_vals[category], pred_vals[category], label=label,
                                   edgecolors=color, facecolors='none')
@@ -428,6 +428,7 @@ def errors_dumps(errors, error_type="RMSE", precision=2):
         max_rows = None,
         max_cols = None,
         float_format = "{{:.{:d}f}}".format(precision).format,
+        sparsify = False
     )
     return df_str
 
@@ -483,6 +484,8 @@ def errors_to_dataframe(errors, error_type="RMSE"):
     new_rows = natural_sort(new_rows) + ["_ALL_"]
 
     df.sort_index(key=lambda index: pd.Index([new_rows.index(i) for i in index]), inplace=True)
+
+    print("BOB", df.columns)
 
     return df
 
