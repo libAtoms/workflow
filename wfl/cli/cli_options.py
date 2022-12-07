@@ -35,7 +35,7 @@ def extra_info(f):
     return f
 
 def param_fname(f):
-    f = click.option("--param-fname", "-pf" type=click.Path(), help="Path to the potential parameter file")(f)
+    f = click.option("--param-fname", "-pf", type=click.Path(), help="Path to the potential parameter file")(f)
     return f
 
 def prop_prefix(f):

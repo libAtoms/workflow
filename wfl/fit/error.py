@@ -1,8 +1,11 @@
 import warnings
 import sys
 import re
+import itertools
+
 import pandas as pd
 import numpy as np
+
 from matplotlib.figure import Figure
 from matplotlib.cm import get_cmap
 
@@ -46,7 +49,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
     """
 
     # default properties
-    if ((config_properties is None or len(config_properties) == 0) and 
+    if ((config_properties is None or len(config_properties) == 0) and
         (atom_properties is None or len(atom_properties) == 0)):
         config_properties = ["energy/atom", "virial/atom/comp"]
         atom_properties = ["forces"]
@@ -194,7 +197,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                     selected_calc_quant = np.linalg.norm(selected_calc_quant, axis=1)
 
 
-                _dict_add([all_diffs, all_weights,            all_parity["ref"],   all_parity["calc"]], 
+                _dict_add([all_diffs, all_weights,            all_parity["ref"],   all_parity["calc"]],
                           [diff,      _promote(weight, diff), selected_ref_quant,           selected_calc_quant        ],
                           at_category, prop + atom_split_index_label)
 
@@ -205,7 +208,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                                     f"property '{missed_prop}' in all of the configs. Is the spelling correct? ")
             else:
                 warnings.warn(f"Missing reference or calculated property '{missed_prop}', {count} times")
-            
+
 
     all_errors = {}
     for prop in all_diffs:
@@ -222,7 +225,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
 
     # if len(all_diffs) == 0:
     #     raise RuntimeError(f"No values were found to calculate error from."\
-    #                        f"This might be because of misspelled property prefixes ({calc_property_prefix} or {ref_property_prefix})") 
+    #                        f"This might be because of misspelled property prefixes ({calc_property_prefix} or {ref_property_prefix})")
 
     return all_errors, all_diffs, all_parity
 
@@ -230,7 +233,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
 def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=None,
                         ref_property_prefix="reference ", calc_property_prefix="calculated ", error_type="RMSE",
                         plot_parity=True, plot_error=True, cmap=None):
-    """generate parity plot (calculated values vs. reference values) and/or scatterplot of 
+    """generate parity plot (calculated values vs. reference values) and/or scatterplot of
     errors vs. values
 
     Parameters
@@ -249,8 +252,8 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
         prefix for reference property labels
     calc_property_prefix: str, default "calculated "
         prefix for reference property labels
-    error_type: str, default "RMSE"
-        type of error matching key in all_errors dict
+    error_type: str in ["RMSE, "MAE"], default "RMSE"
+        root-mean-square or maximum-absolute error
     cmap: str, default None
         colormap name to use. If None use default based on number of categories.
     """
@@ -303,15 +306,16 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
         for cat_idx, category in enumerate(differences.keys()):
             if category == "_ALL_":
                 continue
-            
+
             color = colors[cat_idx]
-                
-            label = f'{category}: {errors[category][error_type]*1e3:.2f} {select_units(prop, "error")}'
+
+            units_factor = select_units(prop, "error")
+            label = f'{category}: {errors[category][error_type] * unit_factor[1]:.2f} {units_factor[0]}'
             if ax_parity is not None:
                 ax_parity.scatter(ref_vals[category], pred_vals[category], label=label,
                                   edgecolors=color, facecolors='none')
             if ax_error is not None:
-                ax_error.scatter(ref_vals[category], np.array(differences[category])*1e3,
+                ax_error.scatter(ref_vals[category], np.array(differences[category]) * units_factor[1],
                                  edgecolors=color, facecolors='none')
 
         if ax_parity is not None:
@@ -346,14 +350,31 @@ def _dict_add(dicts, values, at_category, prop):
 
 
 def select_units(prop, plt_type):
+    """
+    select unit labels and conversion factors from ASE default for each property
+
+
+    Parameters
+    ----------
+    prop: str in ["energy", "energy/atoms", "forces",  "virial", "virial/atom"]
+        name of property
+    plt_type: str in ["error", "parity"]
+        type of plot
+
+    Returns
+    -------
+    property_label: str
+    conversion_factor: float to multiply raw quantity by
+    """
 
     units_dict = {
-    "energy/atom": {"parity": "eV/at", "error": "meV/at"},
-    "energy": {"parity": "eV", "error": "meV"},
-    "forces": {"parity": "eV/Å", "error": "meV/Å"},
-    "virial": {"parity": "eV", "error": "meV"},
-    "virial/atom": {"parity": "eV/at", "error": "meV/at"}
+        "energy": {"parity": ("eV", 1.0), "error": ("meV", 1.0e3)},
+        "energy/atom": {"parity": ("eV/at", 1.0), "error": ("meV/at", 1.0e3)},
+        "forces": {"parity": ("eV/Å", 1.0), "error": ("meV/Å", 1.0e3)},
+        "virial": {"parity": ("eV", 1.0), "error": ("meV", 1.0e3)},
+        "virial/atom": {"parity": ("eV/at", 1.0), "error": ("meV/at", 1.0e3)}
     }
+
     if "virial" in prop:
         prop = re.sub(r"/comp\b", "", prop)
     if "forces" in prop:
@@ -368,8 +389,8 @@ def _annotate_parity_plot(ax, property, ref_property_prefix, calc_property_prefi
     if show_legend:
         ax.legend(title=f"{error_type} per category")
     ax.set_title(f"{property} ")
-    ax.set_xlabel(f"{ref_property_prefix}{property}, {select_units(property, 'parity')}")
-    ax.set_ylabel(f"{calc_property_prefix}{property}, {select_units(property, 'parity')}")
+    ax.set_xlabel(f"{ref_property_prefix}{property}, {select_units(property, 'parity')[0]}")
+    ax.set_ylabel(f"{calc_property_prefix}{property}, {select_units(property, 'parity')[0]}")
 
     xmin, xmax = ax.get_xlim()
     ymin, ymax = ax.get_ylim()
@@ -383,59 +404,85 @@ def _annotate_parity_plot(ax, property, ref_property_prefix, calc_property_prefi
 
 def _annotate_error_plot(ax, property, ref_property_prefix, calc_property_prefix):
     ax.set_title(f"{property} error")
-    ax.set_xlabel(f"{ref_property_prefix}{property}, {select_units(property, 'parity')}")
-    ax.set_ylabel(f"{calc_property_prefix}{property} error, {select_units(property, 'error')}") 
+    ax.set_xlabel(f"{ref_property_prefix}{property}, {select_units(property, 'parity')[0]}")
+    ax.set_ylabel(f"{calc_property_prefix}{property} error, {select_units(property, 'error')[0]}")
     ax.grid(color='lightgrey', ls=':')
     ax.set_yscale('log')
 
 
-def errors_dumps(errors, error_type=None, precision=2):
+def errors_dumps(errors, error_type="RMSE", precision=2):
     """converts errors dictionary to dataframe and prints nicely.
-    
+
     Parameters
     ----------
     errors: dict
         Dictionary returned by wfl.fit.error.calculate()
+    error_type: str in ["RMSE, "MAE"], default "RMSE"
+        root-mean-square or maximum-absolute error
     precision: int, default 2
         Float precision when printing
-    file: obj, default sys.stdout
-        Object to write the table to. 
     """
 
-    df = errors_to_dataframe(errors, error_type=error_type) 
+    df = errors_to_dataframe(errors, error_type=error_type)
     df_str = df.to_string(
-        max_rows = None, 
-        max_cols = None, 
+        max_rows = None,
+        max_cols = None,
         float_format = "{{:.{:d}f}}".format(precision).format,
     )
     return df_str
 
 
-def errors_to_dataframe(errors, error_type=None):
-    """converts errors dictionary to dataframe"""
+def errors_to_dataframe(errors, error_type="RMSE"):
+    """converts errors dictionary to dataframe with properties as columns
+    and categories as rows
 
-    # orient dataframe nicely 
-    df = pd.DataFrame.from_dict(errors, orient="index")
+    Parameters
+    ----------
+    errors: dict
+        Dictionary returned by wfl.fit.error.calculate()
+    error_type: str in ["RMSE, "MAE"], default "RMSE"
+        root-mean-square or maximum-absolute error
+    """
+    # errors keys
+    # property : category : RMSE/MAE/count
 
-    # sort columns alphabetically 
-    new_columns =  [col for col in df.columns if col != "_ALL_"]
-    new_columns = natural_sort(new_columns) + ["_ALL_"]
-    df = df[new_columns] 
+    # store error_type value and counts in their own columns
+    df_errors = {}
+    for prop in errors:
+        units_factor = select_units(prop, 'error')
 
+        prop_header = re.sub(r'^energy\b', 'E', prop)
+        prop_header = re.sub(r'^forces\b', 'F', prop_header)
+        prop_header = re.sub(r'^virial\b', 'V', prop_header)
+        prop_header = re.sub(r'/atom\b', '/a', prop_header)
+        prop_header = re.sub(r'/comp\b', '/c', prop_header)
 
-    if not error_type:
-        # orient dataframe nicely
-        df = df.stack()
-        df = pd.json_normalize(df).set_index(df.index)
+        # tuple keys become pd.MultiIndex and therefore grouped two-row display header
+        prop_val_key = (prop_header, units_factor[0])
+        prop_count_key = (prop_header, "#")
 
-         # change and label units
-        df["MAE"] = df["MAE"].apply(lambda x: x*1e3)
-        df["RMSE"] = df["RMSE"].apply(lambda x: x*1e3)
-        df["units"] = [select_units(prop, "error") for prop, _ in df.index]
+        df_errors[prop_val_key] = {}
+        df_errors[prop_count_key] = {}
+        for cat in errors[prop]:
+            df_errors[prop_val_key][cat] = errors[prop][cat][error_type] * units_factor[1]
+            df_errors[prop_count_key][cat] = int(errors[prop][cat]["count"])
 
-    else:
-        df = df.applymap(lambda x: x[error_type]*1e3).transpose()
+    # fill in 0 for missing counts
+    all_cats = set([cat for prop in errors for cat in errors[prop]])
+    for prop in df_errors:
+        if "#" not in prop[1]:
+            continue
+        for cat in all_cats:
+            if cat not in df_errors[prop]:
+                df_errors[prop][cat] = 0
 
+    df = pd.DataFrame.from_dict(df_errors)
+
+    # sort rows alphabetically
+    new_rows =  [row for row in df.index if row != "_ALL_"]
+    new_rows = natural_sort(new_rows) + ["_ALL_"]
+
+    df.sort_index(key=lambda index: pd.Index([new_rows.index(i) for i in index]), inplace=True)
 
     return df
 
