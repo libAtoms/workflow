@@ -115,11 +115,18 @@ jobs:
       - name: Install and configure slurm and ExPyRe
         run: |
           sudo apt-get install -u slurm-wlm mailutils
+          echo "SLURM apt-get done, doing local configuration"
           host_s=$( hostname -s )
-          sudo cp .github/workflows_assets/slurm.conf /etc/slurm-llnl/
-          sudo sed -i -e "s/_HOST_/$host_s/g" /etc/slurm-llnl/slurm.conf
-          sudo mkdir /var/log/slurm
-          sudo mkdir /var/spool/slurmd
+          if [ -f /etc/slurm/slurm.conf ]; then sudo mv /etc/slurm/slurm.conf /etc/slurm/slurm.conf.orig; fi
+          sudo bash -c 'gzip -cd /usr/share/doc/slurmd/examples/slurm.conf.simple.gz > /etc/slurm/slurm.conf'
+          # sudo sed -E -i -e "s/^\s*ClusterName\s*=.*/ClusterName=github_expyre_test/" /etc/slurm/slurm.conf
+          sudo bash -c 'sed -E -i -e "s/^\s*SlurmctldHost\s*=.*/SlurmctldHost=_HOST_/" /etc/slurm/slurm.conf'
+          # sudo sed -E -i -e "s/^\s*DefaultStorageHost\s*=.*/DefaultStorageHost=none" /etc/slurm/slurm.conf
+          sudo bash -c 'echo "NodeName=_HOST_ CPUs=2 Weight=1 Sockets=1 CoresPerSocket=2 ThreadsPerCore=1 RealMemory=1000" >> /etc/slurm/slurm.conf'
+          sudo bash -c 'echo "PartitionName=standard Default=YES AllocNodes=_HOST_ Nodes=ALL State=UP" >> /etc/slurm/slurm.conf'
+          sudo sed -i -e "s/_HOST_/$host_s/g" /etc/slurm/slurm.conf
+          sudo mkdir -p /var/log/slurm
+          sudo mkdir -p /var/spool/slurmd
           sudo service slurmd start
           sudo service slurmctld start
           sleep 5
@@ -164,6 +171,7 @@ jobs:
           export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
           pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs
 
+      # # DEBUGGING
       # - name: Setup tmate session
       #   if: failure()
       #   uses: mxschmitt/action-tmate@v3
