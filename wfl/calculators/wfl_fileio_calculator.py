@@ -77,7 +77,7 @@ class WFLFileIOCalculator():
             for f in Path(self.directory).glob("*"):
                 shutil.move(f, self._cur_rundir)
             if Path(self.directory).exists():
-                if list(Path(self.directory).iterdir()) == []:
+                if list(Path(self.directory).iterdir()) != []:
                     warnings.warn(f"scratchdir {self.directory} is not empty, not deleting.")
                 else:
                     Path(self.directory).rmdir()
