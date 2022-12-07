@@ -72,7 +72,7 @@ def _largest_isotropic_supercell(at, max_n_atoms, vary_cell_vectors=None):
 
 
 # try ase.build.supercells.find_optimal_cell_shape ?
-def _largest_bulk_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3):
+def _largest_bulk_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, symprec=1.0e-3, ase_optimal=False):
     """make largest bulk-like supercells
 
     Parameters
@@ -87,6 +87,8 @@ def _largest_bulk_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=Tru
         reduce input Atoms to primitive cell using spglib
     symprec: float, default 1.0e-3
         symprec for primitive lattice check
+    ase_optimal: bool, default False
+        use ase.build.supercells.find_optimal_cell_shape
 
     Returns
     -------
@@ -100,15 +102,24 @@ def _largest_bulk_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=Tru
         if primitive:
             at = _get_primitive(at, symprec=symprec)
 
-        n_dups = _largest_isotropic_supercell(at, max_n_atoms)
-
         at.info['orig_cell'] = np.array(at.cell)
-        at *= n_dups
+
+        if ase_optimal:
+            n_dups = ase.build.supercells.find_optimal_cell_shape(at.cell, max_n_atoms, 'sc', lower_limit=-4, upper_limit=4)
+            sc = np.build.make_supercell(at, n_dups)
+            sc.info.update(at.info)
+            at = sc
+        else:
+            n_dups = _largest_isotropic_supercell(at, max_n_atoms)
+            at *= n_dups
 
         at.info["supercell_n"] = n_dups
+
         at.info["config_type"] = "supercell_bulk"
 
-        at.positions += pert * np.random.normal(size=at.positions.shape)
+        if pert != 0.0:
+            at.positions += pert * np.random.normal(size=at.positions.shape)
+
         ####################################################################################################
         # workaround for non-working results invalidation when number of atoms has changed
         at.calc = None
