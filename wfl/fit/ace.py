@@ -118,7 +118,10 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
         * ``(energy|force|virial)_key`` (with ref_property_prefix)
         * ``ACE_fname``
         * e0 values
-        * per-config E/F/V weight if it contains ``"weights": { "from_sigma": True }``
+        * per-config E/F/V weight if it contains ``"weights": { "from_sigma": <some_value> }``
+          * if ``<some_value>`` is ``True``, each property's weight will come from that property's
+            sigma.  Otherwise, it is expected to be a string info dict key and all 3 weights will come
+            from that info field value times the global E/F/V.
 
     run_dir: str or Path, default '.'
         path of directory to run in
@@ -161,9 +164,14 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
                 at.info["pre_fit_config_type"] = at.info.get("config_type", "None")
                 config_type = f"config_{at_i}"
                 at.info["config_type"] = config_type
-                ace_fit_params["weights"][config_type] = { "E": default_weights.get("E", 1.0) / at.info.get("energy_sigma", 1.0),
-                                                           "F": default_weights.get("F", 1.0) / at.info.get("force_sigma", 1.0),
-                                                           "V": default_weights.get("V", 1.0) / at.info.get("virial_sigma", 1.0) }
+                if from_sigma is True:
+                    ace_fit_params["weights"][config_type] = { "E": default_weights.get("E", 1.0) / at.info.get("energy_sigma", 1.0),
+                                                               "F": default_weights.get("F", 1.0) / at.info.get("force_sigma", 1.0),
+                                                               "V": default_weights.get("V", 1.0) / at.info.get("virial_sigma", 1.0) }
+                else:
+                    ace_fit_params["weights"][config_type] = { "E": default_weights.get("E", 1.0) / at.info.get(from_sigma, 1.0),
+                                                               "F": default_weights.get("F", 1.0) / at.info.get(from_sigma, 1.0),
+                                                               "V": default_weights.get("V", 1.0) / at.info.get(from_sigma, 1.0) }
 
     return ace_fit_params
 
