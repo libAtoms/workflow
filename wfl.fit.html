@@ -706,7 +706,13 @@ to be updated with</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">(energy|force|virial)_key</span></code> (with ref_property_prefix)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ACE_fname</span></code></p></li>
 <li><p>e0 values</p></li>
-<li><p>per-config E/F/V weight if it contains <code class="docutils literal notranslate"><span class="pre">&quot;weights&quot;:</span> <span class="pre">{</span> <span class="pre">&quot;from_sigma&quot;:</span> <span class="pre">True</span> <span class="pre">}</span></code></p></li>
+<li><p>per-config E/F/V weight if it contains <code class="docutils literal notranslate"><span class="pre">&quot;weights&quot;:</span> <span class="pre">{</span> <span class="pre">&quot;from_sigma&quot;:</span> <span class="pre">&lt;some_value&gt;</span> <span class="pre">}</span></code>
+* if <code class="docutils literal notranslate"><span class="pre">&lt;some_value&gt;</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, each property’s weight will come from that property’s</p>
+<blockquote>
+<div><p>sigma.  Otherwise, it is expected to be a string info dict key and all 3 weights will come
+from that info field value times the global E/F/V.</p>
+</div></blockquote>
+</li>
 </ul>
 </p></li>
 <li><p><strong>run_dir</strong> (<em>str</em><em> or </em><em>Path</em><em>, </em><em>default '.'</em>) – path of directory to run in</p></li>
