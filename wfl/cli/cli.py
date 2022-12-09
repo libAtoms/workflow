@@ -16,9 +16,9 @@ def cli(ctx, verbose):
     if not verbose:
         warnings.filterwarnings("ignore", category=UserWarning, module="ase.io.extxyz")
 
-from wfl.cli.commands.error import show
-cli.add_command(show)
 
+from wfl.cli.commands.error import show_error
+cli.add_command(show_error)
 
 @cli.group("generate")
 @click.pass_context
@@ -45,10 +45,11 @@ subcli_select.add_command(by_lambda)
 def subcli_eval(ctx):
     pass
 
-from wfl.cli.commands.eval import gap, ace, mace 
+from wfl.cli.commands.eval import gap, ace, mace, atomization_energy 
 subcli_eval.add_command(gap)
 subcli_eval.add_command(ace)
 subcli_eval.add_command(mace)
+subcli_eval.add_command(atomization_energy)
 
 
 @cli.group("descriptor")

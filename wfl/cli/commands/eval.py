@@ -5,6 +5,7 @@ from quippy.potential import Potential
 from wfl.autoparallelize.autoparainfo import AutoparaInfo
 from wfl.cli import cli_options as opt
 from wfl.calculators import generic
+from wfl.utils import configs
 
 
 @click.command("gap")
@@ -79,4 +80,27 @@ def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_s
         calculator=calc,
         output_prefix=prop_prefix, 
         autopara_info=AutoparaInfo(num_inputs_per_python_subprocess = num_inputs_per_python_subprocess))
+
+
+@click.command("atomization-energy")
+@click.pass_context
+@opt.inputs
+@opt.outputs
+@opt.prop_prefix
+@click.option("--prop", default="energy", show_default=True, 
+    help="Property to calculate atomization value for")
+@click.option("--isolated-atom-info-key", "-k", default="config_type", show_default=True, 
+    help="``atoms.info`` key on which to select isolated atoms")
+@click.option("--isolated-atom-info-value", "-v", default="default", 
+    help="``atoms.info['isolated_atom_info_key']`` value for isolated atoms. Defaults to \"IsolatedAtom\" or \"isolated_atom\"")
+def atomization_energy(inputs, outputs, prop_prefix, prop, isolated_atom_info_key, isolated_atom_info_value):
+    configs.atomization_energy(
+        inputs=inputs,
+        outputs=outputs,
+        prop_prefix=prop_prefix,
+        property=prop,
+        isolated_atom_info_key=isolated_atom_info_key,
+        isolated_atom_info_value=isolated_atom_info_value
+    )
+
 
