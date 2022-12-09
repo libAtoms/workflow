@@ -810,8 +810,64 @@ keys in Atoms.info, in addition to overall average _ALL_ category.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="wfl.fit.error.errors_dumps">
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">errors_dumps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RMSE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.errors_dumps" title="Permalink to this definition">#</a></dt>
+<dd><p>converts errors dictionary to dataframe and prints nicely.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>errors</strong> (<em>dict</em>) – Dictionary returned by wfl.fit.error.calculate()</p></li>
+<li><p><strong>error_type</strong> (<em>str in</em><em> [</em><em>&quot;RMSE</em><em>, </em><em>&quot;MAE&quot;</em><em>]</em><em>, </em><em>default &quot;RMSE&quot;</em>) – root-mean-square or maximum-absolute error</p></li>
+<li><p><strong>precision</strong> (<em>int</em><em>, </em><em>default 2</em>) – Float precision when printing</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.fit.error.errors_to_dataframe">
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">errors_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RMSE'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.errors_to_dataframe" title="Permalink to this definition">#</a></dt>
+<dd><p>converts errors dictionary to dataframe with properties as columns
+and categories as rows</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>errors</strong> (<em>dict</em>) – Dictionary returned by wfl.fit.error.calculate()</p></li>
+<li><p><strong>error_type</strong> (<em>str in</em><em> [</em><em>&quot;RMSE</em><em>, </em><em>&quot;MAE&quot;</em><em>]</em><em>, </em><em>default &quot;RMSE&quot;</em>) – root-mean-square or maximum-absolute error</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.fit.error.natural_sort">
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">natural_sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.natural_sort" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.fit.error.select_units">
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">select_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plt_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.select_units" title="Permalink to this definition">#</a></dt>
+<dd><p>select unit labels and conversion factors from ASE default for each property</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prop</strong> (<em>str in</em><em> [</em><em>&quot;energy&quot;</em><em>, </em><em>&quot;energy/atoms&quot;</em><em>, </em><em>&quot;forces&quot;</em><em>,  </em><em>&quot;virial&quot;</em><em>, </em><em>&quot;virial/atom&quot;</em><em>]</em>) – name of property</p></li>
+<li><p><strong>plt_type</strong> (<em>str in</em><em> [</em><em>&quot;error&quot;</em><em>, </em><em>&quot;parity&quot;</em><em>]</em>) – type of plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>property_label</strong> (<em>str</em>)</p></li>
+<li><p><strong>conversion_factor</strong> (<em>float to multiply raw quantity by</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="wfl.fit.error.value_error_scatter">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">value_error_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_diffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_parity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'reference</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calculated</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RMSE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_parity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap_name_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.value_error_scatter" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">value_error_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_diffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_parity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'reference</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calculated</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RMSE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_parity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.value_error_scatter" title="Permalink to this definition">#</a></dt>
 <dd><p>generate parity plot (calculated values vs. reference values) and/or scatterplot of
 errors vs. values</p>
 <dl class="field-list simple">
@@ -822,10 +878,10 @@ errors vs. values</p>
 <li><p><strong>all_parity</strong> (<em>dict</em>) – dict of property values for parity returned by error.calc (third returned item)</p></li>
 <li><p><strong>output</strong> (<em>str</em>) – output filename</p></li>
 <li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default None</em>) – properties to plot, if None plot all</p></li>
-<li><p><strong>ref_property_prefix</strong> (<em>str</em><em>, </em><em>default &quot;calculated &quot;</em>) – prefix for reference property labels</p></li>
-<li><p><strong>ref_property_prefix</strong> – prefix for reference property labels</p></li>
-<li><p><strong>error_type</strong> (<em>str</em><em>, </em><em>default &quot;RMSE&quot;</em>) – type of error matching key in all_errors dict</p></li>
-<li><p><strong>cmap_name_bins</strong> (<em>tuple</em><em>(</em><em>str</em><em>, </em><em>int</em><em>)</em><em>, </em><em>default None</em>) – colormap to use and number of bins. If None use number of categories based default</p></li>
+<li><p><strong>ref_property_prefix</strong> (<em>str</em><em>, </em><em>default &quot;reference &quot;</em>) – prefix for reference property labels</p></li>
+<li><p><strong>calc_property_prefix</strong> (<em>str</em><em>, </em><em>default &quot;calculated &quot;</em>) – prefix for reference property labels</p></li>
+<li><p><strong>error_type</strong> (<em>str in</em><em> [</em><em>&quot;RMSE</em><em>, </em><em>&quot;MAE&quot;</em><em>]</em><em>, </em><em>default &quot;RMSE&quot;</em>) – root-mean-square or maximum-absolute error</p></li>
+<li><p><strong>cmap</strong> (<em>str</em><em>, </em><em>default None</em>) – colormap name to use. If None use default based on number of categories.</p></li>
 </ul>
 </dd>
 </dl>

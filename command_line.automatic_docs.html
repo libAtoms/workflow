@@ -537,6 +537,11 @@ title="Print to PDF"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#wfl-eval-atomization-energy">
+     atomization-energy
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#wfl-eval-gap">
      gap
     </a>
@@ -626,6 +631,11 @@ title="Print to PDF"
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#wfl-eval-ace">
      ace
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#wfl-eval-atomization-energy">
+     atomization-energy
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -747,9 +757,90 @@ title="Print to PDF"
 </div>
 <div class="section" id="wfl-error">
 <h2>error<a class="headerlink" href="#wfl-error" title="Permalink to this headline">#</a></h2>
+<p>Prints error summary table</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wfl error <span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-error-cpp">
+<span class="sig-name descname"><span class="pre">-cpp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--calc-property-prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;calc_property_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-error-cpp" title="Permalink to this definition">#</a></dt>
+<dd><p><strong>Required</strong> prefix for calculated (predicted) properties (energy, forces, …)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-error-rpp">
+<span class="sig-name descname"><span class="pre">-rpp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--ref-property-prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;ref_property_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-error-rpp" title="Permalink to this definition">#</a></dt>
+<dd><p><strong>Required</strong> prefix for properties taken as reference (e.g. from electronic structure codes)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-error-cp">
+<span class="sig-name descname"><span class="pre">-cp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config-properties</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config_properties&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-error-cp" title="Permalink to this definition">#</a></dt>
+<dd><p>Multiple <code class="docutils literal notranslate"><span class="pre">Atoms.info</span></code> calculated properties (to be prefixed by <code class="docutils literal notranslate"><span class="pre">ref_property_prefix</span></code> or <code class="docutils literal notranslate"><span class="pre">calc_property_prefix</span></code>) to compute error for.  <code class="docutils literal notranslate"><span class="pre">virial</span></code> will be reconstructed from <code class="docutils literal notranslate"><span class="pre">stress</span></code>. Properties can end with <code class="docutils literal notranslate"><span class="pre">/atom</span></code> or  <code class="docutils literal notranslate"><span class="pre">/comp</span></code> for different components being counted separately. Default of [“energy/atom”, “virial/atom/comp”]only used if neither <code class="docutils literal notranslate"><span class="pre">config_properties</span></code> nor <code class="docutils literal notranslate"><span class="pre">atom_properties</span></code> is present.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-error-ap">
+<span class="sig-name descname"><span class="pre">-ap</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--atom-properties</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;atom_properties&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-error-ap" title="Permalink to this definition">#</a></dt>
+<dd><p>Multiple <cite>Atoms.arrays</cite> calculated properties (to be prefixed by <code class="docutils literal notranslate"><span class="pre">ref_property_prefix``or</span> <span class="pre">``calc_property_prefix</span></code>) to compute error For.  Properties can end with <code class="docutils literal notranslate"><span class="pre">/comp``for</span> <span class="pre">different</span> <span class="pre">components</span> <span class="pre">being</span> <span class="pre">computed</span> <span class="pre">separately,</span> <span class="pre">and</span> <span class="pre">``/Z</span></code> for different atomic numbersto be assigned to different categories.  Default of [“forces”] only used if neither <code class="docutils literal notranslate"><span class="pre">config_properties``nor</span> <span class="pre">``atom_properties</span></code> is present.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-error-ck">
+<span class="sig-name descname"><span class="pre">-ck</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--category-keys</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;category_keys&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-error-ck" title="Permalink to this definition">#</a></dt>
+<dd><p>Results will be averaged by a category, defined by a string containing the values of thesekeys in Atoms.info, in addition to overall average _ALL_ category.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">config_type</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-error-wp">
+<span class="sig-name descname"><span class="pre">-wp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--weight-property</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;weight_property&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-error-wp" title="Permalink to this definition">#</a></dt>
+<dd><p>Atoms.info key for weights to apply to RMSE calculation</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-error-p">
+<span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--precision</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;precision&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-error-p" title="Permalink to this definition">#</a></dt>
+<dd><p>precision for printing table</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-error-f">
+<span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--fig-name</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;fig_name&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-error-f" title="Permalink to this definition">#</a></dt>
+<dd><p>Filename for figure. Do not plot if not given.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-error-error-type">
+<span class="sig-name descname"><span class="pre">--error-type</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;error_type&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-error-error-type" title="Permalink to this definition">#</a></dt>
+<dd><p>Which error to report in legend</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">RMSE</span></code></p>
+</dd>
+<dt class="field-even">Options</dt>
+<dd class="field-even"><p>RMSE | MAE</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-error-cmap">
+<span class="sig-name descname"><span class="pre">--cmap</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cmap&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-error-cmap" title="Permalink to this definition">#</a></dt>
+<dd><p>Colormap to use for plot if not default</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-error-i">
+<span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--inputs</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;inputs&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-error-i" title="Permalink to this definition">#</a></dt>
+<dd><p><strong>Required</strong> Input xyz file(s) to create ConfigSet from</p>
+</dd></dl>
+
 </div>
 <div class="section" id="wfl-eval">
 <h2>eval<a class="headerlink" href="#wfl-eval" title="Permalink to this headline">#</a></h2>
@@ -776,14 +867,14 @@ title="Print to PDF"
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-eval-ace-param-fname">
-<span class="sig-name descname"><span class="pre">--param-fname</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;param_fname&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-ace-param-fname" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object std" id="cmdoption-wfl-eval-ace-pf">
+<span class="sig-name descname"><span class="pre">-pf</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--param-fname</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;param_fname&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-ace-pf" title="Permalink to this definition">#</a></dt>
 <dd><p>Path to the potential parameter file</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-eval-ace-p">
-<span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--prop-prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;prop_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-ace-p" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object std" id="cmdoption-wfl-eval-ace-pp">
+<span class="sig-name descname"><span class="pre">-pp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--prop-prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;prop_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-ace-pp" title="Permalink to this definition">#</a></dt>
 <dd><p>Prefix to be pre-pended to all evaluate properties. Defaults to “<a href="#id1"><span class="problematic" id="id2">gap_</span></a>”/”<a href="#id3"><span class="problematic" id="id4">ace_</span></a>”/”<a href="#id5"><span class="problematic" id="id6">mace_</span></a>” as appropriate</p>
 </dd></dl>
 
@@ -796,6 +887,59 @@ title="Print to PDF"
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">10</span></code></p>
 </dd>
 </dl>
+</dd></dl>
+
+</div>
+<div class="section" id="wfl-eval-atomization-energy">
+<h3>atomization-energy<a class="headerlink" href="#wfl-eval-atomization-energy" title="Permalink to this headline">#</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wfl <span class="nb">eval</span> atomization-energy <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-eval-atomization-energy-i">
+<span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--inputs</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;inputs&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-atomization-energy-i" title="Permalink to this definition">#</a></dt>
+<dd><p><strong>Required</strong> Input xyz file(s) to create ConfigSet from</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-eval-atomization-energy-o">
+<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--outputs</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;outputs&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-atomization-energy-o" title="Permalink to this definition">#</a></dt>
+<dd><p><strong>Required</strong> Ouput file to create OutputSpec from.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-eval-atomization-energy-pp">
+<span class="sig-name descname"><span class="pre">-pp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--prop-prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;prop_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-atomization-energy-pp" title="Permalink to this definition">#</a></dt>
+<dd><p>Prefix to be pre-pended to all evaluate properties. Defaults to “<a href="#id7"><span class="problematic" id="id8">gap_</span></a>”/”<a href="#id9"><span class="problematic" id="id10">ace_</span></a>”/”<a href="#id11"><span class="problematic" id="id12">mace_</span></a>” as appropriate</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-eval-atomization-energy-prop">
+<span class="sig-name descname"><span class="pre">--prop</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;prop&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-atomization-energy-prop" title="Permalink to this definition">#</a></dt>
+<dd><p>Property to calculate atomization value for</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">energy</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-eval-atomization-energy-k">
+<span class="sig-name descname"><span class="pre">-k</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--isolated-atom-info-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;isolated_atom_info_key&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-atomization-energy-k" title="Permalink to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">atoms.info</span></code> key on which to select isolated atoms</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">config_type</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-wfl-eval-atomization-energy-v">
+<span class="sig-name descname"><span class="pre">-v</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--isolated-atom-info-value</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;isolated_atom_info_value&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-atomization-energy-v" title="Permalink to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">atoms.info['isolated_atom_info_key']</span></code> value for isolated atoms. Defaults to “IsolatedAtom” or “isolated_atom”</p>
 </dd></dl>
 
 </div>
@@ -819,15 +963,15 @@ title="Print to PDF"
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-eval-gap-param-fname">
-<span class="sig-name descname"><span class="pre">--param-fname</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;param_fname&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-gap-param-fname" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object std" id="cmdoption-wfl-eval-gap-pf">
+<span class="sig-name descname"><span class="pre">-pf</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--param-fname</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;param_fname&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-gap-pf" title="Permalink to this definition">#</a></dt>
 <dd><p>Path to the potential parameter file</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-eval-gap-p">
-<span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--prop-prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;prop_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-gap-p" title="Permalink to this definition">#</a></dt>
-<dd><p>Prefix to be pre-pended to all evaluate properties. Defaults to “<a href="#id7"><span class="problematic" id="id8">gap_</span></a>”/”<a href="#id9"><span class="problematic" id="id10">ace_</span></a>”/”<a href="#id11"><span class="problematic" id="id12">mace_</span></a>” as appropriate</p>
+<dt class="sig sig-object std" id="cmdoption-wfl-eval-gap-pp">
+<span class="sig-name descname"><span class="pre">-pp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--prop-prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;prop_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-gap-pp" title="Permalink to this definition">#</a></dt>
+<dd><p>Prefix to be pre-pended to all evaluate properties. Defaults to “<a href="#id13"><span class="problematic" id="id14">gap_</span></a>”/”<a href="#id15"><span class="problematic" id="id16">ace_</span></a>”/”<a href="#id17"><span class="problematic" id="id18">mace_</span></a>” as appropriate</p>
 </dd></dl>
 
 <dl class="std option">
@@ -876,15 +1020,15 @@ title="Print to PDF"
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-eval-mace-param-fname">
-<span class="sig-name descname"><span class="pre">--param-fname</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;param_fname&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-mace-param-fname" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object std" id="cmdoption-wfl-eval-mace-pf">
+<span class="sig-name descname"><span class="pre">-pf</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--param-fname</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;param_fname&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-mace-pf" title="Permalink to this definition">#</a></dt>
 <dd><p>Path to the potential parameter file</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-eval-mace-p">
-<span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--prop-prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;prop_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-mace-p" title="Permalink to this definition">#</a></dt>
-<dd><p>Prefix to be pre-pended to all evaluate properties. Defaults to “<a href="#id13"><span class="problematic" id="id14">gap_</span></a>”/”<a href="#id15"><span class="problematic" id="id16">ace_</span></a>”/”<a href="#id17"><span class="problematic" id="id18">mace_</span></a>” as appropriate</p>
+<dt class="sig sig-object std" id="cmdoption-wfl-eval-mace-pp">
+<span class="sig-name descname"><span class="pre">-pp</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--prop-prefix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;prop_prefix&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-eval-mace-pp" title="Permalink to this definition">#</a></dt>
+<dd><p>Prefix to be pre-pended to all evaluate properties. Defaults to “<a href="#id19"><span class="problematic" id="id20">gap_</span></a>”/”<a href="#id21"><span class="problematic" id="id22">ace_</span></a>”/”<a href="#id23"><span class="problematic" id="id24">mace_</span></a>” as appropriate</p>
 </dd></dl>
 
 <dl class="std option">
@@ -957,8 +1101,8 @@ specified species, volumes, distances, symmetries, etc.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-generate-buildcell-i">
-<span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--extra-info</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;extra_info&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-generate-buildcell-i" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object std" id="cmdoption-wfl-generate-buildcell-ei">
+<span class="sig-name descname"><span class="pre">-ei</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--extra-info</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;extra_info&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-generate-buildcell-ei" title="Permalink to this definition">#</a></dt>
 <dd><p>Extra key=val pairs to add to Atoms.info</p>
 </dd></dl>
 
@@ -977,8 +1121,8 @@ specified species, volumes, distances, symmetries, etc.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-wfl-generate-smiles-i">
-<span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--extra-info</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;extra_info&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-generate-smiles-i" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object std" id="cmdoption-wfl-generate-smiles-ei">
+<span class="sig-name descname"><span class="pre">-ei</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--extra-info</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;extra_info&gt;</span></span><a class="headerlink" href="#cmdoption-wfl-generate-smiles-ei" title="Permalink to this definition">#</a></dt>
 <dd><p>Extra key=val pairs to add to Atoms.info</p>
 </dd></dl>
 
