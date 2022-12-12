@@ -40,28 +40,23 @@ l=`egrep '^=.*(passed|failed|skipped|xfailed)' complete_pytest.tin.out`
 echo "summary line $l"
 # ========== 123 passed, 10 skipped, 235 warnings in 2887.66s (0:48:07) ==========
 
-success=1
 declare -A expected_n=( ["passed"]="123" ["skipped"]="10" ["warnings"]=235 )
 echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' | while read out; do
     out_n=$(echo $out | sed -e 's/^=* //' -e 's/ .*//' -e 's/,//')
     out_cat=$(echo $out | sed -e 's/.* //' -e 's/,//')
     if [[ -z ${expected_n[$out_cat]} ]]; then
         echo "Unexpected result '$out_cat' num $out_n"
-        success=0
+        exit 1
     else
         if [[ ${expected_n[$out_cat]} != $out_n ]]; then
             echo "Unexpected number $out_n for result '$out_cat', expected ${expected_n[$out_cat]}"
-            success=0
+            exit 1
         fi
     fi
     if [[ $out_cat == "failed" ]]; then
         echo "FAILURE"
-        exit 1
+        exit 2
     fi
 done
 
-if [ $success == 1 ]; then
-    echo "SUCCESSS"
-else
-    exit 2
-fi
+echo "SUCCESSS"
