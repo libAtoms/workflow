@@ -15,7 +15,7 @@ def _get_coding_blocks(nb_file):
     (
         pytest.param('examples.buildcell.ipynb', 'all', id='buildcell',
             marks=pytest.mark.skipif(not shutil.which("buildcell"), reason="buildcell not in PATH")),
-        pytest.param('examples.dimers.ipynb', 'all', id='dimer structures')
+        pytest.param('examples.dimers.ipynb', 'all', id='dimer structures'),
         pytest.param('examples.select_fps.ipynb', 'all', id='<select fps>')
     )
 )
