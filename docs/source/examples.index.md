@@ -46,7 +46,7 @@ Examples often show examples of more than one thing. Below is a list of common o
 
 ## Sampling
 
-- Furthest point sampling: [Fitting a MLIP](examples.mlip_fitting.md)
+- Furthest point sampling: [Sampling of Structures](examples.select_fps.ipynb)
 
 
 ## Fit a potential
