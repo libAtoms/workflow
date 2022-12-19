@@ -156,8 +156,6 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
                                  or param_i in ['relax_unit_cell', 'external_pressure']]
                 for param_i in rm_parameters:
                     self.parameters.pop(param_i)
-            else:  # PBC is mixed T & F
-                pass  # TODO: check if this case appears for Aims
         else:
             if get_k_grid is not None:
                 k_grid = get_k_grid(self.atoms)
