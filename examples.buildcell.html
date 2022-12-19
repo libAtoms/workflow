@@ -784,23 +784,23 @@ to generate. Finally, we set the <code class="docutils literal notranslate"><spa
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 
-from wfl.generate import buildcell
-from wfl.configset import OutputSpec
+<span class="kn">from</span> <span class="nn">wfl.generate</span> <span class="kn">import</span> <span class="n">buildcell</span>
+<span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">OutputSpec</span>
 
 
-inputs = range(20)
-outputspec = OutputSpec(&#39;buildcell_output.xyz&#39;)
+<span class="n">inputs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">outputspec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s1">&#39;buildcell_output.xyz&#39;</span><span class="p">)</span>
 
-buildcell_input = buildcell.create_input(z=13, vol_per_atom=10, bond_lengths=2)
+<span class="n">buildcell_input</span> <span class="o">=</span> <span class="n">buildcell</span><span class="o">.</span><span class="n">create_input</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">vol_per_atom</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">bond_lengths</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-outputs = buildcell.run(
-    inputs=inputs,
-    outputs=outputspec,
-    buildcell_input=buildcell_input,
-    buildcell_cmd=&#39;buildcell&#39;,
-    )
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">buildcell</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="n">outputspec</span><span class="p">,</span>
+    <span class="n">buildcell_input</span><span class="o">=</span><span class="n">buildcell_input</span><span class="p">,</span>
+    <span class="n">buildcell_cmd</span><span class="o">=</span><span class="s1">&#39;buildcell&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 </div>

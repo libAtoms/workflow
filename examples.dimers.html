@@ -784,18 +784,18 @@ characteristic length that is used to sample a range of dimer distances. While i
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from wfl.configset import OutputSpec
-from wfl.generate import atoms_and_dimers
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">OutputSpec</span>
+<span class="kn">from</span> <span class="nn">wfl.generate</span> <span class="kn">import</span> <span class="n">atoms_and_dimers</span>
 
 
-outputspec = OutputSpec(files=&#39;dimers.xyz&#39;)
+<span class="n">outputspec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="s1">&#39;dimers.xyz&#39;</span><span class="p">)</span>
 
-outputs = atoms_and_dimers.prepare(
-    outputs=outputspec,
-    atomic_numbers=[1, 8],
-    bond_lengths={1: 0.74, 8:1.21},
-    do_isolated_atoms=False,
-    )
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">atoms_and_dimers</span><span class="o">.</span><span class="n">prepare</span><span class="p">(</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="n">outputspec</span><span class="p">,</span>
+    <span class="n">atomic_numbers</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+    <span class="n">bond_lengths</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="mf">0.74</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span><span class="mf">1.21</span><span class="p">},</span>
+    <span class="n">do_isolated_atoms</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 </div>
