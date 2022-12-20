@@ -14,6 +14,7 @@ Self-contained code snippets of common things that can be done with Workflow.
    examples.dimers.ipynb
    examples.buildcell.ipynb
    examples.orca_python.md
+   examples.fhiaims_calculator.ipynb
    examples.mace.md
    examples.mlip_fitting.md
    examples.normal_modes.md

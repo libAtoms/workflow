@@ -15,6 +15,7 @@ Examples often show examples of more than one thing. Below is a list of common o
     - [Normal Modes of molecules](examples.normal_modes.md)
     - [Molecular Dynamics](examples.md.md)
 - VASP: [Functions as independently queued jobs](overview.queued.md) 
+- FHI-Aims: [FHI-Aims Calculator](examples.fhiaims_calculator.ipynb) 
 
 
 ## Generate structures
