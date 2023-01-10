@@ -758,16 +758,16 @@ Then the trajectories of the minima are used for a new flat histogram and descri
 <p>Take a node / workstation that has enough memory for the <code class="docutils literal notranslate"><span class="pre">gap_fit</span></code> steps with the size of dataset expected to be generated.</p>
 <p>The code is parallelised with python’s <code class="docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code> at many steps, for example minimisation, DFT evaluations and descriptor calculations.</p>
 <p>The number of workers to use in the pool is controlled by the <code class="docutils literal notranslate"><span class="pre">WFL_NUM_PYTHON_SUBPROCESSES</span></code> env variable. Set this to the number of physical cores, hyperthreading is not expected to be beneficial.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>usable logical threads are given <span class="k">in</span> NSLOTS
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>usable<span class="w"> </span>logical<span class="w"> </span>threads<span class="w"> </span>are<span class="w"> </span>given<span class="w"> </span><span class="k">in</span><span class="w"> </span>NSLOTS
 <span class="go">export WFL_NUM_PYTHON_SUBPROCESSES=${NSLOTS}</span>
 </pre></div>
 </div>
 <p>Export the DFT calculator’s executable, as ASE can understand it:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>is using CASTEP
-<span class="gp"># </span>mpi or serial, makes no difference
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>is<span class="w"> </span>using<span class="w"> </span>CASTEP
+<span class="gp"># </span>mpi<span class="w"> </span>or<span class="w"> </span>serial,<span class="w"> </span>makes<span class="w"> </span>no<span class="w"> </span>difference
 <span class="go">export CASTEP_COMMAND=/path/to/castep.mpi</span>
 
-<span class="gp"># </span><span class="k">if</span> using VASP - both default and gamma-point ones are needed
+<span class="gp"># </span><span class="k">if</span><span class="w"> </span>using<span class="w"> </span>VASP<span class="w"> </span>-<span class="w"> </span>both<span class="w"> </span>default<span class="w"> </span>and<span class="w"> </span>gamma-point<span class="w"> </span>ones<span class="w"> </span>are<span class="w"> </span>needed
 <span class="go">export VASP_COMMAND=/path/to/vasp.serial</span>
 <span class="go">export VASP_COMMAND_GAMMA=/path/to/vasp.gamma_serial</span>
 </pre></div>
@@ -785,34 +785,34 @@ Then the trajectories of the minima are used for a new flat histogram and descri
 <p>Anything that is done already can be skipped, the <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> implementation is taking care of this, which lets you not repeat work in a lot of cases when restarting the calculations.</p>
 <p>An efficient and handy way to run multiple iterations is as follows:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># remove leftover files</span>
-<span class="k">for</span> f <span class="k">in</span> run_iter_* ACTIVE_ITER atoms_and_dimers.xyz gap_rss.*.out<span class="p">;</span> <span class="k">do</span>
-  <span class="nb">echo</span> <span class="s2">&quot;WARNING: Trace of old run found file &#39;</span><span class="nv">$f</span><span class="s2">&#39;&quot;</span> <span class="m">1</span>&gt;<span class="p">&amp;</span><span class="m">2</span>
-  <span class="nb">break</span>
+<span class="k">for</span><span class="w"> </span>f<span class="w"> </span><span class="k">in</span><span class="w"> </span>run_iter_*<span class="w"> </span>ACTIVE_ITER<span class="w"> </span>atoms_and_dimers.xyz<span class="w"> </span>gap_rss.*.out<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;WARNING: Trace of old run found file &#39;</span><span class="nv">$f</span><span class="s2">&#39;&quot;</span><span class="w"> </span><span class="m">1</span>&gt;<span class="p">&amp;</span><span class="m">2</span>
+<span class="w">  </span><span class="nb">break</span>
 <span class="k">done</span>
 
 <span class="c1"># start the numbering from zero, will skip ones done</span>
-rm -f ACTIVE_ITER
+rm<span class="w"> </span>-f<span class="w"> </span>ACTIVE_ITER
 
 <span class="c1"># abort if any fail</span>
-<span class="nb">set</span> -e
+<span class="nb">set</span><span class="w"> </span>-e
 
 <span class="c1"># set the config json file, and number of total steps</span>
 <span class="nv">system_json</span><span class="o">=</span>main_config_file.json
 <span class="nv">total_rss_steps</span><span class="o">=</span><span class="m">24</span>
 
 <span class="c1"># prep</span>
-gap_rss_iter_fit -c <span class="si">${</span><span class="nv">system_json</span><span class="si">}</span> prep &gt;&gt; gap_rss.prep.out
+gap_rss_iter_fit<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">system_json</span><span class="si">}</span><span class="w"> </span>prep<span class="w"> </span>&gt;&gt;<span class="w"> </span>gap_rss.prep.out
 
 <span class="c1"># RSS iters</span>
-gap_rss_iter_fit -c <span class="si">${</span><span class="nv">system_json</span><span class="si">}</span> initial_step &gt;&gt; gap_rss.initial_step.out
-<span class="k">for</span> iter_i <span class="k">in</span> <span class="k">$(</span>seq <span class="m">1</span> <span class="si">${</span><span class="nv">total_rss_steps</span><span class="si">}</span><span class="k">)</span><span class="p">;</span> <span class="k">do</span>
-  gap_rss_iter_fit -c <span class="si">${</span><span class="nv">system_json</span><span class="si">}</span> rss_step &gt;&gt; gap_rss.rss_step.<span class="si">${</span><span class="nv">iter_i</span><span class="si">}</span>.out
+gap_rss_iter_fit<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">system_json</span><span class="si">}</span><span class="w"> </span>initial_step<span class="w"> </span>&gt;&gt;<span class="w"> </span>gap_rss.initial_step.out
+<span class="k">for</span><span class="w"> </span>iter_i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>seq<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="si">${</span><span class="nv">total_rss_steps</span><span class="si">}</span><span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span>gap_rss_iter_fit<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">system_json</span><span class="si">}</span><span class="w"> </span>rss_step<span class="w"> </span>&gt;&gt;<span class="w"> </span>gap_rss.rss_step.<span class="si">${</span><span class="nv">iter_i</span><span class="si">}</span>.out
 <span class="k">done</span>
 
 <span class="c1"># do one MD steps, or more if you want with a loop</span>
 <span class="c1"># bulk/defect supercell MD iter</span>
 <span class="nv">iter_i</span><span class="o">=</span><span class="si">${</span><span class="nv">total_rss_steps</span><span class="si">}</span>+1
-gap_rss_iter_fit -c <span class="si">${</span><span class="nv">system_json</span><span class="si">}</span> MD_bulk_defect_step &gt;&gt; gap_rss.<span class="si">${</span><span class="nv">iter_i</span><span class="si">}</span>.MD_step.out
+gap_rss_iter_fit<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">system_json</span><span class="si">}</span><span class="w"> </span>MD_bulk_defect_step<span class="w"> </span>&gt;&gt;<span class="w"> </span>gap_rss.<span class="si">${</span><span class="nv">iter_i</span><span class="si">}</span>.MD_step.out
 </pre></div>
 </div>
 </div>
