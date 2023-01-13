@@ -47,8 +47,6 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
         command for Aims, without any prefix or redirection set.
         For example: "srun -n 4 /path/to/aims.*.scalapack.mpi.x".
         Mutually exclusive with ```command```.
-    get_k_grid: func(Atoms) -> str='<k1> <k2> <k3>', default None
-        Function to set the ```k_grid``` parameter to a value specific to the atomistic system.
 
     **kwargs: arguments for ase.calculators.aims.Aims
         See https://wiki.fysik.dtu.dk/ase/_modules/ase/calculators/aims.html.
@@ -60,7 +58,7 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
     wfl_generic_def_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
     def __init__(self, keep_files="default", rundir_prefix="run_Aims_", workdir=None,
-                 scratchdir=None, calculator_exec=None, get_k_grid=None, **kwargs):
+                 scratchdir=None, calculator_exec=None, **kwargs):
 
         kwargs_command = deepcopy(kwargs)
         if calculator_exec is not None:
@@ -80,8 +78,6 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
         # we modify the parameters in self.calculate() based on the individual atoms object,
         # so let's make a copy of the initial parameters
         self.initial_parameters = deepcopy(self.parameters)
-        # for getting a system-dependent value for k_grid in self.calculate()
-        self.get_k_grid = get_k_grid
 
     def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
         """Do the calculation.
@@ -105,7 +101,7 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
             self.atoms = atoms.copy()
 
         # this may modify self.parameters, will be reset to the initial ones after calculation
-        properties = self._setup_calc_params(properties, self.get_k_grid)
+        properties = self._setup_calc_params(properties)
 
         # from WFLFileIOCalculator
         self.setup_rundir()
@@ -126,7 +122,7 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
             # Reset parameters to what they were when the calculator was initialized.
             self.parameters = deepcopy(self.initial_parameters)
 
-    def _setup_calc_params(self, properties, get_k_grid=None):
+    def _setup_calc_params(self, properties):
         """
         Setup parameters for the calculation based on the atomistic systems periodicity.
 
@@ -138,8 +134,6 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
         properties: list(str)
             List of what needs to be calculated.  Can be any combination of 'energy',
             'forces', 'stress', 'dipole', 'charges', 'magmom' and 'magmoms'.
-        get_k_grid: func(Atoms) -> str='<k1> <k2> <k3>', default None
-            Function to set the ```k_grid``` parameter to a value specific to the atomistic system.
 
         Returns:
         --------
@@ -156,10 +150,5 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
                                  or param_i in ['relax_unit_cell', 'external_pressure']]
                 for param_i in rm_parameters:
                     self.parameters.pop(param_i)
-        else:
-            if get_k_grid is not None:
-                k_grid = get_k_grid(self.atoms)
-                assert isinstance(k_grid, str) and len(k_grid.split()) == 3
-                self.parameters['k_grid'] = k_grid
 
         return properties

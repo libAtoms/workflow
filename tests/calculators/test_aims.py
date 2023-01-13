@@ -76,15 +76,6 @@ def test_setup_calc_params(parameters_nonperiodic):
     for key_i in parameters_periodic.keys():
         assert key_i in calc.parameters
 
-    # get_k_grid
-    def get_k_grid(atoms):
-        return '1 1 2'
-
-    atoms = Atoms("H", cell=[1, 1, 1], pbc=True)
-    parameters.update({'get_k_grid': get_k_grid})
-    calc = wfl.calculators.aims.Aims(**parameters)
-    calc.atoms = atoms.copy()
-    calc._setup_calc_params(properties, get_k_grid)
 
     assert calc.parameters['k_grid'] == '1 1 2'
 
