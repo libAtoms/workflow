@@ -28,6 +28,10 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
     The ```directory``` argument from the basic calculator implementation in ASE cannot be present.
     Use ```rundir_prefix``` and ```workdir``` instead.
 
+    Note that in case the Calculator detects a structure that is non-periodic invalid keywords
+    will automatically be removed. Specifically, all keywords that start with 'k_', contain the sub-string
+    'k_grid' or 'stress' or are equal to 'relax_unit_cell' or 'external_pressure' will be removed.
+
     Parameters
     ----------
     keep_files: bool / None / "default" / list(str), default "default"
