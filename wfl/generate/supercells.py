@@ -105,8 +105,8 @@ def _largest_bulk_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=Tru
         at.info['orig_cell'] = np.array(at.cell)
 
         if ase_optimal:
-            n_dups = ase.build.supercells.find_optimal_cell_shape(at.cell, max_n_atoms, 'sc', lower_limit=-4, upper_limit=4)
-            sc = np.build.make_supercell(at, n_dups)
+            n_dups = ase.build.supercells.find_optimal_cell_shape(at.cell, max_n_atoms // len(at), 'sc') # , lower_limit=-4, upper_limit=4)
+            sc = ase.build.make_supercell(at, n_dups)
             sc.info.update(at.info)
             at = sc
         else:
