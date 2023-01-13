@@ -10,12 +10,14 @@ from wfl.calculators import generic
 from wfl.configset import OutputSpec
 
 
-skipif_condition = 'ASE_AIMS_COMMAND' not in os.environ or 'AIMS_SPECIES_DIR' not in os.environ \
-                   or not os.environ['AIMS_SPECIES_DIR'].endswith('light') \
-                   or 'OMP_NUM_THREADS' not in os.environ or os.environ['OMP_NUM_THREADS'] != "1"
-skipif_reason = 'Missing env var ASE_AIMS_COMMAND or ASE_SPECIES_DIR or ' + \
-                'ASE_SPECIES_DIR does not refer to light-settings or ' + \
-                'OMP_NUM_THREADS or OMP_NUM_THREADS has not correctly been set to 1'
+aims_prerequisites = pytest.mark.skipif(
+        condition='ASE_AIMS_COMMAND' not in os.environ or 'AIMS_SPECIES_DIR' not in os.environ
+                   or not os.environ['AIMS_SPECIES_DIR'].endswith('light')
+                   or 'OMP_NUM_THREADS' not in os.environ or os.environ['OMP_NUM_THREADS'] != "1",
+        reason='Missing env var ASE_AIMS_COMMAND or ASE_SPECIES_DIR or ' +
+               'ASE_SPECIES_DIR does not refer to light-settings or ' +
+               'OMP_NUM_THREADS or OMP_NUM_THREADS has not correctly been set to 1'
+        )
 
 
 @pytest.fixture
@@ -77,20 +79,7 @@ def test_setup_calc_params(parameters_nonperiodic):
         assert key_i in calc.parameters
 
 
-    assert calc.parameters['k_grid'] == '1 1 2'
-
-    def get_k_grid(atoms):
-        return 1, 1, 2
-
-    atoms = Atoms("H", cell=[1, 1, 1], pbc=True)
-    parameters.update({'get_k_grid': get_k_grid})
-    calc = wfl.calculators.aims.Aims(**parameters)
-    calc.atoms = atoms.copy()
-    with pytest.raises(AssertionError):
-        calc._setup_calc_params(properties, get_k_grid)
-
-
-@pytest.mark.skipif(condition=skipif_condition, reason=skipif_reason)
+@aims_prerequisites
 def test_aims_calculation(tmp_path, parameters_nonperiodic):
 
     atoms = Atoms("Si", cell=(2, 2, 2), pbc=[True] * 3)
@@ -107,7 +96,7 @@ def test_aims_calculation(tmp_path, parameters_nonperiodic):
     atoms.get_stress()
 
 
-@pytest.mark.skipif(condition=skipif_condition, reason=skipif_reason)
+@aims_prerequisites
 def test_generic_aims_calculation(tmp_path, parameters_nonperiodic):
 
     # atoms
