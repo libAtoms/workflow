@@ -356,18 +356,20 @@ class OutputSpec:
     file_root: str / Path, default None
         root directory relative to which all files will be taken
 
-    overwrite: str, default True
-        Overwrite already existing files.  Defaults to True so that object creation
-        doesn't fail if write loop has been completed (detectable with `OutputSpec.all_written()`).
+    overwrite: str, default False
+        Overwrite already existing files. Default False, but note that many functions,
+        including any wrapped by autoparallelize, will actually reuse existing output if
+        all of it appears to be present.
 
     flush: bool, default True
         flush output after every write
     """
-    def __init__(self, files=None, *, file_root=None, overwrite=True, flush=True, write_kwargs={}):
+    def __init__(self, files=None, *, file_root=None, overwrite=False, flush=True, write_kwargs={}):
         self.files = files
         self.configs = None
         self.file_root = Path(file_root if file_root is not None else "")
         self.flush = flush
+        self.overwrite = overwrite
         self.write_kwargs = write_kwargs.copy()
 
         if self.files is not None:
@@ -382,10 +384,6 @@ class OutputSpec:
             if len(absolute_files) > 0 and self.file_root != Path(""):
                 raise ValueError(f"Got file_root {file_root} but files {absolute_files} are absolute paths")
             self.files = [Path(f) for f in self.files]
-            if not overwrite:
-                existing_files = [self.file_root / f for f in self.files if (self.file_root / f).exists()]
-                if len(existing_files) > 0:
-                    raise FileExistsError(f"OutputSpec overwrite is false but output file(s) {existing_files} already exist")
         else:
             # store in memory
             self.configs = []
@@ -397,6 +395,10 @@ class OutputSpec:
 
         self.first_store_call = True
         self.cur_store_loc = None
+
+
+    def _existing_output_files(self):
+        return [self.file_root / f for f in self.files if (self.file_root / f).exists()]
 
 
     def store(self, configs, input_CS_loc=""):
@@ -441,6 +443,11 @@ class OutputSpec:
             return
 
         if self.files is not None:
+            if self.first_store_call and not self.overwrite:
+                existing_files = self._existing_output_files()
+                if len(existing_files) > 0:
+                    raise FileExistsError(f"OutputSpec overwrite is false but output file(s) {existing_files} already exist")
+
             if self.single_file:
                 # write to a file, preserving all location info
 
