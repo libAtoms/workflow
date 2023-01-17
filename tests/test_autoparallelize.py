@@ -3,6 +3,7 @@ import time
 
 import numpy as np
 
+import ase.io
 from ase.atoms import Atoms
 from ase.calculators.emt import EMT
 
@@ -49,3 +50,21 @@ def test_pool_speedup():
 
     print("time ratio", dt_2 / dt_1)
     assert dt_2 < dt_1 * (2/3)
+
+def test_outputspec_overwrite(tmp_path):
+    with open(tmp_path / "ats.xyz", "w") as fout:
+        fout.write("BOB")
+
+    os = OutputSpec("ats.xyz", file_root=tmp_path)
+    assert os.all_written()
+
+    ats = []
+    nconf = 60
+    for _ in range(nconf):
+        ats.append(Atoms(['Al'] * nconf, scaled_positions=np.random.uniform(size=(nconf, 3)), cell=[10, 10, 10], pbc=[True] * 3))
+
+    co = generic.run(ConfigSet(ats), OutputSpec(), EMT(), output_prefix="_auto_", autopara_info=AutoparaInfo(num_python_subprocesses=1))
+
+    # should skip ops, incorrectly, and ats.xyz doesn't actually contain atoms
+    with pytest.raises(ase.io.extxyz.XYZError):
+        _ = ase.io.read(tmp_path / "ats.xyz", ":")
