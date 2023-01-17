@@ -434,7 +434,7 @@ def evaluate_iter_and_fit_all(cur_iter, run_dir, params, step_params, cur_fittin
     if error_scale_factor is not None:
         # add fit_error_scale_factor to every config's Atoms.info dict
         co = OutputSpec("DFT_evaluated_fitting.error_scale_factor.ALL.xyz", file_root=run_dir)
-        if not co.done():
+        if not co.all_written():
             for at in evaluated_configs:
                 at.info["fit_error_scale_factor"] = error_scale_factor
                 co.store(at)

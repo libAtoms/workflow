@@ -358,7 +358,7 @@ class OutputSpec:
 
     overwrite: str, default True
         Overwrite already existing files.  Defaults to True so that object creation
-        doesn't fail if write loop has been completed (detectable with `OutputSpec.done()`).
+        doesn't fail if write loop has been completed (detectable with `OutputSpec.all_written()`).
 
     flush: bool, default True
         flush output after every write
@@ -385,7 +385,7 @@ class OutputSpec:
             if not overwrite:
                 existing_files = [self.file_root / f for f in self.files if (self.file_root / f).exists()]
                 if len(existing_files) > 0:
-                    raise FileExistsError(f"OutputSpec.overwrite is false but output file(s) {existing_files} already exist")
+                    raise FileExistsError(f"OutputSpec overwrite is false but output file(s) {existing_files} already exist")
         else:
             # store in memory
             self.configs = []
@@ -519,7 +519,7 @@ class OutputSpec:
                     tmp_f.rename(self.file_root / f)
 
 
-    def done(self):
+    def all_written(self):
         """Determine if all output has been created and writing operation is done from
         a previous run, even before any configurations have been written.  Never true
         for in-memory storage.

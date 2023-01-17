@@ -160,7 +160,7 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
     ConfigSet containing output configs
     """
 
-    if outputs.done():
+    if outputs.all_written():
         sys.stderr.write('Returning from {__name__} since output is done\n')
         return outputs.to_ConfigSet()
 
