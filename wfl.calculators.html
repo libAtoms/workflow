@@ -838,6 +838,7 @@ attribute in which case that value is used for the default.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
 <li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>'energy'</em><em>, </em><em>'forces'</em><em>, </em><em>stress'</em><em>]</em>) – Properties to request from calculator. If any are not present after calculation (e.g.
 stress for nonperiodic configurations), a warning will be printed.</p></li>
 <li><p><strong>output_prefix</strong> (<em>str</em><em>, </em><em>default _auto_</em>) – String to prefix info/arrays key names where results will be stored.
