@@ -83,8 +83,8 @@ class ConfigSet:
                 if item._file_loc != "":
                     raise ValueError("ConfigSet from ConfigSet cannot have _file_loc set")
                 if item.items is None:
-                    # empty ConfigSet becomes an empty list
-                    self.items.append([])
+                    # empty ConfigSet, skip
+                    continue
                 elif isinstance(item.items, (str, Path)) or isinstance(item.items[0], (str, Path)):
                     # item contains Path(s)
                     if len(self.items) > 0 and not isinstance(self.items[-1], Path):

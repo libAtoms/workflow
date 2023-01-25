@@ -198,7 +198,7 @@ def test_from_mult_ConfigSets(tmp_path, ats):
 
     # in memory, one group per source ConfigSet
     locs = [f" / {i0} / {i1}" for i0 in range(2) for i1 in range(3)]
-    check_ConfigSet(ConfigSet([cs_0, cs_1, cs_2]), locs, gather_numbers([ats_i_0, ats_i_1, []]))
+    check_ConfigSet(ConfigSet([cs_0, cs_1, cs_2]), locs, gather_numbers([ats_i_0, ats_i_1]))
 
     # in files, flatten to one group per file
     ats_i_2 = ats[6:9]
