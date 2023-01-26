@@ -375,7 +375,8 @@ def evaluate_ref(dft_in_configs, dft_evaluated_configs, params, run_dir, verbose
         inputs=dft_in_configs,
         outputs=dft_evaluated_configs,
         calculator=calculator(workdir=run_dir, keep_files=keep_files, **params.dft_params.get("kwargs", {})),
-        output_prefix="REF_"
+        output_prefix="REF_",
+        autopara_info = {'remote_label': 'REF_eval'}
     )
 
 
