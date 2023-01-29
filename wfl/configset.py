@@ -491,7 +491,7 @@ class OutputSpec:
             self._write_to_file(configs, ConfigSet._loc_sep.join(sub_loc))
         else:
             # store in self.configs
-            if len(input_CS_loc) == 0:
+            if input_CS_loc is None or len(input_CS_loc) == 0:
                 # no location, just write to top level list
                 self.configs.append(configs)
                 return
