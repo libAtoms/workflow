@@ -38,6 +38,9 @@ jobs:
       - name: Install pip from Conda
         run: conda install pip
 
+      - name: Check which pip
+        run: which pip
+
       - name: Install dependencies from pip (some will already be taken care of by conda's phonop3py and its dependencies)
         run: pip install wheel setuptools numpy scipy click matplotlib pandas pyyaml spglib rdkit-pypi flake8 pytest pytest-cov
 
