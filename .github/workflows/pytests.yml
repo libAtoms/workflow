@@ -93,7 +93,7 @@ jobs:
       - name: Install mopac from tarball 
         run: |
           wget https://github.com/openmopac/mopac/releases/download/v22.0.6/mopac-22.0.6-linux.tar.gz
-          tar -xzvf mopac-22.0.6-linux
+          tar -xzvf mopac-22.0.6-linux.tar.gz
           export PATH=$PATH:mopac-22.0.6-linux/bin
 
       - name: Install buildcell
