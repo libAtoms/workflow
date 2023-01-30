@@ -95,7 +95,10 @@ jobs:
 
       - name: check pip path
         run: which pip
-      
+
+      - name: show path
+        run: echo $PATH      
+
       - name: check mopac path
         run: which mopac
 
