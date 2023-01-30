@@ -91,10 +91,10 @@ jobs:
         run: |
           wget https://github.com/openmopac/mopac/releases/download/v22.0.6/mopac-22.0.6-linux.tar.gz
           tar -xzvf mopac-22.0.6-linux.tar.gz
-          echo 'ASE_MOPAC_COMMAND="$HOME/mopac-22.0.6-linux/bin/mopac PREFIX.mop 2> /dev/null"' >> $GITHUB_ENV
+          echo 'ASE_MOPAC_COMMAND="$HOME/mopac-22.0.6-linux/bin/mopac PREFIX.mop 2> /dev/null"' >> $GITHUB_PATH
 
       - name: look at env variables
-        run: cat $GITHUB_ENV
+        run: cat $GITHUB_PATH
 
 
       - name: Install buildcell
