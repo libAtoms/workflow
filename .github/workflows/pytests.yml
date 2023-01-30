@@ -94,7 +94,7 @@ jobs:
           export PATH=$PATH:$HOME/mopac-22.0.6-linux/bin
 
       - name: Check which mopac
-        run: which mopac
+        run: which pip
 
       - name: Install buildcell
         run: |
