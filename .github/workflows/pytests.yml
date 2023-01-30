@@ -38,10 +38,6 @@ jobs:
       - name: Install pip from Conda
         run: conda install pip
 
-      - name: Install MOPAC
-        run: |
-          conda install -c conda-forge mopac
-
       - name: Check which pip
         run: which pip
 
@@ -94,7 +90,11 @@ jobs:
         run: |
           sudo apt-get install --no-install-recommends quantum-espresso
 
-
+      - name: Install mopac from tarball 
+        run: |
+          wget https://github.com/openmopac/mopac/releases/download/v22.0.6/mopac-22.0.6-linux.tar.gz
+          tar -xzvf mopac-22.0.6-linux
+          export PATH=$PATH:mopac-22.0.6-linux/bin
 
       - name: Install buildcell
         run: |
