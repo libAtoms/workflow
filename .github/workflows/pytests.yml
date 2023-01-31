@@ -19,6 +19,7 @@ jobs:
     env:
       coverage-on-version: 3.8
       use-mpi: True
+      ASE_MOPAC_COMMAND: "$HOME/mopac-22.0.6-linux/bin/mopac PREFIX.mop 2> /dev/null" 
 
     steps:
       - uses: actions/checkout@v2
@@ -42,8 +43,6 @@ jobs:
         run: pip install wheel setuptools numpy scipy click matplotlib pandas pyyaml spglib rdkit-pypi flake8 pytest pytest-cov
 
       - name: Install mopac from tarball 
-        env: 
-          ASE_MOPAC_COMMAND: "$HOME/mopac-22.0.6-linux/bin/mopac PREFIX.mop 2> /dev/null"
         run: |
           wget https://github.com/openmopac/mopac/releases/download/v22.0.6/mopac-22.0.6-linux.tar.gz
           tar -xzvf mopac-22.0.6-linux.tar.gz
