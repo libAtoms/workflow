@@ -69,7 +69,7 @@ def atomization_energy(inputs, outputs, prop_prefix, property="energy", isolated
         "default" matches "isolated_atom" or "IsolatedAtom".
     """
 
-    if outputs.is_done():
+    if outputs.done():
         warnings.warn(f"Ouput for atomization energy ({outputs}) are done, not recomputing.")
         return outputs.to_ConfigSet()
 
@@ -83,10 +83,12 @@ def atomization_energy(inputs, outputs, prop_prefix, property="energy", isolated
     isolated_at_data = {}
     for at in isolated_atoms:
         isolated_at_data[list(at.symbols)[0]] = at.info[f'{prop_prefix}{property}']
+    ref_present_elements = set(isolated_at_data.keys())
 
     for at in inputs:
         counted_ats = Counter(list(at.symbols))
-        assert counted_ats.keys() == isolated_at_data.keys(), f"have isolated atom energies for {isolated_at_data.keys()}, but config has {counted_ats.keys()} elements."
+        counted_elements = set(counted_ats.keys())
+        assert counted_elements.issubset(ref_present_elements), f"have isolated atom energies for {isolated_at_data.keys()}, but config has {counted_ats.keys()} elements."
         binding_energy = at.info[f'{prop_prefix}{property}']
         for symbol, count in counted_ats.items():
             binding_energy -= count * isolated_at_data[symbol]
