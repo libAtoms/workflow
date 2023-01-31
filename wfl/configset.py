@@ -58,7 +58,11 @@ class ConfigSet:
         elif isinstance(items, ConfigSet):
             if items._file_loc != "":
                 raise ValueError("ConfigSet from ConfigSet cannot have _file_loc set")
-            self.items = items.items
+            if isinstance(items.items, list):
+                # NOTE: should any other possible content types be copied?
+                self.items = items.items.copy()
+            else:
+                self.items = items.items
         elif isinstance(items, Atoms):
             self.items = [items]
         elif isinstance(items, (str, Path)):
@@ -68,15 +72,21 @@ class ConfigSet:
         elif isinstance(items[0], (str, Path)):
             self.items = []
             for file_path in items:
+                assert isinstance(file_path, (str, Path))
                 if file_root != Path("") and Path(file_path).is_absolute():
                     raise ValueError(f"Got file_root but file {file_path} is an absolute path")
                 self.items.append(file_root / file_path)
         elif isinstance(items[0], ConfigSet):
             self.items = []
             for item in items:
+                assert isinstance(item, ConfigSet)
                 if item._file_loc != "":
                     raise ValueError("ConfigSet from ConfigSet cannot have _file_loc set")
-                if isinstance(item.items, (str, Path)) or isinstance(item.items[0], (str, Path)):
+                if item.items is None:
+                    # empty ConfigSet, skip
+                    continue
+                elif isinstance(item.items, (str, Path)) or isinstance(item.items[0], (str, Path)):
+                    # item contains Path(s)
                     if len(self.items) > 0 and not isinstance(self.items[-1], Path):
                         raise ValueError("Got ConfigSet containing Path after one that does not")
 
@@ -85,9 +95,10 @@ class ConfigSet:
                     else:
                         self.items.extend(item.items)
                 else:
+                    # item contains list(s)
                     if len(self.items) > 0 and isinstance(self.items[0], Path):
                         raise ValueError("Got ConfigSet containing Atoms after one that contains Path")
-                    self.items.append(item.items)
+                    self.items.append(item.items.copy())
         else:
             # WARNING: expecting list(list(... (Atoms))), and all lists same depth,
             # but no error checking here
@@ -480,7 +491,7 @@ class OutputSpec:
             self._write_to_file(configs, ConfigSet._loc_sep.join(sub_loc))
         else:
             # store in self.configs
-            if len(input_CS_loc) == 0:
+            if input_CS_loc is None or len(input_CS_loc) == 0:
                 # no location, just write to top level list
                 self.configs.append(configs)
                 return
