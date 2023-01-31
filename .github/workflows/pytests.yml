@@ -49,7 +49,7 @@ jobs:
           echo "This is $ASE_MOPAC_COMMAND variable"
 
       - name: add mopac to path
-          echo $GITHUB_WORKSPACE/mopac-22.0.6-linux/bin >> $GITHUB_PATH
+          run: echo $GITHUB_WORKSPACE/mopac-22.0.6-linux/bin >> $GITHUB_PATH
 
       - name: look at env variables
         run: |
@@ -58,6 +58,9 @@ jobs:
           echo "This is pwd: $PWD"
           echo "This is $GITHUB_WORKSPACE github workspace"
           echo "GITHUB_PATH $GITHUB_PATH"
+
+      - name: check for mopac in path
+        run: which mopac
 
 
       - name: Install latest ASE from gitlab
