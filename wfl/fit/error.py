@@ -379,10 +379,16 @@ def select_units(prop, plt_type):
         prop = re.sub(r"/comp\b", "", prop)
     if "forces" in prop:
         prop = "forces"
-    try:
-        return units_dict[prop][plt_type]
-    except KeyError:
-        return "unknown units"
+
+    if "energy/atom" in prop:
+        prop = "energy/atom"
+    elif "energy" in prop:
+        prop = "energy"
+
+    if prop not in units_dict or plt_type not in units_dict[prop]:
+        raise KeyError(f"Unknown property ({prop}) or plot type ({plt_type}).") 
+
+    return units_dict[prop][plt_type]
 
 
 def _annotate_parity_plot(ax, property, ref_property_prefix, calc_property_prefix, show_legend, error_type):
@@ -484,8 +490,6 @@ def errors_to_dataframe(errors, error_type="RMSE"):
     new_rows = natural_sort(new_rows) + ["_ALL_"]
 
     df.sort_index(key=lambda index: pd.Index([new_rows.index(i) for i in index]), inplace=True)
-
-    print("BOB", df.columns)
 
     return df
 
