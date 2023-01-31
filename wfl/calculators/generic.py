@@ -19,6 +19,8 @@ def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_
 
     Parameters
     ----------
+    atoms: ase.atoms.Atoms / list(Atoms)
+        input configuration(s)
     calculator: Calculator / (initializer, args, kwargs)
         ASE calculator or routine to call to create calculator
     properties: list(str), default ['energy', 'forces', stress']
