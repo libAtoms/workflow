@@ -16,6 +16,7 @@ Self-contained code snippets of common things that can be done with Workflow.
    examples.orca_python.md
    examples.mace.md
    examples.mlip_fitting.md
+   examples.daisy_chain_gap.ipynb
    examples.normal_modes.md
    examples.smiles.md
    examples.md.md

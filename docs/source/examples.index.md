@@ -14,6 +14,7 @@ Examples often show examples of more than one thing. Below is a list of common o
 - XTB: 
     - [Normal Modes of molecules](examples.normal_modes.md)
     - [Molecular Dynamics](examples.md.md)
+    - [MLIP fitting workflow](examples.daisy_chain_gap.ipynb)
 - VASP: [Functions as independently queued jobs](overview.queued.md) 
 
 
@@ -21,37 +22,48 @@ Examples often show examples of more than one thing. Below is a list of common o
 
 - [Generate Dimer Structures](examples.dimers.ipynb) 
 - [Random Structures via buildcell](examples.buildcell.ipynb)
-- From SMILES string: [SMILES to `Atoms`](examples.smiles.md)
+- From SMILES string: 
+    - Short example in [SMILES to `Atoms`](examples.smiles.md)
+    - As part of [MLIP fitting workflow](examples.daisy_chain_gap.ipynb)
 - Geometry optimisation: [Fitting a MLIP](examples.mlip_fitting.md)
 - Sample molecular normal modes: [Normal Modes (non-periodic)](examples.normal_modes.md)
 
 
 ### Run MD
 
-- Sample configs for training: [Fitting a MLIP](examples.mlip_fitting.md)
+- Sample configs for training: 
+    - [Fitting a MLIP](examples.mlip_fitting.md)
+    - [MLIP fitting workflow](examples.daisy_chain_gap.ipynb)
 - Run ACE MD: [MD](examples.md.md)
- 
+
 
 ## Remote execution
 
 - Overview: [Functions as independently queued jobs](overview.queued.md)
 - [ORCA via python script](examples.orca_python.md)
 - Run ACE MD: [MD](examples.md.md)
+- [MLIP fitting workflow](examples.daisy_chain_gap.ipynb)
 
 
 ## Get descriptors 
 
-- Global SOAP: [Fitting a MLIP](examples.mlip_fitting.md)
+- Global SOAP: 
+    - [Fitting a MLIP](examples.mlip_fitting.md)
+    - [MLIP fitting workflow](examples.daisy_chain_gap.ipynb)
 
 
-## Sampling
+## Sampling structures
 
 - Furthest point sampling: [Sampling of Structures](examples.select_fps.ipynb)
+- CUR: [MLIP fitting workflow](examples.daisy_chain_gap.ipynb)
+- With a boolean function: [MLIP fitting workflow](examples.daisy_chain_gap.ipynb)
+
 
 
 ## Fit a potential
 
 - Multistage GAP fit: [Fitting a MLIP](examples.mlip_fitting.md)
+- Simple GAP fit: [MLIP fitting workflow](examples.daisy_chain_gap.ipynb)
 
 
 ## Iterative training
@@ -66,8 +78,10 @@ Examples often show examples of more than one thing. Below is a list of common o
 
 ## Miscellaneous
 
-
-- Calculate errors: [Fitting a MLIP](examples.mlip_fitting.md)
+- Calculate errors: 
+    - [Fitting a MLIP](examples.mlip_fitting.md)
+    - [MLIP fitting workflow](examples.daisy_chain_gap.ipynb)
+- Plot predicted vs reference correlation plots: [MLIP fitting workflow](examples.daisy_chain_gap.ipynb)
 - Parallelize your own function: [Overview of](overview.parallelisation.rst)
 - Calculate normal modes of a molecule: [Normal Modes(non-periodic)](examples.normal_modes.md)
 - Post-process each ORCA calculation on-the-fly: [ORCA via python script](examples.orca_python.md)
