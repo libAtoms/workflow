@@ -45,7 +45,7 @@ The default behavior for autoparallelized operations is to **skip** an operation
 exist.  This is made safe(ish) by initially writing the
 output to temporary named files, and then renaming them to the actual
 requested filename in a ``rename`` operation, so that incomplete files
-from an interrupted operation never exist. The ``OutputSpec.done()`` 
+from an interrupted operation never exist. The ``OutputSpec.all_written()`` 
 methods returns true if the ``OutputSpec`` object uses files and appears to 
 have already been written (and always returns false for in-memory
 storage).

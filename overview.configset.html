@@ -586,7 +586,7 @@ If the output files were a single string, the mapping woud be many -&gt; 1.</p>
 exist.  This is made safe(ish) by initially writing the
 output to temporary named files, and then renaming them to the actual
 requested filename in a <code class="docutils literal notranslate"><span class="pre">rename</span></code> operation, so that incomplete files
-from an interrupted operation never exist. The <code class="docutils literal notranslate"><span class="pre">OutputSpec.done()</span></code>
+from an interrupted operation never exist. The <code class="docutils literal notranslate"><span class="pre">OutputSpec.all_written()</span></code>
 methods returns true if the <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> object uses files and appears to
 have already been written (and always returns false for in-memory
 storage).</p>

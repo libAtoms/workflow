@@ -842,7 +842,7 @@ top level of initial nested structure.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="wfl.configset.OutputSpec">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.configset.</span></span><span class="sig-name descname"><span class="pre">OutputSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.configset.</span></span><span class="sig-name descname"><span class="pre">OutputSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Abstraction for writing to a ConfigSet, preserving tree structure.</p>
 <dl class="field-list simple">
@@ -850,21 +850,16 @@ top level of initial nested structure.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>files</strong> (<em>str / Path / iterable</em><em>(</em><em>str / Path</em><em>)</em><em>, </em><em>default None</em>) – list of files to store configs in, or store in memory if None</p></li>
 <li><p><strong>file_root</strong> (<em>str / Path</em><em>, </em><em>default None</em>) – root directory relative to which all files will be taken</p></li>
-<li><p><strong>overwrite</strong> (<em>str</em><em>, </em><em>default True</em>) – Overwrite already existing files.  Defaults to True so that object creation
-doesn’t fail if write loop has been completed (detectable with <cite>OutputSpec.done()</cite>).</p></li>
+<li><p><strong>overwrite</strong> (<em>str</em><em>, </em><em>default False</em>) – Overwrite already existing files. Default False, but note that many functions,
+including any wrapped by autoparallelize, will actually reuse existing output if
+all of it appears to be present.</p></li>
 <li><p><strong>flush</strong> (<em>bool</em><em>, </em><em>default True</em>) – flush output after every write</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.OutputSpec.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.close" title="Permalink to this definition">#</a></dt>
-<dd><p>Finishes OutputSpec writing, closing all open files and renaming temporaries</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="wfl.configset.OutputSpec.done">
-<span class="sig-name descname"><span class="pre">done</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.done" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="wfl.configset.OutputSpec.all_written">
+<span class="sig-name descname"><span class="pre">all_written</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.all_written" title="Permalink to this definition">#</a></dt>
 <dd><p>Determine if all output has been created and writing operation is done from
 a previous run, even before any configurations have been written.  Never true
 for in-memory storage.</p>
@@ -874,6 +869,12 @@ close has been called.</p>
 <p>NOTE: This will return false if a file specified in the constructor does not exist,
 which might happen if no input_CS_loc passed to OutputSpec.store() specified
 that file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.configset.OutputSpec.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.close" title="Permalink to this definition">#</a></dt>
+<dd><p>Finishes OutputSpec writing, closing all open files and renaming temporaries</p>
 </dd></dl>
 
 <dl class="py method">
