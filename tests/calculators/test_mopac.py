@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pytest
+import shuti
 
 from ase.io import write
 from ase.build import molecule
