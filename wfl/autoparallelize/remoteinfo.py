@@ -34,13 +34,16 @@ class RemoteInfo:
         time to wait in get_results before giving up
     check_interval: int
         check_interval arg to pass to get_results
-    skip_failures: bool, default False
+    ignore_failed_jobs: bool, default False
         skip failures in remote jobs
+    resubmit_killed_jobs: bool, default False
+        resubmit jobs that were killed without an exit status (out of walltime or crashed), 
+        hoping that other parameters such as walltime or memory have been changed to make run complete this time
     """
     def __init__(self, sys_name, job_name, resources, num_inputs_per_queued_job=-100, pre_cmds=[], post_cmds=[],
                  env_vars=[], input_files=[], output_files=[], header_extra=[],
                  exact_fit=True, partial_node=False, timeout=3600, check_interval=30,
-                 skip_failures=False):
+                 ignore_failed_jobs=False, resubmit_killed_jobs=False):
 
         self.sys_name = sys_name
         self.job_name = job_name
@@ -62,7 +65,8 @@ class RemoteInfo:
         self.partial_node = partial_node
         self.timeout = timeout
         self.check_interval = check_interval
-        self.skip_failures = skip_failures
+        self.ignore_failed_jobs = ignore_failed_jobs
+        self.resubmit_killed_jobs = resubmit_killed_jobs
 
 
     def __str__(self):

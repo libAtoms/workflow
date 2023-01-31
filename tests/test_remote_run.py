@@ -9,6 +9,7 @@ import numpy as np
 
 import ase.io
 from ase.atoms import Atoms
+
 from ase.calculators.emt import EMT
 
 import pytest
@@ -20,6 +21,9 @@ from wfl.calculators import generic
 from wfl.generate import optimize
 from wfl.calculators import generic
 from wfl.calculators.vasp import Vasp
+from wfl.autoparallelize.autoparainfo import AutoparaInfo
+
+from expyre.func import ExPyReJobDiedError
 
 def test_generic_calc(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
     for sys_name in expyre_systems:
@@ -136,7 +140,7 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     monkeypatch.setenv('WFL_EXPYRE_NO_MARK_PROCESSED', '1')
 
     t0 = time.time()
-    results = generic.run(inputs=ci, outputs=co, calculator=calc)
+    results = generic.run(inputs=ci, outputs=co, calculator=calc, properties=["energy", "forces"])
     dt = time.time() - t0
     print('remote parallel calc_time', dt)
 
@@ -152,7 +156,7 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     co = OutputSpec(tmp_path / f'ats_o_{sys_name}.xyz')
 
     t0 = time.time()
-    results = generic.run(inputs=ci, outputs=co, calculator=calc)
+    results = generic.run(inputs=ci, outputs=co, calculator=calc, properties=["energy", "forces"])
     dt_rerun = time.time() - t0
     print('remote parallel calc_time', dt_rerun)
 
@@ -217,3 +221,122 @@ def do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env):
         assert at_local.info['orig_file'] == at.info['orig_file']
         assert at_local.info['orig_file_seq_no'] == at.info['orig_file_seq_no']
         assert np.abs((at_local.info['optimize_energy'] - at.info['optimize_energy']) / at_local.info['optimize_energy']) < 1.0e-8
+
+
+def test_fail_immediately(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
+    for sys_name in expyre_systems:
+        if sys_name.startswith('_'):
+            continue
+
+        do_fail_immediately(tmp_path, sys_name, monkeypatch, remoteinfo_env)
+
+
+def do_fail_immediately(tmp_path, sys_name, monkeypatch, remoteinfo_env):
+    # make sure that by default correct exception is raised locally if it was raised by remote job
+    ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
+          'resources': {'max_time': '1m', 'num_nodes': 1},
+          'num_inputs_per_queued_job': 1, 'check_interval': 10}
+    remoteinfo_env(ri)
+
+    ri = {"test_fail_immediately": ri}
+    print("RemoteInfo", ri)
+
+    ats = [Atoms('C') for _ in range(3)]
+    ats[1].numbers = [14]
+
+    calc = EMT()
+
+    monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
+    with pytest.raises(NotImplementedError):
+        results = generic.run(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
+                              raise_calc_exceptions=True, autopara_info=AutoparaInfo(remote_label="test_fail_immediately"))
+
+
+def test_ignore_failed_jobs(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
+    for sys_name in expyre_systems:
+        if sys_name.startswith('_'):
+            continue
+
+        do_ignore_failed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env)
+
+def do_ignore_failed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env):
+    # make sure that no exceptions are raised when ignore_failed_jobs=True is passed
+    # even when remote job raises an exception
+    ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
+          'resources': {'max_time': '1m', 'num_nodes': 1},
+          'num_inputs_per_queued_job': 1, 'check_interval': 10,
+          'ignore_failed_jobs': True}
+    remoteinfo_env(ri)
+
+    ri = {"test_ignore_failed_jobs": ri}
+    print("RemoteInfo", ri)
+
+    ats = [Atoms('C') for _ in range(3)]
+    ats[1].numbers = [14]
+
+    calc = EMT()
+
+    monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
+    results = generic.run(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
+                          raise_calc_exceptions=True, autopara_info=AutoparaInfo(remote_label="test_ignore_failed_jobs"))
+
+
+def test_resubmit_killed_jobs(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
+    for sys_name in expyre_systems:
+        if sys_name.startswith('_'):
+            continue
+
+        do_resubmit_killed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env)
+
+def do_resubmit_killed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env):
+    # make sure that jobs that time out can be resubmitted automatically
+    ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
+          'resources': {'max_time': '1m', 'num_nodes': 1},
+          'num_inputs_per_queued_job': 1, 'check_interval': 10}
+    remoteinfo_env(ri)
+
+    print("RemoteInfo", ri)
+
+    ats = [Atoms('C') for _ in range(3)]
+    n = 20
+    ats[1] = Atoms(f'C{n**3}', positions=np.asarray(np.meshgrid(range(n), range(n), range(n))).reshape((3, -1)).T,
+                   cell=[n]*3, pbc=[True]*3)
+
+    calc = EMT()
+
+    # first just ignore failures
+    ri['ignore_failed_jobs'] = True
+    ri['resubmit_killed_jobs'] = False
+    monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps({"test_resubmit_killed_jobs": ri}))
+    print("BOB ######### initial run, ignoring errors")
+    results = generic.run(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
+                          raise_calc_exceptions=True, autopara_info=AutoparaInfo(remote_label="test_resubmit_killed_jobs"))
+    # make sure total number is correct, but only 2 have results
+    assert len(list(results)) == len(ats)
+    for at in results:
+        print("BOB at.info", at.info.keys())
+    assert sum(["EMT_energy" in at.info for at in results]) == len(ats) - 1
+
+    # try with some failures that should result in ExPyReJobDied
+    ri['ignore_failed_jobs'] = False
+    ri['resubmit_killed_jobs'] = True
+    monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps({"test_resubmit_killed_jobs": ri}))
+    print("BOB ######### second run, should time out")
+    try:
+        results = generic.run(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
+                              raise_calc_exceptions=True, autopara_info=AutoparaInfo(remote_label="test_resubmit_killed_jobs"))
+    except ExPyReJobDiedError:
+        # ignore timeout in initial call
+        pass
+
+    # now resubmit with longer time
+    ri['resources']['max_time'] = '5m'
+    monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps({"test_resubmit_killed_jobs": ri}))
+    print("BOB ######### third run, should rerun 1 and succeed")
+    # no easy way to check if one one has rerun, just check if all 3 succeeded this time
+    results = generic.run(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
+                          raise_calc_exceptions=True, autopara_info=AutoparaInfo(remote_label="test_resubmit_killed_jobs"))
+
+    # make sure all have results
+    assert len(list(results)) == len(ats)
+    assert all(["EMT_energy" in at.info for at in results])

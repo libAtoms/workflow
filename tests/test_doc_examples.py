@@ -32,8 +32,13 @@ def _fix_wfl(code_block):
     (
         pytest.param('examples.buildcell.ipynb', 'all', False, id='buildcell',
             marks=pytest.mark.skipif(not shutil.which("buildcell"), reason="buildcell not in PATH")),
+<<<<<<< HEAD
         pytest.param('examples.dimers.ipynb', 'all', False, id='dimer structures'),
         pytest.param('examples.cli.ipynb', 'all', True, id='command line interface')
+=======
+        pytest.param('examples.dimers.ipynb', 'all', id='dimer structures'),
+        pytest.param('examples.select_fps.ipynb', 'all', id='select fps')
+>>>>>>> main
     )
 )
 

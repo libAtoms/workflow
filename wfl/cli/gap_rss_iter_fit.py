@@ -171,24 +171,30 @@ def prep(ctx, length_scales_file, verbose):
 
                 f = f'buildcell.narrow_vol_range_even.Z_{Z_elem}.{buildcell_step_type}.input'
                 buildcell_inputs[c_inds]['narrow_even'] = [f, 0.4]
-                wfl.generate.buildcell.create_input(
+                s = wfl.generate.buildcell.create_input(
                     z=Z_elem, vol_per_atom=volume_factor * length_scales[Z_elem]['vol_per_atom'][0],
                     bond_lengths=length_factor * length_scales[Z_elem]['bond_len'][0],
-                    natom=natom, filename=f, verbose=verbose)
+                    natom=natom, verbose=verbose)
+                with open(f, "w") as fout:
+                    fout.write(s + "\n")
 
                 f = f'buildcell.narrow_vol_range_odd.Z_{Z_elem}.{buildcell_step_type}.input'
                 buildcell_inputs[c_inds]['narrow_odd'] = [f, 0.1]
-                wfl.generate.buildcell.create_input(
+                s = wfl.generate.buildcell.create_input(
                     z=Z_elem, vol_per_atom=volume_factor * length_scales[Z_elem]['vol_per_atom'][0],
                     bond_lengths=length_factor * length_scales[Z_elem]['bond_len'][0], odd='only',
-                    natom=natom, filename=f, verbose=verbose)
+                    natom=natom, verbose=verbose)
+                with open(f, "w") as fout:
+                    fout.write(s + "\n")
 
                 f = f'buildcell.wide_vol_range_even.Z_{Z_elem}.{buildcell_step_type}.input'
                 buildcell_inputs[c_inds]['wide_even'] = [f, 0.5]
-                wfl.generate.buildcell.create_input(
+                s = wfl.generate.buildcell.create_input(
                     z=Z_elem, vol_per_atom=volume_factor * length_scales[Z_elem]['vol_per_atom'][0],
                     bond_lengths=length_factor * length_scales[Z_elem]['bond_len'][0], vol_range=(0.75, 1.25),
-                    natom=natom, filename=f, verbose=verbose)
+                    natom=natom, verbose=verbose)
+                with open(f, "w") as fout:
+                    fout.write(s + "\n")
             else:
                 # multicomponent
                 Z_label_str = 'Z_' + Z_label(Zs, c_inds)
@@ -197,19 +203,23 @@ def prep(ctx, length_scales_file, verbose):
 
                 f = f'buildcell.narrow_vol_range.{Z_label_str}.{buildcell_step_type}.input'
                 buildcell_inputs[c_inds]['narrow'] = [f, 0.5]
-                wfl.generate.buildcell.create_input(
+                s = wfl.generate.buildcell.create_input(
                     z=used_Zs, composition=used_composition,
                     vol_per_atom=[volume_factor * length_scales[Z]['vol_per_atom'][0] for Z in used_Zs],
                     bond_lengths=[length_factor * length_scales[Z]['bond_len'][0] for Z in used_Zs], odd='also',
-                    natom=natom, filename=f, verbose=verbose)
+                    natom=natom, verbose=verbose)
+                with open(f, "w") as fout:
+                    fout.write(s + "\n")
 
                 f = f'buildcell.wide_vol_range.{Z_label_str}.{buildcell_step_type}.input'
                 buildcell_inputs[c_inds]['wide'] = [f, 0.5]
-                wfl.generate.buildcell.create_input(
+                s = wfl.generate.buildcell.create_input(
                     z=used_Zs, composition=used_composition,
                     vol_per_atom=[volume_factor * length_scales[Z]['vol_per_atom'][0] for Z in used_Zs],
                     bond_lengths=[length_factor * length_scales[Z]['bond_len'][0] for Z in used_Zs], vol_range=(0.75, 1.25), odd='also',
-                    natom=natom, filename=f, verbose=verbose)
+                    natom=natom, verbose=verbose)
+                with open(f, "w") as fout:
+                    fout.write(s + "\n")
 
         print('buildcell_inputs\n' + pprint.pformat(buildcell_inputs, indent=2))
         buildcell_input_file_stem = 'gap_rss_iter_fit.prep.buildcell_inputs'
@@ -365,7 +375,8 @@ def evaluate_ref(dft_in_configs, dft_evaluated_configs, params, run_dir, verbose
         inputs=dft_in_configs,
         outputs=dft_evaluated_configs,
         calculator=calculator(workdir=run_dir, keep_files=keep_files, **params.dft_params.get("kwargs", {})),
-        output_prefix="REF_"
+        output_prefix="REF_",
+        autopara_info = {'remote_label': 'REF_eval'}
     )
 
 
@@ -400,18 +411,24 @@ def do_fit_and_test(cur_iter, run_dir, params, fitting_configs, testing_configs=
 
     if params.get('fit/calc_fitting_error', default=True):
         co = OutputSpec(f'fitting.error_database.GAP_iter_{cur_iter}.xyz', file_root=run_dir)
-        fitting_error = wfl.fit.error.calc(fitting_configs, co, calculator,
-                'REF_', ['config_type', 'gap_rss_iter'])
+        for at in fitting_configs:
+            at.calc = None
+        evaluated_configs = generic.run(fitting_configs, co, calculator, output_prefix="GAP_")
+        fitting_error = wfl.fit.error.calc(evaluated_configs, calc_property_prefix="GAP_", ref_property_prefix="REF_",
+                category_keys = ['config_type', 'gap_rss_iter'])
         with open(GAP_xml_file + '.fitting_err.json', 'w') as fout:
-            json.dump(dict_tuple_keys_to_str(fitting_error), fout)
+            json.dump(dict_tuple_keys_to_str(fitting_error[0]), fout)
         print('FITTING ERROR')
         pprint.pprint(fitting_error)
     if testing_configs is not None:
         co = OutputSpec(f'testing.error_database.GAP_iter_{cur_iter}.xyz', file_root=run_dir)
-        testing_error = wfl.fit.error.calc(testing_configs, co, calculator,
-                'REF_', ['config_type', 'gap_rss_iter'])
+        for at in testing_configs:
+            at.calc = None
+        evaluated_configs = generic.run(testing_configs, co, calculator, output_prefix="GAP_")
+        testing_error = wfl.fit.error.calc(evaluated_configs, calc_property_prefix="GAP_", ref_property_prefix="REF_",
+                category_keys = ['config_type', 'gap_rss_iter'])
         with open(GAP_xml_file + '.testing_err.json', 'w') as fout:
-            json.dump(dict_tuple_keys_to_str(testing_error), fout)
+            json.dump(dict_tuple_keys_to_str(testing_error[0]), fout)
         print('TESTING ERROR')
         pprint.pprint(testing_error)
 
