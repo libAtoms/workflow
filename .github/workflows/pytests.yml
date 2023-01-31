@@ -52,6 +52,9 @@ jobs:
         run: |
           cat $GITHUB_PATH
           echo "This is $ASE_MOPAC_COMMAND variable"
+          echo "This is pwd: $PWD"
+          echo "This is $GITHUB_WORKSPACE github workspace"
+          echo "GITHUB_PATH $GITHUB_PATH"
 
 
       - name: Install latest ASE from gitlab
