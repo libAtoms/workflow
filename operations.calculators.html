@@ -209,6 +209,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples.fhiaims_calculator.html">
+     FHI-Aims Calculator
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples.mace.html">
      Parallelize MACE calculator
     </a>
@@ -602,7 +607,7 @@ title="Print to PDF"
 <div class="section" id="file-based-calculators">
 <h2>File-based calculators<a class="headerlink" href="#file-based-calculators" title="Permalink to this headline">#</a></h2>
 <p>ASE’s calculators that write &amp; read files to &amp; from disk must to be modified if they were to be parallelized via Workflow’s <code class="docutils literal notranslate"><span class="pre">generic</span></code> calculator. Specifically, each instance of calculator must execute the calculation in a separate folder so processes running in parallel don’t attempt to read and write to the same files. Workflow handles the files, as well as creation and clean-up of temporary directories.</p>
-<p>Currently, [ORCA], VASP and QuantumEspresso are compatible with the <code class="docutils literal notranslate"><span class="pre">generic</span></code> calculator; CASTEP parallelization is accessed via <code class="docutils literal notranslate"><span class="pre">calculators.dft.evaluate_dft()</span></code>.</p>
+<p>Currently, [ORCA], VASP, QuantumEspresso and FHI-Aims are compatible with the <code class="docutils literal notranslate"><span class="pre">generic</span></code> calculator; CASTEP parallelization is accessed via <code class="docutils literal notranslate"><span class="pre">calculators.dft.evaluate_dft()</span></code>.</p>
 </div>
 <div class="section" id="special-calculators">
 <h2>Special calculators<a class="headerlink" href="#special-calculators" title="Permalink to this headline">#</a></h2>

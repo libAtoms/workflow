@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Selection or Sampling of Structures &#8212; workflow  documentation</title>
+    <title>FHI-Aims Calculator &#8212; workflow  documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -35,8 +35,8 @@
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Contributing Examples" href="examples.contributions.html" />
-    <link rel="prev" title="Molecular Dynamics" href="examples.md.html" />
+    <link rel="next" title="Parallelize MACE calculator" href="examples.mace.html" />
+    <link rel="prev" title="ORCA via Python script" href="examples.orca_python.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -210,8 +210,8 @@
      ORCA via Python script
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.fhiaims_calculator.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      FHI-Aims Calculator
     </a>
    </li>
@@ -245,8 +245,8 @@
      Molecular Dynamics
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples.select_fps.html">
      Selection or Sampling of Structures
     </a>
    </li>
@@ -462,7 +462,7 @@ title="Fullscreen mode"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/examples.select_fps.ipynb.txt"
+        <a href="_sources/examples.fhiaims_calculator.ipynb.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -511,7 +511,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Selection or Sampling of Structures</h1>
+                <h1>FHI-Aims Calculator</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -780,44 +780,70 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="section" id="Selection-or-Sampling-of-Structures">
-<h1>Selection or Sampling of Structures<a class="headerlink" href="#Selection-or-Sampling-of-Structures" title="Permalink to this headline">#</a></h1>
-<p>Training of machine learning potentials often requires picking out a few structures from a large configurations-database (for example, an MD trajectory). This can be achieved in a few different ways in the Workflow package depending on one’s choice of the selection criteria (see <code class="docutils literal notranslate"><span class="pre">wfl.select</span></code>).</p>
-<p>Selection of a set of individually unique structures can be done by comparing descriptors for each configuration in the database (see <code class="docutils literal notranslate"><span class="pre">wfl.select.by_descriptor</span></code>). Here, you can find functions to process descriptors as well as functions which perform two different selection algorithms, namely leverage-score CUR and greedy farthest-point-first (FPS). Additional features including exclusion of a list of structures or consideration of previously selected structures can be passed as arguments in
-the selection criteria.</p>
-<p>In this example, we show how FPS can be used for selection of “n=8” datapoints from an MD trajectory by comparing “average SOAP descriptors” of all path configurations. This is done in two steps: 1. Assigning a global descriptor for each configuration in the trajectory followed by 2. A call of the <em>greedy_fps_conf_global</em> function</p>
-<p>To assign a per-config descriptor we calculate the average SOAP vector for every frame in the MD trajectory. The greedy-FPS algorithm would use them to measure similarities across the datapoints and select 10 unique structures.</p>
-<p>Overall this requires two input files: the database and the descriptors (“md.traj” and “params.yaml”)</p>
-<p>Tip: params.yaml can either be self-written or automatically generated from a “Univeral_SOAP-template” processed by multi-stage gap fit (see wfl.fit.gap.multistage)</p>
+<div class="section" id="FHI-Aims-Calculator">
+<h1>FHI-Aims Calculator<a class="headerlink" href="#FHI-Aims-Calculator" title="Permalink to this headline">#</a></h1>
+<p>This example illustrates the usage of Workflow for efficiently performing density-functioncal theory (DFT) calculations with the all-electron electronic structure code <a class="reference external" href="https://fhi-aims.org/">FHI-Aims</a>.</p>
+<div class="line-block">
+<div class="line">At first, we initialize a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> with a couple of (periodic and non-periodic) systems stored in <code class="docutils literal notranslate"><span class="pre">Input_Structures.xyz</span></code>. We also define an <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> to handle the output that will additionally comprise values calculated by FHI-Aims.</div>
+<div class="line">Next, we define various parameter that will be used during the calculations. Most of them define parameter settings for the DFT calculation (that will be written in the <code class="docutils literal notranslate"><span class="pre">control.in</span></code> input file of FHI-Aims). Note that for non-periodic systems the calculations will be performed with the exact same settings, but without parameter specific to periodic systems (e.g. <code class="docutils literal notranslate"><span class="pre">k_grid</span></code>, <code class="docutils literal notranslate"><span class="pre">compute_analytical_stress</span></code>, etc.). The last parameter <code class="docutils literal notranslate"><span class="pre">calculator_exec</span></code> defines the command used to call FHI-Aims
+and start an individual calculation, including specifications for the parallelization of that specific calcuation and excluding any redirection of the output (i.e. without e.g. <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span> <span class="pre">aims.out</span></code>).</div>
+<div class="line">Now we define a <code class="docutils literal notranslate"><span class="pre">calculator</span></code> of the form <code class="docutils literal notranslate"><span class="pre">(calc_constructor,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></code> using the <code class="docutils literal notranslate"><span class="pre">Aims</span></code> calculator of Workflow and the parameter dictionary we have just defined. Finally, we apply the <code class="docutils literal notranslate"><span class="pre">generic.run()</span></code> function to process all the input structures in parallel (defined via the <code class="docutils literal notranslate"><span class="pre">autopara_info</span></code> settings). The values of the calculated <code class="docutils literal notranslate"><span class="pre">properties</span></code> will be written into <code class="docutils literal notranslate"><span class="pre">Output_Structures.xyz</span></code> with keys that have the specified <code class="docutils literal notranslate"><span class="pre">output_prefix</span></code>. Note that for non-periodic systems the
+property “stress” will be ignored.</div>
+</div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">wfl</span><span class="o">,</span> <span class="nn">pathlib</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pathlib</span>
+
+<span class="kn">import</span> <span class="nn">wfl</span>
+<span class="kn">from</span> <span class="nn">wfl.calculators.aims</span> <span class="kn">import</span> <span class="n">Aims</span>
+<span class="kn">from</span> <span class="nn">wfl.calculators</span> <span class="kn">import</span> <span class="n">generic</span>
+<span class="kn">from</span> <span class="nn">wfl.autoparallelize.autoparainfo</span> <span class="kn">import</span> <span class="n">AutoparaInfo</span>
 <span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
-<span class="kn">from</span> <span class="nn">wfl.descriptors.quippy</span> <span class="kn">import</span> <span class="n">calc</span> <span class="k">as</span> <span class="n">calc_descriptors</span>
-<span class="kn">from</span> <span class="nn">wfl.select.by_descriptor</span> <span class="kn">import</span> <span class="n">greedy_fps_conf_global</span>
 
-<span class="n">work_dir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">wfl</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="s2">&quot;docs/source/examples_files/select_fps&quot;</span>
 
-<span class="c1"># Step 1: Assign descriptors to the database</span>
-<span class="n">md</span>        <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">work_dir</span><span class="o">/</span><span class="s2">&quot;md.traj&quot;</span><span class="p">)</span>
-<span class="n">md_desc</span>   <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="n">work_dir</span><span class="o">/</span><span class="s2">&quot;md_desc.xyz&quot;</span><span class="p">)</span>
+<span class="n">workdir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">wfl</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="s2">&quot;docs/source/examples_files/fhiaims_calculator&quot;</span>
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">workdir</span><span class="o">/</span><span class="s1">&#39;./Input_Structures.xyz&#39;</span><span class="p">)</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s1">&#39;Output_Structures.xyz&#39;</span><span class="p">)</span>
 
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">work_dir</span><span class="o">/</span><span class="s1">&#39;params.yaml&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">foo</span><span class="p">:</span>
-    <span class="n">desc_dict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
-<span class="n">desc_dicts</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">desc_dict</span> <span class="k">if</span> <span class="s1">&#39;soap&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span> <span class="c1"># filtering out only SOAP descriptor</span>
-<span class="n">per_atom</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">desc_dicts</span><span class="p">:</span>
-    <span class="n">param</span><span class="p">[</span><span class="s1">&#39;average&#39;</span><span class="p">]</span><span class="o">=</span> <span class="kc">True</span> <span class="c1"># to create global (per-conf) descriptors instead of local (per-atom)</span>
-    <span class="n">per_atom</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="n">md_desc</span> <span class="o">=</span> <span class="n">calc_descriptors</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">md</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">md_desc</span><span class="p">,</span> <span class="n">descs</span><span class="o">=</span><span class="n">desc_dicts</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;desc&#39;</span><span class="p">,</span> <span class="n">per_atom</span><span class="o">=</span><span class="n">per_atom</span><span class="p">)</span>
+<span class="n">aims_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;xc&#39;</span><span class="p">:</span>                        <span class="s1">&#39;pbe&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;spin&#39;</span><span class="p">:</span>                      <span class="s1">&#39;none&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;relativistic&#39;</span><span class="p">:</span>              <span class="s1">&#39;none&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;charge&#39;</span><span class="p">:</span>                    <span class="mf">0.</span><span class="p">,</span>
+        <span class="s1">&#39;sc_iter_limit&#39;</span><span class="p">:</span>             <span class="mi">500</span><span class="p">,</span>
+        <span class="s1">&#39;occupation_type&#39;</span><span class="p">:</span>           <span class="s1">&#39;gaussian 0.01&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;charge_mix_param&#39;</span><span class="p">:</span>          <span class="mf">0.6</span><span class="p">,</span>
+        <span class="s1">&#39;mixer&#39;</span><span class="p">:</span>                     <span class="s1">&#39;pulay&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;n_max_pulay&#39;</span><span class="p">:</span>               <span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;sc_accuracy_rho&#39;</span><span class="p">:</span>           <span class="mf">1e-2</span><span class="p">,</span>
+        <span class="s1">&#39;sc_accuracy_eev&#39;</span><span class="p">:</span>           <span class="mf">1e-2</span><span class="p">,</span>
+        <span class="s1">&#39;sc_accuracy_etot&#39;</span><span class="p">:</span>          <span class="mf">1e-4</span><span class="p">,</span>
+        <span class="s1">&#39;sc_accuracy_forces&#39;</span><span class="p">:</span>        <span class="mf">1e-2</span><span class="p">,</span>
+        <span class="s1">&#39;sc_accuracy_stress&#39;</span><span class="p">:</span>        <span class="mf">1e-1</span><span class="p">,</span>
+        <span class="s1">&#39;compute_forces&#39;</span><span class="p">:</span>            <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;compute_analytical_stress&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;KS_method&#39;</span><span class="p">:</span>                 <span class="s1">&#39;parallel&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;k_grid_density&#39;</span><span class="p">:</span>            <span class="mf">1e-1</span><span class="p">,</span>
+        <span class="s1">&#39;calculator_exec&#39;</span><span class="p">:</span>           <span class="s1">&#39;srun -n2 --exclusive --mem=2GB aims.210313.scalapack.mpi.x&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
 
-<span class="c1"># Step 2: Sampling</span>
-<span class="n">fps_out</span>          <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="n">work_dir</span><span class="o">/</span><span class="s2">&quot;out_fps.xyz&quot;</span><span class="p">)</span>
-<span class="n">nsamples</span>         <span class="o">=</span> <span class="mi">8</span>
-<span class="n">selected_configs</span> <span class="o">=</span> <span class="n">greedy_fps_conf_global</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">md_desc</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">fps_out</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">nsamples</span><span class="p">,</span> <span class="n">at_descs_info_key</span><span class="o">=</span><span class="s1">&#39;desc&#39;</span><span class="p">,</span> <span class="n">keep_descriptor_info</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">calculator</span> <span class="o">=</span> <span class="p">(</span><span class="n">Aims</span><span class="p">,</span> <span class="p">[],</span> <span class="n">aims_kwargs</span><span class="p">)</span>
+
+
+<span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">,</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">,</span>
+    <span class="n">calculator</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">,</span>
+    <span class="n">properties</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;forces&quot;</span><span class="p">,</span> <span class="s2">&quot;stress&quot;</span><span class="p">],</span>
+    <span class="n">output_prefix</span> <span class="o">=</span> <span class="s2">&quot;FHIaims_&quot;</span><span class="p">,</span>
+    <span class="n">autopara_info</span> <span class="o">=</span> <span class="n">AutoparaInfo</span><span class="p">(</span>
+        <span class="n">num_python_subprocesses</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="n">num_inputs_per_python_subprocess</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -831,17 +857,17 @@ the selection criteria.</p>
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="examples.md.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="examples.orca_python.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Molecular Dynamics</p>
+            <p class="prev-next-title">ORCA via Python script</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="examples.contributions.html" title="next page">
+    <a class='right-next' id="next-link" href="examples.mace.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Contributing Examples</p>
+        <p class="prev-next-title">Parallelize MACE calculator</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -12,6 +12,14 @@ Subpackages
 Submodules
 ----------
 
+wfl.calculators.aims module
+---------------------------
+
+.. automodule:: wfl.calculators.aims
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 wfl.calculators.castep module
 -----------------------------
 
