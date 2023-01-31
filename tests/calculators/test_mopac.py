@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pytest
+import shutil
 
 from ase.io import write
 from ase.build import molecule
@@ -28,6 +29,8 @@ def atoms():
     atoms.rattle(stdev=0.1, seed=1305)
     return atoms
 
+@pytest.mark.skipif(not shutil.which("mopac") and "ASE_MOPAC_COMMAND" not in os.environ, 
+                reason="mopac not in PATH and command not given")
 def test_ase_mopac(tmp_path, atoms):
     """test that the regular MOPAC works, since there was a recent bug fix
         Should be returning final heat of formation for "energy", e.g.: 
@@ -42,7 +45,8 @@ def test_ase_mopac(tmp_path, atoms):
     assert np.allclose(atoms.get_potential_energy(), ref_energy)
     assert np.allclose(atoms.get_forces(), ref_forces)
 
-
+@pytest.mark.skipif(not shutil.which("mopac") and "ASE_MOPAC_COMMAND" not in os.environ, 
+                reason="mopac not in PATH and command not given")
 def test_wfl_mopac(tmp_path, atoms):
     fn_in = tmp_path / 'mopac_in.xyz' 
 
