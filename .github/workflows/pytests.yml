@@ -47,6 +47,7 @@ jobs:
         run: |
           wget https://github.com/openmopac/mopac/releases/download/v22.0.6/mopac-22.0.6-linux.tar.gz
           tar -xzvf mopac-22.0.6-linux.tar.gz
+          echo "This is $ASE_MOPAC_COMMAND variable"
 
       - name: look at env variables
         run: |
