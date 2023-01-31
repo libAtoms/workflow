@@ -19,7 +19,7 @@ jobs:
     env:
       coverage-on-version: 3.8
       use-mpi: True
-      ASE_MOPAC_COMMAND: "${HOME}/mopac-22.0.6-linux/bin/mopac PREFIX.mop 2> /dev/null" 
+      ASE_MOPAC_COMMAND: "${PWD}/mopac-22.0.6-linux/bin/mopac PREFIX.mop 2> /dev/null" 
 
     steps:
       - uses: actions/checkout@v2
