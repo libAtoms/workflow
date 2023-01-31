@@ -48,6 +48,9 @@ jobs:
           tar -xzvf mopac-22.0.6-linux.tar.gz
           echo "This is $ASE_MOPAC_COMMAND variable"
 
+      - name: add mopac to path
+          echo $GITHUB_WORKSPACE/mopac-22.0.6-linux/bin >> $GITHUB_PATH
+
       - name: look at env variables
         run: |
           cat $GITHUB_PATH
