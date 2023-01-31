@@ -127,3 +127,20 @@ def test_mixed_input_CS_loc_presence(tmp_path, ats):
             else:
                 os.store(at)
         os.close()
+
+def test_overwrite(tmp_path, ats):
+    ase.io.write(tmp_path / "ats.xyz", ats)
+
+    # default overwrite=False
+    os = OutputSpec("ats.xyz", file_root=tmp_path)
+    # should not fail yet
+    with pytest.raises(FileExistsError):
+        for at in ats:
+            os.store(at)
+    os.close()
+
+    # force overwrite=True
+    os = OutputSpec("ats.xyz", file_root=tmp_path, overwrite=True)
+    for at in ats:
+        os.store(at)
+    os.close()
