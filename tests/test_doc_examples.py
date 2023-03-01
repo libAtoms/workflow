@@ -22,6 +22,7 @@ def _get_coding_blocks(nb_file):
         pytest.param('examples.select_fps.ipynb', 'all', id='select fps'),
         pytest.param('examples.fhiaims_calculator.ipynb', 'all', id='fhiaims_calculator',
             marks=aims_prerequisites),
+        pytest.param("examples.daisy_chain_mlip_fitting.ipynb", "all", id="daisy_chain_mlip_fitting.ipynb")
     )
 )
 def test_example(tmp_path, nb_file, idx_execute):
@@ -33,3 +34,5 @@ def test_example(tmp_path, nb_file, idx_execute):
     os.chdir(tmp_path)
     exec(code)
     os.chdir('..')
+
+
