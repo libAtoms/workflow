@@ -21,7 +21,7 @@ def find_isolated_atoms(inputs, outputs, isolated_atom_info_key="config_type",
         "default" matches "isolated_atom" or "IsolatedAtom".
     """
 
-    if outputs.done():
+    if outputs.all_written():
         warnings.warn(f"Not searching for isolated atoms because {outputs} is done.")
         return outputs.to_ConfigSet()
 
@@ -69,7 +69,7 @@ def atomization_energy(inputs, outputs, prop_prefix, property="energy", isolated
         "default" matches "isolated_atom" or "IsolatedAtom".
     """
 
-    if outputs.done():
+    if outputs.all_written():
         warnings.warn(f"Ouput for atomization energy ({outputs}) are done, not recomputing.")
         return outputs.to_ConfigSet()
 

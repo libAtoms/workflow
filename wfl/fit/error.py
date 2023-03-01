@@ -380,6 +380,8 @@ def select_units(prop, plt_type):
     if "forces" in prop:
         prop = "forces"
 
+    # support different kinds of energies, e.g. 
+    # `atomization_energy/atom` or `bond_dissociation_energy`
     if "energy/atom" in prop:
         prop = "energy/atom"
     elif "energy" in prop:
