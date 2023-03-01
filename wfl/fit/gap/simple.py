@@ -60,6 +60,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None
 
     if skip_if_present:
         if Path(gap_file).exists():
+            print((f"GAP file {gap_file} is found, not refitting."))
             return gap_file
 
     if remote_info != '_IGNORE':
