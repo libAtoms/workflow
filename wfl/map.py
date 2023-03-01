@@ -5,7 +5,7 @@ def _map_autopara_wrappable(atoms, map_func, args=[], kwargs={}):
 
     Parameters
     ----------
-    map_func: function(Atoms, *argsm, **kwargs)
+    map_func: function(Atoms, *args, **kwargs)
         function to apply
     args: list
         positional arguments to function
