@@ -6,7 +6,7 @@ from wfl.utils.convex_hull import find_hull
 
 
 def select(inputs, outputs, info_field, Zs=None, verbose=False):
-    if outputs.done():
+    if outputs.all_written():
         sys.stderr.write('Returning from {__name__} since output is done\n')
         return outputs.to_ConfigSet()
 

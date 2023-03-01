@@ -193,7 +193,7 @@ def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
     -------
     ConfigSet corresponding to selected configs output
     """
-    if outputs.done():
+    if outputs.all_written():
         warnings.warn('output is done, returning')
         return outputs.to_ConfigSet()
 
@@ -256,7 +256,7 @@ def greedy_fps_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_ke
     selected_configs : ConfigSet
         corresponding to selected configs output
     """
-    if outputs.done():
+    if outputs.all_written():
         warnings.warn(f'output {outputs} is done, returning')
         return outputs.to_ConfigSet()
 

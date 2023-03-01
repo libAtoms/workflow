@@ -16,6 +16,7 @@ Examples often show examples of more than one thing. Below is a list of common o
     - [Molecular Dynamics](examples.md.md)
     - [MLIP fitting workflow](examples.daisy_chain_gap.ipynb)
 - VASP: [Functions as independently queued jobs](overview.queued.md) 
+- FHI-Aims: [FHI-Aims Calculator](examples.fhiaims_calculator.ipynb) 
 
 
 ## Generate structures

@@ -58,7 +58,11 @@ class ConfigSet:
         elif isinstance(items, ConfigSet):
             if items._file_loc != "":
                 raise ValueError("ConfigSet from ConfigSet cannot have _file_loc set")
-            self.items = items.items
+            if isinstance(items.items, list):
+                # NOTE: should any other possible content types be copied?
+                self.items = items.items.copy()
+            else:
+                self.items = items.items
         elif isinstance(items, Atoms):
             self.items = [items]
         elif isinstance(items, (str, Path)):
@@ -68,15 +72,21 @@ class ConfigSet:
         elif isinstance(items[0], (str, Path)):
             self.items = []
             for file_path in items:
+                assert isinstance(file_path, (str, Path))
                 if file_root != Path("") and Path(file_path).is_absolute():
                     raise ValueError(f"Got file_root but file {file_path} is an absolute path")
                 self.items.append(file_root / file_path)
         elif isinstance(items[0], ConfigSet):
             self.items = []
             for item in items:
+                assert isinstance(item, ConfigSet)
                 if item._file_loc != "":
                     raise ValueError("ConfigSet from ConfigSet cannot have _file_loc set")
-                if isinstance(item.items, (str, Path)) or isinstance(item.items[0], (str, Path)):
+                if item.items is None:
+                    # empty ConfigSet, skip
+                    continue
+                elif isinstance(item.items, (str, Path)) or isinstance(item.items[0], (str, Path)):
+                    # item contains Path(s)
                     if len(self.items) > 0 and not isinstance(self.items[-1], Path):
                         raise ValueError("Got ConfigSet containing Path after one that does not")
 
@@ -85,9 +95,10 @@ class ConfigSet:
                     else:
                         self.items.extend(item.items)
                 else:
+                    # item contains list(s)
                     if len(self.items) > 0 and isinstance(self.items[0], Path):
                         raise ValueError("Got ConfigSet containing Atoms after one that contains Path")
-                    self.items.append(item.items)
+                    self.items.append(item.items.copy())
         else:
             # WARNING: expecting list(list(... (Atoms))), and all lists same depth,
             # but no error checking here
@@ -356,18 +367,20 @@ class OutputSpec:
     file_root: str / Path, default None
         root directory relative to which all files will be taken
 
-    overwrite: str, default True
-        Overwrite already existing files.  Defaults to True so that object creation
-        doesn't fail if write loop has been completed (detectable with `OutputSpec.done()`).
+    overwrite: str, default False
+        Overwrite already existing files. Default False, but note that many functions,
+        including any wrapped by autoparallelize, will actually reuse existing output if
+        all of it appears to be present.
 
     flush: bool, default True
         flush output after every write
     """
-    def __init__(self, files=None, *, file_root=None, overwrite=True, flush=True, write_kwargs={}):
+    def __init__(self, files=None, *, file_root=None, overwrite=False, flush=True, write_kwargs={}):
         self.files = files
         self.configs = None
         self.file_root = Path(file_root if file_root is not None else "")
         self.flush = flush
+        self.overwrite = overwrite
         self.write_kwargs = write_kwargs.copy()
 
         if self.files is not None:
@@ -382,10 +395,6 @@ class OutputSpec:
             if len(absolute_files) > 0 and self.file_root != Path(""):
                 raise ValueError(f"Got file_root {file_root} but files {absolute_files} are absolute paths")
             self.files = [Path(f) for f in self.files]
-            if not overwrite:
-                existing_files = [self.file_root / f for f in self.files if (self.file_root / f).exists()]
-                if len(existing_files) > 0:
-                    raise FileExistsError(f"OutputSpec.overwrite is false but output file(s) {existing_files} already exist")
         else:
             # store in memory
             self.configs = []
@@ -397,6 +406,10 @@ class OutputSpec:
 
         self.first_store_call = True
         self.cur_store_loc = None
+
+
+    def _existing_output_files(self):
+        return [self.file_root / f for f in self.files if (self.file_root / f).exists()]
 
 
     def store(self, configs, input_CS_loc=""):
@@ -441,6 +454,11 @@ class OutputSpec:
             return
 
         if self.files is not None:
+            if self.first_store_call and not self.overwrite:
+                existing_files = self._existing_output_files()
+                if len(existing_files) > 0:
+                    raise FileExistsError(f"OutputSpec overwrite is false but output file(s) {existing_files} already exist")
+
             if self.single_file:
                 # write to a file, preserving all location info
 
@@ -480,7 +498,7 @@ class OutputSpec:
             self._write_to_file(configs, ConfigSet._loc_sep.join(sub_loc))
         else:
             # store in self.configs
-            if len(input_CS_loc) == 0:
+            if input_CS_loc is None or len(input_CS_loc) == 0:
                 # no location, just write to top level list
                 self.configs.append(configs)
                 return
@@ -519,7 +537,7 @@ class OutputSpec:
                     tmp_f.rename(self.file_root / f)
 
 
-    def done(self):
+    def all_written(self):
         """Determine if all output has been created and writing operation is done from
         a previous run, even before any configurations have been written.  Never true
         for in-memory storage.
