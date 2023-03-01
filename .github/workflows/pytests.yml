@@ -110,6 +110,9 @@ jobs:
         run: |
           echo $HOME/bin >> $GITHUB_PATH
 
+      - name: Install xTB
+        run: conda install -c conda-forge xtb-python
+
       - name: Install MPI dependencies
         if: env.use-mpi
         run: |
