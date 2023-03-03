@@ -232,7 +232,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
 
 def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=None,
                         ref_property_prefix="reference ", calc_property_prefix="calculated ", error_type="RMSE",
-                        plot_parity=True, plot_error=True, cmap=None):
+                        plot_parity=True, plot_error=True, cmap=None, units_dict=None):
     """generate parity plot (calculated values vs. reference values) and/or scatterplot of
     errors vs. values
 
@@ -256,6 +256,10 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
         root-mean-square or maximum-absolute error
     cmap: str, default None
         colormap name to use. If None use default based on number of categories.
+    units_dict: dict, default None
+        dictionary with units for non-default properties. Example: 
+        {"energy": {"parity": ("eV", 1.0), "error": ("meV", 1.0e3)}},
+        Where each tuple containes units lable and conversion factor from ASE-default units.  
     """
 
     assert error_type in ["RMSE", "MAE"], f"'error_type' must be 'RMSE' or 'MAE', not {error_type}."
@@ -309,7 +313,7 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
 
             color = colors[cat_idx]
 
-            units_factor = select_units(prop, "error")
+            units_factor = select_units(prop, "error", units_dict=units_dict)
             label = f'{category}: {errors[category][error_type] * units_factor[1]:.2f} {units_factor[0]}'
             if ax_parity is not None:
                 ax_parity.scatter(ref_vals[category], pred_vals[category], label=label,
@@ -320,9 +324,9 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
 
         if ax_parity is not None:
             _annotate_parity_plot(ax_parity, prop, ref_property_prefix, calc_property_prefix,
-                                  show_legend, error_type)
+                                  show_legend, error_type, units_dict)
         if ax_error is not None:
-            _annotate_error_plot(ax_error, prop, ref_property_prefix, calc_property_prefix)
+            _annotate_error_plot(ax_error, prop, ref_property_prefix, calc_property_prefix, units_dict)
 
     fig.savefig(output, dpi=300, bbox_inches="tight")
 
@@ -349,17 +353,23 @@ def _dict_add(dicts, values, at_category, prop):
             d[prop][cat].extend(v)
 
 
-def select_units(prop, plt_type):
+def select_units(prop, plt_type, units_dict=None):
     """
     select unit labels and conversion factors from ASE default for each property
 
 
     Parameters
     ----------
-    prop: str in ["energy", "energy/atoms", "forces",  "virial", "virial/atom"]
-        name of property
+    prop: str 
+        name of property. By default upported "energy", "atomization_energy", "forces" and "virial", 
+        in combination with "/atom", "/comp", "/Z" as appropriate.
     plt_type: str in ["error", "parity"]
         type of plot
+    units_dict: dict, default None 
+        dictionary with units for non-default properties. Example: 
+        {"energy": {"parity": ("eV", 1.0), "error": ("meV", 1.0e3)}},
+        Where each tuple containes units lable and conversion factor from ASE-default units. 
+ 
 
     Returns
     -------
@@ -367,38 +377,39 @@ def select_units(prop, plt_type):
     conversion_factor: float to multiply raw quantity by
     """
 
-    units_dict = {
+    use_units_dict = {
         "energy": {"parity": ("eV", 1.0), "error": ("meV", 1.0e3)},
         "energy/atom": {"parity": ("eV/at", 1.0), "error": ("meV/at", 1.0e3)},
         "forces": {"parity": ("eV/Å", 1.0), "error": ("meV/Å", 1.0e3)},
         "virial": {"parity": ("eV", 1.0), "error": ("meV", 1.0e3)},
         "virial/atom": {"parity": ("eV/at", 1.0), "error": ("meV/at", 1.0e3)}
     }
+    if units_dict is None:
+        units_dict = {}
+    use_units_dict.update(units_dict)
 
     if "virial" in prop:
         prop = re.sub(r"/comp\b", "", prop)
     if "forces" in prop:
-        prop = "forces"
+        prop = re.sub(r"/comp\b", "", prop)
+        prop = re.sub(r"/Z_\d+\b", "", prop)
 
-    # support different kinds of energies, e.g. 
-    # `atomization_energy/atom` or `bond_dissociation_energy`
-    if "energy/atom" in prop:
-        prop = "energy/atom"
-    elif "energy" in prop:
-        prop = "energy"
+    if "energy" in prop:
+        # also support `atomization_energy`
+        prop = re.sub(r"atomization_energy", "energy", prop)
 
-    if prop not in units_dict or plt_type not in units_dict[prop]:
+    if prop not in use_units_dict or plt_type not in use_units_dict[prop]:
         raise KeyError(f"Unknown property ({prop}) or plot type ({plt_type}).") 
 
-    return units_dict[prop][plt_type]
+    return use_units_dict[prop][plt_type]
 
 
-def _annotate_parity_plot(ax, property, ref_property_prefix, calc_property_prefix, show_legend, error_type):
+def _annotate_parity_plot(ax, property, ref_property_prefix, calc_property_prefix, show_legend, error_type, units_dict=None):
     if show_legend:
         ax.legend(title=f"{error_type} per category")
     ax.set_title(f"{property} ")
-    ax.set_xlabel(f"{ref_property_prefix}{property}, {select_units(property, 'parity')[0]}")
-    ax.set_ylabel(f"{calc_property_prefix}{property}, {select_units(property, 'parity')[0]}")
+    ax.set_xlabel(f"{ref_property_prefix}{property}, {select_units(property, 'parity', units_dict=units_dict)[0]}")
+    ax.set_ylabel(f"{calc_property_prefix}{property}, {select_units(property, 'parity', units_dict=units_dict)[0]}")
 
     xmin, xmax = ax.get_xlim()
     ymin, ymax = ax.get_ylim()
@@ -410,7 +421,7 @@ def _annotate_parity_plot(ax, property, ref_property_prefix, calc_property_prefi
     ax.grid(color='lightgrey', ls=':')
 
 
-def _annotate_error_plot(ax, property, ref_property_prefix, calc_property_prefix):
+def _annotate_error_plot(ax, property, ref_property_prefix, calc_property_prefix, units_dict=None):
     ax.set_title(f"{property} error")
     ax.set_xlabel(f"{ref_property_prefix}{property}, {select_units(property, 'parity')[0]}")
     ax.set_ylabel(f"{calc_property_prefix}{property} error, {select_units(property, 'error')[0]}")
@@ -441,7 +452,7 @@ def errors_dumps(errors, error_type="RMSE", precision=2):
     return df_str
 
 
-def errors_to_dataframe(errors, error_type="RMSE"):
+def errors_to_dataframe(errors, error_type="RMSE", units_dict=None):
     """converts errors dictionary to dataframe with properties as columns
     and categories as rows
 
@@ -451,6 +462,10 @@ def errors_to_dataframe(errors, error_type="RMSE"):
         Dictionary returned by wfl.fit.error.calculate()
     error_type: str in ["RMSE, "MAE"], default "RMSE"
         root-mean-square or maximum-absolute error
+    units_dict: dict, None
+        dictionary with units for non-default properties. Example: 
+        {"energy": {"parity": ("eV", 1.0), "error": ("meV", 1.0e3)}},
+        Where each tuple containes units lable and conversion factor from ASE-default units. 
     """
     # errors keys
     # property : category : RMSE/MAE/count
@@ -458,7 +473,7 @@ def errors_to_dataframe(errors, error_type="RMSE"):
     # store error_type value and counts in their own columns
     df_errors = {}
     for prop in errors:
-        units_factor = select_units(prop, 'error')
+        units_factor = select_units(prop, 'error', units_dict=units_dict)
 
         prop_header = re.sub(r'^energy\b', 'E', prop)
         prop_header = re.sub(r'^forces\b', 'F', prop_header)
