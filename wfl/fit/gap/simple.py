@@ -7,6 +7,8 @@ import tempfile
 
 import ase.io
 
+from quippy.potential import Potential
+
 from wfl.configset import ConfigSet
 from wfl.utils.quip_cli_strings import dict_to_quip_str
 from wfl.autoparallelize.utils import get_remote_info
@@ -59,9 +61,16 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None
     gap_file = fitting_dict.get('gap_file', 'GAP.xml')
 
     if skip_if_present:
-        if Path(gap_file).exists():
-            print((f"GAP file {gap_file} is found, not refitting."))
-            return gap_file
+        try:
+            if Path(gap_file).exists():
+                _ = Potential(param_filename=gap_file)
+                # NOTE: at least some FoX XML parsing errors lead to an immediate termination,
+                # rather than a python exception that will actually be caught here.
+                print((f"GAP file {gap_file} is found, not refitting."))
+                return gap_file
+        except RuntimeError:
+            # Potential seems to return RuntimeError when file is missing
+            pass
 
     if remote_info != '_IGNORE':
         remote_info = get_remote_info(remote_info, remote_label)
