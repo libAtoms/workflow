@@ -387,14 +387,21 @@ class OutputSpec:
 
     flush: bool, default True
         flush output after every write
+
+    write_kwargs: dict
+        optional extra kwargs to ase.io.write
+
+    set_tags: dict
+        dict of extra Atoms.info keys to set in written configs
     """
-    def __init__(self, files=None, *, file_root=None, overwrite=False, flush=True, write_kwargs={}):
+    def __init__(self, files=None, *, file_root=None, overwrite=False, flush=True, write_kwargs={}, set_tags={}):
         self.files = files
         self.configs = None
         self.file_root = Path(file_root if file_root is not None else "")
         self.flush = flush
         self.overwrite = overwrite
         self.write_kwargs = write_kwargs.copy()
+        self.set_tags = set_tags.copy()
 
         if self.files is not None:
             # store in file(s)
@@ -613,6 +620,7 @@ class OutputSpec:
         if isinstance(configs, Atoms):
             if store_loc_stem is not None and len(store_loc_stem) > 0:
                 configs.info["_ConfigSet_loc"] = store_loc_stem
+            configs.info.update(self.set_tags)
             ase.io.write(self.cur_file, configs, **self._cur_write_kwargs)
             if self.flush:
                 self.cur_file.flush()
