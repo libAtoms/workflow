@@ -1,5 +1,7 @@
 from pathlib import Path
 import glob
+from itertools import islice
+
 
 from ase.atoms import Atoms
 import ase.io
@@ -172,6 +174,15 @@ class ConfigSet:
                 yield at
 
         self._cur_loc = None
+
+
+    def __getitem__(self, arg):
+        if isinstance(arg, slice):
+            return list(islice(self, arg.start, arg.stop, arg.step))
+        elif isinstance(arg, int):
+            return list(islice(self, arg, arg + 1, 1))[0]
+        else:
+            raise TypeError
 
 
     def groups(self):
