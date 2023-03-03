@@ -144,3 +144,12 @@ def test_overwrite(tmp_path, ats):
     for at in ats:
         os.store(at)
     os.close()
+
+def test_write_configset(tmp_path, ats):
+    c = ConfigSet(ats)
+
+    os = OutputSpec("ats.xyz", file_root=tmp_path)
+    os.write(c)
+
+    for a0, a1 in zip(c, os.to_ConfigSet()):
+        assert a0 == a1

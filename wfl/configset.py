@@ -1,3 +1,5 @@
+import sys
+
 from pathlib import Path
 import glob
 from itertools import islice
@@ -421,6 +423,23 @@ class OutputSpec:
 
     def _existing_output_files(self):
         return [self.file_root / f for f in self.files if (self.file_root / f).exists()]
+
+
+    def write(self, configs):
+        """Write a set of configurations to this OutputSpec
+
+        Parameters
+        ----------
+        configs: iterable(Atoms)
+            Configurations to write.  If ConfigSet, location will be saved
+        """
+        if not self.overwrite and self.all_written():
+            sys.stderr.write(f'Reusing existing output instead of writing ConfigSet contents since overwrite=False and output is done\n')
+            return
+
+        for at in configs:
+            self.store(at, at.info.get("_ConfigSet_loc"))
+        self.close()
 
 
     def store(self, configs, input_CS_loc=""):
