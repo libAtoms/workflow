@@ -111,7 +111,9 @@ jobs:
           echo $HOME/bin >> $GITHUB_PATH
 
       - name: Install xTB
-        run: conda install -c conda-forge xtb-python
+        run: |
+          conda install -c conda-forge xtb-python
+          pip install typing-extensions
 
       - name: Install MPI dependencies
         if: env.use-mpi
