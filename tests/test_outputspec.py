@@ -154,8 +154,8 @@ def test_write_configset(tmp_path, ats):
     for a0, a1 in zip(c, os.to_ConfigSet()):
         assert a0 == a1
 
-def test_set_tags(tmp_path, ats):
-    os = OutputSpec(tmp_path / "ats.xyz", set_tags={"test_tag": 5})
+def test_tags(tmp_path, ats):
+    os = OutputSpec(tmp_path / "ats.xyz", tags={"test_tag": 5})
     os.write(ats)
 
     cs = ConfigSet(tmp_path / "ats.xyz")

@@ -180,7 +180,7 @@ class ConfigSet:
 
     def __getitem__(self, arg):
         if isinstance(arg, slice):
-            return list(islice(self, arg.start, arg.stop, arg.step))
+            return islice(self, arg.start, arg.stop, arg.step)
         elif isinstance(arg, int):
             return list(islice(self, arg, arg + 1, 1))[0]
         else:
