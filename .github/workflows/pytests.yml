@@ -44,41 +44,41 @@ jobs:
       - name: Install latest ASE from gitlab
         run: pip install git+https://gitlab.com/ase/ase.git
 
-      - name: Install intel-mkl-full for phono3py
-        run: |
-          wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
-          sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
-          sudo sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list'
-          sudo apt-get update
-          sudo apt-get install intel-mkl-64bit-2018.2-046
+      # - name: Install intel-mkl-full for phono3py
+      #   run: |
+      #     wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
+      #     sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
+      #     sudo sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list'
+      #     sudo apt-get update
+      #     sudo apt-get install intel-mkl-64bit-2018.2-046
 
-      - name: Install phono3py from source
-        run: |
-            source /opt/intel/compilers_and_libraries_2018.2.199/linux/mkl/bin/mklvars.sh intel64
+      # - name: Install phono3py from source
+      #   run: |
+      #       source /opt/intel/compilers_and_libraries_2018.2.199/linux/mkl/bin/mklvars.sh intel64
 
-            git clone https://github.com/phonopy/phonopy
-            cd phonopy
-            python3 setup.py build
-            python3 -m pip install .
-            cd ..
+      #       git clone https://github.com/phonopy/phonopy
+      #       cd phonopy
+      #       python3 setup.py build
+      #       python3 -m pip install .
+      #       cd ..
 
-            git clone https://github.com/phonopy/phono3py
-            cd phono3py
-            python3 setup.py build
-            python3 setup.py install
-            cd ..
+      #       git clone https://github.com/phonopy/phono3py
+      #       cd phono3py
+      #       python3 setup.py build
+      #       python3 setup.py install
+      #       cd ..
 
       - name: Install Quippy from PyPI
         run: pip install quippy-ase
 
-      - name: Julia and ace fit
-        run: |
-          pip install pip install threadpoolctl
-          wget https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-1.8.1-linux-x86_64.tar.gz
-          tar xzf julia-1.8.1-linux-x86_64.tar.gz
-          # note that this hardwires a particular compatible ACE1pack version
-          echo 'using Pkg; pkg"registry add https://github.com/JuliaRegistries/General"; pkg"registry add https://github.com/JuliaMolSim/MolSim.git"; pkg"add ACE1pack@0.0, ACE1, JuLIP, IPFitting, ASE"' > ace1pack_install.jl
-          ${PWD}/julia-1.8.1/bin/julia ace1pack_install.jl
+      # - name: Julia and ace fit
+      #   run: |
+      #     pip install pip install threadpoolctl
+      #     wget https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-1.8.1-linux-x86_64.tar.gz
+      #     tar xzf julia-1.8.1-linux-x86_64.tar.gz
+      #     # note that this hardwires a particular compatible ACE1pack version
+      #     echo 'using Pkg; pkg"registry add https://github.com/JuliaRegistries/General"; pkg"registry add https://github.com/JuliaMolSim/MolSim.git"; pkg"add ACE1pack@0.0, ACE1, JuLIP, IPFitting, ASE"' > ace1pack_install.jl
+      #     ${PWD}/julia-1.8.1/bin/julia ace1pack_install.jl
 
       - name: Install wfl (expyre and universalSOAP are dependencies)
         run: pip install .
