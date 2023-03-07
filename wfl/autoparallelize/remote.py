@@ -125,6 +125,14 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
                 ats_out = None
             stdout = ''
             stderr = ''
+            #
+            import glob #BOB
+            print("BOB") #BOB
+            for f in glob.glob(xpr.stage_dir + "/*"): #BOB
+                print("BOB FILE", f) #BOB
+                if ".std" in f or "slurm" in f: #BOB
+                    with open(f) as fin: #BOB
+                        print("BOB ".join(fin.readlines()), "\n") #BOB
 
         if ats_out is None:
             # Skip the right number of input files. If we're here,
