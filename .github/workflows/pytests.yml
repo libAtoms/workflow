@@ -80,6 +80,9 @@ jobs:
       #     echo 'using Pkg; pkg"registry add https://github.com/JuliaRegistries/General"; pkg"registry add https://github.com/JuliaMolSim/MolSim.git"; pkg"add ACE1pack@0.0, ACE1, JuLIP, IPFitting, ASE"' > ace1pack_install.jl
       #     ${PWD}/julia-1.8.1/bin/julia ace1pack_install.jl
 
+      - name: Install specific branch of expyre for debuging:
+        run: pip install git+https://github.com/libAtoms/ExPyRe.git@debug_wfl_daisy_chain_example
+
       - name: Install wfl (expyre and universalSOAP are dependencies)
         run: pip install .
 
