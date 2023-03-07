@@ -3,6 +3,7 @@ import shutil
 import json
 import pytest
 from expyre import config 
+from pathlib import Path
 
 from .calculators.test_aims import aims_prerequisites
 
@@ -31,6 +32,9 @@ def test_example(tmp_path, nb_file, idx_execute, monkeypatch, needs_expyre, expy
         print(f'Notebook {nb_file} requires ExPyRe, but system "github" is not in config.json or'
               f'"EXPYRE_PYTEST_SYSTEMS" environment variable.')
         return
+
+    os.environ[f"PYTHONPATH={Path(__file__).parent.parent}:$PYTHONPATH"]
+    
     print("running test_example", nb_file)
     basepath = os.path.join(f'{os.path.dirname(__file__)}/../docs/source')
     coding_blocks = _get_coding_blocks(f'{basepath}/{nb_file}')
