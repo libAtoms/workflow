@@ -23,7 +23,7 @@ def _get_coding_blocks(nb_file):
         pytest.param('examples.select_fps.ipynb', 'all', False, id='select fps'),
         pytest.param('examples.fhiaims_calculator.ipynb', 'all', False, id='fhiaims_calculator',
             marks=aims_prerequisites),
-        pytest.param("examples.daisy_chain_mlip_fitting.ipynb", "all", False, id="daisy_chain_mlip_fitting")
+        pytest.param("examples.daisy_chain_mlip_fitting.ipynb", "all", True, id="daisy_chain_mlip_fitting")
     )
 )
 def test_example(tmp_path, nb_file, idx_execute, monkeypatch, needs_expyre, expyre_systems):
