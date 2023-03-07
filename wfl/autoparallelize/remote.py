@@ -103,6 +103,8 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
         if not quiet:
             sys.stderr.write(f'Gathering results for {xpr.id} remote {xpr.remote_id}\n')
 
+        stdout = None
+        stderr = None
         try:
             ats_out, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
         except Exception as exc:
