@@ -33,8 +33,7 @@ def test_example(tmp_path, nb_file, idx_execute, monkeypatch, needs_expyre, expy
               f'"EXPYRE_PYTEST_SYSTEMS" environment variable.')
         return
 
-    orig_pythonpath = os.environ[f"PYTHONPATH"]
-    os.environ[f"PYTHONPATH"] = f"{Path(__file__).parent.parent}:{orig_pythonpath}"    
+    os.environ[f"PYTHONPATH"] = f"{Path(__file__).parent.parent}"    
 
     print("running test_example", nb_file)
     basepath = os.path.join(f'{os.path.dirname(__file__)}/../docs/source')
