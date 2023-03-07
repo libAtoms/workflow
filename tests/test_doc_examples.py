@@ -39,7 +39,15 @@ def test_example(tmp_path, nb_file, idx_execute, monkeypatch, needs_expyre, expy
 
     monkeypatch.chdir(tmp_path)
     try:
-        exec(code, globals())
+        ## exec(code, globals())
+        run_test_mod_name = f"run_test_{nb_file.replace('.', '_')}"
+        import sys, importlib
+        with open(run_test_mod_name + ".py", "w") as fout:
+            fout.write(code)
+        sys.path.append(str(tmp_path))
+        run_test_mod = importlib.import_module(run_test_mod_name)
+        sys.path.pop()
+
     except Exception as exc:
         import traceback, re
         tb_str = traceback.format_exc()
