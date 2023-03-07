@@ -155,6 +155,18 @@ jobs:
           # exit-zero treats all errors as warnings.
           flake8 wfl/ --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
 
+      - name: Tmp test daisy-chain example only
+        run: |
+          rm -rf $HOME/pytest_daisy
+          mkdir $HOME/pytest_daisy
+          export EXPYRE_PYTEST_SYSTEMS=github
+          export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
+          export WFL_NUM_PYTHON_SUBPROCESSES=2
+          export OMP_NUM_THREADS=1
+          export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
+          pytest --runremote --basetemp $HOME/pytest_plain -rxXs tests/test_doc_examples.py
+
+
       - name: Test with pytest - plain
         if: env.coverage-on-version != matrix.python-version
         run: |

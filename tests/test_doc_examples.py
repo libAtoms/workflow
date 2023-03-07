@@ -2,6 +2,7 @@ import os
 import shutil
 import json
 import pytest
+import expyre
 
 from .calculators.test_aims import aims_prerequisites
 
@@ -11,6 +12,11 @@ def _get_coding_blocks(nb_file):
     with open(nb_file, 'r') as fo:
         nb = json.load(fo)
     return [''.join(cell['source']) for cell in nb['cells'] if cell['cell_type'] == 'code']
+
+github_slurm_config = pytest.mark.skipif(
+    condition = "github" not in expyre.config.systems, 
+    reason="Missing configuration file for remote execution"
+)
 
 
 @pytest.mark.parametrize(
@@ -22,7 +28,8 @@ def _get_coding_blocks(nb_file):
         pytest.param('examples.select_fps.ipynb', 'all', id='select fps'),
         pytest.param('examples.fhiaims_calculator.ipynb', 'all', id='fhiaims_calculator',
             marks=aims_prerequisites),
-        pytest.param("examples.daisy_chain_mlip_fitting.ipynb", "all", id="daisy_chain_mlip_fitting")
+        pytest.param("examples.daisy_chain_mlip_fitting.ipynb", "all", id="daisy_chain_mlip_fitting",
+            marks=github_slurm_config)
     )
 )
 def test_example(tmp_path, nb_file, idx_execute, monkeypatch):
