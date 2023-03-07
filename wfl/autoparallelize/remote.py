@@ -106,6 +106,10 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
         try:
             ats_out, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
         except Exception as exc:
+            print("stdout","-"*30)
+            print(stdout)
+            print("stderr", "-"*30)
+            print(stderr)
             warnings.warn(f'Failed in remote job {xpr.id} on {xpr.system_name}')
             if not remote_info.ignore_failed_jobs:
                 raise
