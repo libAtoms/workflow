@@ -112,6 +112,13 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
             print(stdout)
             print("stderr", "-"*30)
             print(stderr)
+            import glob #BOB
+            print("BOB") #BOB
+            for f in glob.glob(xpr.stage_dir + "/*"): #BOB
+                print("BOB FILE", f) #BOB
+                if ".std" in f or "slurm" in f: #BOB
+                    with open(f) as fin: #BOB
+                        print("BOB ".join(fin.readlines()), "\n") #BOB
             warnings.warn(f'Failed in remote job {xpr.id} on {xpr.system_name}')
             if not remote_info.ignore_failed_jobs:
                 raise
@@ -126,13 +133,6 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
             stdout = ''
             stderr = ''
             #
-            import glob #BOB
-            print("BOB") #BOB
-            for f in glob.glob(xpr.stage_dir + "/*"): #BOB
-                print("BOB FILE", f) #BOB
-                if ".std" in f or "slurm" in f: #BOB
-                    with open(f) as fin: #BOB
-                        print("BOB ".join(fin.readlines()), "\n") #BOB
 
         if ats_out is None:
             # Skip the right number of input files. If we're here,
