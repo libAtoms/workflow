@@ -164,7 +164,7 @@ jobs:
           export WFL_NUM_PYTHON_SUBPROCESSES=2
           export OMP_NUM_THREADS=1
           export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
-          pytest --runremote --basetemp $HOME/pytest_plain -rxXs tests/test_doc_examples.py
+          pytest --runremote --basetemp $HOME/pytest_plain -s tests/test_doc_examples.py
 
 
       - name: Test with pytest - plain
