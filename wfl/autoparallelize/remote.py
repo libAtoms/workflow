@@ -66,6 +66,7 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
         # remote job will have to set num_python_subprocesses appropriately for its node
         # ignore configset out for hashing of inputs, since that doesn't affect function
         # calls that have to happen (also it's not repeatable for some reason)
+        print("BOB Creating ExPyRe of op", op)
         xprs.append(ExPyRe(name=job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                             hash_ignore=hash_ignore + ['outputspec'],
                             env_vars=remote_info.env_vars, input_files=remote_info.input_files,

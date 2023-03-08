@@ -37,14 +37,17 @@ def test_example(tmp_path, nb_file, idx_execute, monkeypatch, needs_expyre, expy
     code = '\n'.join([cb_i for idx_i, cb_i in enumerate(coding_blocks) if idx_execute == 'all' or idx_i in idx_execute])
     assert code is not ''
 
+    wrapped_code = "def run_example():\n" + "\n".join(["    " + l for l in code.splitlines()]) + "\n"
+
     monkeypatch.chdir(tmp_path)
     ## try:
     run_test_mod_name = f"run_test_{nb_file.replace('.', '_')}"
     import sys, importlib
     with open(run_test_mod_name + ".py", "w") as fout:
-        fout.write(code)
+        fout.write(wrapped_code)
     sys.path.append(str(tmp_path))
     run_test_mod = importlib.import_module(run_test_mod_name)
+    run_test_mod.run_example()
     sys.path.pop()
 
     ## except Exception as exc:
