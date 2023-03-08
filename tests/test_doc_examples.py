@@ -38,23 +38,21 @@ def test_example(tmp_path, nb_file, idx_execute, monkeypatch, needs_expyre, expy
     assert code is not ''
 
     monkeypatch.chdir(tmp_path)
-    try:
-        ## exec(code, globals())
-        run_test_mod_name = f"run_test_{nb_file.replace('.', '_')}"
-        import sys, importlib
-        with open(run_test_mod_name + ".py", "w") as fout:
-            fout.write(code)
-        sys.path.append(str(tmp_path))
-        run_test_mod = importlib.import_module(run_test_mod_name)
-        sys.path.pop()
+    ## try:
+    run_test_mod_name = f"run_test_{nb_file.replace('.', '_')}"
+    import sys, importlib
+    with open(run_test_mod_name + ".py", "w") as fout:
+        fout.write(code)
+    sys.path.append(str(tmp_path))
+    run_test_mod = importlib.import_module(run_test_mod_name)
+    sys.path.pop()
 
-    except Exception as exc:
-        import traceback, re
-        tb_str = traceback.format_exc()
-        line_nos = list(re.findall("line ([0-9]+),", tb_str))
-        line_no = int(line_nos[-1])
-        lines = list(enumerate(code.splitlines()))[line_no - 5 : line_no + 5]
-        actual_error = "\n".join([f"{li:4d}{'*' if li == line_no else ' '} {l}" for li, l in lines])
+    ## except Exception as exc:
+        ## import traceback, re
+        ## tb_str = traceback.format_exc()
+        ## line_nos = list(re.findall("line ([0-9]+),", tb_str))
+        ## line_no = int(line_nos[-1])
+        ## lines = list(enumerate(code.splitlines()))[line_no - 5 : line_no + 5]
+        ## actual_error = "\n".join([f"{li:4d}{'*' if li == line_no else ' '} {l}" for li, l in lines])
 
-        print(f"BOB raise RuntimeError Exception raised by test_example {nb_file}, traceback:\n{actual_error}\n")
-        ##BOB raise RuntimeError(f"Exception raised by test_example {nb_file}, traceback:\n{actual_error}\n") from exc
+        ## raise RuntimeError(f"Exception raised by test_example {nb_file}, traceback:\n{actual_error}\n") from exc
