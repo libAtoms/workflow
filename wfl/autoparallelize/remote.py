@@ -113,8 +113,8 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
             print("stderr", "-"*30)
             print(stderr)
             import glob #BOB
-            print("BOB") #BOB
-            for f in glob.glob(xpr.stage_dir + "/*"): #BOB
+            print("BOB", xpr.stage_dir) #BOB
+            for f in glob.glob(str(xpr.stage_dir) + "/*"): #BOB
                 print("BOB FILE", f) #BOB
                 if ".std" in f or "slurm" in f: #BOB
                     with open(f) as fin: #BOB
