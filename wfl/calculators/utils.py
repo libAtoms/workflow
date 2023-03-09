@@ -4,6 +4,7 @@ from ase.calculators.calculator import all_properties, PropertyNotImplementedErr
 from ase.calculators.singlepoint import SinglePointCalculator
 
 from wfl.utils.file_utils import clean_dir
+import wfl.configset
 
 per_atom_properties = ['forces', 'stresses', 'charges', 'magmoms', 'energies']
 per_config_properties = ['energy', 'stress', 'dipole', 'magmom', 'free_energy']
@@ -68,7 +69,7 @@ def save_results(atoms, properties, results_prefix=None):
 
     # this would be simpler if we could just use calc.results, but some (e.g. Castep) don't use it
     if properties is None:
-        # This will not work for calculators like Castep that (as of some point at least) do not use 
+        # This will not work for calculators like Castep that (as of some point at least) do not use
         # results dict.  Such calculators will fail below, in the "if 'energy' in properties" statement.
         properties = list(atoms.calc.results.keys())
 
@@ -118,7 +119,7 @@ def save_results(atoms, properties, results_prefix=None):
                                        len(atoms.calc.extra_results.get("atoms", {})) > 0):
             raise ValueError('Refusing to save calculator results into info/arrays fields with no prefix,'
                             ' too much chance of confusion with ASE extxyz reading/writing and conversion'
-                            ' to SinglePointCalculator') 
+                            ' to SinglePointCalculator')
 
         for key, vals in atoms.calc.extra_results["config"].items():
             config_results[key] = vals
@@ -163,3 +164,55 @@ def clean_rundir(rundir, keep_files, default_keep_files, calculation_succeeded):
         clean_dir(rundir, False, force=False)
     else:
         clean_dir(rundir, keep_files, force=False)
+
+
+def subsample(inputs, outputs, M, N_s, keep_isolated_atoms=True):
+    """
+    Draw subsamples (without replacement) from given configurations.
+
+    Parameter:
+    ----------
+    inputs: ConfigSet
+        Set of configurations to draw subsamples from
+        (e.g. full training set).
+    outputs: OutputSpec
+        Target for subsample sets of configurations.
+    M: int
+        Number of subsets to be drawn.
+    N_s: int
+        Number of samples per subsets.
+    keep_isolated_atoms: bool, default True
+        Make isolated atoms (if present) be part of each subset.
+
+    Returns:
+    --------
+    ConfigSet with subsample sets of configurations.
+
+    """
+    if outputs.all_written():
+        return outputs.to_ConfigSet()
+
+    # keep track of position in original set of configurations
+    samples = []
+    isolated_atoms = []  # keep isolated atoms for each subsample
+    for atoms_i in inputs:
+        atoms_i.info['_ConfigSet_loc__FullTraining'] = atoms_i.info['_ConfigSet_loc']
+        if keep_isolated_atoms and len(atoms_i) == 1:
+            isolated_atoms.append(atoms_i)
+        else:
+            samples.append(atoms_i)
+
+    N_s -= len(isolated_atoms)
+    assert 1 < N_s <= len(samples), 'Negative N_s (after reduction by number of isolated atoms)'
+    assert len(outputs.files) == M, f'`outputs` requires `M` files to be specified.'
+
+    subsample_indices = [np.random.choice(len(samples), N_s, False) for _ in range(M)]
+
+    subsamples = wfl.configset.ConfigSet([isolated_atoms + [samples[idx_i] for idx_i in idxs]
+                                          for idxs in subsample_indices])
+    for subsample_i in zip(subsamples):
+        for subsample_ij in subsample_i:
+            outputs.store(subsample_ij, subsamples.cur_loc)
+
+    outputs.close()
+    return outputs.to_ConfigSet()
