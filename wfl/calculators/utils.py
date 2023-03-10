@@ -189,6 +189,13 @@ def subsample(inputs, outputs, M, N_s, keep_isolated_atoms=True):
     ConfigSet with subsample sets of configurations.
 
     """
+    # Sample random succesive fuer jeden committee member
+    # Entferne aus gesamt training set nach jeder selection
+    # falls alle aus training set genommen wurde, fülle auf durch ersetzen
+    # mit original training set.
+    # Stelle sicher, dass darauffolgedne selections nicht zu dopplungen von
+    # samples innerhalb eines committee members fureher.
+
     if outputs.all_written():
         return outputs.to_ConfigSet()
 
@@ -206,7 +213,23 @@ def subsample(inputs, outputs, M, N_s, keep_isolated_atoms=True):
     assert 1 < N_s <= len(samples), 'Negative N_s (after reduction by number of isolated atoms)'
     assert len(outputs.files) == M, f'`outputs` requires `M` files to be specified.'
 
-    subsample_indices = [np.random.choice(len(samples), N_s, False) for _ in range(M)]
+    indice_pool = np.arange(len(samples))
+    subsample_indices = []
+    for _ in range(M):
+        if N_s <= len(indice_pool):
+            selected_indices = np.random.choice(indice_pool, N_s, False)
+            indice_pool = indice_pool[~np.isin(indice_pool, selected_indices)]
+            subsample_indices.append(selected_indices)
+        else:
+            selected_indices_part_1 = indice_pool
+            # re-fill pool with indices, taking account of already selected ones,
+            # in order to avoid dublicate selections
+            indice_pool = np.arange(len(samples))
+            indice_pool = indice_pool[~np.isin(indice_pool, selected_indices_part_1)]
+            selected_indices_part_2 = np.random.choice(indice_pool, N_s-len(selected_indices_part_1), False)
+            indice_pool = indice_pool[~np.isin(indice_pool, selected_indices_part_2)]
+            selected_indices = np.concatenate((selected_indices_part_1, selected_indices_part_2))
+            subsample_indices.append(selected_indices)
 
     subsamples = wfl.configset.ConfigSet([isolated_atoms + [samples[idx_i] for idx_i in idxs]
                                           for idxs in subsample_indices])
@@ -216,3 +239,4 @@ def subsample(inputs, outputs, M, N_s, keep_isolated_atoms=True):
 
     outputs.close()
     return outputs.to_ConfigSet()
+
