@@ -98,7 +98,7 @@ def atomization_energy(ctx, inputs, outputs, prop_prefix, prop, isolated_atom_in
         inputs=inputs,
         outputs=outputs,
         prop_prefix=prop_prefix,
-        property=prop,
+        prop=prop,
         isolated_atom_info_key=isolated_atom_info_key,
         isolated_atom_info_value=isolated_atom_info_value
     )
