@@ -1,628 +1,366 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fitting a MLIP &#8212; workflow  documentation</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
-    
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples.mlip_fitting';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Normal Modes of molecules" href="examples.normal_modes.html" />
     <link rel="prev" title="Parallelize MACE calculator" href="examples.mace.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
     
-    <div class="container-fluid" id="banner"></div>
-
     
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
 
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
-      
-      
-      
-      <h1 class="site-logo" id="site-title">workflow  documentation</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">workflow  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="first_example.html">
-   First Example
-  </a>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="overview.html">
-   Overview
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="overview.overall_design.html">
-     Overall design
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="overview.configset.html">
-     Input and output of atomic structures
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="overview.parallelisation.html">
-     Automatic parallelization of tasks
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="overview.queued.html">
-     Functions as independently queued jobs
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="operations.html">
-   Operations
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-  <label for="toctree-checkbox-2">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.calculators.html">
-     Calculators in Workflow
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.generate.html">
-     Generating Atomic Structures
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.descriptors.html">
-     Descriptors
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
-    </a>
-   </li>
-   <li class="toctree-l2 has-children">
-    <a class="reference internal" href="operations.fitting.html">
-     Fitting potentials
-    </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-    <label for="toctree-checkbox-3">
-     <i class="fas fa-chevron-down">
-     </i>
-    </label>
-    <ul>
-     <li class="toctree-l3">
-      <a class="reference internal" href="operations.gap_fitting.html">
-       Fitting GAP
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="operations.multistage_gap_fitting.html">
-       Multistage GAP fitting
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="operations.ace_fitting.html">
-       Fitting ACE
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 current active has-children">
-  <a class="reference internal" href="examples.html">
-   Examples
-  </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
-  <label for="toctree-checkbox-4">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul class="current">
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.index.html">
-     Index
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.dimers.html">
-     Generating Dimer Structures
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.buildcell.html">
-     Random Structures via buildcell
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca_python.html">
-     ORCA via Python script
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.fhiaims_calculator.html">
-     FHI-Aims Calculator
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.mace.html">
-     Parallelize MACE calculator
-    </a>
-   </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Fitting a MLIP
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes of molecules
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.smiles.html">
-     SMILES to
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       Atoms
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.md.html">
-     Molecular Dynamics
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.select_fps.html">
-     Selection or Sampling of Structures
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.contributions.html">
-     Contributing Examples
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="workflows.rss.html">
-   GAP-RSS
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="command_line.automatic_docs.html">
-   Command line interface
-  </a>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="modules.html">
-   Modules
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-  <label for="toctree-checkbox-5">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2 has-children">
-    <a class="reference internal" href="wfl.html">
-     wfl package
-    </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
-    <label for="toctree-checkbox-6">
-     <i class="fas fa-chevron-down">
-     </i>
-    </label>
-    <ul>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.autoparallelize.html">
-       wfl.autoparallelize package
-      </a>
-     </li>
-     <li class="toctree-l3 has-children">
-      <a class="reference internal" href="wfl.calculators.html">
-       wfl.calculators package
-      </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
-      <label for="toctree-checkbox-7">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.calculators.orca.html">
-         wfl.calculators.orca package
-        </a>
-       </li>
-      </ul>
-     </li>
-     <li class="toctree-l3 has-children">
-      <a class="reference internal" href="wfl.cli.html">
-       wfl.cli package
-      </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
-      <label for="toctree-checkbox-8">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.cli.commands.html">
-         wfl.cli.commands package
-        </a>
-       </li>
-      </ul>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.descriptors.html">
-       wfl.descriptors package
-      </a>
-     </li>
-     <li class="toctree-l3 has-children">
-      <a class="reference internal" href="wfl.fit.html">
-       wfl.fit package
-      </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
-      <label for="toctree-checkbox-9">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.fit.gap.html">
-         wfl.fit.gap package
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.fit.modify_database.html">
-         wfl.fit.modify_database package
-        </a>
-       </li>
-      </ul>
-     </li>
-     <li class="toctree-l3 has-children">
-      <a class="reference internal" href="wfl.generate.html">
-       wfl.generate package
-      </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
-      <label for="toctree-checkbox-10">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.generate.md_PROTECT.html">
-         wfl.generate.md package
-        </a>
-       </li>
-      </ul>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.scripts.html">
-       wfl.scripts package
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.select.html">
-       wfl.select package
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.utils.html">
-       wfl.utils package
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="first_example.html">First Example</a></li>
+
+<li class="toctree-l1 has-children"><a class="reference internal" href="overview.html">Overview</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.overall_design.html">Overall design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.configset.html">Input and output of atomic structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.parallelisation.html">Automatic parallelization of tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.queued.html">Functions as independently queued jobs</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="operations.html">Operations</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="operations.calculators.html">Calculators in Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.generate.html">Generating Atomic Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.descriptors.html">Descriptors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.select.html">Selecting Configs</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="operations.fitting.html">Fitting potentials</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="operations.gap_fitting.html">Fitting GAP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.multistage_gap_fitting.html">Multistage GAP fitting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.ace_fitting.html">Fitting ACE</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="examples.html">Examples</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="examples.index.html">Index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.dimers.html">Generating Dimer Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.buildcell.html">Random Structures via buildcell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.orca_python.html">ORCA via Python script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.fhiaims_calculator.html">FHI-Aims Calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.mace.html">Parallelize MACE calculator</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Fitting a MLIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html">Normal Modes of molecules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.smiles.html">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.md.html">Molecular Dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.select_fps.html">Selection or Sampling of Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.contributions.html">Contributing Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.rss.html">GAP-RSS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line.automatic_docs.html">Command line interface</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Modules</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="wfl.html">wfl package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html">wfl.autoparallelize package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="wfl.calculators.html">wfl.calculators package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.orca.html">wfl.calculators.orca package</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="wfl.cli.html">wfl.cli package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.cli.commands.html">wfl.cli.commands package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.descriptors.html">wfl.descriptors package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="wfl.fit.html">wfl.fit package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.fit.gap.html">wfl.fit.gap package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.fit.modify_database.html">wfl.fit.modify_database package</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="wfl.generate.html">wfl.generate package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/examples.mlip_fitting.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
 </div>
 
 
-          
 
 
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
 <button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-expand"></i>
   </span>
 
 </button>
 
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="_sources/examples.mlip_fitting.md.txt"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
+`);
+</script>
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.md</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#table-of-contents">
-   Table of contents
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#general-workflow-and-setup">
-   General workflow and setup
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#getting-started-parallelization-and-imports">
-   Getting started: Parallelization and Imports
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#fitting-the-initial-gap">
-   Fitting the initial GAP
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#preparing-the-iterative-process">
-   Preparing the iterative process
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-iterative-process">
-   The Iterative Process
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#keeping-track-of-training-and-test-errors">
-   Keeping track of training and test errors
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Fitting a MLIP</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#table-of-contents">
-   Table of contents
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#general-workflow-and-setup">
-   General workflow and setup
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#getting-started-parallelization-and-imports">
-   Getting started: Parallelization and Imports
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#fitting-the-initial-gap">
-   Fitting the initial GAP
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#preparing-the-iterative-process">
-   Preparing the iterative process
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-iterative-process">
-   The Iterative Process
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#keeping-track-of-training-and-test-errors">
-   Keeping track of training and test errors
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Fitting a MLIP</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-contents">Table of contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#general-workflow-and-setup">General workflow and setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started-parallelization-and-imports">Getting started: Parallelization and Imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitting-the-initial-gap">Fitting the initial GAP</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparing-the-iterative-process">Preparing the iterative process</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-iterative-process">The Iterative Process</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keeping-track-of-training-and-test-errors">Keeping track of training and test errors</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <div class="section" id="fitting-a-mlip">
-<h1>Fitting a MLIP<a class="headerlink" href="#fitting-a-mlip" title="Permalink to this headline">#</a></h1>
+<h1>Fitting a MLIP<a class="headerlink" href="#fitting-a-mlip" title="Permalink to this heading">#</a></h1>
 <p>The following serves as a basic example of how to fit MLIPs (in this case a GAP for Cu slabs) using the ground functionalities of the wfl package. In theory you need no other previous installations other than wfl, ase, and working versions of QUIP and quippy.</p>
 <div class="section" id="table-of-contents">
-<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">#</a></h2>
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this heading">#</a></h2>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="#general"><span class="std std-ref">General workflow and setup</span></a></p></li>
 <li><p><a class="reference internal" href="#fitting-initial"><span class="std std-ref">Fitting the initial GAP</span></a></p></li>
@@ -631,7 +369,7 @@ title="Print to PDF"
 </ol>
 </div>
 <div class="section" id="general-workflow-and-setup">
-<h2>General workflow and setup<a class="headerlink" href="#general-workflow-and-setup" title="Permalink to this headline">#</a></h2>
+<h2>General workflow and setup<a class="headerlink" href="#general-workflow-and-setup" title="Permalink to this heading">#</a></h2>
 <p id="general">In the <code class="docutils literal notranslate"><span class="pre">examples/iterative_gap_fit</span></code> directory you will find the following files:</p>
 <ul class="simple">
 <li><p>batch_gap_fit.py</p></li>
@@ -642,7 +380,7 @@ title="Print to PDF"
 <p>The iterative fitting workflow is in the file <code class="docutils literal notranslate"><span class="pre">batch_gap_fit</span></code>. In general, starting from an initial training set of structures with energies and forces, located in <code class="docutils literal notranslate"><span class="pre">EMT_atoms.xyz</span></code>, and a set of GAP-fit-hyperparameters, located in <code class="docutils literal notranslate"><span class="pre">multistage_gap_params.json</span></code>, we fit an inital GAP. Then we generate new configs, select a subset of them, and calculate their energies and forces with a <em>proper</em> calculator. The new, calculated structures are then added to the initial training set and we fit the second generation GAP. This iterative process is repeated until a maximum iteration.</p>
 </div>
 <div class="section" id="getting-started-parallelization-and-imports">
-<h2>Getting started: Parallelization and Imports<a class="headerlink" href="#getting-started-parallelization-and-imports" title="Permalink to this headline">#</a></h2>
+<h2>Getting started: Parallelization and Imports<a class="headerlink" href="#getting-started-parallelization-and-imports" title="Permalink to this heading">#</a></h2>
 <p>Let’s take a look at <code class="docutils literal notranslate"><span class="pre">batch_gap_fit.py</span></code>. In the first lines we define the number of cores over which we parallelize.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;WFL_NUM_PYTHON_SUBPROCESSES&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;4&quot;</span>
@@ -652,7 +390,7 @@ title="Print to PDF"
 <span class="n">wfl</span><span class="o">.</span><span class="n">autoparallelize</span><span class="o">.</span><span class="n">mpipool_support</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The “WFL_NUM_PYTHON_SUBPROCESSES” being the number of cores you provide the wfl package with, and “WFL_GAP_FIT_OMP_NUM_THREADS” being the number of cores the GAP fit can run in parallel. We initialize the parallelisation by running the <a class="reference internal" href="overview.parallelisation.html"><span class="doc std std-doc">mpipool_support</span></a>.</p>
+<p>The “WFL_NUM_PYTHON_SUBPROCESSES” being the number of cores you provide the wfl package with, and “WFL_GAP_FIT_OMP_NUM_THREADS” being the number of cores the GAP fit can run in parallel. We initialize the parallelisation by running the <a class="reference internal" href="overview.parallelisation.html"><span class="std std-doc">mpipool_support</span></a>.</p>
 <p>Next we import all necessary functions. As you can see, for this example the only non-basic packages are quippy and ase.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">yaml</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -678,7 +416,7 @@ title="Print to PDF"
 </div>
 </div>
 <div class="section" id="fitting-the-initial-gap">
-<h2>Fitting the initial GAP<a class="headerlink" href="#fitting-the-initial-gap" title="Permalink to this headline">#</a></h2>
+<h2>Fitting the initial GAP<a class="headerlink" href="#fitting-the-initial-gap" title="Permalink to this heading">#</a></h2>
 <p id="fitting-initial">The <code class="docutils literal notranslate"><span class="pre">main</span></code> function in <code class="docutils literal notranslate"><span class="pre">batch_gap_fit.py</span></code> begins with fitting an initial GAP for Cu structures:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">### GAP parameters</span>
 <span class="n">gap_params</span> <span class="o">=</span> <span class="s1">&#39;multistage_gap_params.json&#39;</span>
@@ -697,7 +435,7 @@ title="Print to PDF"
 <span class="n">training</span> <span class="o">=</span> <span class="s1">&#39;EMT_atoms.xyz&#39;</span>
 </pre></div>
 </div>
-<p>The dictionary of located in <code class="docutils literal notranslate"><span class="pre">multistage_gap_params.json</span></code> contains all the necessary GAP hyperparameters for a <a class="reference internal" href="wfl.fit.gap.html"><span class="doc std std-doc">multistage fit</span></a>. As we are only investigating Cu, the list of unique atomic numbers only has one value, <code class="docutils literal notranslate"><span class="pre">Zs=[29]</span></code>. To include SOAP heuristics, we add a dictionary of length scales specific to the Cu atom. For more information, we refer to the <a class="reference external" href="https://github.com/libAtoms/universalSOAP">universalSOAP package</a>. To generalize this part of the code for other systems, we suggest using the previously VASP-calculated dictionary located there. The training data is located in the xyz-file <code class="docutils literal notranslate"><span class="pre">EMT_atoms.xyz</span></code>. This file can be any ase-readable type file, and includes one structure with only one Cu atom, no periodic boundary conditions, and the property <code class="docutils literal notranslate"><span class="pre">config_type=isolated_atom</span></code>. The energy of this structure being our default Cu energy.</p>
+<p>The dictionary of located in <code class="docutils literal notranslate"><span class="pre">multistage_gap_params.json</span></code> contains all the necessary GAP hyperparameters for a <a class="reference internal" href="wfl.fit.gap.html"><span class="std std-doc">multistage fit</span></a>. As we are only investigating Cu, the list of unique atomic numbers only has one value, <code class="docutils literal notranslate"><span class="pre">Zs=[29]</span></code>. To include SOAP heuristics, we add a dictionary of length scales specific to the Cu atom. For more information, we refer to the <a class="reference external" href="https://github.com/libAtoms/universalSOAP">universalSOAP package</a>. To generalize this part of the code for other systems, we suggest using the previously VASP-calculated dictionary located there. The training data is located in the xyz-file <code class="docutils literal notranslate"><span class="pre">EMT_atoms.xyz</span></code>. This file can be any ase-readable type file, and includes one structure with only one Cu atom, no periodic boundary conditions, and the property <code class="docutils literal notranslate"><span class="pre">config_type=isolated_atom</span></code>. The energy of this structure being our default Cu energy.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">### Initial GAP training</span>
 <span class="n">fit_idx</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">gap_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;GAP_</span><span class="si">{</span><span class="n">fit_idx</span><span class="si">}</span><span class="s1">&#39;</span>
@@ -710,10 +448,10 @@ title="Print to PDF"
 <span class="n">get_gap</span><span class="p">(</span><span class="n">training</span><span class="p">,</span> <span class="n">gap_name</span><span class="p">,</span> <span class="n">Zs</span><span class="p">,</span> <span class="n">length_scales</span><span class="p">,</span> <span class="n">gap_params</span><span class="p">,</span> <span class="n">run_dir</span><span class="o">=</span><span class="n">GAP_dir</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Next, we create a directory in which we will write all future files resulting from a GAP fit, naming them by the iteration in our process. The function <code class="docutils literal notranslate"><span class="pre">get_gap</span></code> represents a helper function that takes training_file, parameters, and output filenames and runs the <a class="reference internal" href="wfl.fit.html"><span class="doc std std-doc">multistage gap fit</span></a> function. This function will run locally. If you wish to run this or any other wfl-based function remotely, check out the <a class="reference external" href="https://libatoms.github.io/ExPyRe/">Expyre documentation</a> and add the remote information via the keyword <code class="docutils literal notranslate"><span class="pre">remote_info</span></code>.</p>
+<p>Next, we create a directory in which we will write all future files resulting from a GAP fit, naming them by the iteration in our process. The function <code class="docutils literal notranslate"><span class="pre">get_gap</span></code> represents a helper function that takes training_file, parameters, and output filenames and runs the <a class="reference internal" href="wfl.fit.html"><span class="std std-doc">multistage gap fit</span></a> function. This function will run locally. If you wish to run this or any other wfl-based function remotely, check out the <a class="reference external" href="https://libatoms.github.io/ExPyRe/">Expyre documentation</a> and add the remote information via the keyword <code class="docutils literal notranslate"><span class="pre">remote_info</span></code>.</p>
 </div>
 <div class="section" id="preparing-the-iterative-process">
-<h2>Preparing the iterative process<a class="headerlink" href="#preparing-the-iterative-process" title="Permalink to this headline">#</a></h2>
+<h2>Preparing the iterative process<a class="headerlink" href="#preparing-the-iterative-process" title="Permalink to this heading">#</a></h2>
 <div class="highlight-python notranslate" id="preparing-iter"><div class="highlight"><pre><span></span><span class="c1">### MD info</span>
 <span class="n">calc</span> <span class="o">=</span> <span class="s1">&#39;md&#39;</span>
 <span class="n">MD_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;MD&#39;</span><span class="p">)</span>
@@ -736,10 +474,10 @@ title="Print to PDF"
 <span class="n">max_count</span> <span class="o">=</span> <span class="mi">5</span>
 </pre></div>
 </div>
-<p>Above are some examples for preparing the <a class="reference internal" href="wfl.generate.html"><span class="doc std std-doc">structure generation processes</span></a> <code class="docutils literal notranslate"><span class="pre">MD</span></code> and <code class="docutils literal notranslate"><span class="pre">optimize</span></code>. In this particular file, we define the type of structure generation process with the parameter <code class="docutils literal notranslate"><span class="pre">calc</span></code>, and set the maximum number of iterations to 5. The variable <code class="docutils literal notranslate"><span class="pre">n_select</span></code> determines how many structures get added to the training set each generation.</p>
+<p>Above are some examples for preparing the <a class="reference internal" href="wfl.generate.html"><span class="std std-doc">structure generation processes</span></a> <code class="docutils literal notranslate"><span class="pre">MD</span></code> and <code class="docutils literal notranslate"><span class="pre">optimize</span></code>. In this particular file, we define the type of structure generation process with the parameter <code class="docutils literal notranslate"><span class="pre">calc</span></code>, and set the maximum number of iterations to 5. The variable <code class="docutils literal notranslate"><span class="pre">n_select</span></code> determines how many structures get added to the training set each generation.</p>
 </div>
 <div class="section" id="the-iterative-process">
-<h2>The Iterative Process<a class="headerlink" href="#the-iterative-process" title="Permalink to this headline">#</a></h2>
+<h2>The Iterative Process<a class="headerlink" href="#the-iterative-process" title="Permalink to this heading">#</a></h2>
 <div class="highlight-python notranslate" id="iterative-proc"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="n">fit_idx</span>  <span class="o">&lt;</span> <span class="n">max_count</span><span class="p">:</span>
   <span class="n">files</span> <span class="o">=</span> <span class="n">get_file_names</span><span class="p">(</span><span class="n">GAP_dir</span><span class="p">,</span> <span class="n">MD_dir</span><span class="p">,</span> <span class="n">fit_idx</span><span class="p">,</span> <span class="n">calc</span> <span class="o">=</span> <span class="n">calc</span><span class="p">)</span>
 
@@ -768,11 +506,11 @@ title="Print to PDF"
 </pre></div>
 </div>
 <p>This is where the magic happens. Below we will go through each of the functions in more detail, here we will only discuss the general structure.</p>
-<p>After generating structures via MD or optimization, we calculate their global <a class="reference internal" href="wfl.descriptors.html"><span class="doc std std-doc">atomic descriptors</span></a> using <code class="docutils literal notranslate"><span class="pre">get_descriptors</span></code> for both the generated and the training structures. We use the descriptor hyperparameters from the previous GAP fit. Then we select <code class="docutils literal notranslate"><span class="pre">n_select</span></code> structures from the generated structures using <a class="reference internal" href="wfl.select.html"><span class="doc std std-doc">farthest point sampling</span></a>, adding the training descriptor vectors as reference descriptors.</p>
-<p>Next, we calculate the “real” energies and forces on the <code class="docutils literal notranslate"><span class="pre">n_select</span></code> structures. For real applications, you would add the <em>ab initio</em> code of your choice (see <a class="reference internal" href="wfl.calculators.html"><span class="doc std std-doc">calculators</span></a>), for simplicity’s sake we use <code class="docutils literal notranslate"><span class="pre">ase.emt</span></code> here. These structures then get added to the new training set for iteration <code class="docutils literal notranslate"><span class="pre">fit_idx</span> <span class="pre">+=</span> <span class="pre">1</span></code>, and we fit the next generation’s GAP.</p>
+<p>After generating structures via MD or optimization, we calculate their global <a class="reference internal" href="wfl.descriptors.html"><span class="std std-doc">atomic descriptors</span></a> using <code class="docutils literal notranslate"><span class="pre">get_descriptors</span></code> for both the generated and the training structures. We use the descriptor hyperparameters from the previous GAP fit. Then we select <code class="docutils literal notranslate"><span class="pre">n_select</span></code> structures from the generated structures using <a class="reference internal" href="wfl.select.html"><span class="std std-doc">farthest point sampling</span></a>, adding the training descriptor vectors as reference descriptors.</p>
+<p>Next, we calculate the “real” energies and forces on the <code class="docutils literal notranslate"><span class="pre">n_select</span></code> structures. For real applications, you would add the <em>ab initio</em> code of your choice (see <a class="reference internal" href="wfl.calculators.html"><span class="std std-doc">calculators</span></a>), for simplicity’s sake we use <code class="docutils literal notranslate"><span class="pre">ase.emt</span></code> here. These structures then get added to the new training set for iteration <code class="docutils literal notranslate"><span class="pre">fit_idx</span> <span class="pre">+=</span> <span class="pre">1</span></code>, and we fit the next generation’s GAP.</p>
 </div>
 <div class="section" id="keeping-track-of-training-and-test-errors">
-<h2>Keeping track of training and test errors<a class="headerlink" href="#keeping-track-of-training-and-test-errors" title="Permalink to this headline">#</a></h2>
+<h2>Keeping track of training and test errors<a class="headerlink" href="#keeping-track-of-training-and-test-errors" title="Permalink to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">val_error</span>   <span class="o">=</span> <span class="n">get_ref_error</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;dft&quot;</span><span class="p">],</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;eval&quot;</span><span class="p">],</span> <span class="n">files</span><span class="p">[</span><span class="s2">&quot;gap&quot;</span><span class="p">])</span>
 
 <span class="n">v_f</span><span class="p">,</span> <span class="n">v_e</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">val_error</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">],</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">val_error</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span>
@@ -803,50 +541,98 @@ title="Print to PDF"
 </div>
 
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="examples.mace.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Parallelize MACE calculator</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="examples.mace.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Parallelize MACE calculator</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="examples.normal_modes.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="examples.normal_modes.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">Normal Modes of molecules</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-contents">Table of contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#general-workflow-and-setup">General workflow and setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started-parallelization-and-imports">Getting started: Parallelization and Imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitting-the-initial-gap">Fitting the initial GAP</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparing-the-iterative-process">Preparing the iterative process</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-iterative-process">The Iterative Process</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keeping-track-of-training-and-test-errors">Keeping track of training and test errors</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner">
+<div class="bd-footer-content__inner container">
   
-    By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
-  
-      &copy; Copyright .<br/>
-</p>
-        </footer>
-    </div>
+  <div class="footer-item">
     
-</div>
+<p class="component-author">
+By N. Bernstein, T. K. Stenczel, E. Gelzinyte
+</p>
 
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div></div>
+          </footer>
+        
 
-      </div>
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

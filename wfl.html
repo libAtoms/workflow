@@ -1,628 +1,425 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>wfl package &#8212; workflow  documentation</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
-    
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'wfl';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="wfl.autoparallelize package" href="wfl.autoparallelize.html" />
     <link rel="prev" title="wfl" href="modules.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
     
-    <div class="container-fluid" id="banner"></div>
-
     
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
 
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
-      
-      
-      
-      <h1 class="site-logo" id="site-title">workflow  documentation</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">workflow  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="first_example.html">
-   First Example
-  </a>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="overview.html">
-   Overview
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="overview.overall_design.html">
-     Overall design
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="overview.configset.html">
-     Input and output of atomic structures
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="overview.parallelisation.html">
-     Automatic parallelization of tasks
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="overview.queued.html">
-     Functions as independently queued jobs
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="operations.html">
-   Operations
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-  <label for="toctree-checkbox-2">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.calculators.html">
-     Calculators in Workflow
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.generate.html">
-     Generating Atomic Structures
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.descriptors.html">
-     Descriptors
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="operations.select.html">
-     Selecting Configs
-    </a>
-   </li>
-   <li class="toctree-l2 has-children">
-    <a class="reference internal" href="operations.fitting.html">
-     Fitting potentials
-    </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-    <label for="toctree-checkbox-3">
-     <i class="fas fa-chevron-down">
-     </i>
-    </label>
-    <ul>
-     <li class="toctree-l3">
-      <a class="reference internal" href="operations.gap_fitting.html">
-       Fitting GAP
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="operations.multistage_gap_fitting.html">
-       Multistage GAP fitting
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="operations.ace_fitting.html">
-       Fitting ACE
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="examples.html">
-   Examples
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
-  <label for="toctree-checkbox-4">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.index.html">
-     Index
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.dimers.html">
-     Generating Dimer Structures
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.buildcell.html">
-     Random Structures via buildcell
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.orca_python.html">
-     ORCA via Python script
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.fhiaims_calculator.html">
-     FHI-Aims Calculator
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.mace.html">
-     Parallelize MACE calculator
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.mlip_fitting.html">
-     Fitting a MLIP
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.normal_modes.html">
-     Normal Modes of molecules
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.smiles.html">
-     SMILES to
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       Atoms
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.md.html">
-     Molecular Dynamics
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.select_fps.html">
-     Selection or Sampling of Structures
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="examples.contributions.html">
-     Contributing Examples
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="workflows.rss.html">
-   GAP-RSS
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="command_line.automatic_docs.html">
-   Command line interface
-  </a>
- </li>
- <li class="toctree-l1 current active has-children">
-  <a class="reference internal" href="modules.html">
-   Modules
-  </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-  <label for="toctree-checkbox-5">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul class="current">
-   <li class="toctree-l2 current active has-children">
-    <a class="current reference internal" href="#">
-     wfl package
-    </a>
-    <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
-    <label for="toctree-checkbox-6">
-     <i class="fas fa-chevron-down">
-     </i>
-    </label>
-    <ul>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.autoparallelize.html">
-       wfl.autoparallelize package
-      </a>
-     </li>
-     <li class="toctree-l3 has-children">
-      <a class="reference internal" href="wfl.calculators.html">
-       wfl.calculators package
-      </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
-      <label for="toctree-checkbox-7">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.calculators.orca.html">
-         wfl.calculators.orca package
-        </a>
-       </li>
-      </ul>
-     </li>
-     <li class="toctree-l3 has-children">
-      <a class="reference internal" href="wfl.cli.html">
-       wfl.cli package
-      </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
-      <label for="toctree-checkbox-8">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.cli.commands.html">
-         wfl.cli.commands package
-        </a>
-       </li>
-      </ul>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.descriptors.html">
-       wfl.descriptors package
-      </a>
-     </li>
-     <li class="toctree-l3 has-children">
-      <a class="reference internal" href="wfl.fit.html">
-       wfl.fit package
-      </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
-      <label for="toctree-checkbox-9">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.fit.gap.html">
-         wfl.fit.gap package
-        </a>
-       </li>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.fit.modify_database.html">
-         wfl.fit.modify_database package
-        </a>
-       </li>
-      </ul>
-     </li>
-     <li class="toctree-l3 has-children">
-      <a class="reference internal" href="wfl.generate.html">
-       wfl.generate package
-      </a>
-      <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
-      <label for="toctree-checkbox-10">
-       <i class="fas fa-chevron-down">
-       </i>
-      </label>
-      <ul>
-       <li class="toctree-l4">
-        <a class="reference internal" href="wfl.generate.md_PROTECT.html">
-         wfl.generate.md package
-        </a>
-       </li>
-      </ul>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.scripts.html">
-       wfl.scripts package
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.select.html">
-       wfl.select package
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="wfl.utils.html">
-       wfl.utils package
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="first_example.html">First Example</a></li>
+
+<li class="toctree-l1 has-children"><a class="reference internal" href="overview.html">Overview</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.overall_design.html">Overall design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.configset.html">Input and output of atomic structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.parallelisation.html">Automatic parallelization of tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.queued.html">Functions as independently queued jobs</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="operations.html">Operations</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="operations.calculators.html">Calculators in Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.generate.html">Generating Atomic Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.descriptors.html">Descriptors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.select.html">Selecting Configs</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="operations.fitting.html">Fitting potentials</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="operations.gap_fitting.html">Fitting GAP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.multistage_gap_fitting.html">Multistage GAP fitting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.ace_fitting.html">Fitting ACE</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="examples.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.index.html">Index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.dimers.html">Generating Dimer Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.buildcell.html">Random Structures via buildcell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.orca_python.html">ORCA via Python script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.fhiaims_calculator.html">FHI-Aims Calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.mace.html">Parallelize MACE calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html">Fitting a MLIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html">Normal Modes of molecules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.smiles.html">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.md.html">Molecular Dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.select_fps.html">Selection or Sampling of Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.contributions.html">Contributing Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.rss.html">GAP-RSS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line.automatic_docs.html">Command line interface</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">Modules</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">wfl package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html">wfl.autoparallelize package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="wfl.calculators.html">wfl.calculators package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.orca.html">wfl.calculators.orca package</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="wfl.cli.html">wfl.cli package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.cli.commands.html">wfl.cli.commands package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.descriptors.html">wfl.descriptors package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="wfl.fit.html">wfl.fit package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.fit.gap.html">wfl.fit.gap package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.fit.modify_database.html">wfl.fit.modify_database package</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="wfl.generate.html">wfl.generate package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/wfl.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
 </div>
 
 
-          
 
 
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
 <button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-expand"></i>
   </span>
 
 </button>
 
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="_sources/wfl.rst.txt"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
+`);
+</script>
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.rst</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#subpackages">
-   Subpackages
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.configset">
-   wfl.configset module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.descriptor_heuristics">
-   wfl.descriptor_heuristics module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.map">
-   wfl.map module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl">
-   Module contents
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>wfl package</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#subpackages">
-   Subpackages
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.configset">
-   wfl.configset module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.descriptor_heuristics">
-   wfl.descriptor_heuristics module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl.map">
-   wfl.map module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-wfl">
-   Module contents
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>wfl package</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.configset">wfl.configset module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.ConfigSet"><code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.ConfigSet.cur_loc"><code class="docutils literal notranslate"><span class="pre">ConfigSet.cur_loc</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.ConfigSet.groups"><code class="docutils literal notranslate"><span class="pre">ConfigSet.groups()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.ConfigSet.one_file"><code class="docutils literal notranslate"><span class="pre">ConfigSet.one_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec"><code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.all_written"><code class="docutils literal notranslate"><span class="pre">OutputSpec.all_written()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.close"><code class="docutils literal notranslate"><span class="pre">OutputSpec.close()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.store"><code class="docutils literal notranslate"><span class="pre">OutputSpec.store()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.to_ConfigSet"><code class="docutils literal notranslate"><span class="pre">OutputSpec.to_ConfigSet()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.descriptor_heuristics">wfl.descriptor_heuristics module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.descriptor_heuristics.descriptor_2brn_uniform_file"><code class="docutils literal notranslate"><span class="pre">descriptor_2brn_uniform_file()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.descriptor_heuristics.descriptors_from_length_scales"><code class="docutils literal notranslate"><span class="pre">descriptors_from_length_scales()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.descriptor_heuristics.len_scale_pair"><code class="docutils literal notranslate"><span class="pre">len_scale_pair()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.map">wfl.map module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.map.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl">Module contents</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <div class="section" id="wfl-package">
-<h1>wfl package<a class="headerlink" href="#wfl-package" title="Permalink to this headline">#</a></h1>
+<h1>wfl package<a class="headerlink" href="#wfl-package" title="Permalink to this heading">#</a></h1>
 <div class="section" id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">#</a></h2>
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="wfl.autoparallelize.html">wfl.autoparallelize package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.autoparainfo">wfl.autoparallelize.autoparainfo module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.base">wfl.autoparallelize.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.mpipool_support">wfl.autoparallelize.mpipool_support module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.pool">wfl.autoparallelize.pool module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.remote">wfl.autoparallelize.remote module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.remoteinfo">wfl.autoparallelize.remoteinfo module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.utils">wfl.autoparallelize.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.autoparainfo">wfl.autoparallelize.autoparainfo module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.autoparainfo.AutoparaInfo"><code class="docutils literal notranslate"><span class="pre">AutoparaInfo</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.autoparainfo.AutoparaInfo.update_defaults"><code class="docutils literal notranslate"><span class="pre">AutoparaInfo.update_defaults()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.base">wfl.autoparallelize.base module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.base.autoparallelize"><code class="docutils literal notranslate"><span class="pre">autoparallelize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.base.autoparallelize_docstring"><code class="docutils literal notranslate"><span class="pre">autoparallelize_docstring()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.mpipool_support">wfl.autoparallelize.mpipool_support module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.mpipool_support.init"><code class="docutils literal notranslate"><span class="pre">init()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.mpipool_support.shutdown_and_barrier"><code class="docutils literal notranslate"><span class="pre">shutdown_and_barrier()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.pool">wfl.autoparallelize.pool module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.pool.do_in_pool"><code class="docutils literal notranslate"><span class="pre">do_in_pool()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.remote">wfl.autoparallelize.remote module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.remote.do_remotely"><code class="docutils literal notranslate"><span class="pre">do_remotely()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.remoteinfo">wfl.autoparallelize.remoteinfo module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.remoteinfo.RemoteInfo"><code class="docutils literal notranslate"><span class="pre">RemoteInfo</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.utils">wfl.autoparallelize.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.utils.get_remote_info"><code class="docutils literal notranslate"><span class="pre">get_remote_info()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.utils.grouper"><code class="docutils literal notranslate"><span class="pre">grouper()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize">Module contents</a></li>
 </ul>
 </li>
@@ -637,15 +434,77 @@ title="Print to PDF"
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.aims">wfl.calculators.aims module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.castep">wfl.calculators.castep module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.committee">wfl.calculators.committee module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.espresso">wfl.calculators.espresso module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.generic">wfl.calculators.generic module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.mopac">wfl.calculators.mopac module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.utils">wfl.calculators.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.vasp">wfl.calculators.vasp module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.wfl_fileio_calculator">wfl.calculators.wfl_fileio_calculator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.aims">wfl.calculators.aims module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.aims.Aims"><code class="docutils literal notranslate"><span class="pre">Aims</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.aims.Aims.calculate"><code class="docutils literal notranslate"><span class="pre">Aims.calculate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.aims.Aims.implemented_properties"><code class="docutils literal notranslate"><span class="pre">Aims.implemented_properties</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.aims.Aims.wfl_generic_def_autopara_info"><code class="docutils literal notranslate"><span class="pre">Aims.wfl_generic_def_autopara_info</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.castep">wfl.calculators.castep module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.castep.Castep"><code class="docutils literal notranslate"><span class="pre">Castep</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.castep.Castep.calculate"><code class="docutils literal notranslate"><span class="pre">Castep.calculate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.castep.Castep.implemented_properties"><code class="docutils literal notranslate"><span class="pre">Castep.implemented_properties</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.castep.Castep.setup_calc_params"><code class="docutils literal notranslate"><span class="pre">Castep.setup_calc_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.castep.Castep.wfl_generic_def_autopara_info"><code class="docutils literal notranslate"><span class="pre">Castep.wfl_generic_def_autopara_info</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.committee">wfl.calculators.committee module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.committee.calculate_committee"><code class="docutils literal notranslate"><span class="pre">calculate_committee()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.espresso">wfl.calculators.espresso module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.espresso.Espresso"><code class="docutils literal notranslate"><span class="pre">Espresso</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.espresso.Espresso.calculate"><code class="docutils literal notranslate"><span class="pre">Espresso.calculate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.espresso.Espresso.implemented_properties"><code class="docutils literal notranslate"><span class="pre">Espresso.implemented_properties</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.espresso.Espresso.setup_calc_params"><code class="docutils literal notranslate"><span class="pre">Espresso.setup_calc_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.espresso.Espresso.wfl_generic_def_autopara_info"><code class="docutils literal notranslate"><span class="pre">Espresso.wfl_generic_def_autopara_info</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.generic">wfl.calculators.generic module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.generic.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.mopac">wfl.calculators.mopac module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.mopac.MOPAC"><code class="docutils literal notranslate"><span class="pre">MOPAC</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.mopac.MOPAC.calculate"><code class="docutils literal notranslate"><span class="pre">MOPAC.calculate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.mopac.MOPAC.wfl_generic_def_autopara_info"><code class="docutils literal notranslate"><span class="pre">MOPAC.wfl_generic_def_autopara_info</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.utils">wfl.calculators.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.utils.clean_rundir"><code class="docutils literal notranslate"><span class="pre">clean_rundir()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.utils.handle_nonperiodic"><code class="docutils literal notranslate"><span class="pre">handle_nonperiodic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.utils.save_results"><code class="docutils literal notranslate"><span class="pre">save_results()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.vasp">wfl.calculators.vasp module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.vasp.Vasp"><code class="docutils literal notranslate"><span class="pre">Vasp</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.vasp.Vasp.calculate"><code class="docutils literal notranslate"><span class="pre">Vasp.calculate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.vasp.Vasp.default_parameters"><code class="docutils literal notranslate"><span class="pre">Vasp.default_parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.vasp.Vasp.per_config_restore"><code class="docutils literal notranslate"><span class="pre">Vasp.per_config_restore()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.vasp.Vasp.per_config_setup"><code class="docutils literal notranslate"><span class="pre">Vasp.per_config_setup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.vasp.Vasp.wfl_generic_num_inputs_per_python_subprocess"><code class="docutils literal notranslate"><span class="pre">Vasp.wfl_generic_num_inputs_per_python_subprocess</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators.wfl_fileio_calculator">wfl.calculators.wfl_fileio_calculator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator"><code class="docutils literal notranslate"><span class="pre">WFLFileIOCalculator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.clean_rundir"><code class="docutils literal notranslate"><span class="pre">WFLFileIOCalculator.clean_rundir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.cleanup"><code class="docutils literal notranslate"><span class="pre">WFLFileIOCalculator.cleanup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.html#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.setup_rundir"><code class="docutils literal notranslate"><span class="pre">WFLFileIOCalculator.setup_rundir()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.calculators.html#module-wfl.calculators">Module contents</a></li>
 </ul>
 </li>
@@ -665,15 +524,46 @@ title="Print to PDF"
 </li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#module-wfl.cli.cli">wfl.cli.cli module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#module-wfl.cli.cli_options">wfl.cli.cli_options module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#module-wfl.cli.cli_options">wfl.cli.cli_options module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.cli_options.extra_info"><code class="docutils literal notranslate"><span class="pre">extra_info()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.cli_options.inputs"><code class="docutils literal notranslate"><span class="pre">inputs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.cli_options.num_inputs_per_python_subprocess"><code class="docutils literal notranslate"><span class="pre">num_inputs_per_python_subprocess()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.cli_options.outputs"><code class="docutils literal notranslate"><span class="pre">outputs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.cli_options.param_fname"><code class="docutils literal notranslate"><span class="pre">param_fname()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.cli_options.prop_prefix"><code class="docutils literal notranslate"><span class="pre">prop_prefix()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#wfl-cli-dft-convergence-test-module">wfl.cli.dft_convergence_test module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#module-wfl.cli.gap_rss_iter_fit">wfl.cli.gap_rss_iter_fit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#module-wfl.cli.gap_rss_iter_fit">wfl.cli.gap_rss_iter_fit module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.RSS_minima_diverse"><code class="docutils literal notranslate"><span class="pre">RSS_minima_diverse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.Z_label"><code class="docutils literal notranslate"><span class="pre">Z_label()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.calc_descriptors_to_file"><code class="docutils literal notranslate"><span class="pre">calc_descriptors_to_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.create_all_buildcell"><code class="docutils literal notranslate"><span class="pre">create_all_buildcell()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.do_fit_and_test"><code class="docutils literal notranslate"><span class="pre">do_fit_and_test()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.evaluate_iter_and_fit_all"><code class="docutils literal notranslate"><span class="pre">evaluate_iter_and_fit_all()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.evaluate_ref"><code class="docutils literal notranslate"><span class="pre">evaluate_ref()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.flat_histo_then_by_desc"><code class="docutils literal notranslate"><span class="pre">flat_histo_then_by_desc()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.get_buildcell_input_files"><code class="docutils literal notranslate"><span class="pre">get_buildcell_input_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.get_old_fitting_files"><code class="docutils literal notranslate"><span class="pre">get_old_fitting_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.increment_active_iter"><code class="docutils literal notranslate"><span class="pre">increment_active_iter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.is_elemental"><code class="docutils literal notranslate"><span class="pre">is_elemental()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.load_old_descriptors_arrays"><code class="docutils literal notranslate"><span class="pre">load_old_descriptors_arrays()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.print_log"><code class="docutils literal notranslate"><span class="pre">print_log()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.process_cur_iter"><code class="docutils literal notranslate"><span class="pre">process_cur_iter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.select_fitting_and_testing_for_groups"><code class="docutils literal notranslate"><span class="pre">select_fitting_and_testing_for_groups()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.step_startup"><code class="docutils literal notranslate"><span class="pre">step_startup()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.cli.html#module-wfl.cli">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="wfl.descriptors.html">wfl.descriptors package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="wfl.descriptors.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.descriptors.html#module-wfl.descriptors.quippy">wfl.descriptors.quippy module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.descriptors.html#module-wfl.descriptors.quippy">wfl.descriptors.quippy module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.descriptors.html#wfl.descriptors.quippy.calc"><code class="docutils literal notranslate"><span class="pre">calc()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.descriptors.html#wfl.descriptors.quippy.from_any_to_Descriptor"><code class="docutils literal notranslate"><span class="pre">from_any_to_Descriptor()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.descriptors.html#module-wfl.descriptors">Module contents</a></li>
 </ul>
 </li>
@@ -699,9 +589,28 @@ title="Print to PDF"
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#module-wfl.fit.ace">wfl.fit.ace module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#module-wfl.fit.error">wfl.fit.error module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#module-wfl.fit.utils">wfl.fit.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#module-wfl.fit.ace">wfl.fit.ace module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.html#wfl.fit.ace.fit"><code class="docutils literal notranslate"><span class="pre">fit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.html#wfl.fit.ace.prepare_configs"><code class="docutils literal notranslate"><span class="pre">prepare_configs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.html#wfl.fit.ace.prepare_params"><code class="docutils literal notranslate"><span class="pre">prepare_params()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.html#wfl.fit.ace.run_ace_fit"><code class="docutils literal notranslate"><span class="pre">run_ace_fit()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#module-wfl.fit.error">wfl.fit.error module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.html#wfl.fit.error.calc"><code class="docutils literal notranslate"><span class="pre">calc()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.html#wfl.fit.error.errors_dumps"><code class="docutils literal notranslate"><span class="pre">errors_dumps()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.html#wfl.fit.error.errors_to_dataframe"><code class="docutils literal notranslate"><span class="pre">errors_to_dataframe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.html#wfl.fit.error.natural_sort"><code class="docutils literal notranslate"><span class="pre">natural_sort()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.html#wfl.fit.error.select_units"><code class="docutils literal notranslate"><span class="pre">select_units()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.html#wfl.fit.error.value_error_scatter"><code class="docutils literal notranslate"><span class="pre">value_error_scatter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#module-wfl.fit.utils">wfl.fit.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.html#wfl.fit.utils.ace_fit_jl_path"><code class="docutils literal notranslate"><span class="pre">ace_fit_jl_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.html#wfl.fit.utils.copy_properties"><code class="docutils literal notranslate"><span class="pre">copy_properties()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.fit.html#wfl.fit.utils.fix_stress_virial"><code class="docutils literal notranslate"><span class="pre">fix_stress_virial()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.fit.html#module-wfl.fit">Module contents</a></li>
 </ul>
 </li>
@@ -717,15 +626,62 @@ title="Print to PDF"
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.atoms_and_dimers">wfl.generate.atoms_and_dimers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.buildcell">wfl.generate.buildcell module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.minimahopping">wfl.generate.minimahopping module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.normal_modes">wfl.generate.normal_modes module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.optimize">wfl.generate.optimize module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.phonopy">wfl.generate.phonopy module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.smiles">wfl.generate.smiles module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.supercells">wfl.generate.supercells module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.utils">wfl.generate.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.atoms_and_dimers">wfl.generate.atoms_and_dimers module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.atoms_and_dimers.isolated_atom_from_e0"><code class="docutils literal notranslate"><span class="pre">isolated_atom_from_e0()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.atoms_and_dimers.prepare"><code class="docutils literal notranslate"><span class="pre">prepare()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.buildcell">wfl.generate.buildcell module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.buildcell.conv_buildcell_out"><code class="docutils literal notranslate"><span class="pre">conv_buildcell_out()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.buildcell.create_input"><code class="docutils literal notranslate"><span class="pre">create_input()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.buildcell.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.minimahopping">wfl.generate.minimahopping module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.minimahopping.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.normal_modes">wfl.generate.normal_modes module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.normal_modes.NormalModes"><code class="docutils literal notranslate"><span class="pre">NormalModes</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.derive_normal_mode_info"><code class="docutils literal notranslate"><span class="pre">NormalModes.derive_normal_mode_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.evals_to_freqs"><code class="docutils literal notranslate"><span class="pre">NormalModes.evals_to_freqs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.evecs_to_modes"><code class="docutils literal notranslate"><span class="pre">NormalModes.evecs_to_modes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.freqs_to_evals"><code class="docutils literal notranslate"><span class="pre">NormalModes.freqs_to_evals()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.modes_to_evecs"><code class="docutils literal notranslate"><span class="pre">NormalModes.modes_to_evecs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.num_hess_delta"><code class="docutils literal notranslate"><span class="pre">NormalModes.num_hess_delta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.sample_normal_modes"><code class="docutils literal notranslate"><span class="pre">NormalModes.sample_normal_modes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.summary"><code class="docutils literal notranslate"><span class="pre">NormalModes.summary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.view"><code class="docutils literal notranslate"><span class="pre">NormalModes.view()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.normal_modes.generate_normal_modes_parallel_atoms"><code class="docutils literal notranslate"><span class="pre">generate_normal_modes_parallel_atoms()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.normal_modes.generate_normal_modes_parallel_hessian"><code class="docutils literal notranslate"><span class="pre">generate_normal_modes_parallel_hessian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.normal_modes.sample_normal_modes"><code class="docutils literal notranslate"><span class="pre">sample_normal_modes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.optimize">wfl.generate.optimize module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.optimize.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.optimize.subselect_from_traj"><code class="docutils literal notranslate"><span class="pre">subselect_from_traj()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#wfl-generate-phonopy-module">wfl.generate.phonopy module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.smiles">wfl.generate.smiles module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.smiles.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.smiles.smi_to_atoms"><code class="docutils literal notranslate"><span class="pre">smi_to_atoms()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.supercells">wfl.generate.supercells module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.supercells.antisite"><code class="docutils literal notranslate"><span class="pre">antisite()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.supercells.interstitial"><code class="docutils literal notranslate"><span class="pre">interstitial()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.supercells.largest_bulk"><code class="docutils literal notranslate"><span class="pre">largest_bulk()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.supercells.surface"><code class="docutils literal notranslate"><span class="pre">surface()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.supercells.vacancy"><code class="docutils literal notranslate"><span class="pre">vacancy()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate.utils">wfl.generate.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.html#wfl.generate.utils.config_type_append"><code class="docutils literal notranslate"><span class="pre">config_type_append()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.generate.html#module-wfl.generate">Module contents</a></li>
 </ul>
 </li>
@@ -735,35 +691,131 @@ title="Print to PDF"
 </li>
 <li class="toctree-l1"><a class="reference internal" href="wfl.select.html">wfl.select package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="wfl.select.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.select.html#module-wfl.select.by_descriptor">wfl.select.by_descriptor module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.select.html#module-wfl.select.convex_hull">wfl.select.convex_hull module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.select.html#module-wfl.select.flat_histogram">wfl.select.flat_histogram module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.select.html#module-wfl.select.selection_space">wfl.select.selection_space module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.select.html#module-wfl.select.simple">wfl.select.simple module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.select.html#module-wfl.select.by_descriptor">wfl.select.by_descriptor module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html#wfl.select.by_descriptor.CUR"><code class="docutils literal notranslate"><span class="pre">CUR()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html#wfl.select.by_descriptor.CUR_conf_global"><code class="docutils literal notranslate"><span class="pre">CUR_conf_global()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html#wfl.select.by_descriptor.do_svd"><code class="docutils literal notranslate"><span class="pre">do_svd()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html#wfl.select.by_descriptor.greedy_fps_conf_global"><code class="docutils literal notranslate"><span class="pre">greedy_fps_conf_global()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html#wfl.select.by_descriptor.prep_descs_and_exclude"><code class="docutils literal notranslate"><span class="pre">prep_descs_and_exclude()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html#wfl.select.by_descriptor.write_selected_and_clean"><code class="docutils literal notranslate"><span class="pre">write_selected_and_clean()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.select.html#module-wfl.select.convex_hull">wfl.select.convex_hull module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html#wfl.select.convex_hull.select"><code class="docutils literal notranslate"><span class="pre">select()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.select.html#module-wfl.select.flat_histogram">wfl.select.flat_histogram module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html#wfl.select.flat_histogram.biased_select_conf"><code class="docutils literal notranslate"><span class="pre">biased_select_conf()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.select.html#module-wfl.select.selection_space">wfl.select.selection_space module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html#wfl.select.selection_space.compare_manual_minima"><code class="docutils literal notranslate"><span class="pre">compare_manual_minima()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html#wfl.select.selection_space.minima_among_neighbors"><code class="docutils literal notranslate"><span class="pre">minima_among_neighbors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html#wfl.select.selection_space.val_relative_to_nearby_composition_volume_min"><code class="docutils literal notranslate"><span class="pre">val_relative_to_nearby_composition_volume_min()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.select.html#module-wfl.select.simple">wfl.select.simple module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html#wfl.select.simple.by_bool_func"><code class="docutils literal notranslate"><span class="pre">by_bool_func()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html#wfl.select.simple.by_index"><code class="docutils literal notranslate"><span class="pre">by_index()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.select.html#module-wfl.select">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.at_copy_save_results">wfl.utils.at_copy_save_results module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.configs">wfl.utils.configs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.convex_hull">wfl.utils.convex_hull module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.file_utils">wfl.utils.file_utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.find_voids">wfl.utils.find_voids module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.gap_xml_tools">wfl.utils.gap_xml_tools module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.julia">wfl.utils.julia module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.logging">wfl.utils.logging module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.misc">wfl.utils.misc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.ndim_neighbor_list">wfl.utils.ndim_neighbor_list module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.parallel">wfl.utils.parallel module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.params">wfl.utils.params module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.pressure">wfl.utils.pressure module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.quip_cli_strings">wfl.utils.quip_cli_strings module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.replace_eval_in_strs">wfl.utils.replace_eval_in_strs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.round_sig_figs">wfl.utils.round_sig_figs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.vector_utils">wfl.utils.vector_utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.version">wfl.utils.version module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.vol_composition_space">wfl.utils.vol_composition_space module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.at_copy_save_results">wfl.utils.at_copy_save_results module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.at_copy_save_results.at_copy_save_results"><code class="docutils literal notranslate"><span class="pre">at_copy_save_results()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.configs">wfl.utils.configs module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.configs.atomization_energy"><code class="docutils literal notranslate"><span class="pre">atomization_energy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.configs.find_isolated_atoms"><code class="docutils literal notranslate"><span class="pre">find_isolated_atoms()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.convex_hull">wfl.utils.convex_hull module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.convex_hull.find_hull"><code class="docutils literal notranslate"><span class="pre">find_hull()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.convex_hull.vertical_dist_from_hull"><code class="docutils literal notranslate"><span class="pre">vertical_dist_from_hull()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.file_utils">wfl.utils.file_utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.file_utils.clean_dir"><code class="docutils literal notranslate"><span class="pre">clean_dir()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.find_voids">wfl.utils.find_voids module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.find_voids.find_voids"><code class="docutils literal notranslate"><span class="pre">find_voids()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.gap_xml_tools">wfl.utils.gap_xml_tools module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.gap_xml_tools.extract_e0"><code class="docutils literal notranslate"><span class="pre">extract_e0()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.julia">wfl.utils.julia module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.julia.julia_exec_path"><code class="docutils literal notranslate"><span class="pre">julia_exec_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.logging">wfl.utils.logging module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.logging.increment_active_iter"><code class="docutils literal notranslate"><span class="pre">increment_active_iter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.logging.print_log"><code class="docutils literal notranslate"><span class="pre">print_log()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.logging.process_active_iter"><code class="docutils literal notranslate"><span class="pre">process_active_iter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.misc">wfl.utils.misc module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.misc.atoms_to_list"><code class="docutils literal notranslate"><span class="pre">atoms_to_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.misc.chunks"><code class="docutils literal notranslate"><span class="pre">chunks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.misc.dict_tuple_keys_to_str"><code class="docutils literal notranslate"><span class="pre">dict_tuple_keys_to_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.ndim_neighbor_list">wfl.utils.ndim_neighbor_list module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.ndim_neighbor_list.calc_list"><code class="docutils literal notranslate"><span class="pre">calc_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.ndim_neighbor_list.calc_list_cells"><code class="docutils literal notranslate"><span class="pre">calc_list_cells()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.parallel">wfl.utils.parallel module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.parallel.construct_calculator_picklesafe"><code class="docutils literal notranslate"><span class="pre">construct_calculator_picklesafe()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.params">wfl.utils.params module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.params.Params"><code class="docutils literal notranslate"><span class="pre">Params</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.utils.html#wfl.utils.params.Params.cur_iter"><code class="docutils literal notranslate"><span class="pre">Params.cur_iter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.utils.html#wfl.utils.params.Params.dft_code"><code class="docutils literal notranslate"><span class="pre">Params.dft_code</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.utils.html#wfl.utils.params.Params.dft_params"><code class="docutils literal notranslate"><span class="pre">Params.dft_params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.utils.html#wfl.utils.params.Params.get"><code class="docutils literal notranslate"><span class="pre">Params.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.utils.html#wfl.utils.params.Params.implemented_calculators"><code class="docutils literal notranslate"><span class="pre">Params.implemented_calculators</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.pressure">wfl.utils.pressure module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.pressure.PressureRecursionError"><code class="docutils literal notranslate"><span class="pre">PressureRecursionError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.pressure.sample_pressure"><code class="docutils literal notranslate"><span class="pre">sample_pressure()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.quip_cli_strings">wfl.utils.quip_cli_strings module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.quip_cli_strings.dict_to_quip_str"><code class="docutils literal notranslate"><span class="pre">dict_to_quip_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.replace_eval_in_strs">wfl.utils.replace_eval_in_strs module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.replace_eval_in_strs.replace_eval_in_strs"><code class="docutils literal notranslate"><span class="pre">replace_eval_in_strs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.round_sig_figs">wfl.utils.round_sig_figs module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.round_sig_figs.round_sig_figs"><code class="docutils literal notranslate"><span class="pre">round_sig_figs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.vector_utils">wfl.utils.vector_utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.vector_utils.random_three_vector"><code class="docutils literal notranslate"><span class="pre">random_three_vector()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.version">wfl.utils.version module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.version.get_wfl_version"><code class="docutils literal notranslate"><span class="pre">get_wfl_version()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils.vol_composition_space">wfl.utils.vol_composition_space module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.vol_composition_space.composition_space_Zs"><code class="docutils literal notranslate"><span class="pre">composition_space_Zs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html#wfl.utils.vol_composition_space.composition_space_coord"><code class="docutils literal notranslate"><span class="pre">composition_space_coord()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.utils.html#module-wfl.utils">Module contents</a></li>
 </ul>
 </li>
@@ -771,10 +823,10 @@ title="Print to PDF"
 </div>
 </div>
 <div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 </div>
 <div class="section" id="module-wfl.configset">
-<span id="wfl-configset-module"></span><h2>wfl.configset module<a class="headerlink" href="#module-wfl.configset" title="Permalink to this headline">#</a></h2>
+<span id="wfl-configset-module"></span><h2>wfl.configset module<a class="headerlink" href="#module-wfl.configset" title="Permalink to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="wfl.configset.ConfigSet">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.configset.</span></span><span class="sig-name descname"><span class="pre">ConfigSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_open_reader</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cur_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_file_loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.ConfigSet" title="Permalink to this definition">#</a></dt>
@@ -920,7 +972,7 @@ to appending to single file or top level list of configs.</p></li>
 
 </div>
 <div class="section" id="module-wfl.descriptor_heuristics">
-<span id="wfl-descriptor-heuristics-module"></span><h2>wfl.descriptor_heuristics module<a class="headerlink" href="#module-wfl.descriptor_heuristics" title="Permalink to this headline">#</a></h2>
+<span id="wfl-descriptor-heuristics-module"></span><h2>wfl.descriptor_heuristics module<a class="headerlink" href="#module-wfl.descriptor_heuristics" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.descriptor_heuristics.descriptor_2brn_uniform_file">
 <span class="sig-prename descclassname"><span class="pre">wfl.descriptor_heuristics.</span></span><span class="sig-name descname"><span class="pre">descriptor_2brn_uniform_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">descriptor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ident</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc_i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.descriptor_heuristics.descriptor_2brn_uniform_file" title="Permalink to this definition">#</a></dt>
@@ -986,7 +1038,7 @@ dicts with keys ‘cutoff’, ‘cutoff_transition_width’, and ‘atom_gaussia
 
 </div>
 <div class="section" id="module-wfl.map">
-<span id="wfl-map-module"></span><h2>wfl.map module<a class="headerlink" href="#module-wfl.map" title="Permalink to this headline">#</a></h2>
+<span id="wfl-map-module"></span><h2>wfl.map module<a class="headerlink" href="#module-wfl.map" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.map.run">
 <span class="sig-prename descclassname"><span class="pre">wfl.map.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.map.run" title="Permalink to this definition">#</a></dt>
@@ -1012,55 +1064,125 @@ dicts with keys ‘cutoff’, ‘cutoff_transition_width’, and ‘atom_gaussia
 
 </div>
 <div class="section" id="module-wfl">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl" title="Permalink to this headline">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl" title="Permalink to this heading">#</a></h2>
 </div>
 </div>
 
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="modules.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">wfl</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="modules.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">wfl</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="wfl.autoparallelize.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="wfl.autoparallelize.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">wfl.autoparallelize package</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.configset">wfl.configset module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.ConfigSet"><code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.ConfigSet.cur_loc"><code class="docutils literal notranslate"><span class="pre">ConfigSet.cur_loc</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.ConfigSet.groups"><code class="docutils literal notranslate"><span class="pre">ConfigSet.groups()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.ConfigSet.one_file"><code class="docutils literal notranslate"><span class="pre">ConfigSet.one_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec"><code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.all_written"><code class="docutils literal notranslate"><span class="pre">OutputSpec.all_written()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.close"><code class="docutils literal notranslate"><span class="pre">OutputSpec.close()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.store"><code class="docutils literal notranslate"><span class="pre">OutputSpec.store()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.to_ConfigSet"><code class="docutils literal notranslate"><span class="pre">OutputSpec.to_ConfigSet()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.descriptor_heuristics">wfl.descriptor_heuristics module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.descriptor_heuristics.descriptor_2brn_uniform_file"><code class="docutils literal notranslate"><span class="pre">descriptor_2brn_uniform_file()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.descriptor_heuristics.descriptors_from_length_scales"><code class="docutils literal notranslate"><span class="pre">descriptors_from_length_scales()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.descriptor_heuristics.len_scale_pair"><code class="docutils literal notranslate"><span class="pre">len_scale_pair()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.map">wfl.map module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.map.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl">Module contents</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner">
+<div class="bd-footer-content__inner container">
   
-    By N. Bernstein, T. K. Stenczel, E. Gelzinyte<br/>
-  
-      &copy; Copyright .<br/>
-</p>
-        </footer>
-    </div>
+  <div class="footer-item">
     
-</div>
+<p class="component-author">
+By N. Bernstein, T. K. Stenczel, E. Gelzinyte
+</p>
 
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div></div>
+          </footer>
+        
 
-      </div>
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>
