@@ -34,7 +34,9 @@ PreconLBFGS.log = _new_log
 
 def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
            keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
-           results_prefix='optimize_', verbose=False, update_config_type=True, **opt_kwargs):
+           results_prefix='optimize_', verbose=False, update_config_type=True,
+           autopara_rng_seed=None, autopara_per_item_info=None,
+           **opt_kwargs):
     """runs a structure optimization 
 
     Parameters
@@ -67,6 +69,9 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
         append at.info['optimize_config_type'] at.info['config_type']
     opt_kwargs
         keyword arguments for PreconLBFGS
+    autopara_rng_seed: int, default None
+        global seed used to initialize rng so that each operation uses a different but
+        deterministic local seed, use a random value if None
 
     Returns
     -------
@@ -89,7 +94,10 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
 
     all_trajs = []
 
-    for at in atoms_to_list(atoms):
+    for at_i, at in enumerate(atoms_to_list(atoms)):
+        if autopara_per_item_info is not None:
+            np.random.seed(autopara_per_item_info[at_i]["rng_seed"])
+
         # original constraints
         org_constraints = at.constraints
 
@@ -195,20 +203,11 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
 
 
 def run(*args, **kwargs):
-    # Normally each thread needs to call np.random.seed so that it will generate a different
-    # set of random numbers.  This env var overrides that to produce deterministic output,
-    # for purposes like testing
-    if 'WFL_DETERMINISTIC_HACK' in os.environ:
-        initializer = (None, [])
-    else:
-        initializer = (np.random.seed, [])
-    def_autopara_info={"initializer":initializer, "num_inputs_per_python_subprocess":10,
-            "hash_ignore":["initializer"]}
+    def_autopara_info={"num_inputs_per_python_subprocess":10}
 
     return autoparallelize(_run_autopara_wrappable, *args, 
-        def_autopara_info=def_autopara_info, **kwargs)
+                           def_autopara_info=def_autopara_info, **kwargs)
 autoparallelize_docstring(run, _run_autopara_wrappable, "Atoms")
-
 
 
 # Just a placeholder for now. Could perhaps include:

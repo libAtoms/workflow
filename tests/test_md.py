@@ -70,6 +70,22 @@ def test_NVT_const_T(cu_slab):
     assert all([at.info['MD_temperature_K'] == 500.0 for at in atoms_traj])
 
 
+def test_NVT_const_T_mult_configs_distinct_seeds(cu_slab):
+
+    calc = EMT()
+
+    inputs = ConfigSet([cu_slab.copy() for _ in range(4)])
+    outputs = OutputSpec()
+
+    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
+                           temperature = 500.0, temperature_tau=30.0, autopara_rng_seed=23875)
+
+    last_configs = [list(group)[-1] for group in atoms_traj.groups()]
+    last_vs = [np.linalg.norm(at.get_velocities()) for at in last_configs]
+    print("BOB last_vs", last_vs)
+    assert all([v != last_vs[0] for v in last_vs[1:]])
+
+
 def test_NVT_simple_ramp(cu_slab):
 
     calc = EMT()

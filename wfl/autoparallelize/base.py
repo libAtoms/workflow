@@ -120,11 +120,17 @@ def autoparallelize(func, *args, def_autopara_info={}, **kwargs):
             return autoparallelize(op, *args, def_autopara_info={"autoparallelize_keyword_param_1": val, "autoparallelize_keyword_param_2": val, ... }, **kwargs )
         autoparallelized_op.doc = autopara_docstring(op.__doc__, "iterable_contents")
 
-    The autoparallelized function can then be called with 
+    The autoparallelized function can then be called with
 
     .. code-block:: python
 
         parallelized_op(inputs, outputs, [args of op], autopara_info=AutoparaInfo(arg1=val1, ...), [kwargs of op])
+
+    If the op takes the argument `autopara_per_item_info` a list of dicts with info for each item will be
+    passed, currently including `rng_seed` and `item_i`.
+
+    If op takes the argument `autopara_rng_seed` it will be used as a global seed to generate the per-item seeds
+    from.
 
 
     Parameters
@@ -145,7 +151,6 @@ def autoparallelize(func, *args, def_autopara_info={}, **kwargs):
     -------
     wrapped_func_out: results of calling the function wrapped in autoparallelize via _autoparallelize_ll
     """
-
     # copy kwargs and args so they can be modified for call to autoparallelize
     kwargs = kwargs.copy()
     args = list(args)
@@ -238,10 +243,10 @@ def _autoparallelize_ll(num_python_subprocesses, num_inputs_per_python_subproces
             return outputspec.to_ConfigSet()
 
     if remote_info is not None:
-        out = do_remotely(remote_info, hash_ignore, num_inputs_per_python_subprocess, iterable, outputspec,
-                          op, iterable_arg, skip_failed, initializer, args, kwargs)
+        out = do_remotely(remote_info, hash_ignore, num_inputs_per_python_subprocess, iterable, outputspec, op, iterable_arg,
+                          skip_failed=skip_failed, initializer=initializer, args=args, kwargs=kwargs)
     else:
         out = do_in_pool(num_python_subprocesses, num_inputs_per_python_subprocess, iterable, outputspec, op, iterable_arg,
-                         skip_failed, initializer, args, kwargs)
+                         skip_failed=skip_failed, initializer=initializer, args=args, kwargs=kwargs)
 
     return out
