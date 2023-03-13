@@ -171,7 +171,7 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     assert max(dev) < 1.0e-8
 
     # maybe can do the test without being so sensitive to timing?
-    assert dt_rerun < 20
+    assert dt_rerun < dt / 4.0
 
 
 def do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env):
