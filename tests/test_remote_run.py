@@ -161,7 +161,8 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     co = OutputSpec(tmp_path / f'ats_o_{sys_name}.xyz')
 
     t0 = time.time()
-    results = generic.run(inputs=ci, outputs=co, calculator=calc, properties=["energy", "forces"])
+    results = generic.run(inputs=ci, outputs=co, calculator=calc, properties=["energy", "forces"],
+                          autopara_info={"remote_info": ri})
     dt_rerun = time.time() - t0
     print('remote parallel calc_time', dt_rerun)
 
