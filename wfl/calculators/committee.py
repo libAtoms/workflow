@@ -165,7 +165,16 @@ class CommitteeUncertainty(Calculator):
 
 class Committee:
     """
-    Current implementation for linear scaling only.
+    Instances of this class represent a committee of models.
+
+    It's use is to store the ```CommitteeMembers``` representing the committee model
+    and to calibrate the obtained uncertainties (required when sub-sampling is used
+    to create the training data of the committee members).
+
+    Parameter:
+    ----------
+    member: list(M)
+        List of ```CommitteeMember``` instances representing the committee model.
     """
     def __init__(self, members=[]):
         self.members = members
@@ -372,7 +381,8 @@ class Committee:
 
 
 class CommitteeMember:
-    """Lightweight class defining a member (i.e. a sub-model) of a committee model.
+    """
+    Lightweight class defining a member (i.e. a sub-model) of a committee model.
 
     Parameter:
     ----------
