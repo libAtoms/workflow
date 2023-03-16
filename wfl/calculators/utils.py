@@ -189,13 +189,6 @@ def subsample(inputs, outputs, M, N_s, keep_isolated_atoms=True):
     ConfigSet with subsample sets of configurations.
 
     """
-    # Sample random succesive fuer jeden committee member
-    # Entferne aus gesamt training set nach jeder selection
-    # falls alle aus training set genommen wurde, fülle auf durch ersetzen
-    # mit original training set.
-    # Stelle sicher, dass darauffolgedne selections nicht zu dopplungen von
-    # samples innerhalb eines committee members fureher.
-
     if outputs.all_written():
         return outputs.to_ConfigSet()
 
