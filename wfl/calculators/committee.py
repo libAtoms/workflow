@@ -105,6 +105,11 @@ class CommitteeUncertainty(Calculator):
 
         self.implemented_properties = ['energy', 'forces', 'stress']
 
+        # TODO: I tend to change the input argument to being a Committee-class instance
+        # (instead of a list of calculators).
+        # Related to this, I am also thinking to remove be calibrate() function below.
+        # So, setting up the Committee and performing calculations with it become clearly
+        # separated tasks.
         self.committee = Committee(
                 members=[CommitteeMember(c_i) for c_i in committee_calculators]
                 )
@@ -125,6 +130,9 @@ class CommitteeUncertainty(Calculator):
             under which the true value for that property is stored in a given sample
             (i.e. in ```committee_filenames```)
         appearance_threshold: int
+            Number of times a sample for the validation set
+            is maximally allowed to appear in the training set
+            of a committee member.
         committee_filenames: list(N)
             Collection of paths to subsampled sets for training committee Calculators.
         """
@@ -359,6 +367,7 @@ class Committee:
 
     def scale_uncertainty(self, value, prop):
         """Scale uncertainty ```value``` obtained with the committee according to the calibration for the corresponding property (```prop```)."""
+        # TODO: generalize scaling as sigma_scaled = alpha * sigma**(gamma/2 + 1)
         return self.alphas[prop] * value
 
 
@@ -374,7 +383,7 @@ class CommitteeMember:
         Path to the (sub-sampled) training set used to create the machine-learned model
         defined by the ```calculator```.
     """
-    def __init__(self, calculator, filename=None):  # TODO: Allow both `filename` and list(Atoms)
+    def __init__(self, calculator, filename=None):  # TODO: Allow both `filename` and list(Atoms) and/or ConfigSet?
         self._calculator = calculator
         self._filename = filename
 
