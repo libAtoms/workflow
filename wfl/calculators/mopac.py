@@ -8,7 +8,7 @@ from packaging import version
 
 from ase.units import kcal,  mol
 from ase.calculators.calculator import CalculationFailed, Calculator, \
-    FileIOCalculator, all_changes
+    FileIOCalculator, all_changes, InputError
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
 
@@ -16,12 +16,25 @@ _default_keep_files = ["*.out"]
 _default_properties = ["energy", "forces"] 
 
 class MOPAC(WFLFileIOCalculator, FileIOCalculator):
-    """ Extension of ASE's MOPAC claculator so that it can be used by wfl.calculators.generic (mainly each calculation is run in a separate directory)"""
+    """ Extension of ASE's MOPAC claculator so that it can be used by wfl.calculators.generic (mainly each calculation is run in a separate directory). 
+    Currently must request eigenvalue-following geometry optimisation (EF), because 
+    single point calculation messes with input geometry somehow. 
+    
+    Parameters
+    ----------
+    task: str, default "AM1 EF GRADIENTS RELSCF=0.001
+        the first line of input file
+    charge: int, default 0
+        charge for the calculation
+    mult: int, default None
+        multiplicity. If none, singlet/doublet gets picked.     
+    
+    """
 
     implemented_properties = ["energy", "forces"]
 
     default_parameters = dict(
-        task = "AM1 GRADIENTS RELSCF=0.0001",
+        task = "AM1 EF GRADIENTS RELSCF=0.0001",
         charge = 0,
         mult = None,
     )
@@ -37,9 +50,8 @@ class MOPAC(WFLFileIOCalculator, FileIOCalculator):
 
     def __init__(self, keep_files="default", rundir_prefix="MOPAC_",
                  workdir=None, scratchdir=None,
-                 calculator_exec=None, restart=None, 
-                 ignore_bad_restart_file = FileIOCalculator._depreciated,
-                 label="mopac", atoms=None, **kwargs):
+                 calculator_exec=None, 
+                 label="mopac", **kwargs):
 
         if calculator_exec is not None:
             if "command" in kwargs:
@@ -53,13 +65,9 @@ class MOPAC(WFLFileIOCalculator, FileIOCalculator):
         else:
             self.command = kwargs["command"]
 
-
-        FileIOCalculator.__init__(self, restart, ignore_bad_restart_file,
-                                    label, atoms, **kwargs)     
-
         WFLFileIOCalculator.__init__(self, keep_files=keep_files, rundir_prefix=rundir_prefix,
                                         workdir=workdir, scratchdir=scratchdir,
-                                        calculator_exec=calculator_exec)    
+                                        calculator_exec=calculator_exec, label=label,  **kwargs)    
 
         self.extra_results = dict()
         # to make use of wfl.calculators.utils.save_results()
@@ -73,10 +81,17 @@ class MOPAC(WFLFileIOCalculator, FileIOCalculator):
             self.set(mult=self.get_default_multiplicity(atoms,
                                         self.parameters.get("charge", 0)))
 
-        FileIOCalculator.write_input(self, atoms, properties, system_changes)
-        self.parameters.write(self.label + ".ase")
+        pp = self.parameters
 
-        task = self.task
+        FileIOCalculator.write_input(self, atoms, properties, system_changes)
+        pp.write(self.label + ".ase")
+
+        task = pp.task
+        
+        # geometry gets changed even when no geometry optimization is requested. 
+        # have emailed for help. 
+        if "EF" not in task:
+            raise InputError("For now MOPAC only supports geometry optimization")
 
         if "GRADIENTS" not in task:
             task += " GRADIENTS"
@@ -84,12 +99,12 @@ class MOPAC(WFLFileIOCalculator, FileIOCalculator):
         if "RELSCF" not in task:
             task += " RELSCF=0.0001"
 
-        if self.charge !=0:
-            assert isinstance(self.charge, int), "charge must be an integer"
-            task += f" CHARGE={int(self.charge)}"
+        if pp.charge !=0:
+            assert isinstance(pp.charge, int), "charge must be an integer"
+            task += f" CHARGE={int(pp.charge)}"
 
-        if self.mult != 1:
-            task += f" {self.mult_keywords[self.mult]}"
+        if pp.mult != 1:
+            task += f" {self.mult_keywords[pp.mult]}"
             if "UHF" not in task:
                 task += " UHF"
 
@@ -100,25 +115,43 @@ class MOPAC(WFLFileIOCalculator, FileIOCalculator):
             for atom in atoms:
                 f.write(f" {atom.symbol:2} {atom.position[0]} 1 {atom.position[1]} 1 {atom.position[2]} 1\n")
 
-            if atoms.pbc:
+            if np.any(atoms.pbc):
                 raise NotImplementedError("pbc not implemented yet")
 
             
     def read_results(self):
         
         self.check_version()
-        self.check_calculation_success():
+        self.check_calculation_success()
 
         self.read_energy()
         self.read_forces()
 
-        if "EF" in self.task:
+        if "EF" in self.parameters.task:
             self.read_opt_atoms()
 
     def read_opt_atoms(self):
 
         with open(self.label + ".out") as fd:
             text = fd.read()  
+
+        pat_geometries_block = re.compile(
+            r"CARTESIAN COORDINATES\n\n"
+             r"((\s+\d+\s+[A-Za-z]+\s+[-\.\d]+\s+[-\.\d]+\s+[-\.\d]+\n)+)")
+
+        pat_coord = re.compile(r"\s+\d+\s+[A-Za-z]+\s+([-\.\d]+)\s+([-\.\d]+)\s+([-\.\d]+)")
+        opt_positions = []
+
+        geometry_lines = pat_geometries_block.findall(text)
+        geometry_lines = geometry_lines[0][0].split('\n')
+        for line in geometry_lines: 
+            if len(line) == 0:
+                continue
+            coord_match = pat_coord.search(line)
+            opt_positions += [float(num) for num in coord_match.groups()]
+
+        opt_positions = np.array(opt_positions).reshape(-1, 3)
+        self.extra_results["relaxed_positions"] = opt_positions
 
 
     def read_forces(self):
@@ -127,20 +160,20 @@ class MOPAC(WFLFileIOCalculator, FileIOCalculator):
             text = fd.read() 
 
         pat_forces_block = re.compile(
-            r"FINAL  POINT  AND  DERIVATIVES\s+"
-            r"\s+PARAMETER\s+ATOM\s+TYPE\s+VALUE\s+GRADIENT\s+"
+            r"FINAL  POINT  AND  DERIVATIVES\n\n"
+            r"\s+PARAMETER\s+ATOM\s+TYPE\s+VALUE\s+GRADIENT\n"
             r"((\s+\d+\s+\d+\s+[A-Za-z]+\s+CARTESIAN\s+[XYZ]\s+-?[\.\d]+\s+-?[\.\d]+\s+KCAL/ANGSTROM\n)+)")
         
         pat_force_comp = re.compile(
             r"\s+\d+\s+\d+\s+[A-Za-z]+\s+CARTESIAN\s+[XYZ]\s+-?[\.\d]+\s+(-?[\.\d]+)\s+KCAL/ANGSTROM")
         
-        grad_text_lines = pat_forces_block.findall(text)
-        assert len(grad_text_lines) == 1, "Could not find forces block in MOPAC output"
+        grad_text_lines = pat_forces_block.search(text)
 
         forces = []
-
-        grad_text_lines = grad_text_lines[0][0].split('\n')
+        grad_text_lines = grad_text_lines.groups()[0].split('\n')
         for line in grad_text_lines:
+            if len(line) == 0:
+                continue
             match = pat_force_comp.search(line)
             forces.append(-float(match.groups()[0]))
 
@@ -155,10 +188,11 @@ class MOPAC(WFLFileIOCalculator, FileIOCalculator):
 
         # Developers recommend using final HOF for "energy" as it includes dispersion etc.
         final_heat_regex = re.compile(
-            r'^\s+FINAL HEAT OF FORMATION\s+\=\s+(-?\d+\.\d+) KCAL/MOL')
+            r"FINAL HEAT OF FORMATION =\s+([-\.\d]+) KCAL/MOL =\s+[-\.\d]+ KJ/MOL")
 
-        final_hof = final_heat_regex.search(text)
-        self.results["energy"] = float(final_hof.groups()[0]) * kcal / mol
+        final_hof = final_heat_regex.findall(text)
+        assert len(final_hof) == 1
+        self.results["energy"] = float(final_hof[0]) * kcal / mol
 
 
     def check_version(self):
@@ -167,10 +201,10 @@ class MOPAC(WFLFileIOCalculator, FileIOCalculator):
             text = fd.read()
 
         re_version = re.compile(r'\*\*\s+MOPAC (v[\.\d]+)\s+\*\*')
-        version =  re_version.search(text)
-        if version is not None:
-            version = version.groups()[0]
-        if version is None or  version.parse(aa) <= version.parse("22"):
+        mopac_version =  re_version.search(text)
+        if mopac_version is not None:
+            mopac_version = mopac_version.groups()[0]
+        if mopac_version is None or  version.parse(mopac_version) <= version.parse("22"):
             raise ValueError("MOPAC version 22 or greater required")
 
 
