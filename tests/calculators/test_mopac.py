@@ -11,7 +11,7 @@ from wfl.calculators import generic
 from wfl.calculators.mopac import MOPAC as WFL_MOPAC
 from wfl.configset import ConfigSet, OutputSpec
 
-ref_energy = -0.38114618938803013
+ref_opt_energy = -0.38114618938803013
 
 ref_relaxed_positions = np.array([[-0.09407857, -0.10925283, -0.04563854],
                                 [ 0.63451195,  0.48912991,  0.5428456 ],
@@ -20,11 +20,19 @@ ref_relaxed_positions = np.array([[-0.09407857, -0.10925283, -0.04563854],
                                 [-0.7614799 ,  0.57469914, -0.61249409]])
 
 
-ref_forces = np.array([[ 0.0059888,  -0.00308111, -0.01411684],
+ref_opt_forces = np.array([[ 0.0059888,  -0.00308111, -0.01411684],
                         [ 0.00374831, -0.00137156,  0.01242633],
                         [ 0.00710269, -0.00450137,  0.00556648],
                         [-0.00226703, -0.00497165,  0.00713934],
                         [-0.01457277,  0.01392569, -0.01101531]])
+
+
+ref_single_point_energy = 1.5967898933159592
+ref_single_point_forces = np.array([[11.12550451, -1.37163648,  0.56233512],
+                                    [-0.02648502,  1.0405767,  0.38785587],
+                                    [-4.96900984, -5.79515005,  6.32239103],
+                                    [ 0.29056343, -0.80075317, -1.56623281],
+                                    [-6.42057309,  6.92696301, -5.70634926]])
 
 @pytest.fixture
 def atoms():
@@ -43,34 +51,26 @@ def test_ase_mopac(tmp_path, atoms):
 
     os.chdir(tmp_path)
 
-    atoms.calc = ASE_MOPAC(label='tmp', method="AM1", task="GRADIENTS")
+    atoms.calc = ASE_MOPAC(label='tmp', method="AM1", task="1SCF GRADIENTS")
 
-    ref_ase_energy = -0.38114618938803013
-    ref_ase_forces = np.array([[ 0.00598923, -0.00306901, -0.01411094],
-                            [ 0.00374263, -0.00137642,  0.01242343],
-                            [ 0.00710343, -0.00450089,  0.00556635],
-                            [-0.00226356, -0.00497725,  0.00713461],
-                            [-0.01457173,  0.01392352, -0.0110134 ]])
-
-
-    assert np.allclose(atoms.get_potential_energy(), ref_ase_energy)
-    assert np.allclose(atoms.get_forces(), ref_ase_forces)
+    assert np.allclose(atoms.get_potential_energy(), ref_single_point_energy)
+    assert np.allclose(atoms.get_forces(), ref_single_point_forces)
 
 @pytest.mark.skipif(not shutil.which("mopac") and "ASE_MOPAC_COMMAND" not in os.environ, 
                 reason="mopac not in PATH and command not given")
-def test_wfl_mopac_calc(tmp_path, atoms):
+def test_wfl_mopac_geo_opt_calc(tmp_path, atoms):
 
     os.chdir(tmp_path)
 
     atoms.calc = WFL_MOPAC(label='tmp', task="AM1 EF GRADIENTS RELSCF=0.001")
 
-    assert np.allclose(atoms.get_potential_energy(), ref_energy)
-    assert pytest.approx(atoms.get_forces(), abs=1e-8) == ref_forces
+    assert np.allclose(atoms.get_potential_energy(), ref_opt_energy)
+    assert pytest.approx(atoms.get_forces(), abs=1e-8) == ref_opt_forces
     assert np.allclose(atoms.calc.extra_results["relaxed_positions"], ref_relaxed_positions)
 
 @pytest.mark.skipif(not shutil.which("mopac") and "ASE_MOPAC_COMMAND" not in os.environ, 
                 reason="mopac not in PATH and command not given")
-def test_wfl_mopac_generic(tmp_path, atoms):
+def test_wfl_mopac_geo_opt_generic(tmp_path, atoms):
 
 
     fn_in = tmp_path / 'mopac_in.xyz' 
@@ -87,7 +87,41 @@ def test_wfl_mopac_generic(tmp_path, atoms):
     )
 
     at = list(configs_eval)[0]
-    assert np.allclose(at.info["mopac_energy"], ref_energy)
-    assert pytest.approx(at.arrays["mopac_forces"], abs=1e-7) == ref_forces
+    assert np.allclose(at.info["mopac_energy"], ref_opt_energy)
+    assert pytest.approx(at.arrays["mopac_forces"], abs=1e-7) == ref_opt_forces
     assert np.allclose(at.positions, ref_relaxed_positions)
 
+
+@pytest.mark.skipif(not shutil.which("mopac") and "ASE_MOPAC_COMMAND" not in os.environ, 
+                reason="mopac not in PATH and command not given")
+def test_wfl_mopac_calc(tmp_path, atoms):
+
+    os.chdir(tmp_path)
+
+    atoms.calc = WFL_MOPAC(label='tmp', task="AM1 1SCF GRADIENTS RELSCF=0.001")
+
+    assert np.allclose(atoms.get_potential_energy(), ref_single_point_energy)
+    assert pytest.approx(atoms.get_forces(), abs=1e-8) == ref_single_point_forces 
+
+
+@pytest.mark.skipif(not shutil.which("mopac") and "ASE_MOPAC_COMMAND" not in os.environ, 
+                reason="mopac not in PATH and command not given")
+def test_wfl_mopac_generic(tmp_path, atoms):
+
+
+    fn_in = tmp_path / 'mopac_in.xyz' 
+
+    write(fn_in, atoms)
+
+    calc = (WFL_MOPAC, [], {"workdir":tmp_path, "task":"AM1 1SCF GRADIENTS RELSCF=0.001"})
+
+    configs_eval = generic.run(
+        inputs=ConfigSet(fn_in),
+        outputs = OutputSpec(),
+        calculator = calc, 
+        output_prefix="mopac_"
+    )
+
+    at = list(configs_eval)[0]
+    assert np.allclose(at.info["mopac_energy"], ref_single_point_energy)
+    assert pytest.approx(at.arrays["mopac_forces"], abs=1e-6) == ref_single_point_forces 

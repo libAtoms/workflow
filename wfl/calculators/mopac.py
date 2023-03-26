@@ -17,12 +17,10 @@ _default_properties = ["energy", "forces"]
 
 class MOPAC(WFLFileIOCalculator, FileIOCalculator):
     """ Extension of ASE's MOPAC claculator so that it can be used by wfl.calculators.generic (mainly each calculation is run in a separate directory). 
-    Currently must request eigenvalue-following geometry optimisation (EF), because 
-    single point calculation messes with input geometry somehow. 
     
     Parameters
     ----------
-    task: str, default "AM1 EF GRADIENTS RELSCF=0.001
+    task: str, default "AM1 1SCF GRADIENTS RELSCF=0.001
         the first line of input file
     charge: int, default 0
         charge for the calculation
@@ -90,8 +88,10 @@ class MOPAC(WFLFileIOCalculator, FileIOCalculator):
         
         # geometry gets changed even when no geometry optimization is requested. 
         # have emailed for help. 
-        if "EF" not in task:
-            raise InputError("For now MOPAC only supports geometry optimization")
+        if "EF" not in task and "1SCF" not in task:
+            raise InputError("Need '1SCF' for single-point calcultion or 'EF' for geometry optimization.")
+        if "EF" in task and "1SCF" in task:
+            raise InputError("both '1SCF' and 'EF' in task makes little sense") 
 
         if "GRADIENTS" not in task:
             task += " GRADIENTS"
