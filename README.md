@@ -6,4 +6,6 @@ The main functions of Workflow is to efficiently parallelise operations over a s
 
 For examples and more information see [documentation](https://libatoms.github.io/workflow/)
 
+Workflow is released under GPL v3 license except for the portions of code written by Noam Bernstein which are in the public domain. 
+
 
