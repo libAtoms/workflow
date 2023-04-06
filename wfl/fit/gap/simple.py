@@ -7,6 +7,8 @@ import tempfile
 
 import ase.io
 
+from quippy.potential import Potential
+
 from wfl.configset import ConfigSet
 from wfl.utils.quip_cli_strings import dict_to_quip_str
 from wfl.autoparallelize.utils import get_remote_info
@@ -15,7 +17,8 @@ from .relocate import gap_relocate
 from expyre import ExPyRe
 
 def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None,
-                verbose=True, do_fit=True, remote_info=None, remote_label=None, **kwargs):
+                verbose=True, do_fit=True, remote_info=None, remote_label=None,
+                skip_if_present=False,  **kwargs):
     """Runs gap_fit
 
     Parameters
@@ -41,6 +44,8 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None
         remotely running job.
     remote_label: str, default None
         remote label to patch in WFL_EXPYRE_INFO
+    skip_if_present: bool, default False
+        skip fitting if output is already present
     kwargs
         any key:val pair will be added to the fitting str
 
@@ -52,6 +57,20 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None
     WFL_GAP_FIT_COMMAND: executable for gap_fit. Overrides the `gap_fit_command` argument.
     """
     assert 'atoms_filename' not in fitting_dict and 'at_file' not in fitting_dict
+
+    gap_file = fitting_dict.get('gap_file', 'GAP.xml')
+
+    if skip_if_present:
+        try:
+            if Path(gap_file).exists():
+                _ = Potential(param_filename=gap_file)
+                # NOTE: at least some FoX XML parsing errors lead to an immediate termination,
+                # rather than a python exception that will actually be caught here.
+                print((f"GAP file {gap_file} is found, not refitting."))
+                return gap_file
+        except RuntimeError:
+            # Potential seems to return RuntimeError when file is missing
+            pass
 
     if remote_info != '_IGNORE':
         remote_info = get_remote_info(remote_info, remote_label)
@@ -71,7 +90,6 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None
         # to create any directory hierarchy on the remote machine.  If gap_file _is_ in a subdirectory
         # this may overwrite a file with the same name in the current directory when it's staged back
         # Therefore, we rename it by adding an '_', and save the new name in use_gap_file
-        gap_file = fitting_dict.get('gap_file', 'GAP.xml')
         use_gap_file = '_' + Path(gap_file).name
         fitting_dict['gap_file'] = use_gap_file
         if use_gap_file + '*' not in output_files:
@@ -156,13 +174,15 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None
 
     # run can fail without raising an exception in subprocess.run, at least make sure that
     # GAP file exists
-    assert Path(fitting_dict.get('gap_file', 'GAP.xml')).exists()
+    assert Path(gap_file).exists()
 
     if fitting_configs_scratch_filename is not None:
         Path(fitting_configs_scratch_filename).unlink()
 
     if orig_omp_n is not None:
         os.environ['OMP_NUM_THREADS'] = str(orig_omp_n)
+
+    return gap_file
 
 
 def dict_to_gap_fit_string(param_dict):

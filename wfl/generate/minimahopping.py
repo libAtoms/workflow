@@ -45,7 +45,9 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
 
 
 def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2,
-                           fmax=1, timestep=1, totalsteps=10, skip_failures=True, **opt_kwargs):
+                           fmax=1, timestep=1, totalsteps=10, skip_failures=True,
+                           autopara_rng_seed=None, autopara_per_item_info=None,
+                           **opt_kwargs):
     """runs a structure optimization
 
     Parameters
@@ -72,6 +74,9 @@ def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_thresho
         just skip optimizations that raise an exception
     opt_kwargs
         keyword arguments for MinimaHopping
+    autopara_rng_seed: int, default None
+        global seed used to initialize rng so that each operation uses a different but
+        deterministic local seed, use a random value if None
 
     Returns
     -------
@@ -81,7 +86,10 @@ def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_thresho
     calculator = construct_calculator_picklesafe(calculator)
     all_trajs = []
 
-    for at in atoms_to_list(atoms):
+    for at_i, at in enumerate(atoms_to_list(atoms)):
+        if autopara_per_item_info is not None:
+            np.random.seed(autopara_per_item_info[at_i]["rng_seed"])
+
         traj = _atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold,
                                  mdmin=mdmin, fmax=fmax, timestep=timestep, totalsteps=totalsteps,
                                  skip_failures=skip_failures, **opt_kwargs)
@@ -92,18 +100,8 @@ def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_thresho
 
 # run that operation on ConfigSet, for multiprocessing
 def run(*args, **kwargs):
-    # Normally each thread needs to call np.random.seed so that it will generate a different
-    # set of random numbers.  This env var overrides that to produce deterministic output,
-    # for purposes like testing
-    if 'WFL_DETERMINISTIC_HACK' in os.environ:
-        initializer = (None, [])
-    else:
-        initializer = (np.random.seed, [])
-    def_autopara_info = {"initializer": initializer, "num_inputs_per_python_subprocess": 10,
-                         "hash_ignore": ["initializer"]}
+    def_autopara_info = {"num_inputs_per_python_subprocess": 10}
 
     return autoparallelize(_run_autopara_wrappable, *args,
                            def_autopara_info=def_autopara_info, **kwargs)
-
-
 autoparallelize_docstring(run, _run_autopara_wrappable, "Atoms")
