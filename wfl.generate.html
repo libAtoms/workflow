@@ -605,6 +605,8 @@ odd numbers of atoms, <code class="docutils literal notranslate"><span class="pr
 <li><p><strong>totalsteps</strong> (<em>int</em><em>, </em><em>default 10</em>) – number of steps</p></li>
 <li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip optimizations that raise an exception</p></li>
 <li><p><strong>opt_kwargs</strong> – keyword arguments for MinimaHopping</p></li>
+<li><p><strong>autopara_rng_seed</strong> (<em>int</em><em>, </em><em>default None</em>) – global seed used to initialize rng so that each operation uses a different but
+deterministic local seed, use a random value if None</p></li>
 <li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
@@ -817,6 +819,8 @@ Currently implemented: “last_converged”, which takes the last config, if con
 optimisation logs are not printed unless this is True</p></li>
 <li><p><strong>update_config_type</strong> (<em>bool</em><em>, </em><em>default True</em>) – append at.info[‘optimize_config_type’] at.info[‘config_type’]</p></li>
 <li><p><strong>opt_kwargs</strong> – keyword arguments for PreconLBFGS</p></li>
+<li><p><strong>autopara_rng_seed</strong> (<em>int</em><em>, </em><em>default None</em>) – global seed used to initialize rng so that each operation uses a different but
+deterministic local seed, use a random value if None</p></li>
 <li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
@@ -867,6 +871,7 @@ optimisation logs are not printed unless this is True</p></li>
 <li><p><strong>useBasicKnowledge</strong> (<em>bool</em><em>, </em><em>default True</em>) – impose basic knowledge such as flat aromatic rings</p></li>
 <li><p><strong>useExpTorsionAnglePrefs</strong> (<em>bool</em><em>, </em><em>default True</em>) – impose experimental torsion angle preferences</p></li>
 <li><p><strong>extra_info</strong> (<em>dict</em><em>, </em><em>default {}</em>) – extra fields to place into created atoms info dict</p></li>
+<li><p><strong>randomSeed</strong> (<em>int</em><em>, </em><em>default -1</em>) – RDKit EmbedMolecule random seed for reproducibility</p></li>
 <li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
@@ -881,7 +886,7 @@ optimisation logs are not printed unless this is True</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.generate.smiles.smi_to_atoms">
-<span class="sig-prename descclassname"><span class="pre">wfl.generate.smiles.</span></span><span class="sig-name descname"><span class="pre">smi_to_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useBasicKnowledge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useExpTorsionAnglePrefs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.smiles.smi_to_atoms" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.smiles.</span></span><span class="sig-name descname"><span class="pre">smi_to_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useBasicKnowledge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useExpTorsionAnglePrefs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">randomSeed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.smiles.smi_to_atoms" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts smiles to 3D Atoms object</p>
 </dd></dl>
 

@@ -345,7 +345,7 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#remote-execution">Remote execution</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#get-descriptors">Get descriptors</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling">Sampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-structures">Sampling structures</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fit-a-potential">Fit a potential</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-training">Iterative training</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#command-line">Command line</a></li>
@@ -379,6 +379,7 @@ document.write(`
 <ul>
 <li><p><a class="reference internal" href="examples.normal_modes.html"><span class="std std-doc">Normal Modes of molecules</span></a></p></li>
 <li><p><a class="reference internal" href="examples.md.html"><span class="std std-doc">Molecular Dynamics</span></a></p></li>
+<li><p><a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
 </ul>
 </li>
 <li><p>VASP: <a class="reference internal" href="overview.queued.html"><span class="std std-doc">Functions as independently queued jobs</span></a></p></li>
@@ -390,14 +391,24 @@ document.write(`
 <ul class="simple">
 <li><p><a class="reference internal" href="examples.dimers.html"><span class="std std-doc">Generate Dimer Structures</span></a></p></li>
 <li><p><a class="reference internal" href="examples.buildcell.html"><span class="std std-doc">Random Structures via buildcell</span></a></p></li>
-<li><p>From SMILES string: <a class="reference internal" href="examples.smiles.html"><span class="std std-doc">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></span></a></p></li>
+<li><p>From SMILES string:</p>
+<ul>
+<li><p>Short example in <a class="reference internal" href="examples.smiles.html"><span class="std std-doc">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></span></a></p></li>
+<li><p>As part of <a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+</ul>
+</li>
 <li><p>Geometry optimisation: <a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
 <li><p>Sample molecular normal modes: <a class="reference internal" href="examples.normal_modes.html"><span class="std std-doc">Normal Modes (non-periodic)</span></a></p></li>
 </ul>
 <div class="section" id="run-md">
 <h3>Run MD<a class="headerlink" href="#run-md" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Sample configs for training: <a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
+<li><p>Sample configs for training:</p>
+<ul>
+<li><p><a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
+<li><p><a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+</ul>
+</li>
 <li><p>Run ACE MD: <a class="reference internal" href="examples.md.html"><span class="std std-doc">MD</span></a></p></li>
 </ul>
 </div>
@@ -408,24 +419,33 @@ document.write(`
 <li><p>Overview: <a class="reference internal" href="overview.queued.html"><span class="std std-doc">Functions as independently queued jobs</span></a></p></li>
 <li><p><a class="reference internal" href="examples.orca_python.html"><span class="std std-doc">ORCA via python script</span></a></p></li>
 <li><p>Run ACE MD: <a class="reference internal" href="examples.md.html"><span class="std std-doc">MD</span></a></p></li>
+<li><p><a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
 </ul>
 </div>
 <div class="section" id="get-descriptors">
 <h2>Get descriptors<a class="headerlink" href="#get-descriptors" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p>Global SOAP: <a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
+<li><p>Global SOAP:</p>
+<ul>
+<li><p><a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
+<li><p><a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+</ul>
+</li>
 </ul>
 </div>
-<div class="section" id="sampling">
-<h2>Sampling<a class="headerlink" href="#sampling" title="Permalink to this heading">#</a></h2>
+<div class="section" id="sampling-structures">
+<h2>Sampling structures<a class="headerlink" href="#sampling-structures" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Furthest point sampling: <a class="reference internal" href="examples.select_fps.html"><span class="std std-doc">Sampling of Structures</span></a></p></li>
+<li><p>CUR: <a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+<li><p>With a boolean function: <a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
 </ul>
 </div>
 <div class="section" id="fit-a-potential">
 <h2>Fit a potential<a class="headerlink" href="#fit-a-potential" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Multistage GAP fit: <a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
+<li><p>Simple GAP fit: <a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
 </ul>
 </div>
 <div class="section" id="iterative-training">
@@ -443,7 +463,13 @@ document.write(`
 <div class="section" id="miscellaneous">
 <h2>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p>Calculate errors: <a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
+<li><p>Calculate errors:</p>
+<ul>
+<li><p><a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
+<li><p><a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+</ul>
+</li>
+<li><p>Plot predicted vs reference correlation plots: <a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
 <li><p>Parallelize your own function: <a class="reference internal" href="overview.parallelisation.html"><span class="std std-doc">Overview of</span></a></p></li>
 <li><p>Calculate normal modes of a molecule: <a class="reference internal" href="examples.normal_modes.html"><span class="std std-doc">Normal Modes(non-periodic)</span></a></p></li>
 <li><p>Post-process each ORCA calculation on-the-fly: <a class="reference internal" href="examples.orca_python.html"><span class="std std-doc">ORCA via python script</span></a></p></li>
@@ -506,7 +532,7 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#remote-execution">Remote execution</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#get-descriptors">Get descriptors</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling">Sampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-structures">Sampling structures</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fit-a-potential">Fit a potential</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-training">Iterative training</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#command-line">Command line</a></li>

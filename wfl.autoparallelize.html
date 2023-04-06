@@ -370,7 +370,9 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.autoparallelize.utils">wfl.autoparallelize.utils module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.get_remote_info"><code class="docutils literal notranslate"><span class="pre">get_remote_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.get_root_global_seed"><code class="docutils literal notranslate"><span class="pre">get_root_global_seed()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.grouper"><code class="docutils literal notranslate"><span class="pre">grouper()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.set_autopara_per_item_info"><code class="docutils literal notranslate"><span class="pre">set_autopara_per_item_info()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.autoparallelize">Module contents</a></li>
@@ -437,6 +439,10 @@ specified when wrapping function, otherwise to class-wide defaults</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parallelized_op</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="p">[</span><span class="n">args</span> <span class="n">of</span> <span class="n">op</span><span class="p">],</span> <span class="n">autopara_info</span><span class="o">=</span><span class="n">AutoparaInfo</span><span class="p">(</span><span class="n">arg1</span><span class="o">=</span><span class="n">val1</span><span class="p">,</span> <span class="o">...</span><span class="p">),</span> <span class="p">[</span><span class="n">kwargs</span> <span class="n">of</span> <span class="n">op</span><span class="p">])</span>
 </pre></div>
 </div>
+<p>If the op takes the argument <cite>autopara_per_item_info</cite> a list of dicts with info for each item will be
+passed, currently including <cite>rng_seed</cite> and <cite>item_i</cite>.</p>
+<p>If op takes the argument <cite>autopara_rng_seed</cite> it will be used as a global seed to generate the per-item seeds
+from.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -523,7 +529,8 @@ function, others wait to do mpipool stuff.  Initialises
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>remote_info</strong> (<a class="reference internal" href="#wfl.autoparallelize.remoteinfo.RemoteInfo" title="wfl.autoparallelize.remoteinfo.RemoteInfo"><em>RemoteInfo</em></a>) – object with all information on remote job, including system, resources, job num_inputs_per_python_subprocess, etc, or dict of kwargs for its constructor</p></li>
+<li><p><strong>remote_info</strong> (<a class="reference internal" href="#wfl.autoparallelize.remoteinfo.RemoteInfo" title="wfl.autoparallelize.remoteinfo.RemoteInfo"><em>RemoteInfo</em></a>) – object with all information on remote job, including system, resources, job num_inputs_per_python_subprocess,
+etc, or dict of kwargs for its constructor</p></li>
 <li><p><strong>quiet</strong> (<em>bool</em><em>, </em><em>default False</em>) – do not output (to stderr) progress info</p></li>
 <li><p><strong>args</strong> (<em>See autoparallelize.autoparallelize</em><em>(</em><em>) </em><em>for other</em>) – </p></li>
 </ul>
@@ -590,6 +597,28 @@ RemoteInfo kwrgs with keys that match end of stack trace with function names sep
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="wfl.autoparallelize.utils.get_root_global_seed">
+<span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.utils.</span></span><span class="sig-name descname"><span class="pre">get_root_global_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.utils.get_root_global_seed" title="Permalink to this definition">#</a></dt>
+<dd><p>get root global seed from kwargs</p>
+<p>See <a class="reference external" href="https://numpy.org/doc/stable/reference/random/parallel.html#sequence-of-integer-seeds">https://numpy.org/doc/stable/reference/random/parallel.html#sequence-of-integer-seeds</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kwargs</strong> (<em>dict</em>) – operation keyword arguments</p></li>
+<li><p><strong>op</strong> (<em>callable</em>) – operation function</p></li>
+<li><p><strong>label</strong> (<em>any</em>) – label for warning if using random seed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>root_global_seed</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int seed with value kwargs[“autopara_rng_seed”] or random int if value is None or not in kwargs, or None if “autopara_rng_seed” is not in op’s signature</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="wfl.autoparallelize.utils.grouper">
 <span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.utils.</span></span><span class="sig-name descname"><span class="pre">grouper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.utils.grouper" title="Permalink to this definition">#</a></dt>
 <dd><p>iterator that goes over iterable in specified size groups</p>
@@ -602,6 +631,24 @@ RemoteInfo kwrgs with keys that match end of stack trace with function names sep
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>sequence of tuples, with items from iterable, each of size n (or smaller if n items are not available)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.autoparallelize.utils.set_autopara_per_item_info">
+<span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.utils.</span></span><span class="sig-name descname"><span class="pre">set_autopara_per_item_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_global_seed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev_per_item_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_i_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.utils.set_autopara_per_item_info" title="Permalink to this definition">#</a></dt>
+<dd><p>Set some per-config information based on a root global seed and list of sequence ids</p>
+<p>See <a class="reference external" href="https://numpy.org/doc/stable/reference/random/parallel.html#sequence-of-integer-seeds">https://numpy.org/doc/stable/reference/random/parallel.html#sequence-of-integer-seeds</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kwargs</strong> (<em>dict</em>) – keyword args of op</p></li>
+<li><p><strong>op</strong> (<em>callable</em>) – operation function</p></li>
+<li><p><strong>root_global_seed</strong> (<em>int</em><em> or </em><em>None</em>) – root global seed, or None if no per-item rng seed is needed</p></li>
+<li><p><strong>prev_per_item_info</strong> (<em>list</em><em>(</em><em>dict</em><em>)</em>) – list of per-item info dicts that needs to be split up to these particular items</p></li>
+<li><p><strong>item_i_list</strong> (<em>int</em>) – list of sequence numbers for the items that these per-info items correspond to</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -692,7 +739,9 @@ RemoteInfo kwrgs with keys that match end of stack trace with function names sep
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.autoparallelize.utils">wfl.autoparallelize.utils module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.get_remote_info"><code class="docutils literal notranslate"><span class="pre">get_remote_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.get_root_global_seed"><code class="docutils literal notranslate"><span class="pre">get_root_global_seed()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.grouper"><code class="docutils literal notranslate"><span class="pre">grouper()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.set_autopara_per_item_info"><code class="docutils literal notranslate"><span class="pre">set_autopara_per_item_info()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.autoparallelize">Module contents</a></li>

@@ -352,6 +352,7 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.close"><code class="docutils literal notranslate"><span class="pre">OutputSpec.close()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.store"><code class="docutils literal notranslate"><span class="pre">OutputSpec.store()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.to_ConfigSet"><code class="docutils literal notranslate"><span class="pre">OutputSpec.to_ConfigSet()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.write"><code class="docutils literal notranslate"><span class="pre">OutputSpec.write()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -417,7 +418,9 @@ document.write(`
 </li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize.utils">wfl.autoparallelize.utils module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.utils.get_remote_info"><code class="docutils literal notranslate"><span class="pre">get_remote_info()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.utils.get_root_global_seed"><code class="docutils literal notranslate"><span class="pre">get_root_global_seed()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.utils.grouper"><code class="docutils literal notranslate"><span class="pre">grouper()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.utils.set_autopara_per_item_info"><code class="docutils literal notranslate"><span class="pre">set_autopara_per_item_info()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize">Module contents</a></li>
@@ -894,7 +897,7 @@ top level of initial nested structure.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="wfl.configset.OutputSpec">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.configset.</span></span><span class="sig-name descname"><span class="pre">OutputSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.configset.</span></span><span class="sig-name descname"><span class="pre">OutputSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Abstraction for writing to a ConfigSet, preserving tree structure.</p>
 <dl class="field-list simple">
@@ -906,6 +909,8 @@ top level of initial nested structure.</p>
 including any wrapped by autoparallelize, will actually reuse existing output if
 all of it appears to be present.</p></li>
 <li><p><strong>flush</strong> (<em>bool</em><em>, </em><em>default True</em>) – flush output after every write</p></li>
+<li><p><strong>write_kwargs</strong> (<em>dict</em>) – optional extra kwargs to ase.io.write</p></li>
+<li><p><strong>tags</strong> (<em>dict</em>) – dict of extra Atoms.info keys to set in written configs</p></li>
 </ul>
 </dd>
 </dl>
@@ -967,6 +972,17 @@ to appending to single file or top level list of configs.</p></li>
 <dt class="sig sig-object py" id="wfl.configset.OutputSpec.to_ConfigSet">
 <span class="sig-name descname"><span class="pre">to_ConfigSet</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.to_ConfigSet" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.configset.OutputSpec.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.configset.OutputSpec.write" title="Permalink to this definition">#</a></dt>
+<dd><p>Write a set of configurations to this OutputSpec</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>configs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – Configurations to write.  If ConfigSet, location will be saved</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -1130,6 +1146,7 @@ dicts with keys ‘cutoff’, ‘cutoff_transition_width’, and ‘atom_gaussia
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.close"><code class="docutils literal notranslate"><span class="pre">OutputSpec.close()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.store"><code class="docutils literal notranslate"><span class="pre">OutputSpec.store()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.to_ConfigSet"><code class="docutils literal notranslate"><span class="pre">OutputSpec.to_ConfigSet()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.configset.OutputSpec.write"><code class="docutils literal notranslate"><span class="pre">OutputSpec.write()</span></code></a></li>
 </ul>
 </li>
 </ul>

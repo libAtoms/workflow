@@ -1,0 +1,932 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MLIP fitting workflow &#8212; workflow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples.daisy_chain_mlip_fitting';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">workflow  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="first_example.html">First Example</a></li>
+
+<li class="toctree-l1 has-children"><a class="reference internal" href="overview.html">Overview</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.overall_design.html">Overall design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.configset.html">Input and output of atomic structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.parallelisation.html">Automatic parallelization of tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.queued.html">Functions as independently queued jobs</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="operations.html">Operations</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="operations.calculators.html">Calculators in Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.generate.html">Generating Atomic Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.descriptors.html">Descriptors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.select.html">Selecting Configs</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="operations.fitting.html">Fitting potentials</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="operations.gap_fitting.html">Fitting GAP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.multistage_gap_fitting.html">Multistage GAP fitting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operations.ace_fitting.html">Fitting ACE</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="examples.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.index.html">Index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.dimers.html">Generating Dimer Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.buildcell.html">Random Structures via buildcell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.orca_python.html">ORCA via Python script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.fhiaims_calculator.html">FHI-Aims Calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.mace.html">Parallelize MACE calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html">Fitting a MLIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html">Normal Modes of molecules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.smiles.html">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.md.html">Molecular Dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.select_fps.html">Selection or Sampling of Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.contributions.html">Contributing Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.rss.html">GAP-RSS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_line.automatic_docs.html">Command line interface</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Modules</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="wfl.html">wfl package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html">wfl.autoparallelize package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="wfl.calculators.html">wfl.calculators package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.calculators.orca.html">wfl.calculators.orca package</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="wfl.cli.html">wfl.cli package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.cli.commands.html">wfl.cli.commands package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.descriptors.html">wfl.descriptors package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="wfl.fit.html">wfl.fit package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.fit.gap.html">wfl.fit.gap package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="wfl.fit.modify_database.html">wfl.fit.modify_database package</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="wfl.generate.html">wfl.generate package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/examples.daisy_chain_mlip_fitting.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>MLIP fitting workflow</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">MLIP fitting workflow</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Imports">Imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Reference-calculator">Reference calculator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Prepare-isolated-atoms">Prepare isolated atoms</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Generate-initial-structures">Generate initial structures</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Run-Molecular-Dynamics-simulation">Run Molecular Dynamics simulation</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Filter-structures">Filter structures</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Calculate-SOAP-descriptor">Calculate SOAP descriptor</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-select-with-CUR">Sub-select with CUR</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Fit-GAP">Fit GAP</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Evaluate-structures-with-GAP">Evaluate structures with GAP</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Evaluate-error-&amp;-plot-correlation">Evaluate error &amp; plot correlation</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <div class="section" id="MLIP-fitting-workflow">
+<h1>MLIP fitting workflow<a class="headerlink" href="#MLIP-fitting-workflow" title="Permalink to this heading">#</a></h1>
+<p>This notebook walks though a lightweight workflow of fitting a MLIP to showcase usage of a wide range of wfl functions and ways they can be used.</p>
+<p>The main steps are:</p>
+<ol class="arabic simple">
+<li><p>Create some molecules</p></li>
+<li><p>Run GFN2-xTB MD</p></li>
+<li><p>Filter by force components</p></li>
+<li><p>Calculate global SOAP descriptor</p></li>
+<li><p>Perform CUR decomposition to select diverse-ish training and testing sets</p></li>
+<li><p>Fit a GAP potential</p></li>
+<li><p>Evaluate structures with GAP</p></li>
+<li><p>Plot atomization energy and force component correlation plots.</p></li>
+</ol>
+<div class="section" id="Imports">
+<h2>Imports<a class="headerlink" href="#Imports" title="Permalink to this heading">#</a></h2>
+<p>In addition to standard packages or wfl dependencies, we make use of three external packages:</p>
+<ul>
+<li><p>quip and quippy which provide interface for fitting and evaluating GAP.</p>
+<p>Documentation: <a class="reference external" href="https://pypi.org/project/quippy-ase/">https://pypi.org/project/quippy-ase/</a></p>
+<p>Installation: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">quippy-ase</span></code></p>
+</li>
+<li><p>GFN2-xTB: a semi-empirical method designed for molecular systems, used as a reference method.</p>
+<p>Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://xtb-docs.readthedocs.io/en/latest/contents.html">https://xtb-docs.readthedocs.io/en/latest/contents.html</a></p></li>
+<li><p><a class="reference external" href="https://xtb-python.readthedocs.io/en/latest/">https://xtb-python.readthedocs.io/en/latest/</a></p></li>
+</ul>
+<p>Installation: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">xtb-python</span></code></p>
+</li>
+<li><p>RDKit: a chemoinformatics package that wfl uses to convert 2D SMILES strings (e.g. “CCO” for ethanol) into 3D <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects.</p>
+<p>Documentation: <a class="reference external" href="https://rdkit.org/">https://rdkit.org/</a></p>
+<p>Installation: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">rdkit</span></code></p>
+</li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">ase</span> <span class="kn">import</span> <span class="n">Atoms</span>
+
+<span class="kn">from</span> <span class="nn">xtb.ase.calculator</span> <span class="kn">import</span> <span class="n">XTB</span>
+
+<span class="kn">from</span> <span class="nn">quippy.potential</span> <span class="kn">import</span> <span class="n">Potential</span>
+
+<span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
+<span class="kn">from</span> <span class="nn">wfl.generate</span> <span class="kn">import</span> <span class="n">md</span>
+<span class="kn">import</span> <span class="nn">wfl.descriptors.quippy</span>
+<span class="kn">import</span> <span class="nn">wfl.select.by_descriptor</span>
+<span class="kn">import</span> <span class="nn">wfl.fit.gap.simple</span>
+<span class="kn">from</span> <span class="nn">wfl.calculators</span> <span class="kn">import</span> <span class="n">generic</span>
+<span class="kn">from</span> <span class="nn">wfl.autoparallelize.autoparainfo</span> <span class="kn">import</span> <span class="n">AutoparaInfo</span>
+<span class="kn">from</span> <span class="nn">wfl.autoparallelize.remoteinfo</span> <span class="kn">import</span> <span class="n">RemoteInfo</span>
+<span class="kn">from</span> <span class="nn">wfl.generate</span> <span class="kn">import</span> <span class="n">smiles</span>
+<span class="kn">from</span> <span class="nn">wfl.utils.configs</span> <span class="kn">import</span> <span class="n">atomization_energy</span>
+<span class="kn">from</span> <span class="nn">wfl.select.simple</span> <span class="kn">import</span> <span class="n">by_bool_func</span>
+<span class="kn">from</span> <span class="nn">wfl.fit</span> <span class="kn">import</span> <span class="n">error</span>
+<span class="kn">import</span> <span class="nn">wfl.map</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">expyre.resources</span> <span class="kn">import</span> <span class="n">Resources</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Reference-calculator">
+<h2>Reference calculator<a class="headerlink" href="#Reference-calculator" title="Permalink to this heading">#</a></h2>
+<p>The calculator object given to <code class="docutils literal notranslate"><span class="pre">autoparalellize</span></code>-wrapped functions need to be pickle-able, so it can be executed on the parallel Python subprocesses with <code class="docutils literal notranslate"><span class="pre">multiprocessing.pool</span></code>. The calculators that can’t be pickled need to be given to workflow functions as</p>
+<p><code class="docutils literal notranslate"><span class="pre">(Initalizer,</span> <span class="pre">[args],</span> <span class="pre">{kwargs})</span></code></p>
+<p>e.g. xtb would normally be called with</p>
+<p><code class="docutils literal notranslate"><span class="pre">xtb_calc</span> <span class="pre">=</span> <span class="pre">XTB(method=&quot;GFN2-xTB&quot;)</span></code></p>
+<p>but instead in wfl scripts we define it as</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xtb_calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">XTB</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;GFN2-xTB&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Prepare-isolated-atoms">
+<h2>Prepare isolated atoms<a class="headerlink" href="#Prepare-isolated-atoms" title="Permalink to this heading">#</a></h2>
+<p>GAP requires reference (<code class="docutils literal notranslate"><span class="pre">e0</span></code>) energies for fitting. We construct <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects with a single atom, evaluate them with the reference GFN2-xTB method and store in a file to later combine them with the training set.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">isolated_at_fname</span><span class="o">=</span><span class="s1">&#39;isolated_atoms.xtb.xyz&#39;</span>
+<span class="n">isolated_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atoms</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">positions</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">])</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">]]</span>
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">isolated_atoms</span><span class="p">)</span>
+<span class="n">outputs</span><span class="o">=</span><span class="n">OutputSpec</span><span class="p">(</span><span class="n">isolated_at_fname</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;config_type&quot;</span><span class="p">:</span> <span class="s2">&quot;isolated_atom&quot;</span><span class="p">})</span>
+
+<span class="c1"># calculate reference energy</span>
+<span class="n">isolated_atoms</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
+    <span class="n">calculator</span><span class="o">=</span><span class="n">xtb_calc</span><span class="p">,</span>
+    <span class="n">properties</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">],</span>
+    <span class="n">output_prefix</span><span class="o">=</span><span class="s2">&quot;xtb_&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Generate-initial-structures">
+<h2>Generate initial structures<a class="headerlink" href="#Generate-initial-structures" title="Permalink to this heading">#</a></h2>
+<p>We build this example on a small number of hydrocarbon molecules. Their connectivity is represented as SMILES strings and use RDKit to them into reasonable 3D geometries to start the molecular dynamics simulation with.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">all_smiles</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;CC1=CCC=CC(C)=C1C(C)C&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CC1(c2ccc(CC3CC=CC3)cc2)CC1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;C#CC[C@@H](CCC=C(C)C)C1CC1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Cc1ccccc1CCCC1=CCCCC1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;C=CC1=CC[C@@H]2C[C@H]1C2(C)C&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;C1=CCC(Cc2ccc(CC3CC3)cc2)C1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;C1=CC(c2ccccc2)=CCC1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;C/C=C/CCCC[C@H](C)C(C)(C)C&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;C=C[C@@H]1C/C=C/CCCCCCCC1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;C[C@H](CC(C)(C)C)[C@@H](C)C(C)(C)C&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CC/C=C</span><span class="se">\\</span><span class="s1">C[C@@H](C)c1cccc(C)c1C&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;C=C1CC2c3ccccc3C1c1ccccc12&#39;</span><span class="p">]</span>
+
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;1.ch.rdkit.xyz&quot;</span><span class="p">)</span>
+<span class="n">smiles_configs</span> <span class="o">=</span> <span class="n">smiles</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">all_smiles</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># regenerate smiles_confgis with a random seed set for testing purposes</span>
+<span class="c1"># this cell is hidden from docs.</span>
+
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;1.ch.rdkit.xyz&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">smiles_configs</span> <span class="o">=</span> <span class="n">smiles</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">all_smiles</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">randomSeed</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Run-Molecular-Dynamics-simulation">
+<h2>Run Molecular Dynamics simulation<a class="headerlink" href="#Run-Molecular-Dynamics-simulation" title="Permalink to this heading">#</a></h2>
+<p>We run the MD at 300 K with an NVT Berendsen thermostat to collect a pool of structures from which we will select diverse structures for the training set.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;2.ch.rdkit.md.traj.xyz&quot;</span><span class="p">)</span>
+
+<span class="n">md_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;steps&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+    <span class="s2">&quot;dt&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>  <span class="c1"># fs</span>
+    <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>  <span class="c1"># K</span>
+    <span class="s2">&quot;temperature_tau&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+    <span class="s2">&quot;results_prefix&quot;</span><span class="p">:</span> <span class="s2">&quot;xtb_&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;traj_step_interval&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>
+
+<span class="n">remote_info</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;sys_name&quot;</span> <span class="p">:</span> <span class="s2">&quot;github&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;job_name&quot;</span> <span class="p">:</span> <span class="s2">&quot;md&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;resources&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;max_time&quot;</span> <span class="p">:</span> <span class="s2">&quot;15m&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_cores&quot;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;partitions&quot;</span> <span class="p">:</span> <span class="s2">&quot;standard&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;check_interval&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="s2">&quot;num_inputs_per_queued_job&quot;</span> <span class="p">:</span><span class="mi">20</span><span class="p">,</span>
+<span class="p">}</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">md_sample</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="n">smiles_configs</span><span class="p">,</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
+    <span class="n">calculator</span><span class="o">=</span><span class="n">xtb_calc</span><span class="p">,</span>
+    <span class="n">autopara_info</span> <span class="o">=</span> <span class="n">AutoparaInfo</span><span class="p">(</span>
+        <span class="n">remote_info</span><span class="o">=</span><span class="n">remote_info</span><span class="p">,</span>
+        <span class="n">num_python_subprocesses</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+    <span class="o">**</span><span class="n">md_params</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Filter-structures">
+<h1>Filter structures<a class="headerlink" href="#Filter-structures" title="Permalink to this heading">#</a></h1>
+<p>While diverse training set leads to better model extrapolation, structures too dissimilar to the region of interest are fitted at the expense of accuracy elsewhere. One way to spot structures somewhat distant from equilibrium is by checking for high force components. Below we exclude such structures via one of wfl’s filtering functions.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">are_forces_reasonable</span><span class="p">(</span><span class="n">at</span><span class="p">):</span>
+    <span class="n">force_comps</span> <span class="o">=</span> <span class="n">at</span><span class="o">.</span><span class="n">arrays</span><span class="p">[</span><span class="s2">&quot;xtb_forces&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">force_comps</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">)</span>
+
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;3.ch.rdkit.md.traj.filtered.xyz&quot;</span><span class="p">)</span>
+
+<span class="n">md_sample</span> <span class="o">=</span> <span class="n">by_bool_func</span><span class="p">(</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">md_sample</span><span class="p">,</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">,</span>
+    <span class="n">at_filter</span> <span class="o">=</span> <span class="n">are_forces_reasonable</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="Calculate-SOAP-descriptor">
+<h2>Calculate SOAP descriptor<a class="headerlink" href="#Calculate-SOAP-descriptor" title="Permalink to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;4.ch.rdkit.md.traj.local_soap.xyz&quot;</span><span class="p">)</span>
+
+<span class="n">descriptor_key</span> <span class="o">=</span> <span class="s2">&quot;SOAP&quot;</span>
+<span class="c1"># Descriptor string, just as it would go into quip.</span>
+<span class="c1"># dictionary can have a descriptor per species, e.g.</span>
+<span class="c1"># descriptor = {</span>
+<span class="c1">#   &quot;H&quot;: &quot;soap ...&quot;,</span>
+<span class="c1">#   &quot;C&quot;: &quot;soap ...&quot;}</span>
+<span class="c1"># `None` for dictionary keys just means that the same descriptor is used</span>
+<span class="c1"># for all elements.</span>
+<span class="n">descriptor</span> <span class="o">=</span>   <span class="p">{</span>
+        <span class="kc">None</span><span class="p">:</span> <span class="s2">&quot;soap l_max=3 n_max=6 cutoff=4 delta=1 covariance_type=dot_product zeta=4 atom_gaussian_width=0.3&quot;</span>
+    <span class="p">}</span>
+
+<span class="c1"># this function isn&#39;t parallelised here, but can be</span>
+<span class="c1"># by setting WFL_NUM_PYTHON_SUBPROCESSES or</span>
+<span class="c1"># WFL_EXPYRE_INFO</span>
+<span class="n">md_soap_local</span> <span class="o">=</span> <span class="n">wfl</span><span class="o">.</span><span class="n">descriptors</span><span class="o">.</span><span class="n">quippy</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="n">md_sample</span><span class="p">,</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
+    <span class="n">descs</span><span class="o">=</span><span class="n">descriptor</span><span class="p">,</span>
+    <span class="n">key</span><span class="o">=</span><span class="n">descriptor_key</span><span class="p">,</span>
+    <span class="n">per_atom</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_average_soap</span><span class="p">(</span><span class="n">at</span><span class="p">,</span> <span class="n">descriptor_key</span><span class="p">):</span>
+    <span class="n">at_desc</span> <span class="o">=</span> <span class="n">at</span><span class="o">.</span><span class="n">arrays</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">descriptor_key</span><span class="p">)</span>
+    <span class="n">at_desc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">at_desc</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">at_desc</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">at_desc</span><span class="p">)</span>
+    <span class="n">at</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">descriptor_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">at_desc</span>
+    <span class="k">return</span> <span class="n">at</span>
+
+<span class="n">md_soap_global</span> <span class="o">=</span> <span class="n">wfl</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">md_soap_local</span><span class="p">,</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(),</span>
+    <span class="n">map_func</span> <span class="o">=</span> <span class="n">get_average_soap</span><span class="p">,</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">descriptor_key</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Sub-select-with-CUR">
+<h2>Sub-select with CUR<a class="headerlink" href="#Sub-select-with-CUR" title="Permalink to this heading">#</a></h2>
+<p>Select diverse structures for training and testing sets with CUR.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;5.ch.rdkit.md.traj.soap.cur_selection.xyz&quot;</span><span class="p">)</span>
+<span class="n">cur_selection</span> <span class="o">=</span> <span class="n">wfl</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">by_descriptor</span><span class="o">.</span><span class="n">CUR_conf_global</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="n">md_soap_global</span><span class="p">,</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
+    <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>                    <span class="c1"># target number of structures to pick</span>
+    <span class="n">at_descs_info_key</span><span class="o">=</span><span class="s2">&quot;SOAP&quot;</span><span class="p">)</span>
+
+
+<span class="n">train_fname</span> <span class="o">=</span> <span class="s2">&quot;6.1.train.xyz&quot;</span>
+<span class="n">test_fname</span> <span class="o">=</span> <span class="s2">&quot;6.2.test.xyz&quot;</span>
+<span class="n">gap_fname</span><span class="o">=</span><span class="s1">&#39;gap.xml&#39;</span>
+
+<span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">at</span><span class="p">):</span>
+    <span class="n">at</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
+    <span class="c1"># For now, SOAP descriptor in atoms.info cannot be parsed by the xyz reader</span>
+    <span class="k">del</span> <span class="n">at</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;SOAP&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">at</span>
+
+
+<span class="n">processed_cur_selection</span> <span class="o">=</span> <span class="n">wfl</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">cur_selection</span><span class="p">,</span>
+    <span class="n">OutputSpec</span><span class="p">(),</span>
+    <span class="n">map_func</span> <span class="o">=</span> <span class="n">process</span><span class="p">)</span>
+
+
+<span class="c1"># label and save training and testing sets</span>
+<span class="n">train_inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">processed_cur_selection</span><span class="p">)[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">test_inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">processed_cur_selection</span><span class="p">)[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="n">OutputSpec</span><span class="p">(</span><span class="n">train_fname</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;config_type&quot;</span><span class="p">:</span> <span class="s2">&quot;train&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">train_inputs</span><span class="p">)</span>
+<span class="n">OutputSpec</span><span class="p">(</span><span class="n">test_fname</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;config_type&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">test_inputs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Fit-GAP">
+<h2>Fit GAP<a class="headerlink" href="#Fit-GAP" title="Permalink to this heading">#</a></h2>
+<p>The gap parameter dictionary is almost directly converted to a command for <code class="docutils literal notranslate"><span class="pre">gap_fit</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="n">gap_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;gap_file&quot;</span><span class="p">:</span> <span class="n">gap_fname</span><span class="p">,</span>
+    <span class="s2">&quot;energy_parameter_name&quot;</span><span class="p">:</span> <span class="s2">&quot;xtb_energy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;force_parameter_name&quot;</span><span class="p">:</span> <span class="s2">&quot;xtb_forces&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;default_sigma&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="s2">&quot;config_type_kernel_regularisation&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;isolated_atom&quot;</span><span class="p">:[</span><span class="mf">0.0001</span><span class="p">,</span><span class="mf">0.0001</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">]},</span>
+    <span class="s2">&quot;_gap&quot;</span><span class="p">:</span> <span class="p">[{</span>
+            <span class="s2">&quot;soap&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;l_max&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="s2">&quot;n_max&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+            <span class="s2">&quot;cutoff&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+            <span class="s2">&quot;covariance_type&quot;</span><span class="p">:</span> <span class="s2">&quot;dot_product&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;zeta&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s2">&quot;n_sparse&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span>
+            <span class="s2">&quot;sparse_method&quot;</span><span class="p">:</span> <span class="s2">&quot;cur_points&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;atom_gaussian_width&quot;</span><span class="p">:</span><span class="mf">0.3</span><span class="p">,</span>
+            <span class="s2">&quot;cutoff_transition_width&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
+         <span class="p">{</span>
+            <span class="s2">&quot;soap&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;l_max&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="s2">&quot;n_max&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+            <span class="s2">&quot;cutoff&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+            <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+            <span class="s2">&quot;covariance_type&quot;</span><span class="p">:</span> <span class="s2">&quot;dot_product&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;zeta&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s2">&quot;n_sparse&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span>
+            <span class="s2">&quot;sparse_method&quot;</span><span class="p">:</span> <span class="s2">&quot;cur_points&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;atom_gaussian_width&quot;</span><span class="p">:</span><span class="mf">0.6</span><span class="p">,</span>
+            <span class="s2">&quot;cutoff_transition_width&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;distance_2b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;cutoff&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+            <span class="s2">&quot;covariance_type&quot;</span><span class="p">:</span> <span class="s2">&quot;ard_se&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;theta_uniform&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+            <span class="s2">&quot;sparse_method&quot;</span><span class="p">:</span> <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;n_sparse&quot;</span><span class="p">:</span> <span class="mi">10</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="n">remote_info</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;sys_name&quot;</span> <span class="p">:</span> <span class="s2">&quot;github&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;job_name&quot;</span> <span class="p">:</span> <span class="s2">&quot;gap-fit&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;resources&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;max_time&quot;</span> <span class="p">:</span> <span class="s2">&quot;15m&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;num_cores&quot;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;partitions&quot;</span> <span class="p">:</span> <span class="s2">&quot;standard&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;check_interval&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+<span class="p">}</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train_configs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">([</span><span class="n">train_fname</span><span class="p">,</span> <span class="n">isolated_at_fname</span><span class="p">])</span>
+<span class="n">wfl</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">gap</span><span class="o">.</span><span class="n">simple</span><span class="o">.</span><span class="n">run_gap_fit</span><span class="p">(</span>
+    <span class="n">fitting_configs</span><span class="o">=</span><span class="n">train_configs</span><span class="p">,</span>
+    <span class="n">fitting_dict</span><span class="o">=</span><span class="n">gap_params</span><span class="p">,</span>
+    <span class="n">stdout_file</span><span class="o">=</span><span class="s1">&#39;gap_fit.out&#39;</span><span class="p">,</span>
+    <span class="n">skip_if_present</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">remote_info</span><span class="o">=</span><span class="n">remote_info</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Evaluate-structures-with-GAP">
+<h2>Evaluate structures with GAP<a class="headerlink" href="#Evaluate-structures-with-GAP" title="Permalink to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train_fn_with_gap</span> <span class="o">=</span> <span class="s2">&quot;7.1.train.gap.xyz&quot;</span>
+<span class="n">test_fn_with_gap</span> <span class="o">=</span> <span class="s2">&quot;7.2.test.gap.xyz&quot;</span>
+<span class="n">isolated_at_fn_with_gap</span> <span class="o">=</span> <span class="n">isolated_at_fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xyz&#39;</span><span class="p">,</span> <span class="s1">&#39;.gap.xyz&#39;</span><span class="p">)</span>
+
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">([</span><span class="n">train_fname</span><span class="p">,</span> <span class="n">test_fname</span><span class="p">,</span> <span class="n">isolated_at_fname</span><span class="p">])</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">([</span><span class="n">train_fn_with_gap</span><span class="p">,</span> <span class="n">test_fn_with_gap</span><span class="p">,</span> <span class="n">isolated_at_fn_with_gap</span><span class="p">])</span>
+
+<span class="n">gap_calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">Potential</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s2">&quot;param_filename&quot;</span><span class="p">:</span><span class="s2">&quot;gap.xml&quot;</span><span class="p">})</span>
+
+<span class="n">resources</span> <span class="o">=</span> <span class="n">Resources</span><span class="p">(</span>
+    <span class="n">max_time</span> <span class="o">=</span> <span class="s2">&quot;15m&quot;</span><span class="p">,</span>
+    <span class="n">num_cores</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">partitions</span> <span class="o">=</span> <span class="s2">&quot;standard&quot;</span><span class="p">)</span>
+
+<span class="n">remote_info</span> <span class="o">=</span> <span class="n">RemoteInfo</span><span class="p">(</span>
+    <span class="n">sys_name</span> <span class="o">=</span> <span class="s2">&quot;github&quot;</span><span class="p">,</span>
+    <span class="n">job_name</span> <span class="o">=</span> <span class="s2">&quot;gap-eval&quot;</span><span class="p">,</span>
+    <span class="n">resources</span> <span class="o">=</span> <span class="n">resources</span><span class="p">,</span>
+    <span class="n">check_interval</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">input_files</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;gap.xml*&quot;</span><span class="p">])</span>
+
+<span class="n">gap_calc_autopara_info</span> <span class="o">=</span> <span class="n">AutoparaInfo</span><span class="p">(</span>
+    <span class="n">remote_info</span><span class="o">=</span><span class="n">remote_info</span><span class="p">)</span>
+
+<span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
+    <span class="n">calculator</span><span class="o">=</span><span class="n">gap_calc</span><span class="p">,</span>
+    <span class="n">properties</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;forces&quot;</span><span class="p">],</span>
+    <span class="n">output_prefix</span><span class="o">=</span><span class="s2">&quot;gap_&quot;</span><span class="p">,</span>
+    <span class="n">autopara_info</span><span class="o">=</span><span class="n">gap_calc_autopara_info</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Evaluate-error-&amp;-plot-correlation">
+<h2>Evaluate error &amp; plot correlation<a class="headerlink" href="#Evaluate-error-&-plot-correlation" title="Permalink to this heading">#</a></h2>
+<p>wfl has simple convenience functions to compare fitted model’s performance to the reference method. Here we calculate atomization energy, evaluate RMSE and plot the parity plots for atomization energy per atom and force components.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># calculate atomization energies</span>
+<span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="p">[</span><span class="n">train_fn_with_gap</span><span class="p">,</span> <span class="n">test_fn_with_gap</span><span class="p">]:</span>
+    <span class="n">configset</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">([</span><span class="n">fn</span><span class="p">,</span> <span class="n">isolated_at_fn_with_gap</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">prop_prefix</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;xtb_&quot;</span><span class="p">,</span> <span class="s2">&quot;gap_&quot;</span><span class="p">]:</span>
+        <span class="n">configset</span> <span class="o">=</span> <span class="n">atomization_energy</span><span class="p">(</span>
+            <span class="n">inputs</span><span class="o">=</span><span class="n">configset</span><span class="p">,</span>
+            <span class="n">outputs</span><span class="o">=</span><span class="n">OutputSpec</span><span class="p">([</span><span class="n">fn</span><span class="p">,</span> <span class="n">isolated_at_fn_with_gap</span><span class="p">],</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">prop_prefix</span><span class="o">=</span><span class="n">prop_prefix</span><span class="p">)</span>
+
+<span class="c1"># calculate errors</span>
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">([</span><span class="n">train_fn_with_gap</span><span class="p">,</span> <span class="n">test_fn_with_gap</span><span class="p">])</span>
+<span class="n">errors</span><span class="p">,</span> <span class="n">diffs</span><span class="p">,</span> <span class="n">parity</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
+    <span class="n">calc_property_prefix</span><span class="o">=</span><span class="s1">&#39;gap_&#39;</span><span class="p">,</span>
+    <span class="n">ref_property_prefix</span><span class="o">=</span><span class="s1">&#39;xtb_&#39;</span><span class="p">,</span>
+    <span class="n">config_properties</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;atomization_energy/atom&quot;</span><span class="p">],</span>
+    <span class="n">atom_properties</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;forces/comp&quot;</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">errors_dumps</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+
+<span class="c1"># plot parity and error plots</span>
+<span class="n">error</span><span class="o">.</span><span class="n">value_error_scatter</span><span class="p">(</span>
+    <span class="n">all_errors</span> <span class="o">=</span> <span class="n">errors</span><span class="p">,</span>
+    <span class="n">all_diffs</span><span class="o">=</span><span class="n">diffs</span><span class="p">,</span>
+    <span class="n">all_parity</span><span class="o">=</span><span class="n">parity</span><span class="p">,</span>
+    <span class="n">output</span><span class="o">=</span><span class="s2">&quot;gap_rmses.png&quot;</span><span class="p">,</span>
+    <span class="n">ref_property_prefix</span><span class="o">=</span><span class="s2">&quot;xtb_&quot;</span><span class="p">,</span>
+    <span class="n">calc_property_prefix</span><span class="o">=</span><span class="s2">&quot;gap_&quot;</span>
+<span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">MLIP fitting workflow</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Imports">Imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Reference-calculator">Reference calculator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Prepare-isolated-atoms">Prepare isolated atoms</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Generate-initial-structures">Generate initial structures</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Run-Molecular-Dynamics-simulation">Run Molecular Dynamics simulation</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Filter-structures">Filter structures</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Calculate-SOAP-descriptor">Calculate SOAP descriptor</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-select-with-CUR">Sub-select with CUR</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Fit-GAP">Fit GAP</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Evaluate-structures-with-GAP">Evaluate structures with GAP</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Evaluate-error-&amp;-plot-correlation">Evaluate error &amp; plot correlation</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By N. Bernstein, T. K. Stenczel, E. Gelzinyte
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
