@@ -29,7 +29,7 @@ def test_mult_files(cu_slab, tmp_path):
 
     calc = EMT()
 
-    atoms_opt = minimahopping.run(inputs, outputs, calc, fmax=1, totalsteps=3)
+    atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=1, totalsteps=3)
 
     n1 = len(ase.io.read(tmp_path / infiles[0].replace('.xyz', '.out.xyz'), ':'))
     n2 = len(ase.io.read(tmp_path / infiles[1].replace('.xyz', '.out.xyz'), ':'))
@@ -53,7 +53,7 @@ def test_relax(cu_slab):
     # where are trajectories fail is excluded. Thus, let's give it some trials to avoid this situation.
     trial = 0
     while trial < 10:
-        atoms_opt = minimahopping.run(inputs, outputs, calc, fmax=fmax, totalsteps=totalsteps)
+        atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=fmax, totalsteps=totalsteps)
         if len(list(atoms_opt)) > 0:
             break
         trial += 1
