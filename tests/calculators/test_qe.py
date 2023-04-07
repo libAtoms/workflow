@@ -17,7 +17,7 @@ from pytest import approx, fixture, raises, skip
 import wfl.calculators.espresso
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 
 
 @fixture(scope="session")

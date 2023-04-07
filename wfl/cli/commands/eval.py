@@ -2,7 +2,7 @@ import click
 
 from quippy.potential import Potential
 
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 from wfl.cli import cli_options as opt
 from wfl.calculators import generic
 from wfl.utils import configs

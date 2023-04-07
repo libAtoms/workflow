@@ -10,7 +10,7 @@ from ase.calculators.emt import EMT
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate import buildcell
 from wfl.calculators import generic
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 
 
 def test_empty_iterator(tmp_path):

@@ -21,7 +21,7 @@ from wfl.calculators import generic
 from wfl.generate import optimize, md
 from wfl.calculators import generic
 from wfl.calculators.vasp import Vasp
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 
 from expyre.func import ExPyReJobDiedError
 

@@ -16,7 +16,7 @@ from scipy import stats
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 from wfl.utils.misc import atoms_to_list
 
 # conversion factor from eV/Å^2/amu to eV^2
