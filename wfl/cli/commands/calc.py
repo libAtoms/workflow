@@ -106,22 +106,3 @@ def atomization_energy(ctx, inputs, outputs, prop_prefix, prop, isolated_atom_in
     )
 
 
-@click.command("quippy")
-@click.pass_context
-@click.option("--local", is_flag=True, help="calculate a local (per-atom) descriptor")
-@click.option("--force", is_flag=True, help="overwrite existing info or arrays item if present")
-@click.option("--descriptor", type=click.STRING, required=True, help="quippy.descriptors.Descriptor arg string")
-@click.option("--key", required=True, type=click.STRING, help="Atoms.info (global) or Atoms.arrays (local) for descriptor vector")
-@opt.inputs
-@opt.outputs
-def quippy(ctx, inputs, outputs, descriptor, key, local, force):
-    """Calculate quippy descriptors"""
-    wfl.descriptors.quippy.calc(
-        inputs=inputs,
-        outputs=outputs,
-        descs=descriptor,
-        key=key,
-        per_atom=local,
-        force=force
-    )
-
