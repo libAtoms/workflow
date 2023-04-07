@@ -383,7 +383,7 @@ class NormalModes:
         properties = ['energy', 'forces']
 
         if parallel_hessian:
-            generic.run(
+            generic.calculate(
                 inputs=displaced_in_configset,
                 outputs=displaced_out_configset,
                 calculator=calculator, 

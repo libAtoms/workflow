@@ -178,7 +178,7 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
     # output container
     c_out = OutputSpec("qe_results.xyz", file_root=tmp_path)
 
-    results = generic.run(
+    results = generic.calculate(
         inputs=[at0, at],
         outputs=c_out, 
         calculator=calc, 
@@ -260,7 +260,7 @@ def test_wfl_Espresso_calc_via_generic(tmp_path, qe_cmd_and_pseudo):
         num_python_subprocesses=0
     )
 
-    ci = generic.run(
+    ci = generic.calculate(
         inputs=ci,
         outputs=co, 
         calculator=calc, 

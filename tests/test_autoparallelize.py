@@ -27,7 +27,7 @@ def test_autopara_info_dict():
     for _ in range(nconf):
         ats.append(Atoms(['Al'] * nconf, scaled_positions=np.random.uniform(size=(nconf, 3)), cell=[10, 10, 10], pbc=[True] * 3))
 
-    co = generic.run(ConfigSet(ats), OutputSpec(), EMT(), output_prefix="_auto_", autopara_info={"num_python_subprocesses": 1})
+    co = generic.calculate(ConfigSet(ats), OutputSpec(), EMT(), output_prefix="_auto_", autopara_info={"num_python_subprocesses": 1})
     assert len(list(co)) == nconf
 
 
@@ -41,11 +41,11 @@ def test_pool_speedup():
         ats.append(Atoms(['Al'] * nconf, scaled_positions=np.random.uniform(size=(nconf, 3)), cell=[10, 10, 10], pbc=[True] * 3))
 
     t0 = time.time()
-    co = generic.run(ConfigSet(ats), OutputSpec(), EMT(), output_prefix="_auto_", autopara_info=AutoparaInfo(num_python_subprocesses=1))
+    co = generic.calculate(ConfigSet(ats), OutputSpec(), EMT(), output_prefix="_auto_", autopara_info=AutoparaInfo(num_python_subprocesses=1))
     dt_1 = time.time() - t0
 
     t0 = time.time()
-    co = generic.run(ConfigSet(ats), OutputSpec(), EMT(), output_prefix="_auto_", autopara_info=AutoparaInfo(num_python_subprocesses=2))
+    co = generic.calculate(ConfigSet(ats), OutputSpec(), EMT(), output_prefix="_auto_", autopara_info=AutoparaInfo(num_python_subprocesses=2))
     dt_2 = time.time() - t0
 
     print("time ratio", dt_2 / dt_1)
@@ -63,7 +63,7 @@ def test_outputspec_overwrite(tmp_path):
     for _ in range(nconf):
         ats.append(Atoms(['Al'] * nconf, scaled_positions=np.random.uniform(size=(nconf, 3)), cell=[10, 10, 10], pbc=[True] * 3))
 
-    co = generic.run(ConfigSet(ats), OutputSpec(), EMT(), output_prefix="_auto_", autopara_info=AutoparaInfo(num_python_subprocesses=1))
+    co = generic.calculate(ConfigSet(ats), OutputSpec(), EMT(), output_prefix="_auto_", autopara_info=AutoparaInfo(num_python_subprocesses=1))
 
     # should skip ops, incorrectly, and ats.xyz doesn't actually contain atoms
     with pytest.raises(ase.io.extxyz.XYZError):

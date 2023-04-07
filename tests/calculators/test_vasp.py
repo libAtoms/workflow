@@ -21,7 +21,7 @@ def test_vasp_gamma(tmp_path, monkeypatch):
     ase.io.write(tmp_path / 'vasp_in.xyz', Atoms('Si', cell=(2, 2, 2), pbc=[False] * 3), format='extxyz')
 
     # try with env vars
-    configs_eval = generic.run(
+    configs_eval = generic.calculate(
         inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
         outputs=OutputSpec('vasp_out.gamma.env.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, encut=200, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
@@ -47,7 +47,7 @@ def test_vasp_gamma(tmp_path, monkeypatch):
     command_gamma = os.environ["ASE_VASP_COMMAND_GAMMA"]
     for cmd in Vasp.env_commands:
         monkeypatch.delenv(cmd + "_GAMMA", raising=False)
-    configs_eval = generic.run(
+    configs_eval = generic.calculate(
         inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
         outputs=OutputSpec('vasp_out.gamma.command.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, encut=200, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
@@ -72,7 +72,7 @@ def test_vasp_gamma(tmp_path, monkeypatch):
 def test_vasp(tmp_path):
     ase.io.write(tmp_path / 'vasp_in.xyz', Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), format='extxyz')
 
-    configs_eval = generic.run(
+    configs_eval = generic.calculate(
         inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
         outputs=OutputSpec('vasp_out.regular.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
@@ -97,7 +97,7 @@ def test_vasp_values(tmp_path):
     ats.positions[1, 0] = 2.1
     ase.io.write(tmp_path / 'vasp_in.xyz', ats, format='extxyz')
 
-    configs_eval = generic.run(
+    configs_eval = generic.calculate(
         inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
         outputs=OutputSpec('vasp_out.regular.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
@@ -128,7 +128,7 @@ def test_vasp_negative_volume(tmp_path):
     at.cell[1, :] = [2, 0, 0]
     ase.io.write(tmp_path / 'vasp_in.xyz', at, format='extxyz')
 
-    configs_eval = generic.run(
+    configs_eval = generic.calculate(
         inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
         outputs=OutputSpec('vasp_out.regular.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
@@ -151,7 +151,7 @@ def test_vasp_negative_volume(tmp_path):
 def test_vasp_keep_default(tmp_path):
     ase.io.write(tmp_path / 'vasp_in.xyz', Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), format='extxyz')
 
-    configs_eval = generic.run(
+    configs_eval = generic.calculate(
         inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
         outputs=OutputSpec('vasp_out.keep_default.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
@@ -173,7 +173,7 @@ def test_vasp_keep_default(tmp_path):
 def test_vasp_keep_False(tmp_path):
     ase.io.write(tmp_path / 'vasp_in.xyz', Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), format='extxyz')
 
-    configs_eval = generic.run(
+    configs_eval = generic.calculate(
         inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
         outputs=OutputSpec('vasp_out.keep_False.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
@@ -193,7 +193,7 @@ def test_vasp_keep_False(tmp_path):
 def test_vasp_to_SPC(tmp_path):
     ase.io.write(tmp_path / 'vasp_in.xyz', Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), format='extxyz')
 
-    configs_eval = generic.run(
+    configs_eval = generic.calculate(
         inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
         outputs=OutputSpec('vasp_out.to_SPC.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, pp=os.environ['PYTEST_VASP_POTCAR_DIR']),
@@ -210,7 +210,7 @@ def test_vasp_VASP_PP_PATH(tmp_path, monkeypatch):
     ase.io.write(tmp_path / 'vasp_in.xyz', Atoms('Si', cell=(2, 2, 2), pbc=[False] * 3), format='extxyz')
 
     monkeypatch.setenv("VASP_PP_PATH", os.environ['PYTEST_VASP_POTCAR_DIR'])
-    configs_eval = generic.run(
+    configs_eval = generic.calculate(
         inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
         outputs=OutputSpec('vasp_out.gamma.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, encut=200, keep_files=True),
@@ -232,7 +232,7 @@ def test_vasp_scratchdir(tmp_path, monkeypatch):
     ase.io.write(tmp_path / 'vasp_in.xyz', Atoms('Si', cell=(2, 2, 2), pbc=[False] * 3), format='extxyz')
 
     monkeypatch.setenv("VASP_PP_PATH", os.environ['PYTEST_VASP_POTCAR_DIR'])
-    configs_eval = generic.run(
+    configs_eval = generic.calculate(
         inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
         outputs=OutputSpec('vasp_out.gamma.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, scratchdir="/tmp", encut=200, keep_files=True),

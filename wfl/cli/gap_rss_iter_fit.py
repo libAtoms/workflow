@@ -371,7 +371,7 @@ def evaluate_ref(dft_in_configs, dft_evaluated_configs, params, run_dir, verbose
     else:
         raise ValueError(f"Unsupported dft_code {params.dft_code}")
 
-    return generic.run(
+    return generic.calculate(
         inputs=dft_in_configs,
         outputs=dft_evaluated_configs,
         calculator=calculator(workdir=run_dir, keep_files=keep_files, **params.dft_params.get("kwargs", {})),
@@ -413,7 +413,7 @@ def do_fit_and_test(cur_iter, run_dir, params, fitting_configs, testing_configs=
         co = OutputSpec(f'fitting.error_database.GAP_iter_{cur_iter}.xyz', file_root=run_dir)
         for at in fitting_configs:
             at.calc = None
-        evaluated_configs = generic.run(fitting_configs, co, calculator, output_prefix="GAP_")
+        evaluated_configs = generic.calculate(fitting_configs, co, calculator, output_prefix="GAP_")
         fitting_error = wfl.fit.error.calc(evaluated_configs, calc_property_prefix="GAP_", ref_property_prefix="REF_",
                 category_keys = ['config_type', 'gap_rss_iter'])
         with open(GAP_xml_file + '.fitting_err.json', 'w') as fout:
@@ -424,7 +424,7 @@ def do_fit_and_test(cur_iter, run_dir, params, fitting_configs, testing_configs=
         co = OutputSpec(f'testing.error_database.GAP_iter_{cur_iter}.xyz', file_root=run_dir)
         for at in testing_configs:
             at.calc = None
-        evaluated_configs = generic.run(testing_configs, co, calculator, output_prefix="GAP_")
+        evaluated_configs = generic.calculate(testing_configs, co, calculator, output_prefix="GAP_")
         testing_error = wfl.fit.error.calc(evaluated_configs, calc_property_prefix="GAP_", ref_property_prefix="REF_",
                 category_keys = ['config_type', 'gap_rss_iter'])
         with open(GAP_xml_file + '.testing_err.json', 'w') as fout:
