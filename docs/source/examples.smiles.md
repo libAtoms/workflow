@@ -29,7 +29,7 @@ from wfl.generate import smiles
 
 outputspec = OutputSpec("compounds.xyz")
 smiles = ["CO", "CCCC", "c1ccccc1"]
-smiles.run(smiles, outputs=outputspec)
+smiles.smiles(smiles, outputs=outputspec)
 ```
 
 NB `smiles` has to be given as the first argument. 

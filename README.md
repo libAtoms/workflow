@@ -7,3 +7,18 @@ The main functions of Workflow is to efficiently parallelise operations over a s
 For examples and more information see [documentation](https://libatoms.github.io/workflow/)
 
 
+# Recent changes
+
+Renames:
+
+- `generic.run()` -> `generic.calculate()`
+- `wfl.map.run()` -> `wfl.map.map()` 
+- `wfl.generate.md.sample()` -> `wfl.generate.md.md()`
+- `wfl.generate.optimize.run()` -> `wfl.generate.optimize.optimize()`
+- `wfl.generate.buildcell.run()` -> `wfl.generate.buildcell.buildcell()`
+- `wfl.generate.minimahopping.run()` -> `wfl.generate.minimahopping.minimahopping()`
+- `phonopy.run()` -> `phonopy.phonopy()`
+- `smiles.run()` -> `smiles.smiles()`
+- `wfl.descriptors.quippy.calc()` -> `wfl.descriptors.quippy.calculate()`
+
+
