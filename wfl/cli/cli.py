@@ -39,25 +39,21 @@ from wfl.cli.commands.select import cur, by_lambda
 subcli_select.add_command(cur)
 subcli_select.add_command(by_lambda)
 
-
-@cli.group("eval")
+@cli.group("calc")
 @click.pass_context
-def subcli_eval(ctx):
+def subcli_calc(ctx):
+    "Calculate properties and descriptors."
     pass
 
-from wfl.cli.commands.eval import gap, ace, mace, atomization_energy 
-subcli_eval.add_command(gap)
-subcli_eval.add_command(ace)
-subcli_eval.add_command(mace)
-subcli_eval.add_command(atomization_energy)
+from wfl.cli.commands.calc import gap, ace, mace, atomization_energy, quippy
+
+subcli_calc.add_command(gap)
+subcli_calc.add_command(ace)
+subcli_calc.add_command(mace)
+subcli_calc.add_command(atomization_energy)
+subcli_calc.add_command(quippy)
 
 
-@cli.group("descriptor")
-@click.pass_context
-def subcli_descriptor(ctx):
-    pass
 
-from wfl.cli.commands.descriptor import quippy 
-subcli_descriptor.add_command(quippy)
 
 
