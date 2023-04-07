@@ -6,6 +6,7 @@ from wfl.autoparallelize.autoparainfo import AutoparaInfo
 from wfl.cli import cli_options as opt
 from wfl.calculators import generic
 from wfl.utils import configs
+import wfl.descriptors.quippy
 
 
 @click.command("gap")
@@ -16,7 +17,7 @@ from wfl.utils import configs
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
 def gap(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
-    """evaluates GAP"""
+    """evaluate GAP"""
     
     if prop_prefix is None:
         prop_prefix="gap_"
@@ -44,7 +45,7 @@ def pyjulip_ace(param_fname):
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
 def ace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
-    """evaluates ACE"""
+    """evaluate ACE"""
 
     if prop_prefix is None:
         prop_prefix = 'ace_'
@@ -68,7 +69,7 @@ def ace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_su
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
 def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess, dtype):
-    """evaluates MACE"""
+    """evaluate MACE"""
 
     from mace.calculators.mace import MACECalculator 
 
@@ -93,7 +94,8 @@ def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_s
     help="``atoms.info`` key on which to select isolated atoms")
 @click.option("--isolated-atom-info-value", "-v", default="default", 
     help="``atoms.info['isolated_atom_info_key']`` value for isolated atoms. Defaults to \"IsolatedAtom\" or \"isolated_atom\"")
-def atomization_energy(inputs, outputs, prop_prefix, prop, isolated_atom_info_key, isolated_atom_info_value):
+def atomization_energy(ctx, inputs, outputs, prop_prefix, prop, isolated_atom_info_key, isolated_atom_info_value):
+    """Calculate atomization energy"""
     configs.atomization_energy(
         inputs=inputs,
         outputs=outputs,
