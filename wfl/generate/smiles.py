@@ -71,6 +71,6 @@ def _run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePr
     return atoms_list
 
 
-def run(*args, **kwargs):
+def smiles(*args, **kwargs):
     return autoparallelize(_run_autopara_wrappable, *args, **kwargs)
-autoparallelize_docstring(run, _run_autopara_wrappable, "SMILES string")
+autoparallelize_docstring(smiles, _run_autopara_wrappable, "SMILES string")

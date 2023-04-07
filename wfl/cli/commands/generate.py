@@ -19,7 +19,7 @@ def smiles(ctx, smiles_string, extra_info, outputs):
         print(f'info: {extra_info}')
         print(outputs)
 
-    wfl.generate.smiles.run(smiles_string, outputs=outputs, extra_info=extra_info)
+    wfl.generate.smiles.smiles(smiles_string, outputs=outputs, extra_info=extra_info)
 
 
 @click.command("buildcell")
