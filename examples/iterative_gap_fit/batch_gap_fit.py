@@ -27,7 +27,7 @@ from wfl.configset import ConfigSet, OutputSpec
 from wfl.fit.gap.multistage import prep_params
 from wfl.fit.gap.multistage import fit as gap_fit
 from wfl.fit.error import calc as ref_error_calc
-from wfl.generate.md import sample as sample_md
+from wfl.generate.md import md as sample_md
 from wfl.generate.optimize import run as optimize
 from wfl.select.by_descriptor import greedy_fps_conf_global
 

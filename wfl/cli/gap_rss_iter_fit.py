@@ -770,7 +770,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
     for grp_label in groups:
         print_log('  group ' + grp_label)
         # MD for bulks
-        bulk_traj = md.sample(groups[grp_label]['bulk_confs'],
+        bulk_traj = md.md(groups[grp_label]['bulk_confs'],
                               OutputSpec(f'bulk_MD_trajs.{grp_label}.xyz', file_root=run_dir),
                               calculator=(Potential, None, {'param_filename': prev_GAP}),
                               steps=bulk_MD_n_steps, dt=MD_dt,
@@ -792,7 +792,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
             defect_starting = groups[grp_label]['defect_confs']
 
         # MD defects
-        defect_traj = md.sample(defect_starting,
+        defect_traj = md.md(defect_starting,
                                 OutputSpec(f'defect_MD_trajs.{grp_label}.xyz', file_root=run_dir),
                                 calculator=(Potential, None, {'param_filename': prev_GAP}),
                                 steps=defect_MD_n_steps, dt=MD_dt,
