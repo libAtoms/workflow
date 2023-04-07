@@ -154,7 +154,9 @@
 <li class="toctree-l2"><a class="reference internal" href="examples.orca_python.html">ORCA via Python script</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.fhiaims_calculator.html">FHI-Aims Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.mace.html">Parallelize MACE calculator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html">Fitting a MLIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html">Iterative GAP fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.daisy_chain_mlip_fitting.html">GAP fit workflow with many wfl use-case examples</a></li>
+
 <li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html">Normal Modes of molecules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.smiles.html">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.md.html">Molecular Dynamics</a></li>
@@ -372,14 +374,14 @@ document.write(`
 <li><p>EMT:</p>
 <ul>
 <li><p><a class="reference internal" href="first_example.html"><span class="std std-doc">First example</span></a></p></li>
-<li><p><a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
+<li><p><a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Iterative GAP fitting </span></a></p></li>
 </ul>
 </li>
 <li><p>XTB:</p>
 <ul>
 <li><p><a class="reference internal" href="examples.normal_modes.html"><span class="std std-doc">Normal Modes of molecules</span></a></p></li>
 <li><p><a class="reference internal" href="examples.md.html"><span class="std std-doc">Molecular Dynamics</span></a></p></li>
-<li><p><a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+<li><p><a class="reference internal" href="examples.daisy_chain_mlip_fitting.html"><span class="std std-doc">GAP fit workflow with many wfl use-case examples </span></a></p></li>
 </ul>
 </li>
 <li><p>VASP: <a class="reference internal" href="overview.queued.html"><span class="std std-doc">Functions as independently queued jobs</span></a></p></li>
@@ -394,10 +396,10 @@ document.write(`
 <li><p>From SMILES string:</p>
 <ul>
 <li><p>Short example in <a class="reference internal" href="examples.smiles.html"><span class="std std-doc">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></span></a></p></li>
-<li><p>As part of <a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+<li><p>As part of <a class="reference internal" href="examples.daisy_chain_mlip_fitting.html"><span class="std std-doc">GAP fit workflow with many wfl use-case examples </span></a></p></li>
 </ul>
 </li>
-<li><p>Geometry optimisation: <a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
+<li><p>Geometry optimisation: <a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Iterative GAP fitting </span></a></p></li>
 <li><p>Sample molecular normal modes: <a class="reference internal" href="examples.normal_modes.html"><span class="std std-doc">Normal Modes (non-periodic)</span></a></p></li>
 </ul>
 <div class="section" id="run-md">
@@ -405,8 +407,8 @@ document.write(`
 <ul class="simple">
 <li><p>Sample configs for training:</p>
 <ul>
-<li><p><a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
-<li><p><a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+<li><p><a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Iterative GAP fitting </span></a></p></li>
+<li><p><a class="reference internal" href="examples.daisy_chain_mlip_fitting.html"><span class="std std-doc">GAP fit workflow with many wfl use-case examples </span></a></p></li>
 </ul>
 </li>
 <li><p>Run ACE MD: <a class="reference internal" href="examples.md.html"><span class="std std-doc">MD</span></a></p></li>
@@ -419,7 +421,7 @@ document.write(`
 <li><p>Overview: <a class="reference internal" href="overview.queued.html"><span class="std std-doc">Functions as independently queued jobs</span></a></p></li>
 <li><p><a class="reference internal" href="examples.orca_python.html"><span class="std std-doc">ORCA via python script</span></a></p></li>
 <li><p>Run ACE MD: <a class="reference internal" href="examples.md.html"><span class="std std-doc">MD</span></a></p></li>
-<li><p><a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+<li><p><a class="reference internal" href="examples.daisy_chain_mlip_fitting.html"><span class="std std-doc">GAP fit workflow with many wfl use-case examples </span></a></p></li>
 </ul>
 </div>
 <div class="section" id="get-descriptors">
@@ -427,8 +429,8 @@ document.write(`
 <ul class="simple">
 <li><p>Global SOAP:</p>
 <ul>
-<li><p><a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
-<li><p><a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+<li><p><a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Iterative GAP fitting </span></a></p></li>
+<li><p><a class="reference internal" href="examples.daisy_chain_mlip_fitting.html"><span class="std std-doc">GAP fit workflow with many wfl use-case examples </span></a></p></li>
 </ul>
 </li>
 </ul>
@@ -437,21 +439,21 @@ document.write(`
 <h2>Sampling structures<a class="headerlink" href="#sampling-structures" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Furthest point sampling: <a class="reference internal" href="examples.select_fps.html"><span class="std std-doc">Sampling of Structures</span></a></p></li>
-<li><p>CUR: <a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
-<li><p>With a boolean function: <a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+<li><p>CUR: <a class="reference internal" href="examples.daisy_chain_mlip_fitting.html"><span class="std std-doc">GAP fit workflow with many wfl use-case examples </span></a></p></li>
+<li><p>With a boolean function: <a class="reference internal" href="examples.daisy_chain_mlip_fitting.html"><span class="std std-doc">GAP fit workflow with many wfl use-case examples </span></a></p></li>
 </ul>
 </div>
 <div class="section" id="fit-a-potential">
 <h2>Fit a potential<a class="headerlink" href="#fit-a-potential" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p>Multistage GAP fit: <a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
-<li><p>Simple GAP fit: <a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+<li><p>Multistage GAP fit: <a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Iterative GAP fitting </span></a></p></li>
+<li><p>Simple GAP fit: <a class="reference internal" href="examples.daisy_chain_mlip_fitting.html"><span class="std std-doc">GAP fit workflow with many wfl use-case examples </span></a></p></li>
 </ul>
 </div>
 <div class="section" id="iterative-training">
 <h2>Iterative training<a class="headerlink" href="#iterative-training" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p>An example of GAP fitting scheme: <a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
+<li><p>An example of GAP fitting scheme: <a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Iterative GAP fitting </span></a></p></li>
 </ul>
 </div>
 <div class="section" id="command-line">
@@ -465,11 +467,11 @@ document.write(`
 <ul class="simple">
 <li><p>Calculate errors:</p>
 <ul>
-<li><p><a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Fitting a MLIP</span></a></p></li>
-<li><p><a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+<li><p><a class="reference internal" href="examples.mlip_fitting.html"><span class="std std-doc">Iterative GAP fitting </span></a></p></li>
+<li><p><a class="reference internal" href="examples.daisy_chain_mlip_fitting.html"><span class="std std-doc">GAP fit workflow with many wfl use-case examples </span></a></p></li>
 </ul>
 </li>
-<li><p>Plot predicted vs reference correlation plots: <a class="reference internal" href="#examples.daisy_chain_gap.ipynb"><span class="xref myst">MLIP fitting workflow</span></a></p></li>
+<li><p>Plot predicted vs reference correlation plots: <a class="reference internal" href="examples.daisy_chain_mlip_fitting.html"><span class="std std-doc">GAP fit workflow with many wfl use-case examples </span></a></p></li>
 <li><p>Parallelize your own function: <a class="reference internal" href="overview.parallelisation.html"><span class="std std-doc">Overview of</span></a></p></li>
 <li><p>Calculate normal modes of a molecule: <a class="reference internal" href="examples.normal_modes.html"><span class="std std-doc">Normal Modes(non-periodic)</span></a></p></li>
 <li><p>Post-process each ORCA calculation on-the-fly: <a class="reference internal" href="examples.orca_python.html"><span class="std std-doc">ORCA via python script</span></a></p></li>

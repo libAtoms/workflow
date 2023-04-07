@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MLIP fitting workflow &#8212; workflow  documentation</title>
+    <title>GAP fit workflow with many wfl use-case examples &#8212; workflow  documentation</title>
   
   
   
@@ -49,6 +49,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'examples.daisy_chain_mlip_fitting';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Normal Modes of molecules" href="examples.normal_modes.html" />
+    <link rel="prev" title="Iterative GAP fitting" href="examples.mlip_fitting.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -125,7 +127,7 @@
 </a></div>
         <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <ul class="nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="first_example.html">First Example</a></li>
 
 <li class="toctree-l1 has-children"><a class="reference internal" href="overview.html">Overview</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -148,14 +150,16 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="examples.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="examples.html">Examples</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="examples.index.html">Index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.dimers.html">Generating Dimer Structures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.buildcell.html">Random Structures via buildcell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.orca_python.html">ORCA via Python script</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.fhiaims_calculator.html">FHI-Aims Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.mace.html">Parallelize MACE calculator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html">Fitting a MLIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.mlip_fitting.html">Iterative GAP fitting</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">GAP fit workflow with many wfl use-case examples</a></li>
+
 <li class="toctree-l2"><a class="reference internal" href="examples.normal_modes.html">Normal Modes of molecules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.smiles.html">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.md.html">Molecular Dynamics</a></li>
@@ -329,7 +333,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>MLIP fitting workflow</h1>
+    <h1>GAP fit workflow with many wfl use-case examples</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -339,7 +343,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">MLIP fitting workflow</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">GAP fit workflow with many wfl use-case examples</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Imports">Imports</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Reference-calculator">Reference calculator</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Prepare-isolated-atoms">Prepare isolated atoms</a></li>
@@ -367,8 +371,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <div class="section" id="MLIP-fitting-workflow">
-<h1>MLIP fitting workflow<a class="headerlink" href="#MLIP-fitting-workflow" title="Permalink to this heading">#</a></h1>
+  <div class="section" id="GAP-fit-workflow-with-many-wfl-use-case-examples">
+<h1>GAP fit workflow with many wfl use-case examples<a class="headerlink" href="#GAP-fit-workflow-with-many-wfl-use-case-examples" title="Permalink to this heading">#</a></h1>
 <p>This notebook walks though a lightweight workflow of fitting a MLIP to showcase usage of a wide range of wfl functions and ways they can be used.</p>
 <p>The main steps are:</p>
 <ol class="arabic simple">
@@ -848,6 +852,24 @@ document.write(`
   
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="examples.mlip_fitting.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Iterative GAP fitting</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="examples.normal_modes.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Normal Modes of molecules</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div></div>
   
 </div>
@@ -866,7 +888,7 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">MLIP fitting workflow</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">GAP fit workflow with many wfl use-case examples</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Imports">Imports</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Reference-calculator">Reference calculator</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Prepare-isolated-atoms">Prepare isolated atoms</a></li>
