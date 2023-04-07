@@ -38,7 +38,7 @@ help='String to be evaluated by the lambda function. Will be substituted into `e
 @opt.inputs
 @opt.outputs
 def by_lambda(ctx, inputs, outputs, exec_code):
-    """selects atoms based on a lambda function"""
+    """Select atoms based on a lambda function"""
 
     at_filter_fun = eval("lambda atoms: " + exec_code)
 

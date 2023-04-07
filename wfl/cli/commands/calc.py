@@ -17,7 +17,7 @@ import wfl.descriptors.quippy
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
 def gap(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
-    """evaluates GAP"""
+    """evaluate GAP"""
     
     if prop_prefix is None:
         prop_prefix="gap_"
@@ -45,7 +45,7 @@ def pyjulip_ace(param_fname):
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
 def ace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
-    """evaluates ACE"""
+    """evaluate ACE"""
 
     if prop_prefix is None:
         prop_prefix = 'ace_'
@@ -69,7 +69,7 @@ def ace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_su
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
 def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess, dtype):
-    """evaluates MACE"""
+    """evaluate MACE"""
 
     from mace.calculators.mace import MACECalculator 
 
@@ -95,6 +95,7 @@ def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_s
 @click.option("--isolated-atom-info-value", "-v", default="default", 
     help="``atoms.info['isolated_atom_info_key']`` value for isolated atoms. Defaults to \"IsolatedAtom\" or \"isolated_atom\"")
 def atomization_energy(inputs, outputs, prop_prefix, prop, isolated_atom_info_key, isolated_atom_info_value):
+    """Calculte atomization energy"""
     configs.atomization_energy(
         inputs=inputs,
         outputs=outputs,
@@ -114,9 +115,7 @@ def atomization_energy(inputs, outputs, prop_prefix, prop, isolated_atom_info_ke
 @opt.inputs
 @opt.outputs
 def quippy(ctx, inputs, outputs, descriptor, key, local, force):
-    calculate_descriptor(inputs, outputs, descriptor, key, local, force)
-
-def calculate_descriptor(inputs, outputs, descriptor, key, local, force):
+    """Calculate quippy descriptors"""
     wfl.descriptors.quippy.calc(
         inputs=inputs,
         outputs=outputs,

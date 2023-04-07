@@ -37,7 +37,7 @@ def show_error(ctx, inputs, calc_property_prefix, ref_property_prefix,
           config_properties, atom_properties, category_keys,
           weight_property, precision, fig_name, error_type, 
           cmap):
-    """Prints error summary table"""
+    """Print error summary table and plot parity plot"""
     # TODO
     # - clean up cmap
 

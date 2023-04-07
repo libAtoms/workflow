@@ -23,6 +23,7 @@ cli.add_command(show_error)
 @cli.group("generate")
 @click.pass_context
 def subcli_generate(ctx):
+    """Generate structures"""
     pass
 
 from wfl.cli.commands.generate import smiles, buildcell
@@ -33,6 +34,7 @@ subcli_generate.add_command(buildcell)
 @cli.group("select")
 @click.pass_context
 def subcli_select(ctx):
+    """Select structures from database"""
     pass
 
 from wfl.cli.commands.select import cur, by_lambda
