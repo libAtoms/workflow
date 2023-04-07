@@ -95,7 +95,7 @@ def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_s
 @click.option("--isolated-atom-info-value", "-v", default="default", 
     help="``atoms.info['isolated_atom_info_key']`` value for isolated atoms. Defaults to \"IsolatedAtom\" or \"isolated_atom\"")
 def atomization_energy(ctx, inputs, outputs, prop_prefix, prop, isolated_atom_info_key, isolated_atom_info_value):
-    """Calculte atomization energy"""
+    """Calculate atomization energy"""
     configs.atomization_energy(
         inputs=inputs,
         outputs=outputs,

@@ -7,8 +7,7 @@ import click
 @click.option("--verbose", "-v", is_flag=True)
 @click.pass_context
 def cli(ctx, verbose):
-    """Workflow command line interface.
-    """
+    """Workflow command line interface."""
     ctx.ensure_object(dict)
     ctx.obj["verbose"] = verbose
 
@@ -44,7 +43,7 @@ subcli_select.add_command(by_lambda)
 @cli.group("calc")
 @click.pass_context
 def subcli_calc(ctx):
-    "Calculate properties and descriptors."
+    """Calculate properties and descriptors."""
     pass
 
 from wfl.cli.commands.calc import gap, ace, mace, atomization_energy, quippy
