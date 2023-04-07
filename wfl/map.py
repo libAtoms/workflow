@@ -18,6 +18,6 @@ def _map_autopara_wrappable(atoms, map_func, args=[], kwargs={}):
 
     return outputs
 
-def run(*args, **kwargs):
+def map(*args, **kwargs):
     return autoparallelize(_map_autopara_wrappable, *args, **kwargs)
-autoparallelize_docstring(run, _map_autopara_wrappable, "Atoms")
+autoparallelize_docstring(map, _map_autopara_wrappable, "Atoms")

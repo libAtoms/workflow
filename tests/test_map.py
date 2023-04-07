@@ -3,7 +3,7 @@ import numpy as np
 from ase.atoms import Atoms
 
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.map import run as wfl_map
+from wfl.map import map as wfl_map
 
 def displ(at):
     at_copy = at.copy()
