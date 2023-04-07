@@ -779,7 +779,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
 
         if params.get('MD_bulk_defect_step/optimize_before_MD', default=True):
             # minim defects
-            defect_optimize_trajs = optimize.run(groups[grp_label]['defect_confs'],
+            defect_optimize_trajs = optimize.optimize(groups[grp_label]['defect_confs'],
                                            OutputSpec(f'defect_optimize_trajs.{grp_label}.xyz',
                                                       file_root=run_dir),
                                            calculator=(Potential, None, {'param_filename': prev_GAP}),
@@ -914,7 +914,7 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
         # ID preconditioner needed to make it not hang with multiprocessing - need to investigate why default, 'auto',
         # which should always result in None, hangs.  Could be weird volume jumps related to symmetrization cause
         # preconditioner neighbor list to go crazy.
-        trajs = optimize.run(groups[grp_label]['cur_confs'],
+        trajs = optimize.optimize(groups[grp_label]['cur_confs'],
                           OutputSpec(f'optimize_traj.{grp_label}.xyz', file_root=run_dir),
                           calculator=(Potential, None, {'param_filename': prev_GAP}),
                           precon='ID', keep_symmetry=True, **optimize_kwargs)

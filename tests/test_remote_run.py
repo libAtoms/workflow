@@ -206,11 +206,11 @@ def do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env):
 
     # run locally
     co = OutputSpec([f.replace('_i_', '_o_local_') for f in infiles])
-    results = optimize.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
+    results = optimize.optimize(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
 
     co = OutputSpec([f.replace('_i_', '_o_') for f in infiles])
     t0 = time.time()
-    results = optimize.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5, autopara_info={"remote_info": ri})
+    results = optimize.optimize(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5, autopara_info={"remote_info": ri})
     dt = time.time() - t0
     print('remote parallel calc_time', dt)
 
