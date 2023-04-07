@@ -20,7 +20,6 @@ from wfl.fit.utils import ace_fit_jl_path
 from wfl.utils.configs import find_isolated_atoms
 
 from expyre import ExPyRe
-import wfl.scripts
 
 def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
         ref_property_prefix='REF_', skip_if_present=False, run_dir='.', dry_run=False,
