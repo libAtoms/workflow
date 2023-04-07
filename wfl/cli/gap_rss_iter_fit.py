@@ -1074,7 +1074,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
             f'computing descriptors and selecting from (optionally) flat histogram by descriptor for {file_label} ' + str(
                 config_selection_descriptor_strs))
         # calc descriptors and by-desc select from flat histo selected
-        configs_flat_histo_with_desc = wfl.descriptors.quippy.calc(
+        configs_flat_histo_with_desc = wfl.descriptors.quippy.calculate(
             configs_init, OutputSpec(f'{file_label}_with_desc.{grp_label}.xyz', file_root=run_dir),
             config_selection_descriptor_strs, 'config_selection_desc',
             per_atom=config_selection_descriptor_local,
@@ -1116,7 +1116,7 @@ def calc_descriptors_to_file(run_dir, basename, grp_label, configs, descriptor_s
     if os.path.exists(os.path.join(run_dir, f'{basename}.{grp_label}.average_desc.txt')):
         return
 
-    configs_with_descs = wfl.descriptors.quippy.calc(configs, OutputSpec(),
+    configs_with_descs = wfl.descriptors.quippy.calculate(configs, OutputSpec(),
                                                   descriptor_strs, 'config_selection_desc', per_atom=descriptor_local,
                                                   verbose=verbose)
 

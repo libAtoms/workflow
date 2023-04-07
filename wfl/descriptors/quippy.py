@@ -196,6 +196,6 @@ def _calc_autopara_wrappable(atoms, descs, key, per_atom, normalize=True, compos
 
 
 
-def calc(*args, **kwargs):
+def calculate(*args, **kwargs):
     return autoparallelize(_calc_autopara_wrappable, *args, **kwargs)
-autoparallelize_docstring(calc, _calc_autopara_wrappable, "Atoms")
+autoparallelize_docstring(calculate, _calc_autopara_wrappable, "Atoms")

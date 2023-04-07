@@ -22,7 +22,7 @@ from quippy.potential import Potential
 
 from wfl.calculators.generic import calculate as generic_calc
 from wfl.descriptors.quippy import from_any_to_Descriptor
-from wfl.descriptors.quippy import calc as desc_calc
+from wfl.descriptors.quippy import calculate as desc_calc
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.fit.gap.multistage import prep_params
 from wfl.fit.gap.multistage import fit as gap_fit
