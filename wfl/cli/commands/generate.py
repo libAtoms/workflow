@@ -54,7 +54,7 @@ def buildcell(ctx, outputs, buildcell_input, buildcell_exec, n_configs,
     with open(buildcell_input) as bc_f:
         buildcell_input_txt = bc_f.read()
 
-    wfl.generate.buildcell.run(
+    wfl.generate.buildcell.buildcell(
         outputs=outputs,
         inputs=range(n_configs),
         buildcell_cmd=buildcell_exec,

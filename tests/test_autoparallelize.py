@@ -14,7 +14,7 @@ from wfl.autoparallelize.autoparainfo import AutoparaInfo
 
 
 def test_empty_iterator(tmp_path):
-    co = buildcell.run(range(0), OutputSpec(tmp_path / 'dummy.xyz'),  buildcell_cmd='dummy', buildcell_input='dummy')
+    co = buildcell.buildcell(range(0), OutputSpec(tmp_path / 'dummy.xyz'),  buildcell_cmd='dummy', buildcell_input='dummy')
 
     assert len([at for at in co]) == 0
 
