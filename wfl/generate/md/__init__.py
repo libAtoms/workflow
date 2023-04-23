@@ -246,9 +246,9 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
     return all_trajs
 
 
-def sample(*args, **kwargs):
+def md(*args, **kwargs):
     def_autopara_info = {"num_inputs_per_python_subprocess": 10}
 
     return autoparallelize(_sample_autopara_wrappable, *args,
                            def_autopara_info=def_autopara_info, **kwargs)
-autoparallelize_docstring(sample, _sample_autopara_wrappable, "Atoms")
+autoparallelize_docstring(md, _sample_autopara_wrappable, "Atoms")

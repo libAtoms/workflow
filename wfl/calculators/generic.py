@@ -80,7 +80,7 @@ def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_
         return at_out
 
 
-def run(*args, **kwargs):
+def calculate(*args, **kwargs):
     calculator = kwargs.get("calculator")
     if calculator is None:
         calculator = args[2]
@@ -88,4 +88,4 @@ def run(*args, **kwargs):
     def_autopara_info = getattr(calculator, "wfl_generic_def_autopara_info", {"num_inputs_per_python_subprocess": 10})
 
     return autoparallelize(_run_autopara_wrappable, *args, def_autopara_info=def_autopara_info, **kwargs)
-autoparallelize_docstring(run, _run_autopara_wrappable, "Atoms")
+autoparallelize_docstring(calculate, _run_autopara_wrappable, "Atoms")

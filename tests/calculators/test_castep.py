@@ -56,7 +56,7 @@ def test_castep_calc_via_generic(tmp_path):
         num_python_subprocesses=0
     )
 
-    ci = generic.run(
+    ci = generic.calculate(
         inputs=ci,
         outputs=co, 
         calculator=calc, 

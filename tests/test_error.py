@@ -9,7 +9,7 @@ from pytest import approx
 
 from pprint import pprint
 
-from wfl.calculators.generic import run as generic_calc
+from wfl.calculators.generic import calculate as generic_calc
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.fit.error import calc as ref_err_calc
 from wfl.fit.error import value_error_scatter as plot_error

@@ -1,6 +1,6 @@
 # Parallelize MACE calculator
 
-MACE calculator can be parallelized with the `wfl.calculators.generic.run` routine. 
+MACE calculator can be parallelized with the `wfl.calculators.generic.calculate` routine. 
 
 First we define a `ConfigSet` for the inputs and `OutputSpec` to specify how the outputs are handled: 
 
@@ -23,7 +23,7 @@ dtype="float64"
 my_mace_calc = MACECalculator(model_path=mace_model_fname, dtype=dtype, device="cpu") 
 ```
 
-But in Workflow, for `generic.run` to parallelize this calculator it needs to be defined as a tuple of `(calc_function, [args], **kwargs)`. In our example, the above code snippet corresponds to 
+But in Workflow, for `generic.calculate` to parallelize this calculator it needs to be defined as a tuple of `(calc_function, [args], **kwargs)`. In our example, the above code snippet corresponds to 
 
 ```
 from wfl.calculators import generic
@@ -42,10 +42,10 @@ Now we can evaluate multiple structures in parallel over 8 cores (for example) b
 export WFL_NUM_PYTHON_SUBPROCESSES=8
 ```
 
-and calling the `generic.run`:
+and calling the `generic.calculate`:
 
 ```
-generic.run(
+generic.calculate(
     inputs=inputs, 
     outputs=outputs,
     calculator=my_mace_calc,
@@ -76,7 +76,7 @@ mace_model_fname = "mace_run-123.model.cpu"
 
 my_mace_calc = (MACECalculator, [], {"model_path":mace_model_fname, "default_dtype":"float64", "device":"cpu"})
 
-generic.run(
+generic.calculate(
     inputs=inputs, 
     outputs=outputs,
     calculator=my_mace_calc,

@@ -59,7 +59,7 @@ orca_kwargs["post_process"] = post_func
 calculator = (ORCA, [], orca_kwargs)
 
 # run calculation
-generic.run(
+generic.calculate(
     inputs=ci, 
     outputs=co,
     calculator=calculator,

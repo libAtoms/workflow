@@ -6,7 +6,7 @@ from ase.atoms import Atoms
 import ase.io
 
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate.phonopy import run
+from wfl.generate.phonopy import phonopy
 
 
 def test_phonopy(tmp_path):
@@ -18,7 +18,7 @@ def test_phonopy(tmp_path):
     sc = at * [3, 3, 3]
     displs = [0.1, 0.2]
     strain_displs = [0.05, 0.1]
-    pert = run(ci, co, displs, strain_displs, [3, 3, 3])
+    pert = phonopy(ci, co, displs, strain_displs, [3, 3, 3])
 
     pert = list(pert)
 
@@ -42,7 +42,7 @@ def test_phono3py(tmp_path):
 
     displs = [0.1, 0.2]
     strain_displs = [0.05, 0.1]
-    pert = run(ci, co, displs, strain_displs, [3, 3, 3], [2, 2, 2], 3.0)
+    pert = phonopy(ci, co, displs, strain_displs, [3, 3, 3], [2, 2, 2], 3.0)
 
     pert = list(pert)
 
@@ -71,7 +71,7 @@ def test_phono3py_same_supercell(tmp_path):
 
     displs = [0.1, 0.2]
     strain_displs = [0.05, 0.1]
-    pert = run(ci, co, displs, strain_displs, [2, 2, 2], [2, 2, 2], 3.0)
+    pert = phonopy(ci, co, displs, strain_displs, [2, 2, 2], [2, 2, 2], 3.0)
 
     pert = list(pert)
 

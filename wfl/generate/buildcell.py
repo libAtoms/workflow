@@ -250,6 +250,6 @@ def _run_autopara_wrappable(config_is, buildcell_cmd, buildcell_input, extra_inf
 
     return atoms_list
 
-def run(*args, **kwargs):
+def buildcell(*args, **kwargs):
     return autoparallelize(_run_autopara_wrappable, *args, **kwargs)
-autoparallelize_docstring(run, _run_autopara_wrappable, "Atoms")
+autoparallelize_docstring(buildcell, _run_autopara_wrappable, "Atoms")

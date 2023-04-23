@@ -52,7 +52,7 @@ os.environ["WFL_DETERMINISTIC_HACK"] = "true"
 # xTB has some internal parallelisation that needs turning off by setting this env. variable. 
 os.environ["OMP_NUM_THREADS"] = "1"
 
-ci = md.sample(
+ci = md.md(
     inputs=ci, 
     outputs=co,
     calculator=calc,

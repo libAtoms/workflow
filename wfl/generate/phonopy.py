@@ -4,9 +4,9 @@ from ase.atoms import Atoms
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 
 try:
-    import phonopy
+    import phonopy as phonopy_module
 except ModuleNotFoundError:
-    phonopy = None
+    phonopy_module = None
 
 try:
     import phono3py
@@ -61,7 +61,7 @@ def _run_autopara_wrappable(atoms, displacements, strain_displs, ph2_supercell, 
     ats_pert = []
 
     for at0 in atoms:
-        at_ph = phonopy.structure.atoms.PhonopyAtoms(numbers=at0.numbers, positions=at0.positions, cell=at0.cell)
+        at_ph = phonopy_module.structure.atoms.PhonopyAtoms(numbers=at0.numbers, positions=at0.positions, cell=at0.cell)
 
         ats_pert.append([])
         for displ_i, displ in enumerate(displacements):
@@ -71,7 +71,7 @@ def _run_autopara_wrappable(atoms, displacements, strain_displs, ph2_supercell, 
             d2 = []
             d3 = []
             if ph2_sc_mat is not None:
-                ph2 = phonopy.Phonopy(at_ph, ph2_sc_mat)
+                ph2 = phonopy_module.Phonopy(at_ph, ph2_sc_mat)
                 ph2.generate_displacements(distance=displ)
                 d2_undispl = ph2.supercell
                 d2 = ph2.supercells_with_displacements
@@ -122,7 +122,7 @@ def _run_autopara_wrappable(atoms, displacements, strain_displs, ph2_supercell, 
     return ats_pert
 
 
-def run(*args, **kwargs):
+def phonopy(*args, **kwargs):
     return autoparallelize(_run_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess":10}, **kwargs)
-autoparallelize_docstring(run, _run_autopara_wrappable, "Atoms")
+autoparallelize_docstring(phonopy, _run_autopara_wrappable, "Atoms")
 

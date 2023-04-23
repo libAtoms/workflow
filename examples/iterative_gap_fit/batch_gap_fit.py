@@ -20,15 +20,15 @@ from pathlib import Path
 
 from quippy.potential import Potential
 
-from wfl.calculators.generic import run as generic_calc
+from wfl.calculators.generic import calculate as generic_calc
 from wfl.descriptors.quippy import from_any_to_Descriptor
-from wfl.descriptors.quippy import calc as desc_calc
+from wfl.descriptors.quippy import calculate as desc_calc
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.fit.gap.multistage import prep_params
 from wfl.fit.gap.multistage import fit as gap_fit
 from wfl.fit.error import calc as ref_error_calc
-from wfl.generate.md import sample as sample_md
-from wfl.generate.optimize import run as optimize
+from wfl.generate.md import md as sample_md
+from wfl.generate.optimize import optimize as optimize
 from wfl.select.by_descriptor import greedy_fps_conf_global
 
 

@@ -73,7 +73,7 @@ def test_mult_files(cu_slab, tmp_path):
 
     calc = EMT()
 
-    atoms_opt = optimize.run(
+    atoms_opt = optimize.optimize(
         inputs,
         outputs,
         calc,
@@ -97,7 +97,7 @@ def test_relax(cu_slab):
     inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
-    atoms_opt = optimize.run(
+    atoms_opt = optimize.optimize(
         inputs,
         outputs,
         calc,
@@ -126,7 +126,7 @@ def test_relax_fixed_vol(cu_slab):
     inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
-    atoms_opt = optimize.run(
+    atoms_opt = optimize.optimize(
         inputs, outputs, calc, fmax=1e-2, precon=None, logfile="-", verbose=True
     )
 
@@ -226,7 +226,7 @@ def test_subselect_from_traj(cu_slab):
     # check that iterable_loop handles Nones as expected
     inputs = ConfigSet([cu_slab.copy(), cu_slab_optimised.copy()])
     outputs = OutputSpec()
-    atoms_opt = optimize.run(
+    atoms_opt = optimize.optimize(
         inputs,
         outputs,
         calc,
@@ -271,7 +271,7 @@ def test_relax_with_constraints(cu_slab):
     inputs = ConfigSet(ats)
     outputs = OutputSpec()
 
-    atoms_opt = optimize.run(
+    atoms_opt = optimize.optimize(
         inputs, outputs, calc, fmax=1e-2, keep_symmetry=True, logfile="-", verbose=True
     )
     output = list(atoms_opt)

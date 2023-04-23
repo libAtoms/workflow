@@ -90,7 +90,7 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env):
         fout.write("\n")
 
     # jobs should fail because of bad executable
-    results = generic.run(inputs=ci, outputs=co,
+    results = generic.calculate(inputs=ci, outputs=co,
                           calculator=Vasp(encut= 200, pp='POTCARs'),
                           output_prefix='TEST_',
                           autopara_info={"remote_info": ri})
@@ -144,7 +144,7 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     monkeypatch.setenv('WFL_EXPYRE_NO_MARK_PROCESSED', '1')
 
     t0 = time.time()
-    results = generic.run(inputs=ci, outputs=co, calculator=calc, properties=["energy", "forces"],
+    results = generic.calculate(inputs=ci, outputs=co, calculator=calc, properties=["energy", "forces"],
                           autopara_info={"remote_info": ri})
     dt = time.time() - t0
     print('remote parallel calc_time', dt)
@@ -161,7 +161,7 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     co = OutputSpec(tmp_path / f'ats_o_{sys_name}.xyz')
 
     t0 = time.time()
-    results = generic.run(inputs=ci, outputs=co, calculator=calc, properties=["energy", "forces"],
+    results = generic.calculate(inputs=ci, outputs=co, calculator=calc, properties=["energy", "forces"],
                           autopara_info={"remote_info": ri})
     dt_rerun = time.time() - t0
     print('remote parallel calc_time', dt_rerun)
@@ -206,11 +206,11 @@ def do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env):
 
     # run locally
     co = OutputSpec([f.replace('_i_', '_o_local_') for f in infiles])
-    results = optimize.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
+    results = optimize.optimize(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5)
 
     co = OutputSpec([f.replace('_i_', '_o_') for f in infiles])
     t0 = time.time()
-    results = optimize.run(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5, autopara_info={"remote_info": ri})
+    results = optimize.optimize(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=5, autopara_info={"remote_info": ri})
     dt = time.time() - t0
     print('remote parallel calc_time', dt)
 
@@ -250,7 +250,7 @@ def do_fail_immediately(tmp_path, sys_name, monkeypatch, remoteinfo_env):
 
     monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
     with pytest.raises(NotImplementedError):
-        results = generic.run(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
+        results = generic.calculate(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
                               raise_calc_exceptions=True, autopara_info=AutoparaInfo(remote_label="test_fail_immediately"))
 
 
@@ -279,7 +279,7 @@ def do_ignore_failed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     calc = EMT()
 
     monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
-    results = generic.run(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
+    results = generic.calculate(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
                           raise_calc_exceptions=True, autopara_info=AutoparaInfo(remote_label="test_ignore_failed_jobs"))
 
 
@@ -311,7 +311,7 @@ def do_resubmit_killed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri['resubmit_killed_jobs'] = False
     monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps({"test_resubmit_killed_jobs": ri}))
     print("BOB ######### initial run, ignoring errors")
-    results = generic.run(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
+    results = generic.calculate(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
                           raise_calc_exceptions=True, autopara_info=AutoparaInfo(remote_label="test_resubmit_killed_jobs"))
     # make sure total number is correct, but only 2 have results
     assert len(list(results)) == len(ats)
@@ -325,7 +325,7 @@ def do_resubmit_killed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps({"test_resubmit_killed_jobs": ri}))
     print("BOB ######### second run, should time out")
     try:
-        results = generic.run(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
+        results = generic.calculate(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
                               raise_calc_exceptions=True, autopara_info=AutoparaInfo(remote_label="test_resubmit_killed_jobs"))
     except ExPyReJobDiedError:
         # ignore timeout in initial call
@@ -336,7 +336,7 @@ def do_resubmit_killed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps({"test_resubmit_killed_jobs": ri}))
     print("BOB ######### third run, should rerun 1 and succeed")
     # no easy way to check if one one has rerun, just check if all 3 succeeded this time
-    results = generic.run(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
+    results = generic.calculate(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
                           raise_calc_exceptions=True, autopara_info=AutoparaInfo(remote_label="test_resubmit_killed_jobs"))
 
     # make sure all have results
@@ -376,12 +376,12 @@ def do_md_deterministic(tmp_path, sys_name, monkeypatch, remoteinfo_env):
 
     # run locally
     co = OutputSpec([f.replace('_i_', '_o_local_') for f in infiles])
-    results_loc = md.sample(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=10, dt=0.2, temperature=100.0, temperature_tau=10.0,
+    results_loc = md.md(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=10, dt=0.2, temperature=100.0, temperature_tau=10.0,
                             autopara_rng_seed=20)
 
     co = OutputSpec([f.replace('_i_', '_o_') for f in infiles])
     t0 = time.time()
-    results_remote = md.sample(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=10, dt=0.2, temperature=100.0, temperature_tau=10.0,
+    results_remote = md.md(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=10, dt=0.2, temperature=100.0, temperature_tau=10.0,
                                autopara_rng_seed=20, autopara_info={"remote_info": ri})
     dt = time.time() - t0
     print('remote parallel calc_time', dt)

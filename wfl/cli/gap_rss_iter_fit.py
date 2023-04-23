@@ -294,7 +294,7 @@ def create_all_buildcell(cur_iter, run_dir, Zs, compositions, N_configs_tot,
             else:
                 extra_info['gap_rss_group'] = label_str
             extra_info['gap_rss_iter'] = cur_iter
-            structs = wfl.generate.buildcell.run(range(config_i_start, config_i_start + N_configs), c_out,
+            structs = wfl.generate.buildcell.buildcell(range(config_i_start, config_i_start + N_configs), c_out,
                                                  buildcell_cmd=buildcell_cmd, buildcell_input=buildcell_input,
                                                  extra_info=extra_info, perturbation=buildcell_pert,
                                                  verbose=verbose)
@@ -371,7 +371,7 @@ def evaluate_ref(dft_in_configs, dft_evaluated_configs, params, run_dir, verbose
     else:
         raise ValueError(f"Unsupported dft_code {params.dft_code}")
 
-    return generic.run(
+    return generic.calculate(
         inputs=dft_in_configs,
         outputs=dft_evaluated_configs,
         calculator=calculator(workdir=run_dir, keep_files=keep_files, **params.dft_params.get("kwargs", {})),
@@ -413,7 +413,7 @@ def do_fit_and_test(cur_iter, run_dir, params, fitting_configs, testing_configs=
         co = OutputSpec(f'fitting.error_database.GAP_iter_{cur_iter}.xyz', file_root=run_dir)
         for at in fitting_configs:
             at.calc = None
-        evaluated_configs = generic.run(fitting_configs, co, calculator, output_prefix="GAP_")
+        evaluated_configs = generic.calculate(fitting_configs, co, calculator, output_prefix="GAP_")
         fitting_error = wfl.fit.error.calc(evaluated_configs, calc_property_prefix="GAP_", ref_property_prefix="REF_",
                 category_keys = ['config_type', 'gap_rss_iter'])
         with open(GAP_xml_file + '.fitting_err.json', 'w') as fout:
@@ -424,7 +424,7 @@ def do_fit_and_test(cur_iter, run_dir, params, fitting_configs, testing_configs=
         co = OutputSpec(f'testing.error_database.GAP_iter_{cur_iter}.xyz', file_root=run_dir)
         for at in testing_configs:
             at.calc = None
-        evaluated_configs = generic.run(testing_configs, co, calculator, output_prefix="GAP_")
+        evaluated_configs = generic.calculate(testing_configs, co, calculator, output_prefix="GAP_")
         testing_error = wfl.fit.error.calc(evaluated_configs, calc_property_prefix="GAP_", ref_property_prefix="REF_",
                 category_keys = ['config_type', 'gap_rss_iter'])
         with open(GAP_xml_file + '.testing_err.json', 'w') as fout:
@@ -770,7 +770,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
     for grp_label in groups:
         print_log('  group ' + grp_label)
         # MD for bulks
-        bulk_traj = md.sample(groups[grp_label]['bulk_confs'],
+        bulk_traj = md.md(groups[grp_label]['bulk_confs'],
                               OutputSpec(f'bulk_MD_trajs.{grp_label}.xyz', file_root=run_dir),
                               calculator=(Potential, None, {'param_filename': prev_GAP}),
                               steps=bulk_MD_n_steps, dt=MD_dt,
@@ -779,7 +779,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
 
         if params.get('MD_bulk_defect_step/optimize_before_MD', default=True):
             # minim defects
-            defect_optimize_trajs = optimize.run(groups[grp_label]['defect_confs'],
+            defect_optimize_trajs = optimize.optimize(groups[grp_label]['defect_confs'],
                                            OutputSpec(f'defect_optimize_trajs.{grp_label}.xyz',
                                                       file_root=run_dir),
                                            calculator=(Potential, None, {'param_filename': prev_GAP}),
@@ -792,7 +792,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
             defect_starting = groups[grp_label]['defect_confs']
 
         # MD defects
-        defect_traj = md.sample(defect_starting,
+        defect_traj = md.md(defect_starting,
                                 OutputSpec(f'defect_MD_trajs.{grp_label}.xyz', file_root=run_dir),
                                 calculator=(Potential, None, {'param_filename': prev_GAP}),
                                 steps=defect_MD_n_steps, dt=MD_dt,
@@ -914,7 +914,7 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
         # ID preconditioner needed to make it not hang with multiprocessing - need to investigate why default, 'auto',
         # which should always result in None, hangs.  Could be weird volume jumps related to symmetrization cause
         # preconditioner neighbor list to go crazy.
-        trajs = optimize.run(groups[grp_label]['cur_confs'],
+        trajs = optimize.optimize(groups[grp_label]['cur_confs'],
                           OutputSpec(f'optimize_traj.{grp_label}.xyz', file_root=run_dir),
                           calculator=(Potential, None, {'param_filename': prev_GAP}),
                           precon='ID', keep_symmetry=True, **optimize_kwargs)
@@ -1074,7 +1074,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
             f'computing descriptors and selecting from (optionally) flat histogram by descriptor for {file_label} ' + str(
                 config_selection_descriptor_strs))
         # calc descriptors and by-desc select from flat histo selected
-        configs_flat_histo_with_desc = wfl.descriptors.quippy.calc(
+        configs_flat_histo_with_desc = wfl.descriptors.quippy.calculate(
             configs_init, OutputSpec(f'{file_label}_with_desc.{grp_label}.xyz', file_root=run_dir),
             config_selection_descriptor_strs, 'config_selection_desc',
             per_atom=config_selection_descriptor_local,
@@ -1116,7 +1116,7 @@ def calc_descriptors_to_file(run_dir, basename, grp_label, configs, descriptor_s
     if os.path.exists(os.path.join(run_dir, f'{basename}.{grp_label}.average_desc.txt')):
         return
 
-    configs_with_descs = wfl.descriptors.quippy.calc(configs, OutputSpec(),
+    configs_with_descs = wfl.descriptors.quippy.calculate(configs, OutputSpec(),
                                                   descriptor_strs, 'config_selection_desc', per_atom=descriptor_local,
                                                   verbose=verbose)
 

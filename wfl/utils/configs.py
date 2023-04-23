@@ -94,7 +94,7 @@ def atomization_energy(inputs, outputs, prop_prefix, prop="energy", isolated_ato
         isolated_at_data[list(at.symbols)[0]] = at.info[f'{prop_prefix}{prop}']
     ref_present_elements = set(isolated_at_data.keys())
 
-    configs_with_ae = wfl.map.run(
+    configs_with_ae = wfl.map.map(
         inputs = inputs, 
         outputs = outputs, 
         map_func = _get_single_ae,
