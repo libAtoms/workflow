@@ -388,7 +388,7 @@ document.write(`
 <p>Often property evaluation for each structure might take minutes or hours and there might be hundreds or thousands of configs in the dataset. In such cases the evaluation is performed as a job on a supercomputer and Workflow may be used to efficiently parallelise the property evaluation over all cores available to the job. For this, the script above is writen as</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ase.calculators.emt</span> <span class="kn">import</span> <span class="n">EMT</span> 
 <span class="kn">from</span> <span class="nn">wfl.calculators</span> <span class="kn">import</span> <span class="n">generic</span>
-<span class="kn">from</span> <span class="nn">wfl.autoparallelize.autoparainfo</span> <span class="kn">import</span> <span class="n">AutoparaInfo</span>
+<span class="kn">from</span> <span class="nn">wfl.autoparallelize</span> <span class="kn">import</span> <span class="n">AutoparaInfo</span>
 <span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
 
 <span class="n">configset</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
@@ -430,7 +430,7 @@ calculator = (Potential, [&quot;TB DFTB&quot;], {&quot;param_filename&quot;:&quo
 <span class="kn">from</span> <span class="nn">ase.build</span> <span class="kn">import</span> <span class="n">bulk</span>
 <span class="kn">from</span> <span class="nn">ase.calculators.emt</span> <span class="kn">import</span> <span class="n">EMT</span> 
 <span class="kn">from</span> <span class="nn">wfl.calculators</span> <span class="kn">import</span> <span class="n">generic</span>
-<span class="kn">from</span> <span class="nn">wfl.autoparallelize.autoparainfo</span> <span class="kn">import</span> <span class="n">AutoparaInfo</span>
+<span class="kn">from</span> <span class="nn">wfl.autoparallelize</span> <span class="kn">import</span> <span class="n">AutoparaInfo</span>
 <span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
 <span class="kn">from</span> <span class="nn">wfl.autoparallelize.remote</span> <span class="n">info</span> <span class="kn">import</span> <span class="nn">RemoteInfo</span><span class="p">()</span>
 <span class="kn">from</span> <span class="nn">expyre.resources</span> <span class="kn">import</span> <span class="n">Resources</span>
@@ -472,7 +472,7 @@ python evaluate_emt.py
 <div class="section" id="with-remote-execution">
 <h1>With remote execution<a class="headerlink" href="#with-remote-execution" title="Permalink to this heading">#</a></h1>
 <p>Workflow also allows to submit (remotely) queued jobs automatically, by interfacing with ExPyRe (<a class="reference external" href="https://libatoms.github.io/ExPyRe/">docummentation</a>, <a class="reference external" href="https://github.com/libAtoms/ExPyRe/tree/main/expyre">repository</a>). In this example, instead of calling the above python script in a queue submission script, the modified python script is called from the head node and the parallelisation mechanism behind <code class="docutils literal notranslate"><span class="pre">generic.calculate()</span></code> sets up and submits the job and returns the results like the script normally would. To enable remote submission, <code class="docutils literal notranslate"><span class="pre">RemoteInfo</span></code> must be added to <code class="docutils literal notranslate"><span class="pre">AutoparaInfo</span></code>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wfl.autoparallelize.remoteinfo</span> <span class="kn">import</span> <span class="n">RemoteInfo</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wfl.autoparallelize</span> <span class="kn">import</span> <span class="n">RemoteInfo</span><span class="p">()</span>
 <span class="kn">from</span> <span class="nn">expyre.resources</span> <span class="kn">import</span> <span class="n">Resources</span>
 
 <span class="n">remote_info</span> <span class="o">=</span> <span class="n">RemoteInfo</span><span class="p">(</span>
@@ -515,9 +515,9 @@ python evaluate_emt.py
 <span class="kn">from</span> <span class="nn">ase.build</span> <span class="kn">import</span> <span class="n">bulk</span>
 <span class="kn">from</span> <span class="nn">ase.calculators.emt</span> <span class="kn">import</span> <span class="n">EMT</span> 
 <span class="kn">from</span> <span class="nn">wfl.calculators</span> <span class="kn">import</span> <span class="n">generic</span>
-<span class="kn">from</span> <span class="nn">wfl.autoparallelize.autoparainfo</span> <span class="kn">import</span> <span class="n">AutoparaInfo</span>
+<span class="kn">from</span> <span class="nn">wfl.autoparallelize</span> <span class="kn">import</span> <span class="n">AutoparaInfo</span>
 <span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
-<span class="kn">from</span> <span class="nn">wfl.autoparallelize.remoteinfo</span> <span class="kn">import</span> <span class="n">RemoteInfo</span>
+<span class="kn">from</span> <span class="nn">wfl.autoparallelize</span> <span class="kn">import</span> <span class="n">RemoteInfo</span>
 <span class="kn">from</span> <span class="nn">expyre.resources</span> <span class="kn">import</span> <span class="n">Resources</span>
 
 <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>

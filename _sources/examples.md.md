@@ -6,8 +6,8 @@ The following script takes atomic structures from "configs.xyz", runs Berendsen 
 import os
 from xtb.ase.calculator import XTB
 from expyre.resources import Resources
-from wfl.autoparallelize.remoteinfo import RemoteInfo
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import RemoteInfo
+from wfl.autoparallelize import AutoparaInfo
 from wfl.generate import md
 from wfl.configset import ConfigSet, OutputSpec
 
