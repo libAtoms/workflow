@@ -252,4 +252,3 @@ def md(*args, **kwargs):
     return autoparallelize(_sample_autopara_wrappable, *args,
                            default_autopara_info=default_autopara_info, **kwargs)
 autoparallelize_docstring(md, _sample_autopara_wrappable, "Atoms")
->>>>>>> main
