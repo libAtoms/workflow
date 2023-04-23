@@ -131,7 +131,7 @@ def _largest_bulk_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=Tru
 
 
 def largest_bulk(*args, **kwargs):
-    return autoparallelize(_largest_bulk_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
+    return autoparallelize(_largest_bulk_autopara_wrappable, *args, default_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
 autoparallelize_docstring(largest_bulk, _largest_bulk_autopara_wrappable, "Atoms")
 
 
@@ -210,7 +210,7 @@ def _vacancy_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, sy
 
 
 def vacancy(*args, **kwargs):
-    return autoparallelize(_vacancy_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
+    return autoparallelize(_vacancy_autopara_wrappable, *args, default_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
 autoparallelize_docstring(vacancy, _vacancy_autopara_wrappable, "Atoms")
 
 
@@ -305,7 +305,7 @@ def _antisite_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, s
 
 
 def antisite(*args, **kwargs):
-    return autoparallelize(_antisite_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
+    return autoparallelize(_antisite_autopara_wrappable, *args, default_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
 autoparallelize_docstring(antisite, _antisite_autopara_wrappable, "Atoms")
 
 
@@ -354,7 +354,7 @@ def _interstitial_autopara_wrappable(atoms, max_n_atoms, pert=0.0, interstitial_
 
 
 def interstitial(*args, **kwargs):
-    return autoparallelize(_interstitial_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
+    return autoparallelize(_interstitial_autopara_wrappable, *args, default_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
 autoparallelize_docstring(interstitial, _interstitial_autopara_wrappable, "Atoms")
 
 
@@ -494,5 +494,5 @@ def _surface_autopara_wrappable(atoms, max_n_atoms, min_thickness, vacuum, simpl
 
 
 def surface(*args, **kwargs):
-    return autoparallelize(_surface_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
+    return autoparallelize(_surface_autopara_wrappable, *args, default_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
 autoparallelize_docstring(surface, _surface_autopara_wrappable, "Atoms")

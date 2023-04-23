@@ -203,10 +203,10 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
 
 
 def optimize(*args, **kwargs):
-    def_autopara_info={"num_inputs_per_python_subprocess":10}
+    default_autopara_info={"num_inputs_per_python_subprocess":10}
 
     return autoparallelize(_run_autopara_wrappable, *args, 
-                           def_autopara_info=def_autopara_info, **kwargs)
+                           default_autopara_info=default_autopara_info, **kwargs)
 autoparallelize_docstring(optimize, _run_autopara_wrappable, "Atoms")
 
 

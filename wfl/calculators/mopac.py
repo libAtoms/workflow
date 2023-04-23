@@ -12,7 +12,7 @@ _default_properties = ["energy", "forces"]
 class MOPAC(WFLFileIOCalculator, ASE_MOPAC):
     """ Extension of ASE's MOPAC claculator so that it can be used by wfl.calculators.generic (mainly each calculation is run in a separate directory)"""
 
-    wfl_generic_def_autopara_info = {"num_inputs_per_python_subprocess": 1}
+    wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
     def __init__(self, keep_files="default", rundir_prefix="run_MOPAC_",
                  workdir=None, scratchdir=None,

@@ -64,7 +64,7 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
     
     # new default value of num_inputs_per_python_subprocess for calculators.generic,
     # to override that function's built-in default of 10
-    wfl_generic_def_autopara_info = {"num_inputs_per_python_subprocess": 1}
+    wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
     # same as parent class, only multiplicity changed to trigger default
     default_parameters = dict(
