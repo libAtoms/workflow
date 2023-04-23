@@ -7,7 +7,7 @@ from ase import Atoms
 from ase.build import bulk
 import wfl.calculators.castep
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 from wfl.calculators import generic
 
 pytestmark = pytest.mark.skipif("CASTEP_COMMAND" not in os.environ, reason="'CASTEP_COMMAND' not given.")

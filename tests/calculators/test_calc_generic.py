@@ -12,7 +12,7 @@ from pytest import approx
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.calculators.espresso import Espresso
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 
 ref_lj_energy = -4.52573996914352
 ref_morse_energy = -3.4187397762024867

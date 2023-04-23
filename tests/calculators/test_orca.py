@@ -21,7 +21,7 @@ from ase.calculators.calculator import CalculationFailed
 from wfl.calculators.orca import ORCA, parse_npa_output, natural_population_analysis
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 
 pytestmark = pytest.mark.xfail(reason="calculator needs to be updated to work with latest gitlab version of ase")
 

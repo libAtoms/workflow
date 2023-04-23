@@ -9,7 +9,7 @@ import warnings
 
 from ase.constraints import voigt_6_to_full_3x3_stress
 
-from wfl.autoparallelize.remoteinfo import RemoteInfo
+from wfl.autoparallelize import RemoteInfo
 from wfl.utils.julia import julia_exec_path
 
 
