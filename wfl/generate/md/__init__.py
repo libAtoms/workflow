@@ -21,7 +21,8 @@ bar = 1.0e-4 * GPa
 def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
               traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False, update_config_type=True,
-              traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None):
+              traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None,
+              autopara_rng_seed=None, autopara_per_item_info=None):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for
     sampling configs
 
@@ -69,6 +70,9 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
     abort_check: default None,
         wfl.generate.md.abort_base.AbortBase - derived class that
         checks the MD snapshots and aborts the simulation on some condition.
+    autopara_rng_seed: int, default None
+        global seed used to initialize rng so that each operation uses a different but
+        deterministic local seed, use a random value if None
 
     Returns
     -------
@@ -108,7 +112,10 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
                 if 'n_stages' not in t_stage:
                     t_stage['n_stages'] = 10
 
-    for at in atoms_to_list(atoms):
+    for at_i, at in enumerate(atoms_to_list(atoms)):
+        if autopara_per_item_info is not None:
+            np.random.seed(autopara_per_item_info[at_i]["rng_seed"])
+
         at.calc = calculator
         compressibility = None
         if pressure is not None:
@@ -240,15 +247,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
 
 
 def sample(*args, **kwargs):
-    # Normally each thread needs to call np.random.seed so that it will generate a different
-    # set of random numbers.  This env var overrides that to produce deterministic output,
-    # for purposes like testing
-    if 'WFL_DETERMINISTIC_HACK' in os.environ:
-        initializer = (None, [])
-    else:
-        initializer = (np.random.seed, [])
-    default_autopara_info={"initializer":initializer, "hash_ignore":["initializer"]}
+    default_autopara_info = {"num_inputs_per_python_subprocess": 10}
 
     return autoparallelize(_sample_autopara_wrappable, *args,
-        default_autopara_info=default_autopara_info, **kwargs)
+                           default_autopara_info=default_autopara_info, **kwargs)
 autoparallelize_docstring(sample, _sample_autopara_wrappable, "Atoms")

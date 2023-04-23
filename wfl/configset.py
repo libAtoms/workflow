@@ -1,5 +1,8 @@
+import sys
+
 from pathlib import Path
 import glob
+
 
 from ase.atoms import Atoms
 import ase.io
@@ -374,14 +377,21 @@ class OutputSpec:
 
     flush: bool, default True
         flush output after every write
+
+    write_kwargs: dict
+        optional extra kwargs to ase.io.write
+
+    tags: dict
+        dict of extra Atoms.info keys to set in written configs
     """
-    def __init__(self, files=None, *, file_root=None, overwrite=False, flush=True, write_kwargs={}):
+    def __init__(self, files=None, *, file_root=None, overwrite=False, flush=True, write_kwargs={}, tags={}):
         self.files = files
         self.configs = None
         self.file_root = Path(file_root if file_root is not None else "")
         self.flush = flush
         self.overwrite = overwrite
         self.write_kwargs = write_kwargs.copy()
+        self.tags = tags.copy()
 
         if self.files is not None:
             # store in file(s)
@@ -410,6 +420,23 @@ class OutputSpec:
 
     def _existing_output_files(self):
         return [self.file_root / f for f in self.files if (self.file_root / f).exists()]
+
+
+    def write(self, configs):
+        """Write a set of configurations to this OutputSpec
+
+        Parameters
+        ----------
+        configs: iterable(Atoms)
+            Configurations to write.  If ConfigSet, location will be saved
+        """
+        if not self.overwrite and self.all_written():
+            sys.stderr.write(f'Reusing existing output instead of writing ConfigSet contents since overwrite=False and output is done\n')
+            return
+
+        for at in configs:
+            self.store(at, at.info.get("_ConfigSet_loc"))
+        self.close()
 
 
     def store(self, configs, input_CS_loc=""):
@@ -583,6 +610,7 @@ class OutputSpec:
         if isinstance(configs, Atoms):
             if store_loc_stem is not None and len(store_loc_stem) > 0:
                 configs.info["_ConfigSet_loc"] = store_loc_stem
+            configs.info.update(self.tags)
             ase.io.write(self.cur_file, configs, **self._cur_write_kwargs)
             if self.flush:
                 self.cur_file.flush()

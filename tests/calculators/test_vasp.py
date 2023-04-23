@@ -244,9 +244,7 @@ def test_vasp_scratchdir(tmp_path, monkeypatch):
     assert nfiles == 18
 
     scratch_dir = Path("/tmp") / str(run_dir[0].resolve()).replace("/", "", 1).replace("/", "_")
-    assert os.path.exists(scratch_dir)
-    nfiles_scratch = len(list(os.scandir(scratch_dir)))
-    assert nfiles_scratch == 0
+    assert not os.path.exists(scratch_dir)
 
     ats = list(configs_eval)
     assert 'TEST_energy' in ats[0].info
