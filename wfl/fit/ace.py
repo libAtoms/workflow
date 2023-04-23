@@ -20,7 +20,6 @@ from wfl.fit.utils import ace_fit_jl_path
 from wfl.utils.configs import find_isolated_atoms
 
 from expyre import ExPyRe
-import wfl.scripts
 
 def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
         ref_property_prefix='REF_', skip_if_present=False, run_dir='.', dry_run=False,
@@ -65,7 +64,7 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
         do a dry run, which returns the matrix size, rather than the potential name
     verbose: bool, default True
         print verbose output
-    remote_info: dict or :class:`wfl.autoparallelize.remoteinfo.RemoteInfo`, or '_IGNORE' or None
+    remote_info: dict or :class:`wfl.autoparallelize.RemoteInfo`, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
         will try to use env var WFL_EXPYRE_INFO used (see above). '_IGNORE' is for
@@ -213,7 +212,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
         do a dry run, which returns the matrix size, rather than the potential file path
     verbose: bool, default True
         print verbose output
-    remote_info: dict or :class:`wfl.autoparallelize.remoteinfo.RemoteInfo`, or '_IGNORE' or None
+    remote_info: dict or :class:`wfl.autoparallelize.RemoteInfo`, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
         will try to use env var WFL_EXPYRE_INFO used (see below). '_IGNORE' is for

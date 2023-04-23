@@ -54,7 +54,7 @@ def test_wfl_mopac(tmp_path, atoms):
 
     calc = (MOPAC, [], {"workdir":tmp_path, "method": "AM1", "task":"GRADIENTS"})
 
-    configs_eval = generic.run(
+    configs_eval = generic.calculate(
         inputs=ConfigSet(fn_in),
         outputs = OutputSpec(),
         calculator = calc, 

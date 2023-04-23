@@ -112,7 +112,7 @@ def test_generic_aims_calculation(tmp_path, parameters_nonperiodic):
     # output container
     c_out = OutputSpec("aims_results.xyz", file_root=tmp_path)
 
-    results = generic.run(
+    results = generic.calculate(
         inputs=[at0, at],
         outputs=c_out,
         calculator=calc,

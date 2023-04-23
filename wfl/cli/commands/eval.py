@@ -2,7 +2,7 @@ import click
 
 from quippy.potential import Potential
 
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 from wfl.cli import cli_options as opt
 from wfl.calculators import generic
 from wfl.utils import configs
@@ -23,7 +23,7 @@ def gap(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_su
 
     calc = (Potential, [], {"param_filename":param_fname})
 
-    generic.run(
+    generic.calculate(
         inputs=inputs, 
         outputs=outputs,
         calculator=calc,
@@ -51,7 +51,7 @@ def ace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_su
 
     calc = (pyjulip_ace, [param_fname], {})
 
-    generic.run(
+    generic.calculate(
         inputs=inputs, 
         outputs=outputs,
         calculator=calc,
@@ -74,7 +74,7 @@ def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_s
 
     calc = (MACECalculator, [], {"model_path":param_fname, "default_dtype":dtype, "device":'cpu'})
 
-    generic.run(
+    generic.calculate(
         inputs=inputs, 
         outputs=outputs,
         calculator=calc,

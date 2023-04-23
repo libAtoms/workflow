@@ -11,7 +11,7 @@ from ase.units import GPa
 
 from wfl.calculators.dft import evaluate_dft
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate.buildcell import run as run_buildcell
+from wfl.generate.buildcell import buildcell as run_buildcell
 
 
 @click.command('')

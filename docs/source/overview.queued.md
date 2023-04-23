@@ -98,7 +98,7 @@ duplicate submission is indeed correct).  All functions already ignore the
 ## WFL\_EXPYRE\_INFO syntax
 
 The `WFL_EXPYRE_INFO` variable contains a JSON or the name of a file that contains a JSON.  The JSON encodes a dict with keys
-indicating particular function calls, and values containing arguments for constructing [`RemoteInfo`](wfl.autoparallelize.remoteinfo.RemoteInfo) objects.
+indicating particular function calls, and values containing arguments for constructing [`RemoteInfo`](wfl.autoparallelize.RemoteInfo) objects.
 
 
 ### Keys

@@ -21,7 +21,7 @@ from ase.calculators.calculator import CalculationFailed
 from wfl.calculators.orca import ORCA, parse_npa_output, natural_population_analysis
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 
 pytestmark = pytest.mark.xfail(reason="calculator needs to be updated to work with latest gitlab version of ase")
 
@@ -121,7 +121,7 @@ def test_orca_with_generic(tmp_path):
                 keep_files = "default", 
                 mult=1)
 
-    generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_")
+    generic.calculate(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_")
 
 
     for at in outputs.to_ConfigSet():
@@ -142,7 +142,7 @@ def test_orca_geometry_optimisation(tmp_path):
                 task="opt")
 
 
-    generic_result = generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_")
+    generic_result = generic.calculate(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_")
 
 
     out = list(generic_result)[0]
@@ -200,7 +200,7 @@ def test_run_npa(tmp_path):
     inputs = ConfigSet(atoms)
     outputs = OutputSpec()
 
-    generic_results = generic.run(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", raise_calc_exceptions=True)
+    generic_results = generic.calculate(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", raise_calc_exceptions=True)
 
 
     atoms = list(generic_results)[0]

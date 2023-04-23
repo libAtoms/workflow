@@ -35,14 +35,14 @@ Often property evaluation for each structure might take minutes or hours and the
 ```
 from ase.calculators.emt import EMT 
 from wfl.calculators import generic
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 from wfl.configset import ConfigSet, OutputSpec
 
 configset = ConfigSet(atoms)
 outputspec = OutputSpec("configs.emt.xyz")
 calculator = (EMT, [], {})
 
-generic.run(
+generic.calculate(
     inputs = configset, 
     outputs = outputspec, 
     calculator = calculator, 
@@ -53,8 +53,8 @@ generic.run(
 )
 ```
 
-- `generic.run()` is the main function that is used to parallelise any* ASE calculator. It returns a ConfigSet object with configs containing the results. 
-- `ConfigSet` and `OutputSpec` are used to specify where to read the atomic configs from and write the processed configs to. There are a number of ways to specify read/write destination (e.g. `list(Atoms)` or file(s) as above) when creating `ConfigSet` and `OutputSpec`, but functions such as `generic.run()` can have a consistent behaviour irrespective of where the configs came from. 
+- `generic.calculate()` is the main function that is used to parallelise any* ASE calculator. It returns a ConfigSet object with configs containing the results. 
+- `ConfigSet` and `OutputSpec` are used to specify where to read the atomic configs from and write the processed configs to. There are a number of ways to specify read/write destination (e.g. `list(Atoms)` or file(s) as above) when creating `ConfigSet` and `OutputSpec`, but functions such as `generic.calculate()` can have a consistent behaviour irrespective of where the configs came from. 
 - `calculator` is specified in a way that is pickleable and may be used in spawned processes of `multiprocessing` package that is used by Workflow. It should be given as a tuple of `(calculator_constructor_function, arguments, keyword_arguments)`. For example, if a quippy calculator is normally instantiated as 
 
     ```
@@ -62,7 +62,7 @@ generic.run(
     calculator = Potential("TB DFTB", param_filename="path/to/params.xml
     ```
 
-    then for `generic.run()` it should be constructed as 
+    then for `generic.calculate()` it should be constructed as 
 
     ```
     from quippy.potential import Potential`
@@ -80,7 +80,7 @@ generic.run(
 from ase.build import bulk
 from ase.calculators.emt import EMT 
 from wfl.calculators import generic
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize.remote info import RemoteInfo()
 from expyre.resources import Resources
@@ -96,7 +96,7 @@ configset = ConfigSet(atoms)
 outputspec = OutputSpec("configs.emt.xyz")
 calculator = (EMT, [], {})
 
-generic.run(
+generic.calculate(
     inputs = configset, 
     outputs = outputspec, 
     calculator = calculator, 
@@ -121,10 +121,10 @@ python evaluate_emt.py
 
 # With remote execution
 
-Workflow also allows to submit (remotely) queued jobs automatically, by interfacing with ExPyRe ([docummentation](https://libatoms.github.io/ExPyRe/), [repository](https://github.com/libAtoms/ExPyRe/tree/main/expyre)). In this example, instead of calling the above python script in a queue submission script, the modified python script is called from the head node and the parallelisation mechanism behind `generic.run()` sets up and submits the job and returns the results like the script normally would. To enable remote submission, `RemoteInfo` must be added to `AutoparaInfo`. 
+Workflow also allows to submit (remotely) queued jobs automatically, by interfacing with ExPyRe ([docummentation](https://libatoms.github.io/ExPyRe/), [repository](https://github.com/libAtoms/ExPyRe/tree/main/expyre)). In this example, instead of calling the above python script in a queue submission script, the modified python script is called from the head node and the parallelisation mechanism behind `generic.calculate()` sets up and submits the job and returns the results like the script normally would. To enable remote submission, `RemoteInfo` must be added to `AutoparaInfo`. 
 
 ```
-from wfl.autoparallelize.remoteinfo import RemoteInfo()
+from wfl.autoparallelize import RemoteInfo()
 from expyre.resources import Resources
 
 remote_info = RemoteInfo(
@@ -169,9 +169,9 @@ The available clusters are listed in `config.json` file, by default at `~/.expyr
 from ase.build import bulk
 from ase.calculators.emt import EMT 
 from wfl.calculators import generic
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.autoparallelize.remoteinfo import RemoteInfo
+from wfl.autoparallelize import RemoteInfo
 from expyre.resources import Resources
 
 atoms = []
@@ -194,7 +194,7 @@ remote_info = RemoteInfo(
         num_nodes = 1,
         partitions = "standard"))
 
-generic.run(
+generic.calculate(
     inputs = configset, 
     outputs = outputspec, 
     calculator = calculator, 

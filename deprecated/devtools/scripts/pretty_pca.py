@@ -9,7 +9,7 @@ import ase.io
 import numpy as np
 from ase.atoms import Atoms
 
-from wfl.descriptors.quippy import calc as calc_desc
+from wfl.descriptors.quippy import calculate as calc_desc
 from wfl.configset import ConfigSet, OutputSpec
 
 parser = ArgumentParser()

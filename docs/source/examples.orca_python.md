@@ -12,8 +12,8 @@ from wfl.configset import ConfigSet, OutputSpec
 from wfl.calculators.orca import ORCA, natural_population_analysis
 from functools import partial
 from wfl.calculators import generic
-from wfl.autoparallelize.remoteinfo import RemoteInfo
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import RemoteInfo
+from wfl.autoparallelize import AutoparaInfo
 from expyre.resources import Resources
 
 input_fname = "configs.xyz"
@@ -59,7 +59,7 @@ orca_kwargs["post_process"] = post_func
 calculator = (ORCA, [], orca_kwargs)
 
 # run calculation
-generic.run(
+generic.calculate(
     inputs=ci, 
     outputs=co,
     calculator=calculator,
