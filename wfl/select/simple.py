@@ -36,9 +36,9 @@ def by_bool_func(*args, **kwargs):
         num_python_subprocesses = 0
     else:
         num_python_subprocesses = None
-    def_autopara_info={"num_python_subprocesses": num_python_subprocesses}
+    default_autopara_info={"num_python_subprocesses": num_python_subprocesses}
     return autoparallelize(_select_autopara_wrappable, *args,
-           def_autopara_info=def_autopara_info, **kwargs)
+           default_autopara_info=default_autopara_info, **kwargs)
 autoparallelize_docstring(by_bool_func, _select_autopara_wrappable, "Atoms")
 
 # NOTE this could probably be done with autoparallelize by returning a list with multiple

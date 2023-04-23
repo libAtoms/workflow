@@ -14,7 +14,7 @@ def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_
     """evaluates configs using an arbitrary calculator and store results in SinglePointCalculator
 
     Defaults to wfl_num_inputs_per_python_subprocess=10, to avoid recreating the calculator for
-    each configuration, unless calculator class defines a wfl_generic_def_autopara_info
+    each configuration, unless calculator class defines a wfl_generic_default_autopara_info
     attribute in which case that value is used for the default.
 
     Parameters
@@ -85,7 +85,7 @@ def run(*args, **kwargs):
     if calculator is None:
         calculator = args[2]
 
-    def_autopara_info = getattr(calculator, "wfl_generic_def_autopara_info", {"num_inputs_per_python_subprocess": 10})
+    default_autopara_info = getattr(calculator, "wfl_generic_default_autopara_info", {"num_inputs_per_python_subprocess": 10})
 
-    return autoparallelize(_run_autopara_wrappable, *args, def_autopara_info=def_autopara_info, **kwargs)
+    return autoparallelize(_run_autopara_wrappable, *args, default_autopara_info=default_autopara_info, **kwargs)
 autoparallelize_docstring(run, _run_autopara_wrappable, "Atoms")

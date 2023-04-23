@@ -123,6 +123,6 @@ def _run_autopara_wrappable(atoms, displacements, strain_displs, ph2_supercell, 
 
 
 def run(*args, **kwargs):
-    return autoparallelize(_run_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess":10}, **kwargs)
+    return autoparallelize(_run_autopara_wrappable, *args, default_autopara_info={"num_inputs_per_python_subprocess":10}, **kwargs)
 autoparallelize_docstring(run, _run_autopara_wrappable, "Atoms")
 

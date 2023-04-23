@@ -247,8 +247,8 @@ def sample(*args, **kwargs):
         initializer = (None, [])
     else:
         initializer = (np.random.seed, [])
-    def_autopara_info={"initializer":initializer, "hash_ignore":["initializer"]}
+    default_autopara_info={"initializer":initializer, "hash_ignore":["initializer"]}
 
     return autoparallelize(_sample_autopara_wrappable, *args,
-        def_autopara_info=def_autopara_info, **kwargs)
+        default_autopara_info=default_autopara_info, **kwargs)
 autoparallelize_docstring(sample, _sample_autopara_wrappable, "Atoms")

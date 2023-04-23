@@ -109,7 +109,7 @@ def autoparallelize_docstring(wrapped_func, wrappable_func, input_iterable_type,
     wrapped_func.__doc__ = docstring_parser.compose(parsed)
 
 
-def autoparallelize(func, *args, def_autopara_info={}, **kwargs):
+def autoparallelize(func, *args, default_autopara_info={}, **kwargs):
     """autoparallelize a function
 
     Use by defining function "op" which takes an input iterable and returns list of configs, and _after_ do
@@ -117,7 +117,7 @@ def autoparallelize(func, *args, def_autopara_info={}, **kwargs):
     .. code-block:: python
 
         def autoparallelized_op(*args, **kwargs):
-            return autoparallelize(op, *args, def_autopara_info={"autoparallelize_keyword_param_1": val, "autoparallelize_keyword_param_2": val, ... }, **kwargs )
+            return autoparallelize(op, *args, default_autopara_info={"autoparallelize_keyword_param_1": val, "autoparallelize_keyword_param_2": val, ... }, **kwargs )
         autoparallelized_op.doc = autopara_docstring(op.__doc__, "iterable_contents")
 
     The autoparallelized function can then be called with 
@@ -135,7 +135,7 @@ def autoparallelize(func, *args, def_autopara_info={}, **kwargs):
     *args: list
         positional arguments to func, plus optional first or first and second inputs (iterable) and outputs (OutputSpec) arguments to wrapped function
 
-    def_autopara_info: dict, default {}
+    default_autopara_info: dict, default {}
         dict with default values for AutoparaInfo constructor keywords setting default autoparallelization info
 
     **kwargs: dict
@@ -167,7 +167,7 @@ def autoparallelize(func, *args, def_autopara_info={}, **kwargs):
     if isinstance(autopara_info, dict):
         autopara_info = AutoparaInfo(**autopara_info)
     # update values, if any are not set, with defaults that were set by decorating code
-    autopara_info.update_defaults(def_autopara_info)
+    autopara_info.update_defaults(default_autopara_info)
 
     return _autoparallelize_ll(autopara_info.num_python_subprocesses, autopara_info.num_inputs_per_python_subprocess,
                                inputs, outputs, func, autopara_info.iterable_arg,

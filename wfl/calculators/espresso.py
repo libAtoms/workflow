@@ -62,7 +62,7 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
 
     # new default value of num_inputs_per_python_subprocess for calculators.generic,
     # to override that function's built-in default of 10
-    wfl_generic_def_autopara_info = {"num_inputs_per_python_subprocess": 1}
+    wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
     def __init__(self, keep_files="default", rundir_prefix="run_QE_",
                  workdir=None, scratchdir=None,

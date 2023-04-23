@@ -202,11 +202,11 @@ def run(*args, **kwargs):
         initializer = (None, [])
     else:
         initializer = (np.random.seed, [])
-    def_autopara_info={"initializer":initializer, "num_inputs_per_python_subprocess":10,
+    default_autopara_info={"initializer":initializer, "num_inputs_per_python_subprocess":10,
             "hash_ignore":["initializer"]}
 
     return autoparallelize(_run_autopara_wrappable, *args, 
-        def_autopara_info=def_autopara_info, **kwargs)
+        default_autopara_info=default_autopara_info, **kwargs)
 autoparallelize_docstring(run, _run_autopara_wrappable, "Atoms")
 
 
