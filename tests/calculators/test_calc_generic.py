@@ -73,7 +73,7 @@ def test_default_properties():
 ####################################################################################################
 
 class EMT_override_def_autopara(EMT):
-    wfl_generic_def_autopara_info = {"num_inputs_per_python_subprocess": 5}
+    wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 5}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
