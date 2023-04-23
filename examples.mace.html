@@ -187,7 +187,6 @@
 <li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
 </ul>
@@ -354,7 +353,7 @@ document.write(`
                   
   <div class="section" id="parallelize-mace-calculator">
 <h1>Parallelize MACE calculator<a class="headerlink" href="#parallelize-mace-calculator" title="Permalink to this heading">#</a></h1>
-<p>MACE calculator can be parallelized with the <code class="docutils literal notranslate"><span class="pre">wfl.calculators.generic.run</span></code> routine.</p>
+<p>MACE calculator can be parallelized with the <code class="docutils literal notranslate"><span class="pre">wfl.calculators.generic.calculate</span></code> routine.</p>
 <p>First we define a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> for the inputs and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> to specify how the outputs are handled:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
 <span class="n">inputs</span> <span class="o">=</span> <span class="n">ConfigSet</span><span class="p">(</span><span class="s2">&quot;configs.xyz&quot;</span><span class="p">)</span>
@@ -372,7 +371,7 @@ document.write(`
 <span class="n">my_mace_calc</span> <span class="o">=</span> <span class="n">MACECalculator</span><span class="p">(</span><span class="n">model_path</span><span class="o">=</span><span class="n">mace_model_fname</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span> 
 </pre></div>
 </div>
-<p>But in Workflow, for <code class="docutils literal notranslate"><span class="pre">generic.run</span></code> to parallelize this calculator it needs to be defined as a tuple of <code class="docutils literal notranslate"><span class="pre">(calc_function,</span> <span class="pre">[args],</span> <span class="pre">**kwargs)</span></code>. In our example, the above code snippet corresponds to</p>
+<p>But in Workflow, for <code class="docutils literal notranslate"><span class="pre">generic.calculate</span></code> to parallelize this calculator it needs to be defined as a tuple of <code class="docutils literal notranslate"><span class="pre">(calc_function,</span> <span class="pre">[args],</span> <span class="pre">**kwargs)</span></code>. In our example, the above code snippet corresponds to</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wfl.calculators</span> <span class="kn">import</span> <span class="n">generic</span>
 <span class="kn">from</span> <span class="nn">mace.calculators.mace</span> <span class="kn">import</span> <span class="n">MACECalculator</span> 
 
@@ -387,8 +386,8 @@ document.write(`
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">WFL_NUM_PYTHON_SUBPROCESSES</span><span class="o">=</span><span class="mi">8</span>
 </pre></div>
 </div>
-<p>and calling the <code class="docutils literal notranslate"><span class="pre">generic.run</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<p>and calling the <code class="docutils literal notranslate"><span class="pre">generic.calculate</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">generic</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span>
     <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> 
     <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
     <span class="n">calculator</span><span class="o">=</span><span class="n">my_mace_calc</span><span class="p">,</span>
@@ -416,7 +415,7 @@ document.write(`
 
 <span class="n">my_mace_calc</span> <span class="o">=</span> <span class="p">(</span><span class="n">MACECalculator</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s2">&quot;model_path&quot;</span><span class="p">:</span><span class="n">mace_model_fname</span><span class="p">,</span> <span class="s2">&quot;default_dtype&quot;</span><span class="p">:</span><span class="s2">&quot;float64&quot;</span><span class="p">,</span> <span class="s2">&quot;device&quot;</span><span class="p">:</span><span class="s2">&quot;cpu&quot;</span><span class="p">})</span>
 
-<span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="n">generic</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span>
     <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> 
     <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
     <span class="n">calculator</span><span class="o">=</span><span class="n">my_mace_calc</span><span class="p">,</span>

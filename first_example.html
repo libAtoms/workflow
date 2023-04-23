@@ -187,7 +187,6 @@
 <li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
 </ul>
@@ -396,7 +395,7 @@ document.write(`
 <span class="n">outputspec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;configs.emt.xyz&quot;</span><span class="p">)</span>
 <span class="n">calculator</span> <span class="o">=</span> <span class="p">(</span><span class="n">EMT</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{})</span>
 
-<span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="n">generic</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span>
     <span class="n">inputs</span> <span class="o">=</span> <span class="n">configset</span><span class="p">,</span> 
     <span class="n">outputs</span> <span class="o">=</span> <span class="n">outputspec</span><span class="p">,</span> 
     <span class="n">calculator</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">,</span> 
@@ -408,14 +407,14 @@ document.write(`
 </pre></div>
 </div>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">generic.run()</span></code> is the main function that is used to parallelise any* ASE calculator. It returns a ConfigSet object with configs containing the results.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> are used to specify where to read the atomic configs from and write the processed configs to. There are a number of ways to specify read/write destination (e.g. <code class="docutils literal notranslate"><span class="pre">list(Atoms)</span></code> or file(s) as above) when creating <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>, but functions such as <code class="docutils literal notranslate"><span class="pre">generic.run()</span></code> can have a consistent behaviour irrespective of where the configs came from.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generic.calculate()</span></code> is the main function that is used to parallelise any* ASE calculator. It returns a ConfigSet object with configs containing the results.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> are used to specify where to read the atomic configs from and write the processed configs to. There are a number of ways to specify read/write destination (e.g. <code class="docutils literal notranslate"><span class="pre">list(Atoms)</span></code> or file(s) as above) when creating <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>, but functions such as <code class="docutils literal notranslate"><span class="pre">generic.calculate()</span></code> can have a consistent behaviour irrespective of where the configs came from.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">calculator</span></code> is specified in a way that is pickleable and may be used in spawned processes of <code class="docutils literal notranslate"><span class="pre">multiprocessing</span></code> package that is used by Workflow. It should be given as a tuple of <code class="docutils literal notranslate"><span class="pre">(calculator_constructor_function,</span> <span class="pre">arguments,</span> <span class="pre">keyword_arguments)</span></code>. For example, if a quippy calculator is normally instantiated as</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quippy.potential</span> <span class="kn">import</span> <span class="n">Potential</span>
 <span class="n">calculator</span> <span class="o">=</span> <span class="n">Potential</span><span class="p">(</span><span class="s2">&quot;TB DFTB&quot;</span><span class="p">,</span> <span class="n">param_filename</span><span class="o">=</span><span class="s2">&quot;path/to/params.xml</span>
 </pre></div>
 </div>
-<p>then for <code class="docutils literal notranslate"><span class="pre">generic.run()</span></code> it should be constructed as</p>
+<p>then for <code class="docutils literal notranslate"><span class="pre">generic.calculate()</span></code> it should be constructed as</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>from quippy.potential import Potential`
 calculator = (Potential, [&quot;TB DFTB&quot;], {&quot;param_filename&quot;:&quot;path/to/params.xml&quot;})
 </pre></div>
@@ -447,7 +446,7 @@ calculator = (Potential, [&quot;TB DFTB&quot;], {&quot;param_filename&quot;:&quo
 <span class="n">outputspec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;configs.emt.xyz&quot;</span><span class="p">)</span>
 <span class="n">calculator</span> <span class="o">=</span> <span class="p">(</span><span class="n">EMT</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{})</span>
 
-<span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="n">generic</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span>
     <span class="n">inputs</span> <span class="o">=</span> <span class="n">configset</span><span class="p">,</span> 
     <span class="n">outputs</span> <span class="o">=</span> <span class="n">outputspec</span><span class="p">,</span> 
     <span class="n">calculator</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">,</span> 
@@ -472,7 +471,7 @@ python evaluate_emt.py
 </div>
 <div class="section" id="with-remote-execution">
 <h1>With remote execution<a class="headerlink" href="#with-remote-execution" title="Permalink to this heading">#</a></h1>
-<p>Workflow also allows to submit (remotely) queued jobs automatically, by interfacing with ExPyRe (<a class="reference external" href="https://libatoms.github.io/ExPyRe/">docummentation</a>, <a class="reference external" href="https://github.com/libAtoms/ExPyRe/tree/main/expyre">repository</a>). In this example, instead of calling the above python script in a queue submission script, the modified python script is called from the head node and the parallelisation mechanism behind <code class="docutils literal notranslate"><span class="pre">generic.run()</span></code> sets up and submits the job and returns the results like the script normally would. To enable remote submission, <code class="docutils literal notranslate"><span class="pre">RemoteInfo</span></code> must be added to <code class="docutils literal notranslate"><span class="pre">AutoparaInfo</span></code>.</p>
+<p>Workflow also allows to submit (remotely) queued jobs automatically, by interfacing with ExPyRe (<a class="reference external" href="https://libatoms.github.io/ExPyRe/">docummentation</a>, <a class="reference external" href="https://github.com/libAtoms/ExPyRe/tree/main/expyre">repository</a>). In this example, instead of calling the above python script in a queue submission script, the modified python script is called from the head node and the parallelisation mechanism behind <code class="docutils literal notranslate"><span class="pre">generic.calculate()</span></code> sets up and submits the job and returns the results like the script normally would. To enable remote submission, <code class="docutils literal notranslate"><span class="pre">RemoteInfo</span></code> must be added to <code class="docutils literal notranslate"><span class="pre">AutoparaInfo</span></code>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wfl.autoparallelize.remoteinfo</span> <span class="kn">import</span> <span class="n">RemoteInfo</span><span class="p">()</span>
 <span class="kn">from</span> <span class="nn">expyre.resources</span> <span class="kn">import</span> <span class="n">Resources</span>
 
@@ -541,7 +540,7 @@ python evaluate_emt.py
         <span class="n">num_nodes</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">partitions</span> <span class="o">=</span> <span class="s2">&quot;standard&quot;</span><span class="p">))</span>
 
-<span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="n">generic</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span>
     <span class="n">inputs</span> <span class="o">=</span> <span class="n">configset</span><span class="p">,</span> 
     <span class="n">outputs</span> <span class="o">=</span> <span class="n">outputspec</span><span class="p">,</span> 
     <span class="n">calculator</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">,</span> 

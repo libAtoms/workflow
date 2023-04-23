@@ -187,7 +187,6 @@
 <li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
 </ul>
@@ -340,7 +339,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallelize-with-generic-run">Parallelize with <code class="docutils literal notranslate"><span class="pre">generic.run()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallelize-with-generic-calculate">Parallelize with <code class="docutils literal notranslate"><span class="pre">generic.calculate()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#file-based-calculators">File-based calculators</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#special-calculators">Special calculators</a></li>
 </ul>
@@ -357,9 +356,9 @@ document.write(`
   <div class="section" id="calculators-in-workflow">
 <h1>Calculators in Workflow<a class="headerlink" href="#calculators-in-workflow" title="Permalink to this heading">#</a></h1>
 <p>In principle, any ASE calculator can be parallelized using Workflow. The parallelization happens at <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> object level. That is, if we wanted to get single-point energies &amp; forces on 16 <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> structures and using 16 cores, all 16 <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects would get processed at the same time, each on a single core.</p>
-<div class="section" id="parallelize-with-generic-run">
-<h2>Parallelize with <code class="docutils literal notranslate"><span class="pre">generic.run()</span></code><a class="headerlink" href="#parallelize-with-generic-run" title="Permalink to this heading">#</a></h2>
-<p>In ASE, we iterate over all <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects, initialize a calculator, set it to an <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> object and call it to evaluate energies and forces sequentially. In Workflow, with <code class="docutils literal notranslate"><span class="pre">generic.run</span></code> we define a way to initialize a calculator, define where from and to read and write configurations (<code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>) and set a directive for how many cores to parallelize over.</p>
+<div class="section" id="parallelize-with-generic-calculate">
+<h2>Parallelize with <code class="docutils literal notranslate"><span class="pre">generic.calculate()</span></code><a class="headerlink" href="#parallelize-with-generic-calculate" title="Permalink to this heading">#</a></h2>
+<p>In ASE, we iterate over all <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> objects, initialize a calculator, set it to an <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> object and call it to evaluate energies and forces sequentially. In Workflow, with <code class="docutils literal notranslate"><span class="pre">generic.calculate</span></code> we define a way to initialize a calculator, define where from and to read and write configurations (<code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> and <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>) and set a directive for how many cores to parallelize over.</p>
 <p>The calculator has to be defined as a tuple of <code class="docutils literal notranslate"><span class="pre">(Calculator,</span> <span class="pre">[args],</span> <span class="pre">**kwargs)</span></code>, for example</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dftb_calc</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">quippy</span><span class="o">.</span><span class="n">potentials</span><span class="o">.</span><span class="n">Potential</span><span class="p">,</span> 
@@ -430,7 +429,7 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallelize-with-generic-run">Parallelize with <code class="docutils literal notranslate"><span class="pre">generic.run()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallelize-with-generic-calculate">Parallelize with <code class="docutils literal notranslate"><span class="pre">generic.calculate()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#file-based-calculators">File-based calculators</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#special-calculators">Special calculators</a></li>
 </ul>

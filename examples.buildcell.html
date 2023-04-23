@@ -190,7 +190,6 @@
 <li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
 </ul>
@@ -347,7 +346,7 @@ document.write(`
                   
   <div class="section" id="Random-Structures-via-buildcell">
 <h1>Random Structures via buildcell<a class="headerlink" href="#Random-Structures-via-buildcell" title="Permalink to this heading">#</a></h1>
-<p>In Workflow random structures can be generated via the <code class="docutils literal notranslate"><span class="pre">wfl.generate.buildcell.run()</span></code> routine. It’s functionality builds on <a class="reference external" href="https://airss-docs.github.io/technical-reference/buildcell-manual">AIRSS</a>’s <code class="docutils literal notranslate"><span class="pre">buildcell</span></code> to constructs sensible random structures.</p>
+<p>In Workflow random structures can be generated via the <code class="docutils literal notranslate"><span class="pre">wfl.generate.buildcell.buildcell()</span></code> routine. It’s functionality builds on <a class="reference external" href="https://airss-docs.github.io/technical-reference/buildcell-manual">AIRSS</a>’s <code class="docutils literal notranslate"><span class="pre">buildcell</span></code> to constructs sensible random structures.</p>
 <p>The example below illustrates its application for the random generation of aluminum unit cells. Here, we are aiming for a total of 20 structures and, thus, set <code class="docutils literal notranslate"><span class="pre">inputs</span></code> to an iterable of that length. Next, we define an <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> to handle the output structures that will be generated. In order to have a proper <code class="docutils literal notranslate"><span class="pre">buildcell_input</span></code> available, we are using the <code class="docutils literal notranslate"><span class="pre">wfl.generate.buildcell.create_input()</span></code> routine in this example where we pass arguments that characterise the systems we are aiming
 to generate. Finally, we set the <code class="docutils literal notranslate"><span class="pre">buildcell_cmd</span></code> appropriately to the <code class="docutils literal notranslate"><span class="pre">buildcell</span></code> executable we use on our machine and run the script to obtain the desired number of random Al-based unit cells.</p>
 <div class="nbinput nblast docutils container">
@@ -365,7 +364,7 @@ to generate. Finally, we set the <code class="docutils literal notranslate"><spa
 
 <span class="n">buildcell_input</span> <span class="o">=</span> <span class="n">buildcell</span><span class="o">.</span><span class="n">create_input</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">vol_per_atom</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">bond_lengths</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="n">outputs</span> <span class="o">=</span> <span class="n">buildcell</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">buildcell</span><span class="o">.</span><span class="n">buildcell</span><span class="p">(</span>
     <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
     <span class="n">outputs</span><span class="o">=</span><span class="n">outputspec</span><span class="p">,</span>
     <span class="n">buildcell_input</span><span class="o">=</span><span class="n">buildcell_input</span><span class="p">,</span>

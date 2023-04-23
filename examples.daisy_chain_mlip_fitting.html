@@ -190,7 +190,6 @@
 <li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
 </ul>
@@ -467,7 +466,7 @@ document.write(`
 <span class="n">outputs</span><span class="o">=</span><span class="n">OutputSpec</span><span class="p">(</span><span class="n">isolated_at_fname</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;config_type&quot;</span><span class="p">:</span> <span class="s2">&quot;isolated_atom&quot;</span><span class="p">})</span>
 
 <span class="c1"># calculate reference energy</span>
-<span class="n">isolated_atoms</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="n">isolated_atoms</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span>
     <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
     <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
     <span class="n">calculator</span><span class="o">=</span><span class="n">xtb_calc</span><span class="p">,</span>
@@ -499,7 +498,7 @@ document.write(`
     <span class="s1">&#39;C=C1CC2c3ccccc3C1c1ccccc12&#39;</span><span class="p">]</span>
 
 <span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;1.ch.rdkit.xyz&quot;</span><span class="p">)</span>
-<span class="n">smiles_configs</span> <span class="o">=</span> <span class="n">smiles</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">all_smiles</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">)</span>
+<span class="n">smiles_configs</span> <span class="o">=</span> <span class="n">smiles</span><span class="o">.</span><span class="n">smiles</span><span class="p">(</span><span class="n">all_smiles</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -511,7 +510,7 @@ document.write(`
 <span class="c1"># this cell is hidden from docs.</span>
 
 <span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;1.ch.rdkit.xyz&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">smiles_configs</span> <span class="o">=</span> <span class="n">smiles</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">all_smiles</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">randomSeed</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
+<span class="n">smiles_configs</span> <span class="o">=</span> <span class="n">smiles</span><span class="o">.</span><span class="n">smiles</span><span class="p">(</span><span class="n">all_smiles</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">randomSeed</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -550,7 +549,7 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">md_sample</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">md_sample</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">md</span><span class="p">(</span>
     <span class="n">inputs</span><span class="o">=</span><span class="n">smiles_configs</span><span class="p">,</span>
     <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
     <span class="n">calculator</span><span class="o">=</span><span class="n">xtb_calc</span><span class="p">,</span>
@@ -607,7 +606,7 @@ document.write(`
 <span class="c1"># this function isn&#39;t parallelised here, but can be</span>
 <span class="c1"># by setting WFL_NUM_PYTHON_SUBPROCESSES or</span>
 <span class="c1"># WFL_EXPYRE_INFO</span>
-<span class="n">md_soap_local</span> <span class="o">=</span> <span class="n">wfl</span><span class="o">.</span><span class="n">descriptors</span><span class="o">.</span><span class="n">quippy</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span>
+<span class="n">md_soap_local</span> <span class="o">=</span> <span class="n">wfl</span><span class="o">.</span><span class="n">descriptors</span><span class="o">.</span><span class="n">quippy</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span>
     <span class="n">inputs</span><span class="o">=</span><span class="n">md_sample</span><span class="p">,</span>
     <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
     <span class="n">descs</span><span class="o">=</span><span class="n">descriptor</span><span class="p">,</span>
@@ -621,7 +620,7 @@ document.write(`
     <span class="n">at</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">descriptor_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">at_desc</span>
     <span class="k">return</span> <span class="n">at</span>
 
-<span class="n">md_soap_global</span> <span class="o">=</span> <span class="n">wfl</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="n">md_soap_global</span> <span class="o">=</span> <span class="n">wfl</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
     <span class="n">inputs</span> <span class="o">=</span> <span class="n">md_soap_local</span><span class="p">,</span>
     <span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(),</span>
     <span class="n">map_func</span> <span class="o">=</span> <span class="n">get_average_soap</span><span class="p">,</span>
@@ -656,7 +655,7 @@ document.write(`
     <span class="k">return</span> <span class="n">at</span>
 
 
-<span class="n">processed_cur_selection</span> <span class="o">=</span> <span class="n">wfl</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="n">processed_cur_selection</span> <span class="o">=</span> <span class="n">wfl</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
     <span class="n">cur_selection</span><span class="p">,</span>
     <span class="n">OutputSpec</span><span class="p">(),</span>
     <span class="n">map_func</span> <span class="o">=</span> <span class="n">process</span><span class="p">)</span>
@@ -778,7 +777,7 @@ document.write(`
 <span class="n">gap_calc_autopara_info</span> <span class="o">=</span> <span class="n">AutoparaInfo</span><span class="p">(</span>
     <span class="n">remote_info</span><span class="o">=</span><span class="n">remote_info</span><span class="p">)</span>
 
-<span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="n">generic</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span>
     <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
     <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
     <span class="n">calculator</span><span class="o">=</span><span class="n">gap_calc</span><span class="p">,</span>

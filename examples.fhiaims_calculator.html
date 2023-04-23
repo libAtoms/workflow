@@ -190,7 +190,6 @@
 <li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
 </ul>
@@ -352,8 +351,8 @@ document.write(`
 <div class="line">At first, we initialize a <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> with a couple of (periodic and non-periodic) systems stored in <code class="docutils literal notranslate"><span class="pre">Input_Structures.xyz</span></code>. We also define an <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> to handle the output that will additionally comprise values calculated by FHI-Aims.</div>
 <div class="line">Next, we define various parameter that will be used during the calculations. Most of them define parameter settings for the DFT calculation (that will be written in the <code class="docutils literal notranslate"><span class="pre">control.in</span></code> input file of FHI-Aims). Note that for non-periodic systems the calculations will be performed with the exact same settings, but without parameter specific to periodic systems (e.g. <code class="docutils literal notranslate"><span class="pre">k_grid</span></code>, <code class="docutils literal notranslate"><span class="pre">compute_analytical_stress</span></code>, etc.). The last parameter <code class="docutils literal notranslate"><span class="pre">calculator_exec</span></code> defines the command used to call FHI-Aims
 and start an individual calculation, including specifications for the parallelization of that specific calcuation and excluding any redirection of the output (i.e. without e.g. <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span> <span class="pre">aims.out</span></code>).</div>
-<div class="line">Now we define a <code class="docutils literal notranslate"><span class="pre">calculator</span></code> of the form <code class="docutils literal notranslate"><span class="pre">(calc_constructor,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></code> using the <code class="docutils literal notranslate"><span class="pre">Aims</span></code> calculator of Workflow and the parameter dictionary we have just defined. Finally, we apply the <code class="docutils literal notranslate"><span class="pre">generic.run()</span></code> function to process all the input structures in parallel (defined via the <code class="docutils literal notranslate"><span class="pre">autopara_info</span></code> settings). The values of the calculated <code class="docutils literal notranslate"><span class="pre">properties</span></code> will be written into <code class="docutils literal notranslate"><span class="pre">Output_Structures.xyz</span></code> with keys that have the specified <code class="docutils literal notranslate"><span class="pre">output_prefix</span></code>. Note that for non-periodic systems the
-property “stress” will be ignored.</div>
+<div class="line">Now we define a <code class="docutils literal notranslate"><span class="pre">calculator</span></code> of the form <code class="docutils literal notranslate"><span class="pre">(calc_constructor,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></code> using the <code class="docutils literal notranslate"><span class="pre">Aims</span></code> calculator of Workflow and the parameter dictionary we have just defined. Finally, we apply the <code class="docutils literal notranslate"><span class="pre">generic.calculate()</span></code> function to process all the input structures in parallel (defined via the <code class="docutils literal notranslate"><span class="pre">autopara_info</span></code> settings). The values of the calculated <code class="docutils literal notranslate"><span class="pre">properties</span></code> will be written into <code class="docutils literal notranslate"><span class="pre">Output_Structures.xyz</span></code> with keys that have the specified <code class="docutils literal notranslate"><span class="pre">output_prefix</span></code>. Note that for non-periodic
+systems the property “stress” will be ignored.</div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
@@ -398,7 +397,7 @@ property “stress” will be ignored.</div>
 <span class="n">calculator</span> <span class="o">=</span> <span class="p">(</span><span class="n">Aims</span><span class="p">,</span> <span class="p">[],</span> <span class="n">aims_kwargs</span><span class="p">)</span>
 
 
-<span class="n">generic</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="n">generic</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span>
     <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">,</span>
     <span class="n">outputs</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">,</span>
     <span class="n">calculator</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">,</span>

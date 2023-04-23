@@ -187,7 +187,6 @@
 <li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
 </ul>
@@ -503,7 +502,7 @@ Then the trajectories of the minima are used for a new flat histogram and descri
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># remove leftover files</span>
 <span class="k">for</span><span class="w"> </span>f<span class="w"> </span><span class="k">in</span><span class="w"> </span>run_iter_*<span class="w"> </span>ACTIVE_ITER<span class="w"> </span>atoms_and_dimers.xyz<span class="w"> </span>gap_rss.*.out<span class="p">;</span><span class="w"> </span><span class="k">do</span>
 <span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;WARNING: Trace of old run found file &#39;</span><span class="nv">$f</span><span class="s2">&#39;&quot;</span><span class="w"> </span><span class="m">1</span>&gt;<span class="p">&amp;</span><span class="m">2</span>
-<span class="w">  </span><span class="nb">break</span>
+<span class="w">  </span><span class="k">break</span>
 <span class="k">done</span>
 
 <span class="c1"># start the numbering from zero, will skip ones done</span>

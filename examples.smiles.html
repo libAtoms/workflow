@@ -187,7 +187,6 @@
 <li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
 </ul>
@@ -378,7 +377,7 @@ document.write(`
 
 <span class="n">outputspec</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;compounds.xyz&quot;</span><span class="p">)</span>
 <span class="n">smiles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CO&quot;</span><span class="p">,</span> <span class="s2">&quot;CCCC&quot;</span><span class="p">,</span> <span class="s2">&quot;c1ccccc1&quot;</span><span class="p">]</span>
-<span class="n">smiles</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputspec</span><span class="p">)</span>
+<span class="n">smiles</span><span class="o">.</span><span class="n">smiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputspec</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>NB <code class="docutils literal notranslate"><span class="pre">smiles</span></code> has to be given as the first argument.</p>

@@ -187,7 +187,6 @@
 <li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
 </ul>
@@ -376,7 +375,7 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.calculators.generic">wfl.calculators.generic module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.generic.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.generic.calculate"><code class="docutils literal notranslate"><span class="pre">calculate()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.calculators.mopac">wfl.calculators.mopac module</a><ul class="nav section-nav flex-column">
@@ -704,8 +703,8 @@ or FileIOCalculator.calculate() for the v3.22.1</p>
 <div class="section" id="module-wfl.calculators.generic">
 <span id="wfl-calculators-generic-module"></span><h2>wfl.calculators.generic module<a class="headerlink" href="#module-wfl.calculators.generic" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="wfl.calculators.generic.run">
-<span class="sig-prename descclassname"><span class="pre">wfl.calculators.generic.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.generic.run" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="wfl.calculators.generic.calculate">
+<span class="sig-prename descclassname"><span class="pre">wfl.calculators.generic.</span></span><span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.generic.calculate" title="Permalink to this definition">#</a></dt>
 <dd><p>evaluates configs using an arbitrary calculator and store results in SinglePointCalculator</p>
 <p>Defaults to wfl_num_inputs_per_python_subprocess=10, to avoid recreating the calculator for
 each configuration, unless calculator class defines a wfl_generic_def_autopara_info
@@ -1028,7 +1027,7 @@ can’t ever be sure it’s not needed anymore, so let’s not do it automatical
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.calculators.generic">wfl.calculators.generic module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.generic.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.generic.calculate"><code class="docutils literal notranslate"><span class="pre">calculate()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.calculators.mopac">wfl.calculators.mopac module</a><ul class="nav section-nav flex-column">

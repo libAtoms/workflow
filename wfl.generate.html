@@ -187,7 +187,6 @@
 <li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
 </ul>
@@ -348,13 +347,13 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.buildcell">wfl.generate.buildcell module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.buildcell.buildcell"><code class="docutils literal notranslate"><span class="pre">buildcell()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.buildcell.conv_buildcell_out"><code class="docutils literal notranslate"><span class="pre">conv_buildcell_out()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.buildcell.create_input"><code class="docutils literal notranslate"><span class="pre">create_input()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.buildcell.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.minimahopping">wfl.generate.minimahopping module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.minimahopping.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.minimahopping.minimahopping"><code class="docutils literal notranslate"><span class="pre">minimahopping()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.normal_modes">wfl.generate.normal_modes module</a><ul class="nav section-nav flex-column">
@@ -376,14 +375,14 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.optimize">wfl.generate.optimize module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.optimize.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.optimize.optimize"><code class="docutils literal notranslate"><span class="pre">optimize()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.optimize.subselect_from_traj"><code class="docutils literal notranslate"><span class="pre">subselect_from_traj()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl-generate-phonopy-module">wfl.generate.phonopy module</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.smiles">wfl.generate.smiles module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.smiles.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.smiles.smi_to_atoms"><code class="docutils literal notranslate"><span class="pre">smi_to_atoms()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.smiles.smiles"><code class="docutils literal notranslate"><span class="pre">smiles()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.supercells">wfl.generate.supercells module</a><ul class="nav section-nav flex-column">
@@ -434,7 +433,7 @@ document.write(`
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="wfl.generate.md_PROTECT.html#module-wfl.generate.md">Module contents</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="wfl.generate.md_PROTECT.html#wfl.generate.md.sample"><code class="docutils literal notranslate"><span class="pre">sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.generate.md_PROTECT.html#wfl.generate.md.md"><code class="docutils literal notranslate"><span class="pre">md()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -495,6 +494,42 @@ requires max_cutoff</p></li>
 <div class="section" id="module-wfl.generate.buildcell">
 <span id="wfl-generate-buildcell-module"></span><h2>wfl.generate.buildcell module<a class="headerlink" href="#module-wfl.generate.buildcell" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.buildcell.buildcell">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.buildcell.</span></span><span class="sig-name descname"><span class="pre">buildcell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.buildcell.buildcell" title="Permalink to this definition">#</a></dt>
+<dd><p>Creates atomic configurations by repeatedly running buildcell</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>buildcell_cmd</strong> – <cite>buildcell</cite> executable, including path if needed</p></li>
+<li><p><strong>buildcell_input</strong> (<em>str</em>) – input file contents to buildcell, in the form of a single string</p></li>
+<li><p><strong>extra_info</strong> (<em>dict</em><em>, </em><em>default {}</em>) – extra fields to place into created atoms info dict</p></li>
+<li><p><strong>perturbation</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of perturbation to atomic positions with Atoms.rattle()</p></li>
+<li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – skip failed buildcell calls</p></li>
+<li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 0.01</em>) – precision for symmetry check</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – print some running info</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list of Atoms created by buildcell</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>autopara_info<span class="classifier">AutoParaInfo / dict, optional</span></dt><dd><p>information for automatic parallelization</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="wfl.generate.buildcell.conv_buildcell_out">
 <span class="sig-prename descclassname"><span class="pre">wfl.generate.buildcell.</span></span><span class="sig-name descname"><span class="pre">conv_buildcell_out</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildcell_output</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.buildcell.conv_buildcell_out" title="Permalink to this definition">#</a></dt>
 <dd><p>Convert from buildcell output to atoms object(s)</p>
@@ -549,48 +584,12 @@ odd numbers of atoms, <code class="docutils literal notranslate"><span class="pr
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.generate.buildcell.run">
-<span class="sig-prename descclassname"><span class="pre">wfl.generate.buildcell.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.buildcell.run" title="Permalink to this definition">#</a></dt>
-<dd><p>Creates atomic configurations by repeatedly running buildcell</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
-<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
-<li><p><strong>buildcell_cmd</strong> – <cite>buildcell</cite> executable, including path if needed</p></li>
-<li><p><strong>buildcell_input</strong> (<em>str</em>) – input file contents to buildcell, in the form of a single string</p></li>
-<li><p><strong>extra_info</strong> (<em>dict</em><em>, </em><em>default {}</em>) – extra fields to place into created atoms info dict</p></li>
-<li><p><strong>perturbation</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of perturbation to atomic positions with Atoms.rattle()</p></li>
-<li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – skip failed buildcell calls</p></li>
-<li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 0.01</em>) – precision for symmetry check</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – print some running info</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list of Atoms created by buildcell</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>autopara_info<span class="classifier">AutoParaInfo / dict, optional</span></dt><dd><p>information for automatic parallelization</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>co</strong> – output configs</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
-</dd>
-</dl>
-</dd></dl>
-
 </div>
 <div class="section" id="module-wfl.generate.minimahopping">
 <span id="wfl-generate-minimahopping-module"></span><h2>wfl.generate.minimahopping module<a class="headerlink" href="#module-wfl.generate.minimahopping" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="wfl.generate.minimahopping.run">
-<span class="sig-prename descclassname"><span class="pre">wfl.generate.minimahopping.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.minimahopping.run" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="wfl.generate.minimahopping.minimahopping">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.minimahopping.</span></span><span class="sig-name descname"><span class="pre">minimahopping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.minimahopping.minimahopping" title="Permalink to this definition">#</a></dt>
 <dd><p>runs a structure optimization</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -799,8 +798,8 @@ stored in atoms.info/arrays</p></li>
 <div class="section" id="module-wfl.generate.optimize">
 <span id="wfl-generate-optimize-module"></span><h2>wfl.generate.optimize module<a class="headerlink" href="#module-wfl.generate.optimize" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="wfl.generate.optimize.run">
-<span class="sig-prename descclassname"><span class="pre">wfl.generate.optimize.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.optimize.run" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="wfl.generate.optimize.optimize">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.optimize.</span></span><span class="sig-name descname"><span class="pre">optimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.optimize.optimize" title="Permalink to this definition">#</a></dt>
 <dd><p>runs a structure optimization</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -862,8 +861,14 @@ deterministic local seed, use a random value if None</p></li>
 <div class="section" id="module-wfl.generate.smiles">
 <span id="wfl-generate-smiles-module"></span><h2>wfl.generate.smiles module<a class="headerlink" href="#module-wfl.generate.smiles" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="wfl.generate.smiles.run">
-<span class="sig-prename descclassname"><span class="pre">wfl.generate.smiles.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.smiles.run" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="wfl.generate.smiles.smi_to_atoms">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.smiles.</span></span><span class="sig-name descname"><span class="pre">smi_to_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useBasicKnowledge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useExpTorsionAnglePrefs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">randomSeed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.smiles.smi_to_atoms" title="Permalink to this definition">#</a></dt>
+<dd><p>Converts smiles to 3D Atoms object</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.smiles.smiles">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.smiles.</span></span><span class="sig-name descname"><span class="pre">smiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.smiles.smiles" title="Permalink to this definition">#</a></dt>
 <dd><p>Creates atomic configurations by repeatedly running smi_to_xyz, I/O with OutputSpec.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -884,12 +889,6 @@ deterministic local seed, use a random value if None</p></li>
 <dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.generate.smiles.smi_to_atoms">
-<span class="sig-prename descclassname"><span class="pre">wfl.generate.smiles.</span></span><span class="sig-name descname"><span class="pre">smi_to_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useBasicKnowledge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useExpTorsionAnglePrefs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">randomSeed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.smiles.smi_to_atoms" title="Permalink to this definition">#</a></dt>
-<dd><p>Converts smiles to 3D Atoms object</p>
 </dd></dl>
 
 </div>
@@ -1105,13 +1104,13 @@ atoms within this distance of initial vacancy.</p></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.buildcell">wfl.generate.buildcell module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.buildcell.buildcell"><code class="docutils literal notranslate"><span class="pre">buildcell()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.buildcell.conv_buildcell_out"><code class="docutils literal notranslate"><span class="pre">conv_buildcell_out()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.buildcell.create_input"><code class="docutils literal notranslate"><span class="pre">create_input()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.buildcell.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.minimahopping">wfl.generate.minimahopping module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.minimahopping.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.minimahopping.minimahopping"><code class="docutils literal notranslate"><span class="pre">minimahopping()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.normal_modes">wfl.generate.normal_modes module</a><ul class="nav section-nav flex-column">
@@ -1133,14 +1132,14 @@ atoms within this distance of initial vacancy.</p></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.optimize">wfl.generate.optimize module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.optimize.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.optimize.optimize"><code class="docutils literal notranslate"><span class="pre">optimize()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.optimize.subselect_from_traj"><code class="docutils literal notranslate"><span class="pre">subselect_from_traj()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl-generate-phonopy-module">wfl.generate.phonopy module</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.smiles">wfl.generate.smiles module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.smiles.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.smiles.smi_to_atoms"><code class="docutils literal notranslate"><span class="pre">smi_to_atoms()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.smiles.smiles"><code class="docutils literal notranslate"><span class="pre">smiles()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.supercells">wfl.generate.supercells module</a><ul class="nav section-nav flex-column">

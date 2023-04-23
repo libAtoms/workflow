@@ -187,7 +187,6 @@
 <li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
 </ul>
@@ -369,11 +368,11 @@ document.write(`
 </div>
 <div class="section" id="smiles-to-atoms">
 <h2>SMILES to Atoms<a class="headerlink" href="#smiles-to-atoms" title="Permalink to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.smiles.run()</span></code> converts <a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system">SMILES</a> (e.g. “CCCC” for n-butane) to ASE’s <code class="docutils literal notranslate"><span class="pre">Atoms</span></code>. See example <a class="reference internal" href="examples.smiles.html"><span class="std std-doc">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></span></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.smiles.smiles()</span></code> converts <a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system">SMILES</a> (e.g. “CCCC” for n-butane) to ASE’s <code class="docutils literal notranslate"><span class="pre">Atoms</span></code>. See example <a class="reference internal" href="examples.smiles.html"><span class="std std-doc">SMILES to <code class="docutils literal notranslate"><span class="pre">Atoms</span></code></span></a>.</p>
 </div>
 <div class="section" id="buildcell">
 <h2>BuildCell<a class="headerlink" href="#buildcell" title="Permalink to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.buildcell.run()</span></code> wrapps <a class="reference external" href="https://airss-docs.github.io/technical-reference/buildcell-manual">AIRSS</a>’s <code class="docutils literal notranslate"><span class="pre">buildcell</span></code> that constructs sensible random structures. See documentation and example <a class="reference internal" href="examples.buildcell.html"><span class="std std-doc">Random Structures via buildcell</span></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.buildcell.buildcell()</span></code> wrapps <a class="reference external" href="https://airss-docs.github.io/technical-reference/buildcell-manual">AIRSS</a>’s <code class="docutils literal notranslate"><span class="pre">buildcell</span></code> that constructs sensible random structures. See documentation and example <a class="reference internal" href="examples.buildcell.html"><span class="std std-doc">Random Structures via buildcell</span></a>.</p>
 </div>
 <div class="section" id="super-cells">
 <h2>Super Cells<a class="headerlink" href="#super-cells" title="Permalink to this heading">#</a></h2>
@@ -392,15 +391,15 @@ document.write(`
 </div>
 <div class="section" id="geometry-optimization">
 <h2>Geometry Optimization<a class="headerlink" href="#geometry-optimization" title="Permalink to this heading">#</a></h2>
-<p>`wfl.generate.optimize.run() optimizes geometry with the given calculator and PreconLBFGS, including symmetry constraints.</p>
+<p>`wfl.generate.optimize.optimize() optimizes geometry with the given calculator and PreconLBFGS, including symmetry constraints.</p>
 </div>
 <div class="section" id="minima-hopping">
 <h2>Minima Hopping<a class="headerlink" href="#minima-hopping" title="Permalink to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.minimahopping.run()</span></code> wraps ASE’s <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/optimize.html#minima-hopping">Minima hopping</a> code. This algorithm utilizes a series of alternating steps of NVE molecular dynamics and local optimizations.</p>
+<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.minimahopping.minimahopping()</span></code> wraps ASE’s <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/optimize.html#minima-hopping">Minima hopping</a> code. This algorithm utilizes a series of alternating steps of NVE molecular dynamics and local optimizations.</p>
 </div>
 <div class="section" id="structures-for-phonons">
 <h2>Structures for phonons<a class="headerlink" href="#structures-for-phonons" title="Permalink to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.phonopy.run()</span></code> creates displaced configs with phonopy or phono3py.</p>
+<p><code class="docutils literal notranslate"><span class="pre">wfl.generate.phonopy.phonopy()</span></code> creates displaced configs with phonopy or phono3py.</p>
 </div>
 <div class="section" id="normal-modes-of-molecules">
 <h2>Normal Modes of Molecules<a class="headerlink" href="#normal-modes-of-molecules" title="Permalink to this heading">#</a></h2>

@@ -4,9 +4,9 @@
 In principle, any ASE calculator can be parallelized using Workflow. The parallelization happens at `Atoms` object level. That is, if we wanted to get single-point energies & forces on 16 `Atoms` structures and using 16 cores, all 16 `Atoms` objects would get processed at the same time, each on a single core. 
 
 
-## Parallelize with `generic.run()`
+## Parallelize with `generic.calculate()`
 
-In ASE, we iterate over all `Atoms` objects, initialize a calculator, set it to an `Atoms` object and call it to evaluate energies and forces sequentially. In Workflow, with `generic.run` we define a way to initialize a calculator, define where from and to read and write configurations (`ConfigSet` and `OutputSpec`) and set a directive for how many cores to parallelize over. 
+In ASE, we iterate over all `Atoms` objects, initialize a calculator, set it to an `Atoms` object and call it to evaluate energies and forces sequentially. In Workflow, with `generic.calculate` we define a way to initialize a calculator, define where from and to read and write configurations (`ConfigSet` and `OutputSpec`) and set a directive for how many cores to parallelize over. 
 
 The calculator has to be defined as a tuple of `(Calculator, [args], **kwargs)`, for example 
 

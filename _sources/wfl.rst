@@ -13,7 +13,6 @@ Subpackages
    wfl.descriptors
    wfl.fit
    wfl.generate
-   wfl.scripts
    wfl.select
    wfl.utils
 

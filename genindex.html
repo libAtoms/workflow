@@ -185,7 +185,6 @@
 <li class="toctree-l4"><a class="reference internal" href="wfl.generate.md_PROTECT.html">wfl.generate.md package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wfl.scripts.html">wfl.scripts package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.select.html">wfl.select package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wfl.utils.html">wfl.utils package</a></li>
 </ul>
@@ -829,6 +828,8 @@ document.write(`
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="wfl.generate.html#wfl.generate.buildcell.buildcell">buildcell() (in module wfl.generate.buildcell)</a>
+</li>
       <li><a href="wfl.select.html#wfl.select.simple.by_bool_func">by_bool_func() (in module wfl.select.simple)</a>
 </li>
       <li><a href="wfl.select.html#wfl.select.simple.by_index">by_index() (in module wfl.select.simple)</a>
@@ -839,21 +840,21 @@ document.write(`
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="wfl.descriptors.html#wfl.descriptors.quippy.calc">calc() (in module wfl.descriptors.quippy)</a>
-
-      <ul>
-        <li><a href="wfl.fit.html#wfl.fit.error.calc">(in module wfl.fit.error)</a>
+      <li><a href="wfl.fit.html#wfl.fit.error.calc">calc() (in module wfl.fit.error)</a>
 </li>
-      </ul></li>
       <li><a href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.calc_descriptors_to_file">calc_descriptors_to_file() (in module wfl.cli.gap_rss_iter_fit)</a>
 </li>
       <li><a href="wfl.utils.html#wfl.utils.ndim_neighbor_list.calc_list">calc_list() (in module wfl.utils.ndim_neighbor_list)</a>
 </li>
       <li><a href="wfl.utils.html#wfl.utils.ndim_neighbor_list.calc_list_cells">calc_list_cells() (in module wfl.utils.ndim_neighbor_list)</a>
 </li>
-      <li><a href="wfl.calculators.html#wfl.calculators.aims.Aims.calculate">calculate() (wfl.calculators.aims.Aims method)</a>
+      <li><a href="wfl.calculators.html#wfl.calculators.generic.calculate">calculate() (in module wfl.calculators.generic)</a>
 
       <ul>
+        <li><a href="wfl.descriptors.html#wfl.descriptors.quippy.calculate">(in module wfl.descriptors.quippy)</a>
+</li>
+        <li><a href="wfl.calculators.html#wfl.calculators.aims.Aims.calculate">(wfl.calculators.aims.Aims method)</a>
+</li>
         <li><a href="wfl.calculators.html#wfl.calculators.castep.Castep.calculate">(wfl.calculators.castep.Castep method)</a>
 </li>
         <li><a href="wfl.calculators.html#wfl.calculators.espresso.Espresso.calculate">(wfl.calculators.espresso.Espresso method)</a>
@@ -1135,9 +1136,15 @@ document.write(`
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="wfl.html#wfl.map.map">map() (in module wfl.map)</a>
+</li>
       <li><a href="wfl.fit.gap.html#wfl.fit.gap.multistage.max_cutoff">max_cutoff() (in module wfl.fit.gap.multistage)</a>
 </li>
+      <li><a href="wfl.generate.md_PROTECT.html#wfl.generate.md.md">md() (in module wfl.generate.md)</a>
+</li>
       <li><a href="wfl.select.html#wfl.select.selection_space.minima_among_neighbors">minima_among_neighbors() (in module wfl.select.selection_space)</a>
+</li>
+      <li><a href="wfl.generate.html#wfl.generate.minimahopping.minimahopping">minimahopping() (in module wfl.generate.minimahopping)</a>
 </li>
       <li><a href="wfl.generate.html#wfl.generate.normal_modes.NormalModes.modes_to_evecs">modes_to_evecs() (wfl.generate.normal_modes.NormalModes static method)</a>
 </li>
@@ -1279,8 +1286,6 @@ document.write(`
 </li>
         <li><a href="wfl.html#module-wfl.map">wfl.map</a>
 </li>
-        <li><a href="wfl.scripts.html#module-wfl.scripts">wfl.scripts</a>
-</li>
         <li><a href="wfl.select.html#module-wfl.select">wfl.select</a>
 </li>
         <li><a href="wfl.select.html#module-wfl.select.by_descriptor">wfl.select.by_descriptor</a>
@@ -1364,10 +1369,12 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wfl.html#wfl.configset.ConfigSet.one_file">one_file() (wfl.configset.ConfigSet method)</a>
 </li>
-      <li><a href="wfl.calculators.orca.html#wfl.calculators.orca.ORCA">ORCA (class in wfl.calculators.orca)</a>
+      <li><a href="wfl.generate.html#wfl.generate.optimize.optimize">optimize() (in module wfl.generate.optimize)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="wfl.calculators.orca.html#wfl.calculators.orca.ORCA">ORCA (class in wfl.calculators.orca)</a>
+</li>
       <li><a href="wfl.cli.html#wfl.cli.cli_options.outputs">outputs() (in module wfl.cli.cli_options)</a>
 </li>
       <li><a href="wfl.html#wfl.configset.OutputSpec">OutputSpec (class in wfl.configset)</a>
@@ -1440,30 +1447,16 @@ document.write(`
 </li>
       <li><a href="wfl.calculators.orca.html#wfl.calculators.orca.ORCA.read_trajectory">read_trajectory() (wfl.calculators.orca.ORCA method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wfl.autoparallelize.html#wfl.autoparallelize.remoteinfo.RemoteInfo">RemoteInfo (class in wfl.autoparallelize.remoteinfo)</a>
 </li>
       <li><a href="wfl.utils.html#wfl.utils.replace_eval_in_strs.replace_eval_in_strs">replace_eval_in_strs() (in module wfl.utils.replace_eval_in_strs)</a>
 </li>
       <li><a href="wfl.utils.html#wfl.utils.round_sig_figs.round_sig_figs">round_sig_figs() (in module wfl.utils.round_sig_figs)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wfl.cli.html#wfl.cli.gap_rss_iter_fit.RSS_minima_diverse">RSS_minima_diverse() (in module wfl.cli.gap_rss_iter_fit)</a>
 </li>
-      <li><a href="wfl.calculators.html#wfl.calculators.generic.run">run() (in module wfl.calculators.generic)</a>
-
-      <ul>
-        <li><a href="wfl.generate.html#wfl.generate.buildcell.run">(in module wfl.generate.buildcell)</a>
-</li>
-        <li><a href="wfl.generate.html#wfl.generate.minimahopping.run">(in module wfl.generate.minimahopping)</a>
-</li>
-        <li><a href="wfl.generate.html#wfl.generate.optimize.run">(in module wfl.generate.optimize)</a>
-</li>
-        <li><a href="wfl.generate.html#wfl.generate.smiles.run">(in module wfl.generate.smiles)</a>
-</li>
-        <li><a href="wfl.html#wfl.map.run">(in module wfl.map)</a>
-</li>
-      </ul></li>
       <li><a href="wfl.fit.html#wfl.fit.ace.run_ace_fit">run_ace_fit() (in module wfl.fit.ace)</a>
 </li>
       <li><a href="wfl.fit.gap.html#wfl.fit.gap.simple.run_gap_fit">run_gap_fit() (in module wfl.fit.gap.simple)</a>
@@ -1474,8 +1467,6 @@ document.write(`
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="wfl.generate.md_PROTECT.html#wfl.generate.md.sample">sample() (in module wfl.generate.md)</a>
-</li>
       <li><a href="wfl.generate.html#wfl.generate.normal_modes.sample_normal_modes">sample_normal_modes() (in module wfl.generate.normal_modes)</a>
 
       <ul>
@@ -1500,13 +1491,15 @@ document.write(`
         <li><a href="wfl.calculators.html#wfl.calculators.espresso.Espresso.setup_calc_params">(wfl.calculators.espresso.Espresso method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wfl.calculators.html#wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator.setup_rundir">setup_rundir() (wfl.calculators.wfl_fileio_calculator.WFLFileIOCalculator method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wfl.autoparallelize.html#wfl.autoparallelize.mpipool_support.shutdown_and_barrier">shutdown_and_barrier() (in module wfl.autoparallelize.mpipool_support)</a>
 </li>
       <li><a href="wfl.generate.html#wfl.generate.smiles.smi_to_atoms">smi_to_atoms() (in module wfl.generate.smiles)</a>
+</li>
+      <li><a href="wfl.generate.html#wfl.generate.smiles.smiles">smiles() (in module wfl.generate.smiles)</a>
 </li>
       <li>
     SMILES_STRING
@@ -1950,6 +1943,8 @@ document.write(`
         <li><a href="wfl.calculators.orca.html#module-wfl.calculators.orca.basinhopping">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     wfl.calculators.utils
 
@@ -1957,8 +1952,6 @@ document.write(`
         <li><a href="wfl.calculators.html#module-wfl.calculators.utils">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     wfl.calculators.vasp
 
@@ -2251,13 +2244,6 @@ document.write(`
 
       <ul>
         <li><a href="wfl.html#module-wfl.map">module</a>
-</li>
-      </ul></li>
-      <li>
-    wfl.scripts
-
-      <ul>
-        <li><a href="wfl.scripts.html#module-wfl.scripts">module</a>
 </li>
       </ul></li>
       <li>

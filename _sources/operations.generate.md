@@ -9,12 +9,12 @@ This page (and submodules of `wfl.generate`) gives a brief overview self-contain
 
 ## SMILES to Atoms
 
-`wfl.generate.smiles.run()` converts [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system) (e.g. "CCCC" for n-butane) to ASE's `Atoms`. See example [SMILES to `Atoms`](examples.smiles.md).
+`wfl.generate.smiles.smiles()` converts [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system) (e.g. "CCCC" for n-butane) to ASE's `Atoms`. See example [SMILES to `Atoms`](examples.smiles.md).
 
 
 ## BuildCell
 
-`wfl.generate.buildcell.run()` wrapps [AIRSS](https://airss-docs.github.io/technical-reference/buildcell-manual)'s `buildcell` that constructs sensible random structures. See documentation and example [Random Structures via buildcell](examples.buildcell.ipynb).
+`wfl.generate.buildcell.buildcell()` wrapps [AIRSS](https://airss-docs.github.io/technical-reference/buildcell-manual)'s `buildcell` that constructs sensible random structures. See documentation and example [Random Structures via buildcell](examples.buildcell.ipynb).
 
 
 ## Super Cells
@@ -35,17 +35,17 @@ Molecular dynamics submodule aimed at sampling atomic configurations. Allows for
 
 ## Geometry Optimization
 
-`wfl.generate.optimize.run() optimizes geometry with the given calculator and PreconLBFGS, including symmetry constraints. 
+`wfl.generate.optimize.optimize() optimizes geometry with the given calculator and PreconLBFGS, including symmetry constraints. 
 
 
 ## Minima Hopping
 
-`wfl.generate.minimahopping.run()` wraps ASE's [Minima hopping](https://wiki.fysik.dtu.dk/ase/ase/optimize.html#minima-hopping) code. This algorithm utilizes a series of alternating steps of NVE molecular dynamics and local optimizations. 
+`wfl.generate.minimahopping.minimahopping()` wraps ASE's [Minima hopping](https://wiki.fysik.dtu.dk/ase/ase/optimize.html#minima-hopping) code. This algorithm utilizes a series of alternating steps of NVE molecular dynamics and local optimizations. 
 
 
 ## Structures for phonons 
 
-`wfl.generate.phonopy.run()` creates displaced configs with phonopy or phono3py. 
+`wfl.generate.phonopy.phonopy()` creates displaced configs with phonopy or phono3py. 
 
 
 ## Normal Modes of Molecules 
