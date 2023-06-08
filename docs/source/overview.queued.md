@@ -111,14 +111,16 @@ duplicate submission is indeed correct).  All functions already ignore the
 The hashing mechanism is only designed for interrupted runs, and does
 not detect changes to the called function (or to any functions that
 function calls).  If the code is being modified, the user should erase the
-`ExPyRe` staged job directories, and clean up the sqlite database file,
+`ExPyRe` staged job directories, and clean up the `sqlite` database file,
 before rerunning.  Using a per-project `_expyre` directory makes this
 easier, since the database file can simply be erased, otherwise the `xpr` command
 line tool needs to be used to delete the previously created jobs.
 
 Note that this is only relevant to incomplete autoparallelized
-operations, since any completed operation no longer depends on anything
-`ExPyRe`-related.  See the corresponding warning in :doc:`overview.configset`.  
+operations, since any completed operation (once all the remote job outputs have
+been gathered into the location specified in the `OutputSpec`) no longer depends on 
+anything `ExPyRe`-related.  See also the warning in the 
+`OutputSpec` [documentation](overview.configset).
 ```
 
 ## WFL\_EXPYRE\_INFO syntax

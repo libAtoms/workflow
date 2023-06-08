@@ -22,8 +22,9 @@ Input and output of atomic structures
     To efficiently restart interrupted operations, if the ``OutputSpec`` object specifies storing the output 
     data in a file, autoparallelized workflow operations will use the existing file instead of redoing the calculation.  
     If the workflow code (or any functions that are called by it, directly or indirectly) are changed, this will not 
-    be detected, the the previous, perhaps no longer correct, output will still be used.
-    The user is required to manually delete output files from operations that have been changed.
+    be detected, and the previous, perhaps no longer correct, output will still be used.
+    The user must manually delete output files from operations that have been changed to force
+    the calculation to be redone.
 
 Users should consult the simple example in :doc:`first_example`, or the documentation of the two classes at
 :meth:`wfl.configset.ConfigSet` and :meth:`wfl.configset.OutputSpec`
