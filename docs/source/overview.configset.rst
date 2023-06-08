@@ -18,6 +18,12 @@ Input and output of atomic structures
 
 ``OutputSpec`` works as the output layer, used for writing results during iterations, but the actual writing is not guaranteed to happen until the operation is closed with ``OutputSpec.close()``. It is possible to map a different output file to each input file, which will result in the outputs corresponding to each input file ending up in a different output file.
 
+.. warning::
+    To efficiently restart interrupted operatiosn, if the ``OutputSpec`` object specifies storing the output 
+    data in a file, autoparallelized workflow operations will use the existing file instead of redoing the calculation.  
+    If the workflow code (or any functions that are called by it, directly or indirectly) are changed, this will not 
+    be detected. The user is required to manually delete output files from operations that have been changed.
+
 Users should consult the simple example in :doc:`first_example`, or the documentation of the two classes at
 :meth:`wfl.configset.ConfigSet` and :meth:`wfl.configset.OutputSpec`
 
