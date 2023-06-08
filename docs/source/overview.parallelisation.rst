@@ -14,7 +14,7 @@ Much of the pipeline, including the input/output facilitated by ``ConfigSet``/``
   subprocess parallelization itself. [remote jobs not documented here yet]
 
 .. warning::
-    Autoparallelized operations will use cached output files. See warning in :doc:`configset`
+    Autoparallelized operations will use cached output files. See warning in :doc:`overview.configset`
 
 *****************************************************
 Programming script that use parallelized operations 

@@ -112,7 +112,7 @@ not detect changes to the called function (or to any functions that
 function calls).  If the code is being modified, the user should erase the
 `ExPyRe` staged job directories, and clean up the sqlite database file,
 before rerunning.  Using a per-project `_expyre` directory makes this
-easier, since the file can simply be erased, otherwise the `xpr` command
+easier, since the database file can simply be erased, otherwise the `xpr` command
 line tool needs to be used to delete the previously created jobs.
 
 Note that this is only relevant to incomplete autoparallelized
@@ -123,7 +123,8 @@ operations, since any completed operation no longer depends on anything
 ## WFL\_EXPYRE\_INFO syntax
 
 The `WFL_EXPYRE_INFO` variable contains a JSON or the name of a file that contains a JSON.  The JSON encodes a dict with keys
-indicating particular function calls, and values containing arguments for constructing [`RemoteInfo`](wfl.autoparallelize.RemoteInfo) objects.
+indicating particular function calls, and values containing arguments for constructing 
+[`RemoteInfo`](wfl.autoparallelize.remoteinfo.RemoteInfo) objects.
 
 
 ### Keys
