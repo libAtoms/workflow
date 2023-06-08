@@ -10,8 +10,9 @@ module be installed.  If needed, commands needed to make this module available (
 can be set on a per-machine basis in the `config.json` file mentioned below.
 
 ```{warning}
-To facilitate restarts of interrupted operations, submitted jobs are cached. See 
-[discussion below](sec:example:restarts)
+To facilitate restarts of interrupted operations, submitted jobs are cached.  If the code 
+executed by the job is changed, this may result in cached but incorrect output being used.
+See [discussion below](sec:example:restarts).
 ```
 
 In addition, `wfl.fit.gap_simple`, `wfl.fit.gap_multistage`, and `wfl.fit.ace` have been wrapped, as a single
@@ -117,7 +118,7 @@ line tool needs to be used to delete the previously created jobs.
 
 Note that this is only relevant to incomplete autoparallelized
 operations, since any completed operation no longer depends on anything
-`ExPyRe`-related.
+`ExPyRe`-related.  See the corresponding warning in :doc:`overview.configset`.  
 ```
 
 ## WFL\_EXPYRE\_INFO syntax
