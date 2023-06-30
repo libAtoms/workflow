@@ -65,6 +65,12 @@ def prep_params(Zs, length_scales, GAP_template, spacing=1.5,
     except:
         hypers = None
 
+    # Only single soap is selected by removing one with larger cutoff
+    print("hypers, ", hypers)
+    for Z in hypers:
+        toremove = np.argmax(np.asarray([soapdict["cutoff"] for soapdict in hypers[Z]]))
+        hypers[Z].remove(hypers[Z][toremove])
+
     for (i_stage, stage) in enumerate(multistep_gap_settings['stages']):
         use_descs, _ = descriptors_from_length_scales(stage['descriptors'], Zs, length_scales,
                                                       SOAP_hypers=hypers)
@@ -418,6 +424,12 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         # add rng seed
         fitting_line_kwargs["rnd_seed"] = seeds[i_stage]
+
+        # adjust energy and force sigma 
+        # energy_sigma = 0.001*delta
+        # force_sigma = np.sqrt(energy_sigma)
+        # The other sigmas are not set for now. 
+        params["gap_params"]["default_sigma"] = [float(0.001*delta), float(np.sqrt(0.001*delta)), 0.0, 0.0]
 
         # combine gap_params content from params dict with entries set by this routine in fitting_line_kwargs
         gap_simple_fit = deepcopy(params.get('gap_params', {}))
