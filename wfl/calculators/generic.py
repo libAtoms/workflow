@@ -35,7 +35,8 @@ def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_
     """
 
     if properties is None:
-        properties = ['energy', 'forces', 'stress']
+#        properties = ['energy', 'forces', 'stress']
+        properties = ['energy','free_energy', 'forces', 'stress']
     calculator = construct_calculator_picklesafe(calculator)
 
     if output_prefix == '_auto_':

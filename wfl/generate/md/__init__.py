@@ -6,6 +6,7 @@ from ase.md.nptberendsen import NPTBerendsen
 from ase.md.nvtberendsen import NVTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.md.verlet import VelocityVerlet
+from ase.md.langevin import Langevin
 from ase.units import GPa, fs
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
@@ -19,7 +20,7 @@ bar = 1.0e-4 * GPa
 
 
 def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
-              pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
+              pressure=None, pressure_tau=None, friction=0.01, compressibility_fd_displ=0.01,
               traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False, update_config_type=True,
               traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None,
               autopara_rng_seed=None, autopara_per_item_info=None):
@@ -78,7 +79,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
     -------
         list(Atoms) trajectories
     """
-
+    
     calculator = construct_calculator_picklesafe(calculator)
 
     all_trajs = []
@@ -111,7 +112,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
             for t_stage in temperature:
                 if 'n_stages' not in t_stage:
                     t_stage['n_stages'] = 10
-
+    
     for at_i, at in enumerate(atoms_to_list(atoms)):
         if autopara_per_item_info is not None:
             np.random.seed(autopara_per_item_info[at_i]["rng_seed"])
@@ -136,12 +137,13 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
 
         if temperature is not None:
             # set initial temperature
+#            print("temperature ", temperature)
             MaxwellBoltzmannDistribution(at, temperature_K=temperature[0]['T_i'], force_temp=True, communicator=None)
-            Stationary(at, preserve_temperature=True)
+#            Stationary(at, preserve_temperature=True)
 
         stage_kwargs = {'timestep': dt * fs, 'logfile': logfile}
 
-        if temperature_tau is None:
+        if temperature_tau is None and friction is None:
             # NVE
             if pressure is not None:
                 raise RuntimeError('Cannot do NPH dynamics')
@@ -149,6 +151,16 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
             # one stage, simple
             all_stage_kwargs = [stage_kwargs.copy()]
             all_run_kwargs = [ {'steps': steps} ]
+
+        elif temperature_tau is None and friction is not None:
+            print("Langevin is used.")
+            md_constructor = Langevin
+            stage_kwargs["friction"] = friction
+            stage_kwargs["temperature_K"] = temperature[0]["T_i"]
+            # one stage, simple
+            all_stage_kwargs = [stage_kwargs.copy()]
+            all_run_kwargs = [ {'steps': steps} ]
+
         else:
             # NVT or NPT
             all_stage_kwargs = []
@@ -163,7 +175,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
                 stage_kwargs['taup'] = temperature_tau * fs * 3 if pressure_tau is None else pressure_tau * fs
             else:
                 md_constructor = NVTBerendsen
-
+            
             for t_stage_i, t_stage in enumerate(temperature):
                 stage_steps = t_stage['traj_frac'] * steps
 
@@ -212,8 +224,10 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
             if temperature_tau is not None:
                 at.info['MD_temperature_K'] = stage_kwargs['temperature_K']
 
+#            print("stage_kwargs : ", stage_kwargs)
             md = md_constructor(at, **stage_kwargs)
             md.attach(process_step, 1, traj_step_interval)
+#            print("MD info : ", md.todict())
 
             if stage_i > 0:
                 first_step_of_later_stage = True
