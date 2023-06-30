@@ -64,6 +64,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
     elif category_keys is None:
         category_keys = [None]
 
+
     def _reshape_normalize(quant, prop, atoms, per_atom):
         """reshape and normalize quantity so its error can be calculated cleanly
 
@@ -157,8 +158,12 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                 calc_quant *= -at.get_volume()
 
             # make everything into an appropriately shaped and normalized array
+#            print("(before) ref_quant, prop, per_atom, shape", ref_quant, prop, per_atom, ref_quant.shape)
             ref_quant = _reshape_normalize(ref_quant, prop, at, per_atom)
             calc_quant = _reshape_normalize(calc_quant, prop, at, per_atom)
+#            print("(after) ref_quant, prop, per_atom, shape", ref_quant, prop, per_atom, ref_quant.shape)
+
+            
 
             if prop in config_properties or not by_species:
                 # If quantities are not being split up by species, make a
@@ -187,6 +192,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                     selected_calc_quant = selected_calc_quant.reshape((-1, 1))
 
                 diff = selected_calc_quant - selected_ref_quant
+#                print("selected_calc_quant", selected_calc_quant, selected_calc_quant.shape)
 
                 if len(diff.shape) != 2:
                     raise RuntimeError(f"Should never have diff.shape={diff.shape} with dim != 2 (prop {prop + atom_split_index_label})")
@@ -209,14 +215,15 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
             else:
                 warnings.warn(f"Missing reference or calculated property '{missed_prop}', {count} times")
 
-
     all_errors = {}
     for prop in all_diffs:
         all_errors[prop] = {}
         for cat in all_diffs[prop]:
             diffs = np.asarray(all_diffs[prop][cat])
             weights = np.asarray(all_weights[prop][cat])
-
+         
+#            print("weights : ", weights, len(weights))
+#            print("diffs", diffs, diffs.shape)
             RMSE = np.sqrt(np.sum((diffs ** 2) * weights) / np.sum(weights))
             MAE = np.sum(np.abs(diffs) * weights) / np.sum(weights)
             num = len(diffs)
