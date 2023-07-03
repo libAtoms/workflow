@@ -39,11 +39,13 @@ class RemoteInfo:
     resubmit_killed_jobs: bool, default False
         resubmit jobs that were killed without an exit status (out of walltime or crashed), 
         hoping that other parameters such as walltime or memory have been changed to make run complete this time
+    hash_ignore: list(str), default []
+        list of arguments to ignore when doing hash of remote function arguments to determine if it's already been done
     """
     def __init__(self, sys_name, job_name, resources, num_inputs_per_queued_job=-100, pre_cmds=[], post_cmds=[],
                  env_vars=[], input_files=[], output_files=[], header_extra=[],
                  exact_fit=True, partial_node=False, timeout=3600, check_interval=30,
-                 ignore_failed_jobs=False, resubmit_killed_jobs=False):
+                 ignore_failed_jobs=False, resubmit_killed_jobs=False, hash_ignore=[]):
 
         self.sys_name = sys_name
         self.job_name = job_name
@@ -51,12 +53,7 @@ class RemoteInfo:
         self.num_inputs_per_queued_job = num_inputs_per_queued_job
         self.pre_cmds = pre_cmds.copy()
         self.post_cmds = post_cmds.copy()
-        self.env_vars = []
-        if all([not var.startswith("WFL_NUM_PYTHON_SUBPROCESSES=") for var in env_vars]):
-            # user didn't explicitly set WFL_NUM_PYTHON_SUBPROCESSES, so set it to default
-            # equal to number of cores per node
-            self.env_vars += ["WFL_NUM_PYTHON_SUBPROCESSES=${EXPYRE_NUM_CORES_PER_NODE}"]
-        self.env_vars += env_vars
+        self.env_vars = env_vars.copy()
         self.input_files = input_files.copy()
         self.output_files = output_files.copy()
         self.header_extra = header_extra.copy()
@@ -67,6 +64,7 @@ class RemoteInfo:
         self.check_interval = check_interval
         self.ignore_failed_jobs = ignore_failed_jobs
         self.resubmit_killed_jobs = resubmit_killed_jobs
+        self.hash_ignore = hash_ignore.copy()
 
 
     def __str__(self):

@@ -12,16 +12,15 @@ from .pool import do_in_pool
 from expyre import ExPyRe, ExPyReJobDiedError
 
 
-def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1, iterable=None, outputspec=None,
-                op=None, iterable_arg=0, skip_failed=True, initializer=(None, []),
-                args=[], kwargs={}, quiet=False):
+def do_remotely(autopara_info, iterable=None, outputspec=None, op=None, args=[], kwargs={}, quiet=False):
     """run tasks as series of remote jobs
 
     Parameters
     ----------
-    remote_info: RemoteInfo
-        object with all information on remote job, including system, resources, job num_inputs_per_python_subprocess,
-        etc, or dict of kwargs for its constructor
+    autopara_info: AutoparaInfo
+        object with all information on autoparallelizing remote job, including autopara_info.remote_info 
+        which contains RemoteInfo with information on remote job, including system, resources, job 
+        num_inputs_per_python_subprocess, etc, or dict of kwargs for its constructor
     quiet: bool, default False
         do not output (to stderr) progress info
 
@@ -30,8 +29,18 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
     if ExPyRe is None:
         raise RuntimeError('Cannot run as remote jobs since expyre module could not be imported')
 
+    remote_info = autopara_info.remote_info
+    autopara_info.remote_info = None
+
+    if autopara_info.num_python_subprocesses is None:
+        # number of python processes for autoparallelized remote job not specfied explicitly
+        if all([not var.startswith("WFL_NUM_PYTHON_SUBPROCESSES=") for var in remote_info.env_vars]):
+            # user didn't explicitly set WFL_NUM_PYTHON_SUBPROCESSES for remote job
+            # so set its default equal to number of cores per node
+            remote_info.env_vars += ["WFL_NUM_PYTHON_SUBPROCESSES=${EXPYRE_NUM_CORES_PER_NODE}"]
+
     if remote_info.num_inputs_per_queued_job < 0:
-        remote_info.num_inputs_per_queued_job = -remote_info.num_inputs_per_queued_job * num_inputs_per_python_subprocess
+        remote_info.num_inputs_per_queued_job = -remote_info.num_inputs_per_queued_job * autopara_info.num_inputs_per_python_subprocess
 
     if isinstance(iterable, ConfigSet):
         items_inputs_generator = grouper(remote_info.num_inputs_per_queued_job,
@@ -78,16 +87,22 @@ def do_remotely(remote_info, hash_ignore=[], num_inputs_per_python_subprocess=1,
         else:
             job_iterable = items
         co = OutputSpec()
-        # remote job will have to set num_python_subprocesses appropriately for its node
+
+        # NOTE: would it be cleaner if remote function was autoparallelize() instead of do_in_pool()
+        #
         # ignore configset out for hashing of inputs, since that doesn't affect function
-        # calls that have to happen (also it's not repeatable for some reason)
+        #     calls that have to happen (also it's not repeatable for some reason)
         xprs.append(ExPyRe(name=job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
-                            hash_ignore=hash_ignore + ['outputspec'],
+                            hash_ignore=remote_info.hash_ignore + ['outputspec'],
                             env_vars=remote_info.env_vars, input_files=remote_info.input_files,
                             output_files=remote_info.output_files, function=do_in_pool,
-                            kwargs={'num_python_subprocesses': None, 'num_inputs_per_python_subprocess': num_inputs_per_python_subprocess, 'iterable': job_iterable,
-                                    'outputspec': co, 'op': op, 'iterable_arg': iterable_arg,
-                                    'skip_failed': skip_failed, 'initializer': initializer, 'args': args, 'kwargs': kwargs}))
+                            kwargs={'num_python_subprocesses': autopara_info.num_python_subprocesses,
+                                    'num_inputs_per_python_subprocess': autopara_info.num_inputs_per_python_subprocess,
+                                    'iterable': job_iterable, 'outputspec': co, 'op': op,
+                                    'iterable_arg': autopara_info.iterable_arg,
+                                    'skip_failed': autopara_info.skip_failed,
+                                    'initializer': autopara_info.initializer,
+                                    'args': args, 'kwargs': kwargs}))
 
     # start jobs (shouldn't do anything if they've already been started)
     for xpr in xprs:

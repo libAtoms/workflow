@@ -387,5 +387,5 @@ def do_md_deterministic(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     print('remote parallel calc_time', dt)
 
     for at in zip(results_loc, results_remote):
-        print("BOB", [np.linalg.norm(loc.positions - remote.positions) < 1.0e-12 for (loc, remote) in zip(results_loc, results_remote)])
+        # print("BOB", [np.linalg.norm(loc.positions - remote.positions) < 1.0e-12 for (loc, remote) in zip(results_loc, results_remote)])
         assert all([np.linalg.norm(loc.positions - remote.positions) < 1.0e-12 for (loc, remote) in zip(results_loc, results_remote)])

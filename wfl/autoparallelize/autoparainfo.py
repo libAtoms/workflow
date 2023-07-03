@@ -18,9 +18,6 @@ class AutoparaInfo:
     initializer: (func, func_kwargs), default (None, [])
         initializer to be called when each python subprocess is started
 
-    hash_ignore: list(str), default []
-        list of arguments to ignore when doing hash of remote function arguments to determine if it's already been done
-
     num_python_subprocesses: int, default None
         number of python subprocesses
 
@@ -35,7 +32,6 @@ class AutoparaInfo:
                "iterable_arg": 0,
                "skip_failed": True,
                "initializer": (None, []),
-               "hash_ignore": [],
                "num_python_subprocesses": None,
                "remote_info": None,
                "remote_label": None}

@@ -46,6 +46,8 @@ def get_remote_info(remote_info, remote_label, env_var="WFL_EXPYRE_INFO"):
         RemoteInfo kwrgs with keys that match end of stack trace with function names separated by '.'.
     remote_label: str, default None
         remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine filename '::' calling function
+    env_var: str, default "WFL_EXPYRE_INFO"
+        environment var to get information from if not present in `remote\_info` argument
 
     Returns
     -------
