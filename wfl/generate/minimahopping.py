@@ -9,7 +9,7 @@ import glob, sys, pathlib
 import numpy as np
 from ase.optimize.minimahopping import MinimaHopping
 from ase.io.trajectory import Trajectory
-from ase.io import read
+from ase.io import read, write
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.misc import atoms_to_list
@@ -108,17 +108,16 @@ def print_minhop_parameter(hop):
 def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, parallel, 
                      fmax, timestep, totalsteps, skip_failures, return_all_traj,maxtemp_scale, **opt_kwargs):
     fit_idx = opt_kwargs.pop("fit_idx", 0)
+    parallel_seed = opt_kwargs.pop("parallel_seed", 0)
     workdir = os.getcwd()
 
 #    rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_', suffix=str(fit_idx))
-    if parallel:
-        for i in range(parallel):
-            rundir = f"{workdir}/parallel/{str(i).zfill(2)}"
-            pathlib.Path(f"{workdir}/parallel/{str(i).zfill(2)}").mkdir(parents=True, exist_ok=True)
+    if parallel > 1:
+        rundir = f"{workdir}/parallel/{str(parallel_seed).zfill(2)}"
     else:	
         rundir = f"{workdir}/Opt_hopping_{fit_idx}"
         pathlib.Path(f"{workdir}/Opt_hopping_{fit_idx}").mkdir(parents=True, exist_ok=True)
-
+	
     os.chdir(rundir)
     atom.calc = calculator
     try:
@@ -152,16 +151,22 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, par
         if return_all_traj:
             traj += _get_MD_trajectory(rundir)
 
-        for hop_traj in Trajectory('minima.traj'):
-            config_type_append(hop_traj, 'minima')
-            traj.append(hop_traj)
-        os.chdir(workdir)
+            if parallel == 1:	
+            for hop_traj in Trajectory('minima.traj'):
+                config_type_append(hop_traj, 'minima')
+                traj.append(hop_traj)
+            os.chdir(workdir)
 #        shutil.rmtree(rundir)
-        return traj
+            return traj
+
+        else:	
+            print("Parallel run returns minima.traj", flush=True)
+            os.chdir(workdir)
+            return None
 
 
 def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2, parallel=1,
-                           fmax=1, timestep=1, totalsteps=10, skip_failures=True, return_all_traj=True, maxtemp_scale=1,
+                           fmax=1, timestep=1, totalsteps=10, skip_failures=True, return_all_traj=True, maxtemp_scale=2,
                            autopara_rng_seed=None, autopara_per_item_info=None,
                            **opt_kwargs):
 	"""runs a structure optimization
@@ -201,32 +206,21 @@ def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_thresho
 	calculator = construct_calculator_picklesafe(calculator)
 	all_trajs = []
 
-#	if parallel == 1:
-	print("serial minima hopping", flush=True)
+
+#	print("autopara_per_item_info : ", autopara_per_item_info , flush=True)
 	for at_i, at in enumerate(atoms_to_list(atoms)):
 		if autopara_per_item_info is not None:
 			np.random.seed(autopara_per_item_info[at_i]["rng_seed"])
 
+		opt_kwargs["parallel_seed"] = autopara_per_item_info[0]['item_i']
 		traj = _atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold,
-								 mdmin=mdmin, fmax=fmax, timestep=timestep, totalsteps=totalsteps,
+								 mdmin=mdmin, fmax=fmax, timestep=timestep, totalsteps=totalsteps,parallel=parallel,
+								 maxtemp_scale = maxtemp_scale,
 								 skip_failures=skip_failures, return_all_traj=return_all_traj, **opt_kwargs)
 		all_trajs.append(traj)
 
 	return all_trajs
 
-#	elif parallel > 1:
-#		print("parallel minima hopping", flush=True)
-#		for at_i, at in enumerate(atoms_to_list(atoms)):
-#			if autopara_per_item_info is not None:
-#				np.random.seed(autopara_per_item_info[at_i]["rng_seed"])
-#
-#			traj = _atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold,
-#									 mdmin=mdmin, fmax=fmax, timestep=timestep, totalsteps=totalsteps,
-#									 skip_failures=skip_failures, return_all_traj=return_all_traj, **opt_kwargs)
-#			all_trajs.append(traj)
-#
-#		return all_trajs
-#
 
 
 # run that operation on ConfigSet, for multiprocessing
