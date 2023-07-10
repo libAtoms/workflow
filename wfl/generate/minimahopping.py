@@ -151,11 +151,11 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, par
         if return_all_traj:
             traj += _get_MD_trajectory(rundir)
 
-        if parallel == 1:	
-            for hop_traj in Trajectory('minima.traj'):
-                config_type_append(hop_traj, 'minima')
-                traj.append(hop_traj)
-            os.chdir(workdir)
+            if parallel == 1:	
+                for hop_traj in Trajectory('minima.traj'):
+                    config_type_append(hop_traj, 'minima')
+                    traj.append(hop_traj)
+                os.chdir(workdir)
 #        shutil.rmtree(rundir)
             return traj
 
