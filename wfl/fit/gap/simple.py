@@ -152,7 +152,8 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None
         if gap_fit_command is None:
             gap_fit_command = "gap_fit"
 
-    cmd = f'{gap_fit_command} {fitting_line} 2>&1 > {stdout_file} '
+#    cmd = f'{gap_fit_command} {fitting_line} 2>&1 > {stdout_file} '
+    cmd = f'{gap_fit_command} {fitting_line} 1>{stdout_file} 2>/dev/null'
 
     if not do_fit or verbose:
         print('fitting command:\n', cmd)

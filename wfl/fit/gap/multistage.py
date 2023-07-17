@@ -221,7 +221,8 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         return results
 
-    assert isinstance(ref_property_prefix, str) and len(ref_property_prefix) > 0
+#    assert isinstance(ref_property_prefix, str) and len(ref_property_prefix) > 0
+    assert isinstance(ref_property_prefix, str) and len(ref_property_prefix) >= 0
 
     if not run_dir.exists():
         run_dir.mkdir(parents=True)
@@ -249,6 +250,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         fitting_line_kwargs["core_param_file"] = params['core_ip_file']
 
     ref_energy_key = ref_property_prefix + 'energy'
+    print("ref_energy_key : ", ref_energy_key)	
 
     # gather set of all species to be fit
     Zs = set([Z for at in fitting_configs for Z in at.numbers])

@@ -50,7 +50,7 @@ def _get_after_explosion(rundir):
 			config_type_append(opt_traj, "hopping_traj")
 			traj.append(opt_traj)
 
-		return traj
+		return None
 
 	elif len(MDs) != 0:
 		print("Exploded during MD simulation", flush=True)
@@ -66,49 +66,12 @@ def print_minhop_parameter(hop):
         print(f"{key:<16s} :  {getattr(hop, '_' + key)}")
     print("="*40)
 
-#def contingency_plan():
-#        count = 0
-#        num_minima = len([atoms for atoms in list(out_config.to_ConfigSet()) if atoms.info["config_type"].split("_")[-1] == "minima"])
-#        while num_minima < 3:
-#
-#            print("Minima from minhop are less than 3! Ten more hops are added")
-#            os.system("rm -f hop.log md* qn* ")
-#            atoms = prepare_input(smiles=smiles, facet=facet,randseed=count+100, return_configset=False)#, coadsorbate=coadsorbate, num_coadsorbate=num_coadsorbate)
-#
-#           if num_coadsorbate == 0: 
-#               apply_constraints(atoms,
-#                       relax_metal=relax_metal,
-#                       smiles=smiles)  
-#           else:
-#               apply_constraints(atoms,
-#                       relax_metal=relax_metal,
-#                       constrain_Hookean = True,
-#                       method = None)
-#            print("initial structure for minima hopping changed!")
-#
-#            if crude_gap:
-#                kwargs["totalsteps"] += 10
-#                kwargs["Ediff"] = 6
-#				opt = MinimaHopping(atoms, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold,
-#								mdmin=mdmin, fmax=fmax, timestep=timestep, **opt_kwargs)
-#				opt(totalsteps=totalsteps)
-#            else:
-#                kwargs["Ediff"] = 6
-#				opt = MinimaHopping(atoms, Ediff0=6, T0=T0, minima_threshold=minima_threshold,
-#								mdmin=mdmin, fmax=fmax, timestep=timestep, **opt_kwargs)
-#				opt(totalsteps=totalsteps)
-##               hop_re = MinimaHopping(atoms, Ediff0=6, T0=T0, timestep=timestep, minima_traj = "minima.traj")
-#
-#            num_minima = len([atoms for atoms in list(out_config.to_ConfigSet()) if atoms.info["config_type"].split("_")[-1] == "minima"])
-#            print("Number of minima collected", num_minima)
-#            count += 1
-
 
 # perform MinimaHopping on one ASE.atoms object
 def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, parallel, 
                      fmax, timestep, totalsteps, skip_failures, return_all_traj,maxtemp_scale, **opt_kwargs):
     fit_idx = opt_kwargs.pop("fit_idx", 0)
-    parallel_seed = opt_kwargs.pop("parallel_seed", 0)
+    parallel_seed = opt_kwargs.pop("parallel_seed", None)
     workdir = os.getcwd()
 
 #    rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_', suffix=str(fit_idx))
@@ -126,6 +89,8 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, par
         print_minhop_parameter(opt)
         opt(totalsteps=totalsteps, maxtemp=maxtemp_scale*T0)
     except Exception as exc:
+        if parallel_seed is not None:
+            print(f"parallel run {parallel_seed} failed.")
         # optimization may sometimes fail to converge.
         if skip_failures:
             sys.stderr.write(f'Structure optimization failed with exception \'{exc}\'\n')
@@ -147,6 +112,9 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, par
         else:
             raise
     else:
+        if parallel > 1 and parallel_seed is not None:
+            print(f"parallel run {parallel_seed} suceeded.")
+
         traj = []
         if return_all_traj:
             traj += _get_MD_trajectory(rundir)
