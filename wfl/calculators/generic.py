@@ -11,18 +11,27 @@ from .utils import save_results
 
 
 def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_auto_', verbose=False, raise_calc_exceptions=False):
-    """evaluates configs using an arbitrary calculator and store results in SinglePointCalculator
+    """evaluates configs using an arbitrary calculator and store results in info/arrays entries
+    or `SinglePointCalculator`.
 
     Defaults to wfl_num_inputs_per_python_subprocess=10, to avoid recreating the calculator for
     each configuration, unless calculator class defines a wfl_generic_default_autopara_info
     attribute in which case that value is used for the default.
 
+    If `Atoms.info` contains 'WFL\_CALCULATOR\_INITIALIZER', 'WFL\_CALCULATOR\_ARGS' or
+    'WFL\_CALCULATOR\_KWARGS', an individual calculator will be created for that `Atoms` object.
+    The `initializer` and `*args` will be _overridden_ by the corresponding `Atoms.info` entries, but
+    the `**kwargs` will be _modified_ (`dict.update`) by the `Atoms.info` entry.
+
     Parameters
     ----------
     atoms: ase.atoms.Atoms / list(Atoms)
         input configuration(s)
-    calculator: Calculator / (initializer, args, kwargs)
-        ASE calculator or routine to call to create calculator
+    calculator: Calculator / (initializer (callable), args (list), kwargs (dict))
+        ASE calculator or routine to call to create calculator. If 'WFL\_CALCULATOR\_ARGS'
+        `...\_INITIALIZER`, or `...\_KWARGS` are present in any `Atoms.info` dicts, calculator
+        _must_ be a 3-tuple so that those `initializer`, `*args` or `**kwargs` can be used to
+        override defaults.
     properties: list(str), default ['energy', 'forces', stress']
         Properties to request from calculator. If any are not present after calculation (e.g.
         stress for nonperiodic configurations), a warning will be printed.
@@ -36,14 +45,41 @@ def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_
 
     if properties is None:
         properties = ['energy', 'forces', 'stress']
-    calculator = construct_calculator_picklesafe(calculator)
+    try:
+        calculator = construct_calculator_picklesafe(calculator)
+        calculator_failure_message = None
+    except Exception as exc:
+        # if calculator constructor failed, it may still be fine if every atoms object has
+        # enough info to construct its own calculator, but we won't know until later
+        calculator_failure_message = str(exc)
+        calculator = None
 
     if output_prefix == '_auto_':
         output_prefix = calculator.__class__.__name__ + '_'
 
     at_out = []
     for at in atoms_to_list(atoms):
-        at.calc = calculator
+        calculator_use = calculator
+        if ("WFL_CALCULATOR_INITIALIZER" in atoms.info or
+            "WFL_CALCULATOR_ARGS" in atoms.info or
+            "WFL_CALCULATOR_KWARGS" in atoms.info):
+            # create per-config Calculator
+            try:
+                initializer_use = atoms.info.get("WFL_CALCULATOR_INITIALIZER", calculator[0])
+                args_use = atoms.info.get("WFL_CALCULATOR_ARGS", calculator[1])
+                kwargs_use = calculator[2].copy()
+                kwargs_use.update(atoms.info.get("WFL_CALCULATOR_KWARGS", {}))
+                calculator_use = construct_calculator_picklesafe(initializer_use, args_use, kwargs_use)
+            except Exception as exc:
+                raise TypeError("calculators.generic.calculate got WFL_CALCULATOR_INITIALIZER, _ARGS, or _KWARGS "
+                                f"but constructor failed, most likely because calculator wasn't a tuple (TypeError) "
+                                "or original tuple had invalid element that wasn't overridden by `Atoms.info` entry. "
+                                f"Constructor exception was '{exc}'")
+
+        if calculator_use is None:
+            raise ValueError(f"Failed to construct calculator, original attempt's exception was '{calculator_failure_message}'")
+        at.calc = calculator_use
+
         calculation_succeeded = False
         try:
             # explicitly pass system_changes=all_changes because some calculators, e.g. ace.ACECalculator,
