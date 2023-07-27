@@ -60,15 +60,15 @@ def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_
     at_out = []
     for at in atoms_to_list(atoms):
         calculator_use = calculator
-        if ("WFL_CALCULATOR_INITIALIZER" in atoms.info or
-            "WFL_CALCULATOR_ARGS" in atoms.info or
-            "WFL_CALCULATOR_KWARGS" in atoms.info):
+        if ("WFL_CALCULATOR_INITIALIZER" in at.info or
+            "WFL_CALCULATOR_ARGS" in at.info or
+            "WFL_CALCULATOR_KWARGS" in at.info):
             # create per-config Calculator
             try:
-                initializer_use = atoms.info.get("WFL_CALCULATOR_INITIALIZER", calculator[0])
-                args_use = atoms.info.get("WFL_CALCULATOR_ARGS", calculator[1])
+                initializer_use = at.info.get("WFL_CALCULATOR_INITIALIZER", calculator[0])
+                args_use = at.info.get("WFL_CALCULATOR_ARGS", calculator[1])
                 kwargs_use = calculator[2].copy()
-                kwargs_use.update(atoms.info.get("WFL_CALCULATOR_KWARGS", {}))
+                kwargs_use.update(at.info.get("WFL_CALCULATOR_KWARGS", {}))
                 calculator_use = construct_calculator_picklesafe(initializer_use, args_use, kwargs_use)
             except Exception as exc:
                 raise TypeError("calculators.generic.calculate got WFL_CALCULATOR_INITIALIZER, _ARGS, or _KWARGS "
