@@ -72,6 +72,7 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, par
                      fmax, timestep, totalsteps, skip_failures, return_all_traj,maxtemp_scale, **opt_kwargs):
     fit_idx = opt_kwargs.pop("fit_idx", 0)
     parallel_seed = opt_kwargs.pop("parallel_seed", None)
+    verbose = opt_kwargs.pop("verbose", True)
     workdir = os.getcwd()
 
 #    rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_', suffix=str(fit_idx))
@@ -86,10 +87,11 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, par
     try:
         opt = MinimaHopping(atom, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold,
                             mdmin=mdmin, fmax=fmax, timestep=timestep, **opt_kwargs)
-        print_minhop_parameter(opt)
+        if verbose:
+            print_minhop_parameter(opt)
         opt(totalsteps=totalsteps, maxtemp=maxtemp_scale*T0)
     except Exception as exc:
-        if parallel_seed is not None:
+        if parallel_seed is not None and parallel > 1:
             print(f"parallel run {parallel_seed} failed.")
         # optimization may sometimes fail to converge.
         if skip_failures:
