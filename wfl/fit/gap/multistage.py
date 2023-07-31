@@ -16,6 +16,7 @@ from wfl.fit.gap.simple import run_gap_fit
 from wfl.utils.quip_cli_strings import dict_to_quip_str
 from wfl.autoparallelize.utils import get_remote_info
 from ..modify_database.scale_orig import modify as modify_scale_orig
+from ase import neighborlist
 
 try:
     from expyre import ExPyRe
@@ -88,6 +89,28 @@ def _select_info(ats, info_keys):
                 del at.info[k]
 
 
+def get_Num_bonds(slab):
+    """
+    Calculates number of chemical bond in the system for 2-body potential fitting. 
+
+    Parameters : 
+    ------------
+    slab : ase object
+        slab as ASE atoms object
+
+    Return : 
+    --------
+    Nbonds : int
+        Number of bonds in the system. 
+    """
+    cutOff = neighborlist.natural_cutoffs(slab)
+    neighbor = neighborlist.NeighborList(cutOff, self_interaction=False, bothways=True)
+    neighbor.update(slab)
+    Nbonds = np.sum(neighbor.get_connectivity_matrix(sparse=False)) / 2
+
+    return Nbonds
+
+
 # WARNING: this is hardwired to the names of fields in specific descriptors
 # such as SOAP and turboSOAP
 def max_cutoff(params):
@@ -103,7 +126,7 @@ def max_cutoff(params):
 
 # noinspection PyPep8,PyPep8Naming
 def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
-        seeds=None, skip_if_present=False, run_dir='.',
+        seeds=None, skip_if_present=False, run_dir='.', use_heuristics = False,
         num_committee=0, committee_extra_seeds=None, committee_name_postfix='.committee_',
         verbose=False, remote_info=None, remote_label=None, wait_for_results=True):
     """Fit a GAP iteratively, setting delta from error relative to previous stage
@@ -397,10 +420,30 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
                         print('stage {} config {} residual error {} {}'.format(i_stage, at.info.get('config_type'),
                                                                                Egap / len(at), Eref / len(at)))
 
-        abs_dE_sum = np.sum(np.abs(dEs))
-        print('energy error MAE per atom {} per descriptor {}'.format(abs_dE_sum / np.sum(at_Ns),
-                                                                      abs_dE_sum / descriptor_count))
-        delta = abs_dE_sum / descriptor_count
+        if use_heuristics:
+            ##################################
+            # Different way of getting Delta #
+            ################################## 
+            # Check if isolated atom and dimers are included in the training set and influences len(fitting_configs) 
+            print("Heuristics used : delta will be evaluated from standard deviation")
+            valid_fitting_configs = [at for at in fitting_configs if at.info["config_type"] != "isolated_atom"]	
+            print("valid_fitting_configs : ", valid_fitting_configs, "original fitting_configis : ", fitting_configs)
+            if i_stage == 0 and len(valid_fitting_configs) == 1:
+                Nbonds = np.array([get_Num_bonds(at) for at in valid_fitting_configs])
+                delta = np.sqrt(np.sum((dEs / Nbonds)**2) / len(valid_fitting_configs))  # standard deviation 
+            elif i_stage == 0:
+                Nbonds = np.array([get_Num_bonds(at) for at in valid_fitting_configs])
+                delta = np.sqrt(np.sum((dEs / Nbonds)**2) / (len(valid_fitting_configs) - 1))  # standard deviation
+            else:
+                Natoms = np.array([at.get_global_number_of_atoms() for at in valid_fitting_configs])
+                delta = np.sqrt(np.sum((dEs / Natoms)**2) / (len(valid_fitting_configs) - 1 )) # standard deviation 
+	
+        else:
+            abs_dE_sum = np.sum(np.abs(dEs))
+            print('energy error MAE per atom {} per descriptor {}'.format(abs_dE_sum / np.sum(at_Ns),
+                                                                          abs_dE_sum / descriptor_count))
+            delta = abs_dE_sum / descriptor_count
+
 
         if 'delta_factors' in params:
             delta *= float(params['delta_factors'][i_stage])
