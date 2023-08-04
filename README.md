@@ -1,3 +1,5 @@
+<img src="wf_logo_final.png" width=200>
+
 # Overview
 
 Workflow is a Python toolkit for building interatomic potential creation and atomistic simulation workflows. 
