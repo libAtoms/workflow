@@ -29,7 +29,7 @@ def _get_MD_trajectory(rundir):
 	return md_traj
 
 
-def _get_after_explosion(rundir):
+def _get_after_explosion(rundir, return_abort_output=False):
 	optimizations = sorted(glob.glob(f"{rundir}/qn*.traj"))[-1]
 	MDs = glob.glob(f"{rundir}/md*.traj")
 	traj = []
@@ -47,10 +47,12 @@ def _get_after_explosion(rundir):
 	elif len(MDs) == 0:
 		print("No MD trajectory obtained: Exploded during optimization", flush=True)
 		for opt_traj in Trajectory(optimizations):
-			config_type_append(opt_traj, "hopping_traj")
+			config_type_append(opt_traj, "traj")
 			traj.append(opt_traj)
-
-		return None
+		if return_abort_output == True:
+			return traj
+		else:
+		 	return None
 
 	elif len(MDs) != 0:
 		print("Exploded during MD simulation", flush=True)
@@ -73,6 +75,7 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, par
     fit_idx = opt_kwargs.pop("fit_idx", 0)
     parallel_seed = opt_kwargs.pop("parallel_seed", None)
     verbose = opt_kwargs.pop("verbose", True)
+    return_abort_output = opt_kwargs.pop("return_abort_output", False)
     workdir = os.getcwd()
 
 #    rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_', suffix=str(fit_idx))
@@ -104,7 +107,7 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, par
             traj = [] 
             os.chdir(workdir)
 #            shutil.rmtree(rundir)	
-            return _get_after_explosion(rundir)
+            return _get_after_explosion(rundir, return_abort_output)
 #            for opt_traj in Trajectory(glob.glob(f"{rundir}/qn0*.traj")[0]):
 #                config_type_append(opt_traj, "hopping_traj")
 #                traj.append(opt_traj)
