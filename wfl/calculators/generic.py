@@ -46,29 +46,28 @@ def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_
     if properties is None:
         properties = ['energy', 'forces', 'stress']
     try:
-        calculator_info = calculator
-        calculator = construct_calculator_picklesafe(calculator)
+        calculator_default = construct_calculator_picklesafe(calculator)
         calculator_failure_message = None
     except Exception as exc:
         # if calculator constructor failed, it may still be fine if every atoms object has
         # enough info to construct its own calculator, but we won't know until later
         calculator_failure_message = str(exc)
-        calculator = None
+        calculator_default = None
 
     if output_prefix == '_auto_':
         output_prefix = calculator.__class__.__name__ + '_'
 
     at_out = []
     for at in atoms_to_list(atoms):
-        calculator_use = calculator
+        calculator_use = calculator_default
         if ("WFL_CALCULATOR_INITIALIZER" in at.info or
             "WFL_CALCULATOR_ARGS" in at.info or
             "WFL_CALCULATOR_KWARGS" in at.info):
             # create per-config Calculator
             try:
-                initializer_use = at.info.get("WFL_CALCULATOR_INITIALIZER", calculator_info[0])
-                args_use = at.info.get("WFL_CALCULATOR_ARGS", calculator_info[1])
-                kwargs_use = calculator_info[2].copy()
+                initializer_use = at.info.get("WFL_CALCULATOR_INITIALIZER", calculator[0])
+                args_use = at.info.get("WFL_CALCULATOR_ARGS", calculator[1])
+                kwargs_use = calculator[2].copy()
                 kwargs_use.update(at.info.get("WFL_CALCULATOR_KWARGS", {}))
                 calculator_use = construct_calculator_picklesafe((initializer_use, args_use, kwargs_use))
             except Exception as exc:
