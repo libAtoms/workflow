@@ -1,4 +1,4 @@
-<img src="wf_logo_final.png" width=200>
+<img src="docs/wf_logo_final.png" width=200>
 
 # Overview
 
