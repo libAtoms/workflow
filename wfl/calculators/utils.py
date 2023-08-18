@@ -9,46 +9,11 @@ per_atom_properties = ['forces', 'stresses', 'charges', 'magmoms', 'energies']
 per_config_properties = ['energy', 'stress', 'dipole', 'magmom', 'free_energy']
 
 
-def handle_nonperiodic(atoms, properties, allow_mixed=False):
-    """prepare for a calculation by filtering out stress if nonperiodic
-
-    Parameters
-    ----------
-    atoms: Atoms
-        input configuration
-    properties: list(str)
-        list of properties to calculate
-    allow_mixed: bool, default=False
-        allow mixed periodicity, ie. not only TTT and FFF
-
-    Returns
-    -------
-    nonperiodic: bool
-    use_properties: list
-        list of properties, filtering out stress for nonperiodic systems
-    """
-
-    use_properties = list(properties)
-    nonperiodic = False
-
-    if np.all(atoms.pbc):
-        # keep stress
-        pass
-    else:
-        nonperiodic = True
-        if 'stress' in use_properties:
-            use_properties.remove('stress')
-        if 'stresses' in use_properties:
-            use_properties.remove('stresses')
-
-        if np.any(atoms.pbc) and not allow_mixed:
-            raise RuntimeError(f'atoms.pbc {atoms.pbc} neither all T or all F')
-
-    return nonperiodic, use_properties
-
-
 def save_results(atoms, properties, results_prefix=None):
     """saves results of a calculation in a SinglePointCalculator or info/arrays keys
+
+    If atoms.info["__calculator_results_saved"] is true, assume that results have already been saved
+    and instead just remove this key and continue
 
     Parameters
     ----------
@@ -60,19 +25,19 @@ def save_results(atoms, properties, results_prefix=None):
         if None, store in SinglePointCalculator, else store in results_prefix+<property>.
         str with length 0 is forbidden
     """
+    if atoms.info.pop("__calculator_results_saved", False):
+        return
 
     if isinstance(results_prefix, str) and len(results_prefix) == 0:
         raise ValueError('Refusing to save calculator results into info/arrays fields with no prefix,'
                          ' too much chance of confusion with ASE extxyz reading/writing and conversion'
                          ' to SinglePointCalculator')
 
-    # this would be simpler if we could just use calc.results, but some (e.g. Castep) don't use it
     if properties is None:
         # This will not work for calculators like Castep that (as of some point at least) do not use 
-        # results dict.  Such calculators will fail below, in the "if 'energy' in properties" statement.
+        # results dict, but there's nothing we can do about that here.
         properties = list(atoms.calc.results.keys())
 
-    # clean up for saving in info/arrays
     if results_prefix is not None:
         for p in per_config_properties:
             if results_prefix + p in atoms.info:
@@ -81,27 +46,23 @@ def save_results(atoms, properties, results_prefix=None):
             if results_prefix + p in atoms.arrays:
                 del atoms.arrays[results_prefix + p]
 
-    # copy per-config results
+    # copy per-config and per-atom results
     config_results = {}
-    atoms.calc.atoms = atoms
+    atoms_results = {}
+    # use Atoms.get_<prop> methods
     if 'energy' in properties:
         try:
             config_results['energy'] = atoms.get_potential_energy(force_consistent=True)
         except PropertyNotImplementedError:
             config_results['energy'] = atoms.get_potential_energy()
     if 'stress' in properties:
-        # Quantum Espresso doesn't calculate stress, even if asked for, if pbc=False.
-        try:
-            config_results['stress'] = atoms.get_stress()
-        except PropertyNotImplementedError:
-            warnings.warn(f'"stress" was asked for, but not found in results.')
+        config_results['stress'] = atoms.get_stress()
     if 'dipole' in properties:
         config_results['dipole'] = atoms.get_dipole_moment()
     if 'magmom' in properties:
         config_results['magmom'] = atoms.get_magnetic_moment()
 
     # copy per-atom results
-    atoms_results = {}
     if 'forces' in properties:
         atoms_results['forces'] = atoms.get_forces()
     if 'stresses' in properties:

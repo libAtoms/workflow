@@ -61,7 +61,10 @@ def test_setup_calc_params(parameters_nonperiodic):
     calc = wfl.calculators.aims.Aims(**parameters)
     calc.atoms = atoms.copy()
     properties = ["energy", "forces", "stress"]
-    properties = calc._setup_calc_params(properties)
+    ## remove stress since pbc = F, as calculators.generic would do
+    properties.remove("stress")
+    ##
+    calc._setup_calc_params()
 
     assert properties == ["energy", "forces"]
     for key_i in parameters_periodic.keys():
@@ -72,7 +75,7 @@ def test_setup_calc_params(parameters_nonperiodic):
     calc = wfl.calculators.aims.Aims(**parameters)
     calc.atoms = atoms.copy()
     properties = ["energy", "forces", "stress"]
-    properties = calc._setup_calc_params(properties)
+    calc._setup_calc_params()
 
     assert properties == ["energy", "forces", "stress"]
     for key_i in parameters_periodic.keys():

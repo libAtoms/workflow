@@ -16,7 +16,8 @@ from ase.calculators.calculator import all_changes
 from ase.calculators.vasp.vasp import Vasp as ASE_Vasp
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
-from .utils import handle_nonperiodic
+from .utils import save_results
+from .kpts import universal_kspacing_n_k
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["POSCAR", "INCAR", "KPOINTS", "OUTCAR", "vasprun.xml", "vasp.out"]
@@ -99,14 +100,16 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
         else:
             self._command_gamma = kwargs_use.pop("command_gamma", None)
 
+        self.universal_kspacing = kwargs_use.pop("universal_kspacing", None)
+
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
                          workdir=workdir, scratchdir=scratchdir, **kwargs_use)
 
-    def per_config_setup(self, atoms, nonperiodic):
-        # VASP cannot handle nonperiodic, and current Vasp calculator complains if pbc=F
+    def per_config_setup(self, atoms):
+        # ASE Vasp calculator complains if pbc=F
         self._orig_pbc = atoms.pbc.copy()
-        atoms.pbc = [True] * 3
+        atoms.pbc[:] = True
 
         # VASP requires periodic cells with non-zero cell vectors
         if np.dot(np.cross(atoms.cell[0], atoms.cell[1]), atoms.cell[2]) < 0.0:
@@ -117,8 +120,12 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
         else:
             self._permuted_a0_a1 = False
 
+        # switch to gamma pt only (including executable if available) if fully nonperiodic
         self._orig_command = self.command
-        if nonperiodic:
+        self._orig_kspacing = self.float_params["kspacing"]
+        self._orig_kgamma = self.bool_params["kgamma"]
+        if np.all(~self._orig_pbc):
+            # set command
             if self._command_gamma is not None:
                 command_gamma = self._command_gamma
             else:
@@ -130,11 +137,8 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
             if command_gamma is not None:
                 self.command = command_gamma
 
-        # set some things for nonperiodic systems
-        self._orig_kspacing = self.float_params["kspacing"]
-        self._orig_kgamma = self.bool_params["kgamma"]
-        if nonperiodic:
-            self.float_params["kspacing"] = 100000.0
+            # set k-points for nonperiodic systems
+            self.float_params["kspacing"] = 1.0e8
             self.bool_params["kgamma"] = True
 
 
@@ -175,9 +179,13 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
             else:
                 os.environ["VASP_PP_PATH"] = "."
 
-        nonperiodic, properties_use = handle_nonperiodic(atoms, properties)
-        # from WFLFileIOCalculator
-        self.per_config_setup(atoms, nonperiodic)
+        # do this before mangling atoms.pbc values
+        if self.universal_kspacing is not None:
+            assert all([k in ["kspacing", "kgamma"] for k in self.universal_kspacing]), "Unknown field in 'universal_kspacing'"
+            self.kpts = universal_kspacing_n_k(cell=atoms.cell, pbc=atoms.pbc, kspacing=self.universal_kspacing["kspacing"])
+            self.input_params["gamma"] = self.universal_kspacing.get("kgamma", True)
+
+        self.per_config_setup(atoms)
 
         # from WFLFileIOCalculator
         self.setup_rundir()
@@ -188,12 +196,17 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
             raise RuntimeError("Refusing to run without explicit ENCUT")
         # should we require anything except ENCUT?
 
+        # clean up old failure notes
+        atoms.info.pop('DFT_FAILED_VASP', None)
         calculation_succeeded = False
         try:
-            super().calculate(atoms=atoms, properties=properties_use, system_changes=system_changes)
+            super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
             calculation_succeeded = True
-            if 'DFT_FAILED_VASP' in atoms.info:
-                del atoms.info['DFT_FAILED_VASP']
+            # save results here (if possible) so that save_results() called by calculators.generic
+            # won't trigger additional calculations due to the ASE caching noticing the change in pbc
+            if "__calculator_output_prefix" in atoms.info:
+                save_results(atoms, properties, atoms.info["__calculator_output_prefix"])
+                atoms.info["__calculator_results_saved"] = True
         except Exception as exc:
             atoms.info['DFT_FAILED_VASP'] = True
             raise exc

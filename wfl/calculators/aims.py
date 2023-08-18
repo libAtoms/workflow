@@ -15,7 +15,6 @@ except ImportError:
     AimsProfile = None
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
-from .utils import handle_nonperiodic
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["control.in", "geometry.in", "aims.out"]
@@ -105,7 +104,7 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
             self.atoms = atoms.copy()
 
         # this may modify self.parameters, will be reset to the initial ones after calculation
-        properties = self._setup_calc_params(properties)
+        self._setup_calc_params()
 
         # from WFLFileIOCalculator
         self.setup_rundir()
@@ -126,33 +125,16 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
             # Reset parameters to what they were when the calculator was initialized.
             self.parameters = deepcopy(self.initial_parameters)
 
-    def _setup_calc_params(self, properties):
+    def _setup_calc_params(self):
         """
         Setup parameters for the calculation based on the atomistic systems periodicity.
 
-        Remove entries in ```properties``` and ```self.parameters``` that don't fit to
-        the atomistic systems periodicity.
-
-        Parameter:
-        ----------
-        properties: list(str)
-            List of what needs to be calculated.  Can be any combination of 'energy',
-            'forces', 'stress', 'dipole', 'charges', 'magmom' and 'magmoms'.
-
-        Returns:
-        --------
-        properties: list(str)
-            Input ```properties``` cleaned for entries that don't fit to the atomistic systems periodicity.
+        Remove entries in ```self.parameters``` that don't fit to the atomistic systems periodicity.
         """
-        nonperiodic, properties = handle_nonperiodic(self.atoms, properties, allow_mixed=True)
-
-        if nonperiodic:
-            if not np.any(self.atoms.get_pbc()):  # PBC is FFF
-                # e.g. k_grid or k_grid_density, k_offset, sc_accuracy_stress
-                rm_parameters = [param_i for param_i in self.parameters if 'k_grid' in param_i
-                                 or param_i.startswith('k_') or 'stress' in param_i
-                                 or param_i in ['relax_unit_cell', 'external_pressure']]
-                for param_i in rm_parameters:
-                    self.parameters.pop(param_i)
-
-        return properties
+        if np.all(~self.atoms.pbc):  # PBC is FFF
+            # e.g. k_grid or k_grid_density, k_offset, sc_accuracy_stress
+            rm_parameters = [param_i for param_i in self.parameters if 'k_grid' in param_i
+                             or param_i.startswith('k_') or 'stress' in param_i
+                             or param_i in ['relax_unit_cell', 'external_pressure']]
+            for param_i in rm_parameters:
+                self.parameters.pop(param_i)

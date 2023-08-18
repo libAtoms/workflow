@@ -80,30 +80,53 @@ def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_
             raise ValueError(f"Failed to construct calculator, original attempt's exception was '{calculator_failure_message}'")
         at.calc = calculator_use
 
-        calculation_succeeded = False
+        properties_use = list(properties)
+        if all(~at.pbc):
+            # don't even try to calculate stress for fully nonperiodic cell
+            try:
+                properties_use.remove("stress")
+            except ValueError:
+                pass
+            try:
+                properties_use.remove("stresses")
+            except ValueError:
+                pass
+
+        # some calculators save their own results, e.g. ones like Vasp that modify pbc becaue
+        # the calculator refuses to run when it's False
+        at.info["__calculator_output_prefix"] = output_prefix
+
+        # clean up previous failure messages
+        if f'{output_prefix}calculation_failed' in at.info:
+            del at.info[f'{output_prefix}calculation_failed']
         try:
             # explicitly pass system_changes=all_changes because some calculators, e.g. ace.ACECalculator,
             # don't have that as default
-            at.calc.calculate(at, properties=properties, system_changes=all_changes)
+            at.calc.calculate(at, properties=properties_use, system_changes=all_changes)
             calculation_succeeded = True
-            if f'{output_prefix}calculation_failed' in at.info:
-                del at.info[f'{output_prefix}calculation_failed']
         except Exception as exc:
             if raise_calc_exceptions:
                 raise exc
-            import sys
+            calculation_succeeded = False
+            ############################################################
             # pytest seems to hide these warnings for some reason
+            import sys
             if "pytest" in sys.modules:
                 print(f'WARNING: calculation failed with exception {exc}')
+            ############################################################
             warnings.warn(f'calculation failed with exception {exc}')
             at.info[f'{output_prefix}calculation_failed'] = True
+
+        # clean up
+        del at.info["__calculator_output_prefix"]
 
         # clean up invalid properties, will be fixed in quip Potential soon?
         if hasattr(at.calc, "results") and 'virial' in at.calc.results:
             del at.calc.results['virial']
 
         if calculation_succeeded:
-            save_results(at, properties, output_prefix)
+            # this will skip saving if calculator already saved
+            save_results(at, properties_use, output_prefix)
         else:
             # avoid maintaining the reference to the calculator
             at.calc = None

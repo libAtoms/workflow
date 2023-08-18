@@ -2,30 +2,7 @@ from ase import Atoms
 from ase.calculators.singlepoint import SinglePointCalculator
 from pytest import approx, raises
 
-from wfl.calculators.utils import handle_nonperiodic, save_results
-
-
-def test_handle_nonperiodic():
-    prop_in = ["energy", "forces", "stress", "stresses"]
-
-    # all T, simply the same
-    nonperiodic, prop_out = handle_nonperiodic(Atoms("H", pbc=True), prop_in)
-    assert not nonperiodic
-    assert prop_in == prop_out
-
-    # all F, no stress
-    nonperiodic, prop_out = handle_nonperiodic(Atoms("H", pbc=False), prop_in)
-    assert nonperiodic
-    assert "stress" not in prop_out
-    assert "stresses" not in prop_out
-
-    # error is no all
-    with raises(RuntimeError, match=".*pbc .* neither all T or all F"):
-        _ = handle_nonperiodic(Atoms("H", pbc=[True, False, False]), prop_in, allow_mixed=False)
-
-    # non-periodic and allowed to be -- for QE
-    nonperiodic, prop_out = handle_nonperiodic(Atoms("H", pbc=[True, False, False]), prop_in[:-2], allow_mixed=True)
-    assert nonperiodic
+from wfl.calculators.utils import save_results
 
 
 def new_calc():
