@@ -137,9 +137,6 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
             self.float_params["kspacing"] = 100000.0
             self.bool_params["kgamma"] = True
         
-        if 'kpts' in self.atoms.info.keys():
-            print(self.atoms.info['kpts'])
-            self.input_params['kpts'] = self.atoms.info['kpts']
 
     def per_config_restore(self, atoms):
         # undo pbc change
@@ -212,4 +209,3 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
 
             # undo communicator mangling
             world.comm = orig_world_comm
-
