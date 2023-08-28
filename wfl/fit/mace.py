@@ -5,6 +5,7 @@ from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize.utils import get_remote_info
 from expyre.resources import Resources
 from pathlib import Path 
+from shutil import copyfile
 
 
 
@@ -56,12 +57,14 @@ from pathlib import Path
 #	return None
 
 
-def run_mace_fit(params_file, run_dir=".", remote_info=None, mace_fit_cmd="python  ~/Softwares/mace/scripts/run_train.py",
+def run_mace_fit(params, run_dir=".", remote_info=None, mace_fit_cmd="python  ~/Softwares/mace/scripts/run_train.py",
 		verbose=True, do_fit=True, wait_for_results=True, remote_label=None, **kwargs):
-		
+
+	run_dir = Path(run_dir)
+
 	if remote_info != '_IGNORE':
 		remote_info = get_remote_info(remote_info, remote_label)
-
+#	print("remote_info : ", remote_info)
 
 	if remote_info is not None and remote_info != '_IGNORE':
 		input_files = remote_info.input_files.copy()
@@ -74,7 +77,8 @@ def run_mace_fit(params_file, run_dir=".", remote_info=None, mace_fit_cmd="pytho
 		if not any([var.split('=')[0] == 'WFL_NUM_PYTHON_SUBPROCESSES' for var in remote_info.env_vars]):
 			remote_info.env_vars.append('WFL_NUM_PYTHON_SUBPROCESSES=$EXPYRE_NUM_CORES_PER_NODE')
 
-		remote_func_kwargs = {'params_file': params_file,'remote_info': '_IGNORE'}
+		remote_func_kwargs = {'params': params,'remote_info': '_IGNORE', 'run_dir': run_dir,
+							'input_files' : remote_info.input_files.copy()}
 
 		kwargs.update(remote_func_kwargs)
 		xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
@@ -95,9 +99,14 @@ def run_mace_fit(params_file, run_dir=".", remote_info=None, mace_fit_cmd="pytho
 		xpr.mark_processed()
 		
 		return results
-	
 
-	params = yaml.safe_load(Path(params_file).read_text())
+	if not run_dir.exists():
+		run_dir.mkdir(parents=True)
+
+	if isinstance(params, str):
+		params = yaml.safe_load(Path(params).read_text())
+	elif isinstance(params, dict):
+		pass
 
 	for key, val in params.items():
 		if isinstance(val, int) or isinstance(val, float):
@@ -118,7 +127,16 @@ def run_mace_fit(params_file, run_dir=".", remote_info=None, mace_fit_cmd="pytho
 		os.environ['OMP_NUM_THREADS'] = os.environ['WFL_GAP_FIT_OMP_NUM_THREADS']
 	
 	try:
-		subprocess.run(mace_fit_cmd, shell=True, check=True)
+		remote_cwd = os.getcwd()	
+		if str(run_dir) != ".":
+			for input_file in kwargs["input_files"]:
+				copyfile(input_file, f"{run_dir}/{input_file}")
+			os.chdir(run_dir)
+			subprocess.run(mace_fit_cmd, shell=True, check=True)
+			os.chdir(remote_cwd)	
+		else:
+			subprocess.run(mace_fit_cmd, shell=True, check=True)
+
 	except subprocess.CalledProcessError as e:
 		print("Failure in calling MACE fitting with error code:", e.returncode)
 		raise e
