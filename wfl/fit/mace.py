@@ -57,10 +57,21 @@ from shutil import copyfile
 #	return None
 
 
-def run_mace_fit(params, run_dir=".", remote_info=None, mace_fit_cmd="python  ~/Softwares/mace/scripts/run_train.py",
-		verbose=True, do_fit=True, wait_for_results=True, remote_label=None, **kwargs):
+def run_mace_fit(params, mace_name="mace", run_dir=".", remote_info=None, mace_fit_cmd="python  ~/Softwares/mace/scripts/run_train.py",
+		verbose=True, do_fit=True, wait_for_results=True, remote_label=None, skip_if_present=True, **kwargs):
 
 	run_dir = Path(run_dir)
+
+	if skip_if_present:
+		try:
+			print(f"check whether already fitted model exists as {run_dir}/{mace_name}.model")
+			if not Path(f"{run_dir}/{mace_name}.model").is_file():
+				raise FileNotFoundError
+
+			return mace_name
+		except (FileNotFoundError, RuntimeError):
+			pass
+
 
 	if remote_info != '_IGNORE':
 		remote_info = get_remote_info(remote_info, remote_label)
@@ -130,7 +141,9 @@ def run_mace_fit(params, run_dir=".", remote_info=None, mace_fit_cmd="python  ~/
 		remote_cwd = os.getcwd()	
 		if str(run_dir) != ".":
 			for input_file in kwargs["input_files"]:
-				copyfile(input_file, f"{run_dir}/{input_file}")
+				file_name = input_file.split("/")[-1]
+#				copyfile(input_file, f"{run_dir}/{input_file}")
+				copyfile(input_file, f"{run_dir}/{file_name}")
 			os.chdir(run_dir)
 			subprocess.run(mace_fit_cmd, shell=True, check=True)
 			os.chdir(remote_cwd)	
