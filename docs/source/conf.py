@@ -67,3 +67,6 @@ html_static_path = []
 nbsphinx_execute = 'never'
 nbsphinx_input_prompt = '%s'
 nbsphinx_prompt_width = '0'
+
+html_logo = "../wf_logo_final.png"
+html_favicon = "../wf_logo_final.png"
