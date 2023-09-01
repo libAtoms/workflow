@@ -9,9 +9,38 @@ from shutil import copyfile
 
 
 
-def run_mace_fit(params, mace_name="mace", run_dir=".", remote_info=None, mace_fit_cmd="python  ~/Softwares/mace/scripts/run_train.py",
+def run_mace_fit(params, mace_name="mace", run_dir=".", remote_info=None, mace_fit_cmd="python run_train.py",
 		verbose=True, do_fit=True, wait_for_results=True, remote_label=None, skip_if_present=True, **kwargs):
-
+	"""
+		Fit MACE model.
+	Parameters
+	----------
+	params: str or dict
+		parameters for fitting the model, it can be directly read from YAML file or passed on as dict. 
+	mace_name: str
+	 	name of MACE label
+	run_dir: str, default '.'
+		directory to run fitting in
+	remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
+        If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
+        constructor which triggers running job in separately queued job on remote machine.  If None,
+        will try to use env var WFL_EXPYRE_INFO used (see below). '_IGNORE' is for
+        internal use, to ensure that remotely running job does not itself attempt to spawn another
+        remotely running job.
+	mace_fit_cmd: str
+		command for excecuting the MACE fitting. (For example, python run_train.py)
+	verbose: bool default True
+		verbose output
+	do_fit: bool, default True
+		carry out the fit, otherwise only print fitting command 
+	wait_for_results: bool, default True
+		wait for results of remotely executed job, otherwise return after starting job
+	remote_label: str, default None
+		label to match in WFL_EXPYRE_INFO
+	skip_if_present: bool, default False
+		skip if final GAP file exists in expected place
+	
+	"""
 	run_dir = Path(run_dir)
 
 	if skip_if_present:
@@ -119,6 +148,5 @@ def run_mace_fit(params, mace_name="mace", run_dir=".", remote_info=None, mace_f
 if __name__ == "__main__":
 	cwd = os.getcwd()
 	run_mace_fit(f"{cwd}/params.yaml", remote_info = remote_info)
-#	run_mace_fit(f"{cwd}/params.yaml")
 
 

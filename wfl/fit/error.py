@@ -216,7 +216,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
         for cat in all_diffs[prop]:
             diffs = np.asarray(all_diffs[prop][cat])
             weights = np.asarray(all_weights[prop][cat])
-         
+
             RMSE = np.sqrt(np.sum((diffs ** 2) * weights) / np.sum(weights))
             MAE = np.sum(np.abs(diffs) * weights) / np.sum(weights)
             num = len(diffs)
