@@ -142,8 +142,17 @@ def run_mace_fit(params, mace_name="mace", run_dir=".", remote_info=None, mace_f
 		if str(run_dir) != ".":
 			for input_file in kwargs["input_files"]:
 				file_name = input_file.split("/")[-1]
-#				copyfile(input_file, f"{run_dir}/{input_file}")
-				copyfile(input_file, f"{run_dir}/{file_name}")
+				
+				# If initiated with previous checkpoint file, it should be copied to 
+				# current fitted directory after creating checkpoint folder. 
+				if file_name.endswith("_swa.pt"):
+					checkpoint_dir = Path(os.path.join(run_dir, 'checkpoints'))	
+					checkpoint_dir.mkdir(parents=True, exist_ok=True)
+					copyfile(input_file, f"{checkpoint_dir}/{file_name}")
+
+				else:
+					copyfile(input_file, f"{run_dir}/{file_name}")
+
 			os.chdir(run_dir)
 			subprocess.run(mace_fit_cmd, shell=True, check=True)
 			os.chdir(remote_cwd)	
