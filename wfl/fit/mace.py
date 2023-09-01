@@ -9,54 +9,6 @@ from shutil import copyfile
 
 
 
-#def get_mace(params_file):
-#	"""
-#	Run the wfl.fit.gap_multistage fit function.
-#
-#	Parameters
-#	----------
-#	in_file:                str
-#		Path to file containing the input configs for the GAP fit
-#	gap_name:               str
-#		File name of written GAP
-#	Zs:                     list
-#		List of atomic numbers in the GAP fit.
-#	length_scales:          dict
-#		Length scale dictionary for each atomic species in the fit.
-#		Dictionary keys are the atomic numbers, values are dictionaries that
-#		must contain the keys "bond_len" and "min_bond_len"
-#	params:                 dict
-#		GAP fit parameters, see the parameter json files for more information
-#	ref_property_prefix:    str, default="DFT_"
-#		label prefixes for the in_config properties.
-#	run_dir:                str, default='GAP'
-#		Name of the directory in which the GAP files will be written
-#	Returns
-#	-------
-#	None, the selected configs are written in the out_file
-#	"""
-#
-#	params = yaml.safe_load(Path(params_file).read_text())
-#
-#	for key, val in params.items():
-#		if isinstance(val, int) or isinstance(val, float):
-#			mace_fit_cmd += f" --{key}={val}"
-#		elif isinstance(val, str):
-#			mace_fit_cmd += f" --{key}='{val}'"
-#		elif val is None:
-#			mace_fit_cmd += f" --{key}"
-#		else:
-#			mace_fit_cmd += f" --{key}='{val}'"
-#	
-#	try:
-#		subprocess.run(mace_fit_cmd, shell=True, check=True)
-#	except subprocess.CalledProcessError as e:
-#		print("Failure in calling GAP fitting with error code:", e.returncode)
-#		raise e
-#	
-#	return None
-
-
 def run_mace_fit(params, mace_name="mace", run_dir=".", remote_info=None, mace_fit_cmd="python  ~/Softwares/mace/scripts/run_train.py",
 		verbose=True, do_fit=True, wait_for_results=True, remote_label=None, skip_if_present=True, **kwargs):
 

@@ -224,10 +224,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
             if temperature_tau is not None:
                 at.info['MD_temperature_K'] = stage_kwargs['temperature_K']
 
-#            print("stage_kwargs : ", stage_kwargs)
             md = md_constructor(at, **stage_kwargs)
             md.attach(process_step, 1, traj_step_interval)
-#            print("MD info : ", md.todict())
 
             if stage_i > 0:
                 first_step_of_later_stage = True
@@ -260,11 +258,9 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
     return all_trajs
 
 
-def sample(*args, **kwargs):
-    def_autopara_info = {"num_inputs_per_python_subprocess": 10}
-
+def md(*args, **kwargs):
     default_autopara_info = {"num_inputs_per_python_subprocess": 10}
 
     return autoparallelize(_sample_autopara_wrappable, *args,
                            default_autopara_info=default_autopara_info, **kwargs)
-autoparallelize_docstring(sample, _sample_autopara_wrappable, "Atoms")
+autoparallelize_docstring(md, _sample_autopara_wrappable, "Atoms")

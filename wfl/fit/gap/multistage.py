@@ -66,12 +66,6 @@ def prep_params(Zs, length_scales, GAP_template, spacing=1.5,
     except:
         hypers = None
 
-    # Only single soap is selected by removing one with larger cutoff
-    print("hypers, ", hypers)
-    for Z in hypers:
-        toremove = np.argmax(np.asarray([soapdict["cutoff"] for soapdict in hypers[Z]]))
-        hypers[Z].remove(hypers[Z][toremove])
-
     for (i_stage, stage) in enumerate(multistep_gap_settings['stages']):
         use_descs, _ = descriptors_from_length_scales(stage['descriptors'], Zs, length_scales,
                                                       SOAP_hypers=hypers)
@@ -420,29 +414,10 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
                         print('stage {} config {} residual error {} {}'.format(i_stage, at.info.get('config_type'),
                                                                                Egap / len(at), Eref / len(at)))
 
-        if use_heuristics:
-            ##################################
-            # Different way of getting Delta #
-            ################################## 
-            # Check if isolated atom and dimers are included in the training set and influences len(fitting_configs) 
-            print("Heuristics used : delta will be evaluated from standard deviation")
-            valid_fitting_configs = [at for at in fitting_configs if at.info["config_type"] != "isolated_atom"]	
-            print("valid_fitting_configs : ", valid_fitting_configs, "original fitting_configis : ", fitting_configs)
-            if i_stage == 0 and len(valid_fitting_configs) == 1:
-                Nbonds = np.array([get_Num_bonds(at) for at in valid_fitting_configs])
-                delta = np.sqrt(np.sum((dEs / Nbonds)**2) / len(valid_fitting_configs))  # standard deviation 
-            elif i_stage == 0:
-                Nbonds = np.array([get_Num_bonds(at) for at in valid_fitting_configs])
-                delta = np.sqrt(np.sum((dEs / Nbonds)**2) / (len(valid_fitting_configs) - 1))  # standard deviation
-            else:
-                Natoms = np.array([at.get_global_number_of_atoms() for at in valid_fitting_configs])
-                delta = np.sqrt(np.sum((dEs / Natoms)**2) / (len(valid_fitting_configs) - 1 )) # standard deviation 
-	
-        else:
-            abs_dE_sum = np.sum(np.abs(dEs))
-            print('energy error MAE per atom {} per descriptor {}'.format(abs_dE_sum / np.sum(at_Ns),
-                                                                          abs_dE_sum / descriptor_count))
-            delta = abs_dE_sum / descriptor_count
+		abs_dE_sum = np.sum(np.abs(dEs))
+		print('energy error MAE per atom {} per descriptor {}'.format(abs_dE_sum / np.sum(at_Ns),
+																	  abs_dE_sum / descriptor_count))
+		delta = abs_dE_sum / descriptor_count
 
 
         if 'delta_factors' in params:
@@ -469,12 +444,6 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         # add rng seed
         fitting_line_kwargs["rnd_seed"] = seeds[i_stage]
-
-        # adjust energy and force sigma 
-        # energy_sigma = 0.001*delta
-        # force_sigma = np.sqrt(energy_sigma)
-        # The other sigmas are not set for now. 
-        params["gap_params"]["default_sigma"] = [float(0.001*delta), float(np.sqrt(0.001*delta)), 0.0, 0.0]
 
         # combine gap_params content from params dict with entries set by this routine in fitting_line_kwargs
         gap_simple_fit = deepcopy(params.get('gap_params', {}))

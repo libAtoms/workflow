@@ -3,8 +3,6 @@ import shutil
 import sys
 import tempfile
 import glob, sys, pathlib
-#sys.path.appned("/work/global_optimization")
-#from helpers import prepare_input, apply_constraints
 
 import numpy as np
 from ase.optimize.minimahopping import MinimaHopping
@@ -29,11 +27,7 @@ def _get_MD_trajectory(rundir):
 	return md_traj
 
 
-<<<<<<< HEAD
-def _get_after_explosion(rundir):
-=======
 def _get_after_explosion(rundir, return_abort_output=False):
->>>>>>> mace
 	optimizations = sorted(glob.glob(f"{rundir}/qn*.traj"))[-1]
 	MDs = glob.glob(f"{rundir}/md*.traj")
 	traj = []
@@ -51,19 +45,12 @@ def _get_after_explosion(rundir, return_abort_output=False):
 	elif len(MDs) == 0:
 		print("No MD trajectory obtained: Exploded during optimization", flush=True)
 		for opt_traj in Trajectory(optimizations):
-<<<<<<< HEAD
-			config_type_append(opt_traj, "hopping_traj")
-			traj.append(opt_traj)
-
-		return traj
-=======
 			config_type_append(opt_traj, "traj")
 			traj.append(opt_traj)
 		if return_abort_output == True:
 			return traj
 		else:
 		 	return None
->>>>>>> mace
 
 	elif len(MDs) != 0:
 		print("Exploded during MD simulation", flush=True)
@@ -82,7 +69,7 @@ def print_minhop_parameter(hop):
 
 # perform MinimaHopping on one ASE.atoms object
 def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, parallel, 
-                     fmax, timestep, totalsteps, skip_failures, return_all_traj,maxtemp_scale, **opt_kwargs):
+                     fmax, timestep, totalsteps, skip_failures, return_all_traj, maxtemp_scale, **opt_kwargs):
     fit_idx = opt_kwargs.pop("fit_idx", 0)
     parallel_seed = opt_kwargs.pop("parallel_seed", None)
     verbose = opt_kwargs.pop("verbose", True)
@@ -113,17 +100,10 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, par
             sys.stderr.flush()
             os.chdir(workdir)
 
-            # My implementation
             # If this fails at Optimization step, returns optimization trajectory instead. 
             traj = [] 
             os.chdir(workdir)
-#            shutil.rmtree(rundir)	
             return _get_after_explosion(rundir, return_abort_output)
-#            for opt_traj in Trajectory(glob.glob(f"{rundir}/qn0*.traj")[0]):
-#                config_type_append(opt_traj, "hopping_traj")
-#                traj.append(opt_traj)
-#            print("Optimization failed and trajectories are returned instead", flush=True)
-#            return traj
 
         else:
             raise
@@ -140,7 +120,6 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, par
                     config_type_append(hop_traj, 'minima')
                     traj.append(hop_traj)
                 os.chdir(workdir)
-#        shutil.rmtree(rundir)
             return traj
 
         else:	
@@ -191,7 +170,6 @@ def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_thresho
 	all_trajs = []
 
 
-#	print("autopara_per_item_info : ", autopara_per_item_info , flush=True)
 	for at_i, at in enumerate(atoms_to_list(atoms)):
 		if autopara_per_item_info is not None:
 			np.random.seed(autopara_per_item_info[at_i]["rng_seed"])
@@ -208,9 +186,9 @@ def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_thresho
 
 
 # run that operation on ConfigSet, for multiprocessing
-def run(*args, **kwargs):
+def minimahopping(*args, **kwargs):
     default_autopara_info = {"num_inputs_per_python_subprocess": 10}
 
     return autoparallelize(_run_autopara_wrappable, *args,
                            default_autopara_info=default_autopara_info, **kwargs)
-autoparallelize_docstring(run, _run_autopara_wrappable, "Atoms")
+autoparallelize_docstring(minimahopping, _run_autopara_wrappable, "Atoms")
