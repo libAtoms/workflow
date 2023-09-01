@@ -16,7 +16,6 @@ from wfl.fit.gap.simple import run_gap_fit
 from wfl.utils.quip_cli_strings import dict_to_quip_str
 from wfl.autoparallelize.utils import get_remote_info
 from ..modify_database.scale_orig import modify as modify_scale_orig
-from ase import neighborlist
 
 try:
     from expyre import ExPyRe
@@ -83,28 +82,6 @@ def _select_info(ats, info_keys):
                 del at.info[k]
 
 
-def get_Num_bonds(slab):
-    """
-    Calculates number of chemical bond in the system for 2-body potential fitting. 
-
-    Parameters : 
-    ------------
-    slab : ase object
-        slab as ASE atoms object
-
-    Return : 
-    --------
-    Nbonds : int
-        Number of bonds in the system. 
-    """
-    cutOff = neighborlist.natural_cutoffs(slab)
-    neighbor = neighborlist.NeighborList(cutOff, self_interaction=False, bothways=True)
-    neighbor.update(slab)
-    Nbonds = np.sum(neighbor.get_connectivity_matrix(sparse=False)) / 2
-
-    return Nbonds
-
-
 # WARNING: this is hardwired to the names of fields in specific descriptors
 # such as SOAP and turboSOAP
 def max_cutoff(params):
@@ -120,7 +97,7 @@ def max_cutoff(params):
 
 # noinspection PyPep8,PyPep8Naming
 def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
-        seeds=None, skip_if_present=False, run_dir='.', use_heuristics = False,
+        seeds=None, skip_if_present=False, run_dir='.',
         num_committee=0, committee_extra_seeds=None, committee_name_postfix='.committee_',
         verbose=False, remote_info=None, remote_label=None, wait_for_results=True):
     """Fit a GAP iteratively, setting delta from error relative to previous stage
@@ -238,8 +215,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         return results
 
-#    assert isinstance(ref_property_prefix, str) and len(ref_property_prefix) > 0
-    assert isinstance(ref_property_prefix, str) and len(ref_property_prefix) >= 0
+    assert isinstance(ref_property_prefix, str) and len(ref_property_prefix) > 0
 
     if not run_dir.exists():
         run_dir.mkdir(parents=True)
@@ -267,7 +243,6 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
         fitting_line_kwargs["core_param_file"] = params['core_ip_file']
 
     ref_energy_key = ref_property_prefix + 'energy'
-    print("ref_energy_key : ", ref_energy_key)	
 
     # gather set of all species to be fit
     Zs = set([Z for at in fitting_configs for Z in at.numbers])

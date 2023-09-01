@@ -137,9 +137,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
 
         if temperature is not None:
             # set initial temperature
-#            print("temperature ", temperature)
             MaxwellBoltzmannDistribution(at, temperature_K=temperature[0]['T_i'], force_temp=True, communicator=None)
-#            Stationary(at, preserve_temperature=True)
+            Stationary(at, preserve_temperature=True)
 
         stage_kwargs = {'timestep': dt * fs, 'logfile': logfile}
 
