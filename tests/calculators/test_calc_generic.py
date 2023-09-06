@@ -73,7 +73,7 @@ def test_default_properties():
 def test_config_specific_calculator(tmp_path):
     mol_in = [molecule("CH4"), molecule("CH4"), molecule("CH4")]
     mol_in[1].info["WFL_CALCULATOR_KWARGS"] = {'epsilon':2.0}
-    mol_in[2].info["WFL_CALCULATOR_INITIALIZER"] = MorsePotential
+    mol_in[2].info["WFL_CALCULATOR_INITIALIZER"] = EMT
     calculator = [LennardJones, [], {}]
     mol_out = generic.calculate(mol_in, OutputSpec(tmp_path / "run.xyz"), calculator, properties=["energy", "forces"], output_prefix="dummy_")
 
