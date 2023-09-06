@@ -1,6 +1,7 @@
 from pathlib import Path
 import glob
 import os
+import copy
 
 import numpy as np
 
@@ -249,4 +250,44 @@ def test_vasp_scratchdir(tmp_path, monkeypatch):
     ats = list(configs_eval)
     assert 'TEST_energy' in ats[0].info
     assert 'TEST_forces' in ats[0].arrays
+    # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
+
+
+
+def test_vasp_per_configuration(tmp_path):
+    vasp_kwargs = {
+        "encut": 200.0,  # kinetic energy cutoff
+        "ediff": 1.0e-3,
+        "kspacing": 1.0,
+        "pp": os.environ['PYTEST_VASP_POTCAR_DIR'],
+    }
+    
+    atoms = [Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3)]
+
+    tmp = copy.deepcopy(vasp_kwargs)
+    tmp['encut'] = 220.0
+    atoms[1].info["WFL_CALCULATOR_INITIALIZER"] = Vasp
+    atoms[1].info["WFL_CALCULATOR_KWARGS"] = tmp
+
+    tmp = copy.deepcopy(vasp_kwargs)
+    tmp['encut'] = 240.0
+    atoms[2].info["WFL_CALCULATOR_KWARGS"] = tmp
+
+    calculator = (Vasp, [], vasp_kwargs)
+
+    configs_eval = generic.calculate(
+        inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
+        outputs=OutputSpec('vasp_out.regular.xyz', file_root=tmp_path),
+        calculator=calculator,
+        output_prefix='TEST_')
+    
+    ats = list(configs_eval)
+
+    with open(os.path.join(tmp_path,ats[2]), 'r') as fo:
+        for i in fo.readlines():
+            if i.split()[0] == 'ENCUT':
+                assert float(i.split()[-1]) == 240.0
+
+    assert ats[0].info['TEST_energy'] > ats[1].info['TEST_energy'] > ats[2].info['TEST_energy']
+    # import sys
     # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
