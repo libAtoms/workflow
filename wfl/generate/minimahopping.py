@@ -78,7 +78,9 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, par
 
 #    rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_', suffix=str(fit_idx))
     if parallel > 1:
-        rundir = f"{workdir}/parallel/{str(parallel_seed).zfill(2)}"
+        rundir = pathlib.Path(f"{workdir}/parallel/{str(parallel_seed).zfill(2)}")
+        if not rundir.exists():
+            rundir.mkdir(parents=True,exist_ok=True)
     else:	
         rundir = f"{workdir}/Opt_hopping_{fit_idx}"
         pathlib.Path(f"{workdir}/Opt_hopping_{fit_idx}").mkdir(parents=True, exist_ok=True)

@@ -19,8 +19,8 @@ from ..utils import config_type_append
 bar = 1.0e-4 * GPa
 
 
-def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
-              pressure=None, pressure_tau=None, friction=0.01, compressibility_fd_displ=0.01,
+def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="default", temperature=None, temperature_tau=None,
+              pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
               traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False, update_config_type=True,
               traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None,
               autopara_rng_seed=None, autopara_per_item_info=None):
@@ -44,7 +44,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
         - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with
         duration defined as fraction of total number of steps
     temperature_tau: float, default None
-        time scale that enables Berendsen constant T temperature rescaling (fs)
+        time scale that enables Berendsen constant T temperature rescaling (fs). If integrator is set to Langevin, friction is 1/temperature_tau.
     pressure: None / float / tuple
         applied pressure distribution (GPa) as parsed by wfl.utils.pressure.sample_pressure()
         enabled Berendsen constant P volume rescaling
@@ -79,7 +79,9 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
     -------
         list(Atoms) trajectories
     """
-    
+	
+    assert integrator.lower() in ["default", "langevin"] 
+
     calculator = construct_calculator_picklesafe(calculator)
 
     all_trajs = []
@@ -137,12 +139,13 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
 
         if temperature is not None:
             # set initial temperature
+#            print("temperature ", temperature)
             MaxwellBoltzmannDistribution(at, temperature_K=temperature[0]['T_i'], force_temp=True, communicator=None)
-            Stationary(at, preserve_temperature=True)
+#            Stationary(at, preserve_temperature=True)
 
         stage_kwargs = {'timestep': dt * fs, 'logfile': logfile}
 
-        if temperature_tau is None and friction is None:
+        if temperature_tau is None:
             # NVE
             if pressure is not None:
                 raise RuntimeError('Cannot do NPH dynamics')
@@ -151,21 +154,21 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
             all_stage_kwargs = [stage_kwargs.copy()]
             all_run_kwargs = [ {'steps': steps} ]
 
-        elif temperature_tau is None and friction is not None:
-            print("Langevin is used.")
-            md_constructor = Langevin
-            stage_kwargs["friction"] = friction
-            stage_kwargs["temperature_K"] = temperature[0]["T_i"]
-            # one stage, simple
-            all_stage_kwargs = [stage_kwargs.copy()]
-            all_run_kwargs = [ {'steps': steps} ]
+#        elif temperature_tau is None and friction is not None:
+#            print("Langevin is used.")
+#            md_constructor = Langevin
+#            stage_kwargs["friction"] = friction
+#            stage_kwargs["temperature_K"] = temperature[0]["T_i"]
+#            # one stage, simple
+#            all_stage_kwargs = [stage_kwargs.copy()]
+#            all_run_kwargs = [ {'steps': steps} ]
 
         else:
             # NVT or NPT
             all_stage_kwargs = []
             all_run_kwargs = []
 
-            stage_kwargs['taut'] = temperature_tau * fs
+#            stage_kwargs['taut'] = temperature_tau * fs
 
             if pressure is not None:
                 md_constructor = NPTBerendsen
@@ -173,8 +176,20 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
                 stage_kwargs['compressibility_au'] = compressibility
                 stage_kwargs['taup'] = temperature_tau * fs * 3 if pressure_tau is None else pressure_tau * fs
             else:
-                md_constructor = NVTBerendsen
+                if integrator.lower()=="default":
+                    md_constructor = NVTBerendsen
+                    stage_kwargs['taut'] = temperature_tau * fs
+
+                elif integrator.lower()=="langevin":
+
+                    md_constructor = Langevin
+                    stage_kwargs["friction"] = 1 / temperature_tau
+#					stage_kwargs["temperature_K"] = temperature[0]["T_i"]
+					# one stage, simple
+#					all_stage_kwargs = [stage_kwargs.copy()]
+#					all_run_kwargs = [ {'steps': steps} ]
             
+
             for t_stage_i, t_stage in enumerate(temperature):
                 stage_steps = t_stage['traj_frac'] * steps
 
@@ -223,8 +238,10 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
             if temperature_tau is not None:
                 at.info['MD_temperature_K'] = stage_kwargs['temperature_K']
 
+#            print("stage_kwargs : ", stage_kwargs)
             md = md_constructor(at, **stage_kwargs)
             md.attach(process_step, 1, traj_step_interval)
+#            print("MD info : ", md.todict())
 
             if stage_i > 0:
                 first_step_of_later_stage = True

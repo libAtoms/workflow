@@ -70,7 +70,8 @@ def run_mace_fit(params, mace_name="mace", run_dir=".", remote_info=None, mace_f
 			remote_info.env_vars.append('WFL_NUM_PYTHON_SUBPROCESSES=$EXPYRE_NUM_CORES_PER_NODE')
 
 		remote_func_kwargs = {'params': params,'remote_info': '_IGNORE', 'run_dir': run_dir,
-							'input_files' : remote_info.input_files.copy()}
+							'input_files' : remote_info.input_files.copy(), 
+							"mace_fit_cmd" : mace_fit_cmd}
 
 		kwargs.update(remote_func_kwargs)
 		xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
