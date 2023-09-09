@@ -74,17 +74,22 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, par
     parallel_seed = opt_kwargs.pop("parallel_seed", None)
     verbose = opt_kwargs.pop("verbose", True)
     return_abort_output = opt_kwargs.pop("return_abort_output", False)
+    save_tmpdir = opt_kwargs.pop("save_tmpdir", False)
     workdir = os.getcwd()
 
 #    rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_', suffix=str(fit_idx))
-    if parallel > 1:
-        rundir = pathlib.Path(f"{workdir}/parallel/{str(parallel_seed).zfill(2)}")
-        if not rundir.exists():
-            rundir.mkdir(parents=True,exist_ok=True)
-    else:	
-        rundir = f"{workdir}/Opt_hopping_{fit_idx}"
-        pathlib.Path(f"{workdir}/Opt_hopping_{fit_idx}").mkdir(parents=True, exist_ok=True)
-	
+    if save_tmpdir:
+
+        if parallel > 1:
+            rundir = pathlib.Path(f"{workdir}/parallel/{str(parallel_seed).zfill(2)}")
+            if not rundir.exists():
+                rundir.mkdir(parents=True,exist_ok=True)
+        else:	
+            rundir = f"{workdir}/Opt_hopping_{fit_idx}"
+            pathlib.Path(f"{workdir}/Opt_hopping_{fit_idx}").mkdir(parents=True, exist_ok=True)
+    else:
+        rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_')
+
     os.chdir(rundir)
     atom.calc = calculator
     try:
@@ -102,36 +107,50 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin, par
             sys.stderr.flush()
             os.chdir(workdir)
 
-            # If this fails at Optimization step, returns optimization trajectory instead. 
-            traj = [] 
-            os.chdir(workdir)
-            return _get_after_explosion(rundir, return_abort_output)
+            if save_tmpdir:
+                # If this fails at Optimization step, returns optimization trajectory instead. 
+                traj = [] 
+                return _get_after_explosion(rundir, return_abort_output)
+
+            else:
+                shutil.rmtree(rundir)
+                return None
 
         else:
             raise
     else:
-        if parallel > 1 and parallel_seed is not None:
-            print(f"parallel run {parallel_seed} suceeded.")
-
         traj = []
-        if return_all_traj:
-            traj += _get_MD_trajectory(rundir)
+        if parallel == 1:
 
-            if parallel == 1:	
-                for hop_traj in Trajectory('minima.traj'):
-                    config_type_append(hop_traj, 'minima')
-                    traj.append(hop_traj)
-                os.chdir(workdir)
-            return traj
+            if return_all_traj:
+                traj += _get_MD_trajectory(rundir)
+            for hop_traj in Trajectory('minima.traj'):
+                config_type_append(hop_traj, 'minima')
+                traj.append(hop_traj)
 
-        else:	
-            print("Parallel run returns minima.traj", flush=True)
+        elif parallel > 1 and parallel_seed is not None:
+            print(f"parallel run {parallel_seed} suceeded.")
             os.chdir(workdir)
             return None
 
+#        else:
+#            for hop_traj in Trajectory('minima.traj'):
+#                config_type_append(hop_traj, 'minima')
+#                traj.append(hop_traj)
+        os.chdir(workdir)
+        if not save_tmpdir:
+            shutil.rmtree(rundir)
+
+        return traj
+
+#        else:	
+#            print("Parallel run returns minima.traj", flush=True)
+#            os.chdir(workdir)
+#            return None
+
 
 def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2, parallel=1,
-                           fmax=1, timestep=1, totalsteps=10, skip_failures=True, return_all_traj=True, maxtemp_scale=2,
+                           fmax=1, timestep=1, totalsteps=10, skip_failures=True, return_all_traj=False, maxtemp_scale=2,
                            autopara_rng_seed=None, autopara_per_item_info=None,
                            **opt_kwargs):
 	"""runs a structure optimization
