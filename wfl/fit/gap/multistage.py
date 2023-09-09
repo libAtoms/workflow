@@ -389,10 +389,10 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
                         print('stage {} config {} residual error {} {}'.format(i_stage, at.info.get('config_type'),
                                                                                Egap / len(at), Eref / len(at)))
 
-		abs_dE_sum = np.sum(np.abs(dEs))
-		print('energy error MAE per atom {} per descriptor {}'.format(abs_dE_sum / np.sum(at_Ns),
-																	  abs_dE_sum / descriptor_count))
-		delta = abs_dE_sum / descriptor_count
+        abs_dE_sum = np.sum(np.abs(dEs))
+        print('energy error MAE per atom {} per descriptor {}'.format(abs_dE_sum / np.sum(at_Ns),
+                                                                      abs_dE_sum / descriptor_count))
+        delta = abs_dE_sum / descriptor_count
 
 
         if 'delta_factors' in params:
