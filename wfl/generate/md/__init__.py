@@ -139,9 +139,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="default
 
         if temperature is not None:
             # set initial temperature
-#            print("temperature ", temperature)
             MaxwellBoltzmannDistribution(at, temperature_K=temperature[0]['T_i'], force_temp=True, communicator=None)
-#            Stationary(at, preserve_temperature=True)
+            Stationary(at, preserve_temperature=True)
 
         stage_kwargs = {'timestep': dt * fs, 'logfile': logfile}
 
@@ -153,15 +152,6 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="default
             # one stage, simple
             all_stage_kwargs = [stage_kwargs.copy()]
             all_run_kwargs = [ {'steps': steps} ]
-
-#        elif temperature_tau is None and friction is not None:
-#            print("Langevin is used.")
-#            md_constructor = Langevin
-#            stage_kwargs["friction"] = friction
-#            stage_kwargs["temperature_K"] = temperature[0]["T_i"]
-#            # one stage, simple
-#            all_stage_kwargs = [stage_kwargs.copy()]
-#            all_run_kwargs = [ {'steps': steps} ]
 
         else:
             # NVT or NPT
@@ -184,11 +174,6 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="default
 
                     md_constructor = Langevin
                     stage_kwargs["friction"] = 1 / temperature_tau
-#					stage_kwargs["temperature_K"] = temperature[0]["T_i"]
-					# one stage, simple
-#					all_stage_kwargs = [stage_kwargs.copy()]
-#					all_run_kwargs = [ {'steps': steps} ]
-            
 
             for t_stage_i, t_stage in enumerate(temperature):
                 stage_steps = t_stage['traj_frac'] * steps
@@ -238,10 +223,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="default
             if temperature_tau is not None:
                 at.info['MD_temperature_K'] = stage_kwargs['temperature_K']
 
-#            print("stage_kwargs : ", stage_kwargs)
             md = md_constructor(at, **stage_kwargs)
             md.attach(process_step, 1, traj_step_interval)
-#            print("MD info : ", md.todict())
 
             if stage_i > 0:
                 first_step_of_later_stage = True
