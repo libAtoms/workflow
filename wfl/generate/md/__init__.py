@@ -35,6 +35,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="default
         ASE calculator or routine to call to create calculator
     dt: float
         time step (fs)
+	integrator: str
+		Select integrator. Default is Berendsen but also langevin can be used
     steps: int
         number of steps
     temperature: float or (float, float, [int]]), or list of dicts  default None
