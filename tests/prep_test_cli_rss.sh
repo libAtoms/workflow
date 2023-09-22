@@ -19,7 +19,7 @@ fi
 
 export VASP_COMMAND=vasp.serial
 export VASP_COMMAND_GAMMA=vasp.gamma_serial
-export PYTEST_VASP_POTCAR_DIR=${VASP_PATH}/pot/rev_54/PBE
+export VASP_PP_PATH=${VASP_PATH}/pot/rev_54/PBE
 export GRIF_BUILDCELL_CMD=${HOME}/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
 
 nohup pytest -s tests/test_cli_rss.py 1> prep_test_cli_rss.stdout 2> prep_test_cli_rss.stderr &
