@@ -282,7 +282,6 @@ def test_vasp_per_configuration(tmp_path):
         output_prefix='TEST_')
     
     ats = list(configs_eval)
-    print(ats[2].info)
 
     with open(os.path.join(tmp_path,ats[2].info['vasp_rundir'],'INCAR'), 'r') as fo:
         for i in fo.readlines():
