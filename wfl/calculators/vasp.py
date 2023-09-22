@@ -71,7 +71,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
                  workdir=None, scratchdir=None,
                  calculator_exec=None, calculator_exec_gamma=None,
                  **kwargs):
-
+        
         # get initialparams from env var
         kwargs_use = {}
         if 'WFL_VASP_KWARGS' in os.environ:
@@ -140,7 +140,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
             # set k-points for nonperiodic systems
             self.float_params["kspacing"] = 1.0e8
             self.bool_params["kgamma"] = True
-
+        
 
     def per_config_restore(self, atoms):
         # undo pbc change
