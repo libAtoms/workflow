@@ -245,7 +245,7 @@ def test_vasp_scratchdir(tmp_path, monkeypatch):
     assert nfiles == 18
 
     scratch_dir = Path("/tmp") / str(run_dir[0].resolve()).replace("/", "", 1).replace("/", "_")
-    assert not os.path.exists(scratch_dir)
+    assert not scratch_dir.is_dir()
 
     ats = list(configs_eval)
     assert 'TEST_energy' in ats[0].info
@@ -262,7 +262,9 @@ def test_vasp_per_configuration(tmp_path):
         "workdir": tmp_path
     }
     
-    atoms = [Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3)]
+    atoms = [Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3),
+             Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3),
+             Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3)]
 
     tmp = copy.deepcopy(vasp_kwargs)
     tmp['encut'] = 220.0
@@ -283,10 +285,10 @@ def test_vasp_per_configuration(tmp_path):
     
     ats = list(configs_eval)
 
-    with open(os.path.join(tmp_path,ats[2].info['vasp_rundir'],'INCAR'), 'r') as fo:
-        for i in fo.readlines():
-            if i.split()[0] == 'ENCUT':
-                assert float(i.split()[-1]) == 240.0
+    with open(tmp_path / ats[2].info['vasp_rundir'] / 'INCAR', 'r') as fincar:
+        for l in fincar:
+            if l.split('=')[0].strip() == 'ENCUT':
+                assert float(l.split('=')[1]) == 240.0
 
     assert ats[0].info['TEST_energy'] > ats[1].info['TEST_energy'] > ats[2].info['TEST_energy']
     # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
