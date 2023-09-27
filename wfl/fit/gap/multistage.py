@@ -394,7 +394,6 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
                                                                       abs_dE_sum / descriptor_count))
         delta = abs_dE_sum / descriptor_count
 
-
         if 'delta_factors' in params:
             delta *= float(params['delta_factors'][i_stage])
         print('Got delta', delta)
