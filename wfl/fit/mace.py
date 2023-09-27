@@ -1,5 +1,4 @@
-import numpy as np
-import os, sys, json, yaml, subprocess
+import os, sys, yaml, subprocess
 from expyre import ExPyRe
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize.utils import get_remote_info
@@ -9,7 +8,7 @@ from shutil import copyfile
 
 
 
-def run_mace_fit(params, mace_name="mace", run_dir=".", remote_info=None, mace_fit_cmd="python run_train.py",
+def run_mace_fit(params, mace_fit_cmd, mace_name="mace", run_dir=".", remote_info=None,
 		verbose=True, do_fit=True, wait_for_results=True, remote_label=None, skip_if_present=True, **kwargs):
 	"""
 		Fit MACE model.
@@ -17,6 +16,8 @@ def run_mace_fit(params, mace_name="mace", run_dir=".", remote_info=None, mace_f
 	----------
 	params: str or dict
 		parameters for fitting the model, it can be directly read from YAML file or passed on as dict. 
+	mace_fit_cmd: str
+		command for excecuting the MACE fitting. (For example, "python ~/path_to_mace_cripts/run_train.py")
 	mace_name: str
 	 	name of MACE label
 	run_dir: str, default '.'
@@ -27,8 +28,6 @@ def run_mace_fit(params, mace_name="mace", run_dir=".", remote_info=None, mace_f
         will try to use env var WFL_EXPYRE_INFO used (see below). '_IGNORE' is for
         internal use, to ensure that remotely running job does not itself attempt to spawn another
         remotely running job.
-	mace_fit_cmd: str
-		command for excecuting the MACE fitting. (For example, python run_train.py)
 	verbose: bool default True
 		verbose output
 	do_fit: bool, default True
@@ -56,7 +55,7 @@ def run_mace_fit(params, mace_name="mace", run_dir=".", remote_info=None, mace_f
 
 	if remote_info != '_IGNORE':
 		remote_info = get_remote_info(remote_info, remote_label)
-#	print("remote_info : ", remote_info)
+
 
 	if remote_info is not None and remote_info != '_IGNORE':
 		input_files = remote_info.input_files.copy()

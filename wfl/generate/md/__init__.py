@@ -19,7 +19,7 @@ from ..utils import config_type_append
 bar = 1.0e-4 * GPa
 
 
-def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="default", temperature=None, temperature_tau=None,
+def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBerendsen", temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
               traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False, update_config_type=True,
               traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None,
@@ -35,7 +35,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="default
         ASE calculator or routine to call to create calculator
     dt: float
         time step (fs)
-	integrator: str
+	integrator: str, default "NVTBerendsen"
 		Select integrator. Default is Berendsen but also langevin can be used
     steps: int
         number of steps
@@ -46,7 +46,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="default
         - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with
         duration defined as fraction of total number of steps
     temperature_tau: float, default None
-        time scale that enables Berendsen constant T temperature rescaling (fs). If integrator is set to Langevin, friction is 1/temperature_tau.
+        Time scale for thermostat (fs). Directly used for Berendsen integrator, or as 1/friction for Langevin integrator
     pressure: None / float / tuple
         applied pressure distribution (GPa) as parsed by wfl.utils.pressure.sample_pressure()
         enabled Berendsen constant P volume rescaling
@@ -82,7 +82,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="default
         list(Atoms) trajectories
     """
 	
-    assert integrator.lower() in ["default", "langevin"] 
+    assert integrator in ["NVTBerendsen", "Langevin"] 
 
     calculator = construct_calculator_picklesafe(calculator)
 
@@ -168,11 +168,11 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="default
                 stage_kwargs['compressibility_au'] = compressibility
                 stage_kwargs['taup'] = temperature_tau * fs * 3 if pressure_tau is None else pressure_tau * fs
             else:
-                if integrator.lower()=="default":
+                if integrator == "NVTBerendsen":
                     md_constructor = NVTBerendsen
                     stage_kwargs['taut'] = temperature_tau * fs
 
-                elif integrator.lower()=="langevin":
+                elif integrator == "Langevin":
 
                     md_constructor = Langevin
                     stage_kwargs["friction"] = 1 / temperature_tau
