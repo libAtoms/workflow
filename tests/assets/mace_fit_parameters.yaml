@@ -1,0 +1,17 @@
+name: test
+train_file: B_DFT_data.xyz
+valid_fraction: 0.05
+config_type_weights: '{"Default":1.0}'
+E0s:
+  5: -0.0046603
+energy_key: REF_energy
+forces_key: REF_forces
+hidden_irreps: '128x0e + 128x1o'
+device: cpu
+ema: null
+max_num_epochs: 10
+model: MACE
+r_max: 4.0
+restart_latest: null
+save_cpu: null
+batch_size: 4
