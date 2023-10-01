@@ -46,7 +46,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with
         duration defined as fraction of total number of steps
     temperature_tau: float, default None
-        Time scale for thermostat (fs). Directly used for Berendsen integrator, or as 1/friction for Langevin integrator
+        Time scale for thermostat (fs). Directly used for Berendsen integrator, or as 1/friction for Langevin integrator.
     pressure: None / float / tuple
         applied pressure distribution (GPa) as parsed by wfl.utils.pressure.sample_pressure()
         enabled Berendsen constant P volume rescaling
@@ -173,9 +173,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
                     stage_kwargs['taut'] = temperature_tau * fs
 
                 elif integrator == "Langevin":
-
                     md_constructor = Langevin
-                    stage_kwargs["friction"] = 1 / temperature_tau
+                    stage_kwargs["friction"] = 1 / (temperature_tau * fs)
 
             for t_stage_i, t_stage in enumerate(temperature):
                 stage_steps = t_stage['traj_frac'] * steps
