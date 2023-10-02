@@ -81,7 +81,6 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
     -------
         list(Atoms) trajectories
     """
-	
     assert integrator in ["NVTBerendsen", "Langevin"] 
 
     calculator = construct_calculator_picklesafe(calculator)

@@ -37,8 +37,7 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
     workdir = os.getcwd()
 
     if save_tmpdir:
-        rundir = f"{workdir}/Opt_hopping_{fit_idx}"
-        Path(rundir).mkdir(parents=True, exist_ok=True)
+        Path("workdir" / "Opt_hopping_{fit_idx}").mkdir(parents=True, exist_ok=True)
     else:
         rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_')
 
@@ -52,7 +51,6 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
         # optimization may sometimes fail to converge.
         if skip_failures:
             sys.stderr.write(f'Structure optimization failed with exception \'{exc}\'\n')
-            print("FAIL!!!!!!!!!!")
             sys.stderr.flush()
             os.chdir(workdir)
             shutil.rmtree(rundir)
