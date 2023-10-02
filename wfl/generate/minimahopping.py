@@ -2,10 +2,12 @@ import os
 import shutil
 import sys
 import tempfile
+from pathlib import Path
 
 import numpy as np
 from ase.optimize.minimahopping import MinimaHopping
 from ase.io.trajectory import Trajectory
+import ase.io
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.misc import atoms_to_list
@@ -19,7 +21,7 @@ def _get_MD_trajectory(rundir):
     md_traj = []
     mdtrajfiles = sorted([file for file in Path(rundir).glob("md*.traj")])
     for mdtraj in mdtrajfiles:
-        for at in read(f"{mdtraj}@:"):
+        for at in ase.io.read(f"{mdtraj}@:"):
             config_type_append(at, 'traj')
             md_traj.append(at)
 
@@ -31,7 +33,7 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
                      fmax, timestep, totalsteps, skip_failures, **opt_kwargs):
     fit_idx = opt_kwargs.pop("fit_idx", 0)
     save_tmpdir = opt_kwargs.pop("save_tmpdir", False)
-	return_all_traj = opt_kwargs.pop("return_all_traj", False)
+    return_all_traj = opt_kwargs.pop("return_all_traj", False)
     workdir = os.getcwd()
 
     if save_tmpdir:
@@ -40,6 +42,7 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
     else:
         rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_')
 
+#    print("rundir : ", rundir)
     os.chdir(rundir)
     atom.calc = calculator
     try:
@@ -50,6 +53,7 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
         # optimization may sometimes fail to converge.
         if skip_failures:
             sys.stderr.write(f'Structure optimization failed with exception \'{exc}\'\n')
+            print("FAIL!!!!!!!!!!")
             sys.stderr.flush()
             os.chdir(workdir)
             shutil.rmtree(rundir)
@@ -58,11 +62,15 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
             raise
     else:
         traj = []
+        if return_all_traj:
+            traj += _get_MD_trajectory(rundir)
+
         for hop_traj in Trajectory('minima.traj'):
-            config_type_append(hop_traj, 'hopping_traj')
+            config_type_append(hop_traj, 'minima')
             traj.append(hop_traj)
         os.chdir(workdir)
-        shutil.rmtree(rundir)
+        if not save_tmpdir:
+            shutil.rmtree(rundir)
         return traj
 
 
