@@ -42,7 +42,6 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
     else:
         rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_')
 
-#    print("rundir : ", rundir)
     os.chdir(rundir)
     atom.calc = calculator
     try:
