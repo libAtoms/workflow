@@ -134,7 +134,6 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
         else:
             mace_fit_cmd += f" --{key}='{val}'"
    
-#    _write_fitting_configs(fitting_configs, mace_fit_params, mace_file_base)
  
     if not do_fit or verbose:
         print('fitting command:\n', mace_fit_cmd)
@@ -153,7 +152,6 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
                 # If initiated with previous checkpoint file, it should be copied to 
                 # current fitted directory after creating checkpoint folder. 
                 if file_name.endswith("_swa.pt"):
-    #                   checkpoint_dir = Path(os.path.join(run_dir, 'checkpoints')) 
                     checkpoint_dir = Path(run_dir / 'checkpoints')  
     
                     checkpoint_dir.mkdir(parents=True, exist_ok=True)
