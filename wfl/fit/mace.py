@@ -98,7 +98,7 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
     
         kwargs.update(remote_func_kwargs)
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
-                     env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=run_mace_fit,
+                     env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=fit,
                      kwargs = remote_func_kwargs)
     
         xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
