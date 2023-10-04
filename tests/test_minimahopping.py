@@ -29,7 +29,7 @@ def test_return_md_traj(cu_slab, tmp_path):
     outputs = OutputSpec()
  
     fit_idx = 0 
-    atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=1, totalsteps=5, fit_idx = fit_idx, save_tmpdir = False, return_all_traj=True)
+    atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=1, totalsteps=5, save_tmpdir=True, return_all_traj=True)
 
     assert any(["minima" in at.info["config_type"] for at in atoms_opt])
     assert any(["traj" in at.info["config_type"] for at in atoms_opt])

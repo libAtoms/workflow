@@ -15,7 +15,6 @@ script_dir = d["url"].split(":")[-1][2:]
 mace_fit_cmd = f"python {script_dir}/scripts/run_train.py"
 
 
-#print(mace_fit_cmd)
 def test_mace_fit_from_list(request, tmp_path, monkeypatch, mace_fit_cmd=mace_fit_cmd):
 
     monkeypatch.chdir(tmp_path)
@@ -24,11 +23,11 @@ def test_mace_fit_from_list(request, tmp_path, monkeypatch, mace_fit_cmd=mace_fi
 
     params_file_path = Path(Path(request.fspath).parents[0] / 'assets' / 'mace_fit_parameters.yaml')
     mace_fit_params = yaml.safe_load(params_file_path.read_text())
-    filepath = Path(request.fspath).parents[0] / 'assets' / 'B_DFT_data.xyz@:'
-    fitting_configs = ConfigSet(ase.io.read(filepath))
+    filepath = Path(request.fspath).parents[0] / 'assets' / 'B_DFT_data.xyz'
+    fitting_configs = ConfigSet(ase.io.read(filepath, ":"))
 
     t0 = time.time()
-    fit(fitting_configs, "test", mace_fit_params, mace_fit_cmd=mace_fit_cmd, run_dir=".")
+    fit(fitting_configs, "test", mace_fit_params, mace_fit_cmd=mace_fit_cmd, run_dir=".", fit_cfgs_fname="B_DFT_data.xyz")
     t_run = time.time() - t0
 
     assert Path.exists(Path(tmp_path / f"test.model"))
@@ -54,6 +53,4 @@ def test_mace_fit(request, tmp_path, monkeypatch, mace_fit_cmd=mace_fit_cmd):
     assert Path.exists(Path(tmp_path / f"test.model"))
     assert Path(tmp_path / f"test.model").stat().st_size > 0
 
-#   assert os.path.exists(os.path.join(tmp_path, run_dir, f"test_swa.model"))
-#   assert os.path.getsize(os.path.join(tmp_path, run_dir, f"test_swa.model")) > 0
 

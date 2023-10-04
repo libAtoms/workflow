@@ -21,7 +21,7 @@ def _get_MD_trajectory(rundir):
     md_traj = []
     mdtrajfiles = sorted([file for file in Path(rundir).glob("md*.traj")])
     for mdtraj in mdtrajfiles:
-        for at in ase.io.read(f"{mdtraj}@:"):
+        for at in ase.io.read(f"{mdtraj}", ":"):
             config_type_append(at, 'traj')
             md_traj.append(at)
 
@@ -31,15 +31,16 @@ def _get_MD_trajectory(rundir):
 # perform MinimaHopping on one ASE.atoms object
 def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
                      fmax, timestep, totalsteps, skip_failures, **opt_kwargs):
-    fit_idx = opt_kwargs.pop("fit_idx", 0)
+#    fit_idx = opt_kwargs.pop("fit_idx", 0)
     save_tmpdir = opt_kwargs.pop("save_tmpdir", False)
     return_all_traj = opt_kwargs.pop("return_all_traj", False)
     workdir = os.getcwd()
 
-    if save_tmpdir:
-        Path("workdir" / "Opt_hopping_{fit_idx}").mkdir(parents=True, exist_ok=True)
-    else:
-        rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_')
+#    if save_tmpdir:
+#        Path("workdir" / "Opt_hopping_{fit_idx}").mkdir(parents=True, exist_ok=True)
+#        rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_')
+#    else:
+    rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_')
 
     os.chdir(rundir)
     atom.calc = calculator
