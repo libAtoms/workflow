@@ -9,29 +9,20 @@ from pathlib import Path
 from shutil import copyfile
 
 
-#def prepare_configs(fitting_configs):
-#    """Prepare configs before fitting. Currently only converts stress to virial."""
-#
-#    # configs need to be in memory so they can be modified with stress -> virial, and safest to
-#    # have them as a list (rather than using ConfigSet.to_memory()) when passing to ase.io.write below
-#    fitting_configs = list(fitting_configs)
-#
-#    return fitting_configs
-    
-
 def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_prefix="REF_", 
-        skip_if_present=True, run_dir=".", verbose=True, do_fit=True, remote_info=None,
+        skip_if_present=True, run_dir=".", verbose=True, dry_run=False, remote_info=None,
         remote_label=None, wait_for_results=True, prev_checkpoint_file=None, fit_cfgs_fname=None):
     """
         Fit MACE model.
+
     Parameters
     ----------
     fitting_configs: ConfigSet
        set of configurations to fit 
     mace_name: str
         name of MACE label
-    mace_fit_params: str or dict
-        parameters for fitting the model, it can be directly read from YAML file or passed on as dict. 
+    mace_fit_params: dict
+        parameters for fitting a MACE model.
     mace_fit_cmd: str
         command for excecuting the MACE fitting. (For example, "python ~/path_to_mace_cripts/run_train.py")
     ref_property_prefix: str, default "REF\_"
@@ -42,8 +33,8 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
         directory to run fitting in
     verbose: bool default True
         verbose output
-    do_fit: bool, default True
-        carry out the fit, otherwise only print fitting command 
+    dry_run: bool, default False
+        do a dry run, and returns fitting command including keywords
     remote_info: dict or wfl.autoparallelize.utils.RemoteInfo, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
@@ -60,16 +51,11 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
         The name of training set file. Required if fitting_configs are given as list of ASE objects without already written xyz file. 
     """ 
     run_dir = Path(run_dir)
-        
-    # If fitting_configs is not given as a file but a memory, 
-    # It should be first written as xyz file. 
-#    if not fitting_configs.one_file():
-#        fitting_configs = prepare_configs(fitting_configs)
-        # Not so certain how mace_file_base should be set
-        # In iterative training, it should be iteration index.
-#        mace_file_base = "test"
-#        _write_fitting_configs(fitting_configs, mace_fit_params, mace_file_base)
-        
+  
+    assert isinstance(mace_fit_params, dict)
+    if prev_checkpoint_file != None: 
+        print("checkpoint location : ", Path(prev_checkpoint_file), flush=True)
+        assert Path(prev_checkpoint_file).is_file(), "No previous checkpoint file found!"
         
     if skip_if_present:
         try:
@@ -96,9 +82,8 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
     
         remote_func_kwargs = {'fitting_configs': fitting_configs, 'mace_name': mace_name,
                             'mace_fit_params': mace_fit_params, 'remote_info': '_IGNORE', 'run_dir': run_dir,
-                            "mace_fit_cmd" : mace_fit_cmd}# 'input_files' : input_files}
+                            "mace_fit_cmd" : mace_fit_cmd, 'prev_checkpoint_file' : prev_checkpoint_file}
     
-#        kwargs.update(remote_func_kwargs)
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                      env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=fit,
                      kwargs = remote_func_kwargs)
@@ -118,13 +103,7 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
         
         return results
     
-    if not run_dir.exists():
-        run_dir.mkdir(parents=True)
-    
-    if isinstance(mace_fit_params, str):
-        mace_fit_params = yaml.safe_load(Path(mace_fit_params).read_text())
-    elif isinstance(mace_fit_params, dict):
-        pass
+    run_dir.mkdir(parents=True, exist_ok=True)
     
     for key, val in mace_fit_params.items():
         if isinstance(val, int) or isinstance(val, float):
@@ -136,20 +115,17 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
         else:
             mace_fit_cmd += f" --{key}='{val}'"
  
-    if not do_fit or verbose:
+    if dry_run or verbose:
         print('fitting command:\n', mace_fit_cmd)
     
-    # Not totally sure if this part is applicable to MACE cpu training.   
     orig_omp_n = os.environ.get('OMP_NUM_THREADS', None)
     if 'WFL_MACE_FIT_OMP_NUM_THREADS' in os.environ:
         os.environ['OMP_NUM_THREADS'] = os.environ['WFL_MACE_FIT_OMP_NUM_THREADS']
     
     try:
         remote_cwd = os.getcwd()    
-#        input_files = remote_info.input_files.copy() 
-#        print("input_files : ", input_files)
 
-        # copy training set xyz file to run_dir.
+        # Copy training set xyz file to run_dir.
         # If initiated with list of ASE objects then write xyz file in run_dir. 
         if not fitting_configs.one_file():
             fitting_configs = list(fitting_configs)
@@ -157,37 +133,15 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
         else:
             copyfile(fitting_configs.one_file(), f"{run_dir}/{fitting_configs.one_file().stem}.xyz")
 
-#        if str(run_dir) != ".":
-#            for input_file in input_files:
-#                file_name = input_file.split("/")[-1]
-#                
-#                # If initiated with previous checkpoint file, it should be copied to 
-#                # current fitted directory after creating checkpoint folder. 
-#                if file_name.endswith("_swa.pt"):
-#                    checkpoint_dir = Path(run_dir / 'checkpoints')  
-#    
-#                    checkpoint_dir.mkdir(parents=True, exist_ok=True)
-#                    copyfile(input_file, f"{checkpoint_dir}/{file_name}")
-#    
-#                else:
-#                    copyfile(input_file, f"{run_dir}/{file_name}")
-
-
         # previous checkpoint file should be moved by remote_info.input_files function 
         if prev_checkpoint_file != None:
             checkpoint_dir = Path(run_dir / "checkpoints")
             checkpoint_dir.mkdir(parents=True, exist_ok=True)
-            if Path(prev_checkpoint_file).is_absolute():
-                copyfile(prev_checkpoint_file, f"{checkpoint_dir}/{prev_checkpoint_file.stem}.pt")
-            else:
-                copyfile(prev_checkpoint_file, f"{checkpoint_dir}/{prev_checkpoint_file}")
-
+            copyfile(prev_checkpoint_file, f"{checkpoint_dir}/{Path(prev_checkpoint_file).stem}.pt")
 
         os.chdir(run_dir)
         subprocess.run(mace_fit_cmd, shell=True, check=True)
         os.chdir(remote_cwd)    
-#        else:
-#            subprocess.run(mace_fit_cmd, shell=True, check=True)
     
     except subprocess.CalledProcessError as e:
         print("Failure in calling MACE fitting with error code:", e.returncode)
@@ -217,5 +171,5 @@ def _write_fitting_configs(fitting_configs, use_params, run_dir, fit_cfgs_fname)
                       f"instead using configs passed in and saved to '{fit_cfgs_fname}'.")
     
     use_params["train_file"] = fit_cfgs_fname
-    ase.io.write(Path("run_dir" / "fit_cfgs_fname"), fitting_configs)
+    ase.io.write(f"{run_dir}/{fit_cfgs_fname}", fitting_configs)
 
