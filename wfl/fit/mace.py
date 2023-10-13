@@ -29,7 +29,7 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
 	prev_checkpoint_file: str, default None
         Previous checkpoint file to restart from. 
-    skip_if_present: bool, default False
+    skip_if_present: bool, default True
         skip if final MACE file exists in expected place
     run_dir: str, default '.'
         directory to run fitting in
@@ -71,7 +71,7 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
         input_files = remote_info.input_files.copy()
         output_files = remote_info.output_files.copy() + [str(run_dir)]
    
-        fitting_configs = ConfigSet(list(fitting_configs))
+#        fitting_configs = ConfigSet(list(fitting_configs))
 
         # set number of threads in queued job, only if user hasn't set them
         if not any([var.split('=')[0] == 'WFL_MACE_FIT_OMP_NUM_THREADS' for var in remote_info.env_vars]):
@@ -137,7 +137,11 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
         if prev_checkpoint_file != None:
             checkpoint_dir = Path(run_dir / "checkpoints")
             checkpoint_dir.mkdir(parents=True, exist_ok=True)
-            copyfile(prev_checkpoint_file, f"{checkpoint_dir}/{Path(prev_checkpoint_file).stem}.pt")
+            # check if file exists in the destination. 
+            try:
+                copyfile(prev_checkpoint_file, f"{checkpoint_dir}/{Path(prev_checkpoint_file).stem}.pt")
+            except shutil.SameFileError:
+                pass
 
         os.chdir(run_dir)
         subprocess.run(mace_fit_cmd, shell=True, check=True)
