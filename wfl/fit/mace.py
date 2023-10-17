@@ -108,8 +108,18 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
     # If initiated with list of ASE objects then write xyz file in run_dir. 
     fitting_configs_scratch_filename = None
     fitting_configs_filename = fitting_configs.one_file()
+
     if not fitting_configs_filename:
-        fitting_configs_scratch_filename = _write_fitting_configs(fitting_configs, mace_fit_params, run_dir)
+        fd_scratch, fitting_configs_scratch_filename = tempfile.mkstemp(prefix="_MACE_fitting_configs.", suffix=".xyz")
+        os.close(fd_scratch)
+
+        if "train_file" in mace_fit_params.keys():
+            warnings.warn(f"Ignoring configs file '{mace_fit_params['train_file']}' in mace_fit_params, "
+                          f"instead using configs passed in and saved to '{fitting_configs_scratch_filename}'.")
+   
+        mace_fit_params["train_file"] = fitting_configs_scratch_filename
+        ase.io.write(fitting_configs_scratch_filename, fitting_configs)
+
     else:
         mace_fit_params["train_file"] = fitting_configs_filename 
 
@@ -135,7 +145,7 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
 
         # previous checkpoint file should be moved by remote_info.input_files function 
         if prev_checkpoint_file != None:
-            checkpoint_dir = Path(run_dir / "checkpoints")
+            checkpoint_dir = run_dir / "checkpoints"
             checkpoint_dir.mkdir(parents=True, exist_ok=True)
             # check if file exists in the destination. 
             try:
@@ -154,31 +164,3 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
         print("Failure in calling MACE fitting with error code:", e.returncode)
         raise e
 
-
-def _write_fitting_configs(fitting_configs, use_params, run_dir):
-    """
-    Writes fitting configs to file and updates MACE fitting parameters.
-    Configurations and filename handled by Workflow overwrite any filename
-    specified in parameters.
-
-    Parameters:
-    -----------
-    fitting_configs: list(Atoms)
-        configurations to fit to
-    use_params: dict
-        MACE fit parameters, will have input filename set based on where configs were written to
-    ace_file_base: str
-        base to all MACE-related files, used for saving fitting configs
-    """
-
-    fd_scratch, filename = tempfile.mkstemp(prefix="_MACE_fitting_configs.", suffix=".xyz")    
-    os.close(fd_scratch)
-
-    if "train_file" in use_params.keys():
-        warnings.warn(f"Ignoring configs file '{use_params['train_file']}' in mace_fit_params, "
-                      f"instead using configs passed in and saved to '{filename}'.")
-
-    use_params["train_file"] = filename
-    ase.io.write(filename, fitting_configs)
-
-    return filename
