@@ -31,8 +31,8 @@ def test_mace_fit_from_list(request, tmp_path, monkeypatch, mace_fit_cmd=mace_fi
     fit(fitting_configs, "test", mace_fit_params, mace_fit_cmd=mace_fit_cmd, run_dir=".")
     t_run = time.time() - t0
 
-    assert (tmp_path / f"test.model").exists()
-    assert (tmp_path / f"test.model").stat().st_size > 0
+    assert (tmp_path / "test.model").exists()
+    assert (tmp_path / "test.model").stat().st_size > 0
 
 
 def test_mace_fit(request, tmp_path, monkeypatch, mace_fit_cmd=mace_fit_cmd):
@@ -52,7 +52,7 @@ def test_mace_fit(request, tmp_path, monkeypatch, mace_fit_cmd=mace_fit_cmd):
     fit(fitting_configs, "test", mace_fit_params, mace_fit_cmd=mace_fit_cmd, run_dir=".")
     t_run = time.time() - t0
 
-    assert (tmp_path / f"test.model").exists()
-    assert (tmp_path / f"test.model").stat().st_size > 0
+    assert (tmp_path / "test.model").exists()
+    assert (tmp_path / "test.model").stat().st_size > 0
 
 
