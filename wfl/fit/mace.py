@@ -153,14 +153,18 @@ def _prep_fitting_configs_file(fitting_configs, use_params):
     Writes fitting configs to file and updates MACE fitting parameters.
     Configurations and filename handled by Workflow overwrite any filename
     specified in parameters.
+
     Parameters:
     -----------
-    fitting_configs: list(Atoms)
+    fitting_configs: ConfigSet
         configurations to fit to
     use_params: dict
         MACE fit parameters, will have input filename set based on where configs were written to
-    ace_file_base: str
-        base to all MACE-related files, used for saving fitting configs
+
+    Return:
+	-------
+    filename
+        temporary file name or None if already file is written beforehand 
     """
 
     fitting_configs_filename = fitting_configs.one_file()
