@@ -27,7 +27,7 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
         command for excecuting the MACE fitting. (For example, "python ~/path_to_mace_cripts/run_train.py")
     ref_property_prefix: str, default "REF\_"
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
-	prev_checkpoint_file: str, default None
+    prev_checkpoint_file: str, default None
         Previous checkpoint file to restart from. 
     skip_if_present: bool, default True
         skip if final MACE file exists in expected place
@@ -166,8 +166,8 @@ def _prep_fitting_configs_file(fitting_configs, use_params):
     fitting_configs_filename = fitting_configs.one_file()
 
     if not fitting_configs_filename:
-	    fd_scratch, filename = tempfile.mkstemp(prefix="_MACE_fitting_configs.", suffix=".xyz")    
-	    os.close(fd_scratch)
+        fd_scratch, filename = tempfile.mkstemp(prefix="_MACE_fitting_configs.", suffix=".xyz")    
+        os.close(fd_scratch)
 
         if "train_file" in use_params.keys():
             warnings.warn(f"Ignoring configs file '{use_params['train_file']}' in mace_fit_params, "
