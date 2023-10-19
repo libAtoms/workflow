@@ -45,7 +45,6 @@ def test_mace_fit(request, tmp_path, monkeypatch, mace_fit_cmd=mace_fit_cmd):
     fit_config_file = parent_path / 'assets' / 'B_DFT_data.xyz'
     params_file_path = parent_path / 'assets' / 'mace_fit_parameters.yaml'
     mace_fit_params = yaml.safe_load(params_file_path.read_text())
-    mace_fit_params["train_file"] = fit_config_file
     fitting_configs = ConfigSet(fit_config_file) 
 
     t0 = time.time()
