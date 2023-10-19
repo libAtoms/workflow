@@ -1,4 +1,4 @@
-import os, sys, yaml, subprocess
+import os, sys, yaml, subprocess, shutil
 import warnings, tempfile
 import ase.io
 from expyre import ExPyRe
