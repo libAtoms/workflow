@@ -7,6 +7,7 @@ from ase import Atoms
 import ase.io
 from ase.build import bulk
 from ase.calculators.emt import EMT
+from ase.units import fs
 from wfl.autoparallelize import autoparainfo
 
 from wfl.generate import md
@@ -77,8 +78,8 @@ def test_NVT_Langevin_const_T(cu_slab):
     inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
-    atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="langevin", steps=300, dt=1.0,
-                           temperature = 500.0, temperature_tau=100)
+    atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Langevin", steps=300, dt=1.0,
+                           temperature = 500.0, temperature_tau=100/fs)
 
     atoms_traj = list(atoms_traj)
     atoms_final = atoms_traj[-1]

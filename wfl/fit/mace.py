@@ -9,11 +9,18 @@ from pathlib import Path
 from shutil import copyfile
 
 
-def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_prefix="REF_", 
+def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_property_prefix="REF_", 
         prev_checkpoint_file=None, skip_if_present=True, run_dir=".", verbose=True, dry_run=False, 
         remote_info=None, remote_label=None, wait_for_results=True):
     """
         Fit MACE model.
+
+
+    **Environment Variables**
+    
+    * WFL_MACE_FIT_COMMAND: command to execute mace fit, e.g.
+      ``python $HOME/mace/scripts/run_train.py ``
+
 
     Parameters
     ----------
@@ -23,8 +30,9 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
         name of MACE label
     mace_fit_params: dict
         parameters for fitting a MACE model.
-    mace_fit_cmd: str
+    mace_fit_cmd: str, default None.
         command for excecuting the MACE fitting. (For example, "python ~/path_to_mace_cripts/run_train.py")
+        Alternatively set by `WFL_MACE_FIT_COMMAND` env var.
     ref_property_prefix: str, default "REF\_"
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
     prev_checkpoint_file: str, default None
@@ -103,7 +111,11 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd, ref_property_
         return results
     
     run_dir.mkdir(parents=True, exist_ok=True)
-   
+  
+    if mace_fit_cmd is None:
+        mace_fit_cmd = os.environ["WFL_MACE_FIT_COMMAND"]
+        print("mace_fit_cmd : ", mace_fit_cmd)
+
     fitting_configs_scratch_filename = _prep_fitting_configs_file(fitting_configs, mace_fit_params)
 
     for key, val in mace_fit_params.items():
