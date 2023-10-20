@@ -113,8 +113,12 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
     run_dir.mkdir(parents=True, exist_ok=True)
   
     if mace_fit_cmd is None:
-        mace_fit_cmd = os.environ["WFL_MACE_FIT_COMMAND"]
-        print("mace_fit_cmd : ", mace_fit_cmd)
+        if os.environ.get("WFL_MACE_FIT_COMMAND") is not None:
+            mace_fit_cmd = os.environ.get("WFL_MACE_FIT_COMMAND")
+        elif shutil.which("mace_run_train") is not None:
+            mace_fit_cmd = shutil.which("mace_run_train")
+        else:
+            raise Exception("Path for run_train.py not found.") 
 
     fitting_configs_scratch_filename = _prep_fitting_configs_file(fitting_configs, mace_fit_params)
 
