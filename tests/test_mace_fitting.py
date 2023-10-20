@@ -7,14 +7,6 @@ from wfl.configset import ConfigSet
 import ase.io
 import pytest
 
-# This part is used to detect the location of 'run_train.py' file. 
-#mace_dist_dir = list(Path(mace.__file__).parent.parent.glob("mace-*"))[0]
-#jsonfile = str(Path(mace_dist_dir / "direct_url.json"))
-#with open(jsonfile) as f:
-#    d = json.load(f)
-#script_dir = d["url"].split(":")[-1][2:]
-#mace_fit_cmd = f"python {script_dir}/scripts/run_train.py"
-#os.environ["WFL_MACE_FIT_COMMAND"] = "python /raven/u/hjung/Softwares/mace/scripts/run_train.py"
 
 @pytest.mark.skipif(not os.environ.get("WFL_MACE_FIT_COMMAND"), reason="WFL_MACE_FIT_COMMAND not in environment variables")
 def test_mace_fit_from_list(request, tmp_path, monkeypatch):
@@ -35,6 +27,7 @@ def test_mace_fit_from_list(request, tmp_path, monkeypatch):
 
     assert (tmp_path / "test.model").exists()
     assert (tmp_path / "test.model").stat().st_size > 0
+
 
 @pytest.mark.skipif(not os.environ.get("WFL_MACE_FIT_COMMAND"), reason="WFL_MACE_FIT_COMMAND not in environment variables")
 def test_mace_fit(request, tmp_path, monkeypatch):
