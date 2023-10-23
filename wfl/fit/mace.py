@@ -113,8 +113,8 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
     remote_cwd = Path(os.getcwd())
     run_dir.mkdir(parents=True, exist_ok=True)
 
-    if "validation_file" in mace_fit_params.keys():
-        mace_fit_params["validation_file"] = remote_cwd / mace_fit_params["validation_file"]
+    if "valid_file" in mace_fit_params.keys():
+        mace_fit_params["valid_file"] = remote_cwd / mace_fit_params["valid_file"]
     if "test_file" in mace_fit_params.keys():
         mace_fit_params["test_file"] = remote_cwd / mace_fit_params["test_file"]
 
