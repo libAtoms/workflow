@@ -110,8 +110,14 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
         
         return results
     
+    remote_cwd = Path(os.getcwd())
     run_dir.mkdir(parents=True, exist_ok=True)
-  
+
+    if "validation_file" in mace_fit_params.keys():
+        mace_fit_params["validation_file"] = remote_cwd / mace_fit_params["validation_file"]
+    if "test_file" in mace_fit_params.keys():
+        mace_fit_params["test_file"] = remote_cwd / mace_fit_params["test_file"]
+
     if mace_fit_cmd is None:
         if os.environ.get("WFL_MACE_FIT_COMMAND") is not None:
             mace_fit_cmd = os.environ.get("WFL_MACE_FIT_COMMAND")
@@ -140,7 +146,6 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
         os.environ['OMP_NUM_THREADS'] = os.environ['WFL_MACE_FIT_OMP_NUM_THREADS']
     
     try:
-        remote_cwd = os.getcwd()    
 
         # previous checkpoint file should be moved by remote_info.input_files function 
         if prev_checkpoint_file is not None:
