@@ -10,8 +10,8 @@ from shutil import copyfile
 
 
 def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_property_prefix="REF_", 
-        prev_checkpoint_file=None, skip_if_present=True, run_dir=".", verbose=True, dry_run=False, 
-        remote_info=None, remote_label=None, wait_for_results=True):
+        prev_checkpoint_file=None, valid_configs=None, test_configs=None, skip_if_present=True, run_dir=".", 
+        verbose=True, dry_run=False, remote_info=None, remote_label=None, wait_for_results=True):
     """
         Fit MACE model.
 
@@ -37,6 +37,10 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
     prev_checkpoint_file: str, default None
         Previous checkpoint file to restart from. 
+    valid_configs: ConfigSet, default None
+        set of configurations to validate ("valid_file")
+    test_configs: ConfigSet, default None
+        set of configurtions to test ("test_file")
     skip_if_present: bool, default True
         skip if final MACE file exists in expected place
     run_dir: str, default '.'
@@ -89,7 +93,8 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
     
         remote_func_kwargs = {'fitting_configs': fitting_configs, 'mace_name': mace_name,
                             'mace_fit_params': mace_fit_params, 'remote_info': '_IGNORE', 'run_dir': run_dir,
-                            "mace_fit_cmd" : mace_fit_cmd, 'prev_checkpoint_file' : prev_checkpoint_file}
+                            "mace_fit_cmd" : mace_fit_cmd, 'prev_checkpoint_file' : prev_checkpoint_file,
+							"valid_configs": valid_configs, "test_configs": test_configs}
     
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                      env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=fit,
@@ -110,13 +115,12 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
         
         return results
     
-    remote_cwd = Path(os.getcwd())
     run_dir.mkdir(parents=True, exist_ok=True)
 
-    if "valid_file" in mace_fit_params.keys():
-        mace_fit_params["valid_file"] = remote_cwd / mace_fit_params["valid_file"]
-    if "test_file" in mace_fit_params.keys():
-        mace_fit_params["test_file"] = remote_cwd / mace_fit_params["test_file"]
+    if valid_configs is not None:
+        valid_configs_scratch_filename = _prep_fitting_configs_file(valid_configs, mace_fit_params, "valid_file")
+    if test_configs is not None:
+        test_configs_scratch_filename = _prep_fitting_configs_file(test_configs, mace_fit_params, "test_file")
 
     if mace_fit_cmd is None:
         if os.environ.get("WFL_MACE_FIT_COMMAND") is not None:
@@ -126,7 +130,7 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
         else:
             raise Exception("Path for run_train.py not found.") 
 
-    fitting_configs_scratch_filename = _prep_fitting_configs_file(fitting_configs, mace_fit_params)
+    fitting_configs_scratch_filename = _prep_fitting_configs_file(fitting_configs, mace_fit_params, "train_file")
 
     for key, val in mace_fit_params.items():
         if isinstance(val, int) or isinstance(val, float):
@@ -146,6 +150,7 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
         os.environ['OMP_NUM_THREADS'] = os.environ['WFL_MACE_FIT_OMP_NUM_THREADS']
     
     try:
+        remote_cwd = os.getcwd()
 
         # previous checkpoint file should be moved by remote_info.input_files function 
         if prev_checkpoint_file is not None:
@@ -169,7 +174,7 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
         raise e
 
 
-def _prep_fitting_configs_file(fitting_configs, use_params):
+def _prep_fitting_configs_file(fitting_configs, use_params, key):
     """
     Writes fitting configs to file and updates MACE fitting parameters.
     Configurations and filename handled by Workflow overwrite any filename
@@ -194,17 +199,17 @@ def _prep_fitting_configs_file(fitting_configs, use_params):
         fd_scratch, filename = tempfile.mkstemp(prefix="_MACE_fitting_configs.", suffix=".xyz")    
         os.close(fd_scratch)
 
-        if "train_file" in use_params.keys():
-            warnings.warn(f"Ignoring configs file '{use_params['train_file']}' in mace_fit_params, "
+        if key in use_params.keys():
+            warnings.warn(f"Ignoring configs file '{use_params[key]}' in mace_fit_params, "
                           f"instead using configs passed in and saved to '{filename}'.")
     
-        use_params["train_file"] = filename
+        use_params[key] = filename
         ase.io.write(filename, fitting_configs)
 
         return filename
 
     else:
-        use_params["train_file"] = fitting_configs_filename 
+        use_params[key] = fitting_configs_filename 
 
         return None
 
