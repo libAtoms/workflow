@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+from pathlib import Path 
 
 import ase.io
 from ase.build import bulk
@@ -18,6 +19,19 @@ def cu_slab():
     atoms.info['config_type'] = 'cu_slab'
 
     return atoms
+
+def test_return_md_traj(cu_slab, tmp_path):
+    
+    calc = EMT()
+    
+    input_configs = cu_slab
+    inputs = ConfigSet(input_configs)
+    outputs = OutputSpec()
+ 
+    atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=1, totalsteps=5, save_tmpdir=True, return_all_traj=True)
+
+    assert any(["minima" in at.info["config_type"] for at in atoms_opt])
+    assert any(["traj" in at.info["config_type"] for at in atoms_opt])
 
 
 def test_mult_files(cu_slab, tmp_path):
@@ -65,7 +79,7 @@ def test_relax(cu_slab):
         assert 1 <= len(list(ats)) <= totalsteps
 
     atoms_opt = list(atoms_opt)
-    assert all(['hopping_traj' in at.info['config_type'] for at in atoms_opt])
+    assert all(['minima' in at.info['config_type'] for at in atoms_opt])
 
     for at in atoms_opt:
         force_norms = np.linalg.norm(at.get_forces(), axis=1)
