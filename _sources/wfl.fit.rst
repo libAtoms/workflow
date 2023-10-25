@@ -29,6 +29,14 @@ wfl.fit.error module
    :undoc-members:
    :show-inheritance:
 
+wfl.fit.mace module
+-------------------
+
+.. automodule:: wfl.fit.mace
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 wfl.fit.utils module
 --------------------
 
