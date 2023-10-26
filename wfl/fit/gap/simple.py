@@ -133,7 +133,7 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None
     fitting_configs_filename = fitting_configs.one_file()
     if not fitting_configs_filename:
         # not one file, must write scratch file with all configs
-        fd_scratch, filename = tempfile.mkstemp(prefix="_GAP_fitting_configs.", suffix=".xyz")
+        fd_scratch, filename = tempfile.mkstemp(prefix="_GAP_fitting_configs.", suffix=".xyz", dir=".")
         os.close(fd_scratch)
 
         ase.io.write(filename, fitting_configs)
