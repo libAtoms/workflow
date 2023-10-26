@@ -394,7 +394,16 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.set_autopara_per_item_info"><code class="docutils literal notranslate"><span class="pre">set_autopara_per_item_info()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.autoparallelize">Module contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.autoparallelize">Module contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.AutoparaInfo"><code class="docutils literal notranslate"><span class="pre">AutoparaInfo</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.AutoparaInfo.update_defaults"><code class="docutils literal notranslate"><span class="pre">AutoparaInfo.update_defaults()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.RemoteInfo"><code class="docutils literal notranslate"><span class="pre">RemoteInfo</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.autoparallelize"><code class="docutils literal notranslate"><span class="pre">autoparallelize()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.autoparallelize_docstring"><code class="docutils literal notranslate"><span class="pre">autoparallelize_docstring()</span></code></a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -449,7 +458,9 @@ specified when wrapping function, otherwise to class-wide defaults</p>
 <dd><p>autoparallelize a function</p>
 <p>Use by defining function “op” which takes an input iterable and returns list of configs, and _after_ do</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">autoparallelized_op</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">autoparallelize</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">default_autopara_info</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;autoparallelize_keyword_param_1&quot;</span><span class="p">:</span> <span class="n">val</span><span class="p">,</span> <span class="s2">&quot;autoparallelize_keyword_param_2&quot;</span><span class="p">:</span> <span class="n">val</span><span class="p">,</span> <span class="o">...</span> <span class="p">},</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">autoparallelize</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="n">default_autopara_info</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;autoparallelize_keyword_param_1&quot;</span><span class="p">:</span> <span class="n">val</span><span class="p">,</span> <span class="s2">&quot;autoparallelize_keyword_param_2&quot;</span><span class="p">:</span> <span class="n">val</span><span class="p">,</span> <span class="o">...</span> <span class="p">},</span>
+        <span class="o">**</span><span class="n">kwargs</span> <span class="p">)</span>
 <span class="n">autoparallelized_op</span><span class="o">.</span><span class="n">doc</span> <span class="o">=</span> <span class="n">autopara_docstring</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span> <span class="s2">&quot;iterable_contents&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -465,7 +476,8 @@ from.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>function</em>) – function to wrap in _autoparallelize_ll()</p></li>
-<li><p><strong>*args</strong> (<em>list</em>) – positional arguments to func, plus optional first or first and second inputs (iterable) and outputs (OutputSpec) arguments to wrapped function</p></li>
+<li><p><strong>*args</strong> (<em>list</em>) – positional arguments to func, plus optional first or first and second inputs (iterable) and outputs (OutputSpec) arguments
+to wrapped function</p></li>
 <li><p><strong>default_autopara_info</strong> (<em>dict</em><em>, </em><em>default {}</em>) – dict with default values for AutoparaInfo constructor keywords setting default autoparallelization info</p></li>
 <li><p><strong>**kwargs</strong> (<em>dict</em>) – keyword arguments to func, plus optional inputs (iterable), outputs (OutputSpec), and  autopara_info (AutoparaInfo)</p></li>
 </ul>
@@ -571,7 +583,8 @@ num_inputs_per_python_subprocess, etc, or dict of kwargs for its constructor</p>
 <li><p><strong>sys_name</strong> (<em>str</em>) – name of system to run on</p></li>
 <li><p><strong>job_name</strong> (<em>str</em>) – name for job (unique within this project)</p></li>
 <li><p><strong>resources</strong> (<em>dict</em><em> or </em><em>Resources</em>) – expyre.resources.Resources or kwargs for its constructor</p></li>
-<li><p><strong>num_inputs_per_queued_job</strong> (<em>int</em><em>, </em><em>default -100</em>) – num_inputs_per_python_subprocess for each job. If negative will be multiplied by iterable_autopara_wrappable num_inputs_per_python_subprocess</p></li>
+<li><p><strong>num_inputs_per_queued_job</strong> (<em>int</em><em>, </em><em>default -100</em>) – num_inputs_per_python_subprocess for each job. If negative will be multiplied by iterable_autopara_wrappable
+num_inputs_per_python_subprocess</p></li>
 <li><p><strong>pre_cmds</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – commands to run before starting job</p></li>
 <li><p><strong>post_cmds</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – commands to run after finishing job</p></li>
 <li><p><strong>env_vars</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – environment variables to set before starting job</p></li>
@@ -631,10 +644,10 @@ RemoteInfo kwrgs with keys that match end of stack trace with function names sep
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>root_global_seed</strong></p>
+<dd class="field-even"><p><strong>root_global_seed</strong> – kwargs, or None if “autopara_rng_seed” is not in op’s signature</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int seed with value kwargs[“autopara_rng_seed”] or random int if value is None or not in kwargs, or None if “autopara_rng_seed” is not in op’s signature</p>
+<dd class="field-odd"><p>int seed with value kwargs[“autopara_rng_seed”] or random int if value is None or not in</p>
 </dd>
 </dl>
 </dd></dl>
@@ -677,6 +690,109 @@ RemoteInfo kwrgs with keys that match end of stack trace with function names sep
 </div>
 <div class="section" id="module-wfl.autoparallelize">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wfl.autoparallelize" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.autoparallelize.AutoparaInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.</span></span><span class="sig-name descname"><span class="pre">AutoparaInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.AutoparaInfo" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Object containing information required to autoparallelize a function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_inputs_per_python_subprocess</strong> (<em>int</em><em>, </em><em>default 1</em>) – number of inputs passed to each call of the low level operation.</p></li>
+<li><p><strong>iterable_arg</strong> (<em>int / str</em><em>, </em><em>default 0</em>) – index (int positional, str keyword) of input iterable argument in low level function</p></li>
+<li><p><strong>skip_failed</strong> (<em>bool</em><em>, </em><em>default True</em>) – skip output for failed low level function calls</p></li>
+<li><p><strong>initializer</strong> (<em>(</em><em>func</em><em>, </em><em>func_kwargs</em><em>)</em><em>, </em><em>default</em><em> (</em><em>None</em><em>, </em><em>[</em><em>]</em><em>)</em>) – initializer to be called when each python subprocess is started</p></li>
+<li><p><strong>num_python_subprocesses</strong> (<em>int</em><em>, </em><em>default None</em>) – number of python subprocesses</p></li>
+<li><p><strong>remote_info</strong> (<a class="reference internal" href="#wfl.autoparallelize.RemoteInfo" title="wfl.autoparallelize.RemoteInfo"><em>RemoteInfo</em></a><em>, </em><em>default None</em>) – information for running remotely</p></li>
+<li><p><strong>remote_label</strong> (<em>str</em><em>, </em><em>default None</em>) – string label to match to keys in remote_info dict</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="wfl.autoparallelize.AutoparaInfo.update_defaults">
+<span class="sig-name descname"><span class="pre">update_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.AutoparaInfo.update_defaults" title="Permalink to this definition">#</a></dt>
+<dd><p>Starting from object passed by user at runtime, update all unspecified fields to the defaults
+specified when wrapping function, otherwise to class-wide defaults</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="wfl.autoparallelize.RemoteInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.</span></span><span class="sig-name descname"><span class="pre">RemoteInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sys_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_inputs_per_queued_job</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_cmds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_cmds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header_extra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exact_fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_failed_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resubmit_killed_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash_ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.RemoteInfo" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Create a RemoteInfo object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sys_name</strong> (<em>str</em>) – name of system to run on</p></li>
+<li><p><strong>job_name</strong> (<em>str</em>) – name for job (unique within this project)</p></li>
+<li><p><strong>resources</strong> (<em>dict</em><em> or </em><em>Resources</em>) – expyre.resources.Resources or kwargs for its constructor</p></li>
+<li><p><strong>num_inputs_per_queued_job</strong> (<em>int</em><em>, </em><em>default -100</em>) – num_inputs_per_python_subprocess for each job. If negative will be multiplied by iterable_autopara_wrappable
+num_inputs_per_python_subprocess</p></li>
+<li><p><strong>pre_cmds</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – commands to run before starting job</p></li>
+<li><p><strong>post_cmds</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – commands to run after finishing job</p></li>
+<li><p><strong>env_vars</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – environment variables to set before starting job</p></li>
+<li><p><strong>input_files</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – input_files to stage in starting job</p></li>
+<li><p><strong>output_files</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – output_files to stage out when job is done</p></li>
+<li><p><strong>header_extra</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>optional</em>) – extra lines to add to queuing system header</p></li>
+<li><p><strong>exact_fit</strong> (<em>bool</em><em>, </em><em>default True</em>) – require exact fit to node size</p></li>
+<li><p><strong>partial_node</strong> (<em>bool</em><em>, </em><em>default True</em>) – allow jobs that take less than a whole node, overrides exact_fit</p></li>
+<li><p><strong>timeout</strong> (<em>int</em>) – time to wait in get_results before giving up</p></li>
+<li><p><strong>check_interval</strong> (<em>int</em>) – check_interval arg to pass to get_results</p></li>
+<li><p><strong>ignore_failed_jobs</strong> (<em>bool</em><em>, </em><em>default False</em>) – skip failures in remote jobs</p></li>
+<li><p><strong>resubmit_killed_jobs</strong> (<em>bool</em><em>, </em><em>default False</em>) – resubmit jobs that were killed without an exit status (out of walltime or crashed),
+hoping that other parameters such as walltime or memory have been changed to make run complete this time</p></li>
+<li><p><strong>hash_ignore</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>]</em>) – list of arguments to ignore when doing hash of remote function arguments to determine if it’s already been done</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.autoparallelize.autoparallelize">
+<span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.</span></span><span class="sig-name descname"><span class="pre">autoparallelize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_autopara_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.autoparallelize" title="Permalink to this definition">#</a></dt>
+<dd><p>autoparallelize a function</p>
+<p>Use by defining function “op” which takes an input iterable and returns list of configs, and _after_ do</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">autoparallelized_op</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">autoparallelize</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="n">default_autopara_info</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;autoparallelize_keyword_param_1&quot;</span><span class="p">:</span> <span class="n">val</span><span class="p">,</span> <span class="s2">&quot;autoparallelize_keyword_param_2&quot;</span><span class="p">:</span> <span class="n">val</span><span class="p">,</span> <span class="o">...</span> <span class="p">},</span>
+        <span class="o">**</span><span class="n">kwargs</span> <span class="p">)</span>
+<span class="n">autoparallelized_op</span><span class="o">.</span><span class="n">doc</span> <span class="o">=</span> <span class="n">autopara_docstring</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span> <span class="s2">&quot;iterable_contents&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The autoparallelized function can then be called with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parallelized_op</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="p">[</span><span class="n">args</span> <span class="n">of</span> <span class="n">op</span><span class="p">],</span> <span class="n">autopara_info</span><span class="o">=</span><span class="n">AutoparaInfo</span><span class="p">(</span><span class="n">arg1</span><span class="o">=</span><span class="n">val1</span><span class="p">,</span> <span class="o">...</span><span class="p">),</span> <span class="p">[</span><span class="n">kwargs</span> <span class="n">of</span> <span class="n">op</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>If the op takes the argument <cite>autopara_per_item_info</cite> a list of dicts with info for each item will be
+passed, currently including <cite>rng_seed</cite> and <cite>item_i</cite>.</p>
+<p>If op takes the argument <cite>autopara_rng_seed</cite> it will be used as a global seed to generate the per-item seeds
+from.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>function</em>) – function to wrap in _autoparallelize_ll()</p></li>
+<li><p><strong>*args</strong> (<em>list</em>) – positional arguments to func, plus optional first or first and second inputs (iterable) and outputs (OutputSpec) arguments
+to wrapped function</p></li>
+<li><p><strong>default_autopara_info</strong> (<em>dict</em><em>, </em><em>default {}</em>) – dict with default values for AutoparaInfo constructor keywords setting default autoparallelization info</p></li>
+<li><p><strong>**kwargs</strong> (<em>dict</em>) – keyword arguments to func, plus optional inputs (iterable), outputs (OutputSpec), and  autopara_info (AutoparaInfo)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>wrapped_func_out</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>results of calling the function wrapped in autoparallelize via _autoparallelize_ll</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.autoparallelize.autoparallelize_docstring">
+<span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.</span></span><span class="sig-name descname"><span class="pre">autoparallelize_docstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapped_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrappable_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_iterable_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.autoparallelize_docstring" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 </div>
 </div>
 
@@ -761,7 +877,16 @@ RemoteInfo kwrgs with keys that match end of stack trace with function names sep
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.set_autopara_per_item_info"><code class="docutils literal notranslate"><span class="pre">set_autopara_per_item_info()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.autoparallelize">Module contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.autoparallelize">Module contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.AutoparaInfo"><code class="docutils literal notranslate"><span class="pre">AutoparaInfo</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.AutoparaInfo.update_defaults"><code class="docutils literal notranslate"><span class="pre">AutoparaInfo.update_defaults()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.RemoteInfo"><code class="docutils literal notranslate"><span class="pre">RemoteInfo</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.autoparallelize"><code class="docutils literal notranslate"><span class="pre">autoparallelize()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.autoparallelize_docstring"><code class="docutils literal notranslate"><span class="pre">autoparallelize_docstring()</span></code></a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

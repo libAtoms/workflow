@@ -486,12 +486,8 @@ sampling configs</p>
 <li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
 <li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
-<li><p><strong>dt</strong> (<em>float</em>) – <p>time step (fs)
-integrator: str, default “NVTBerendsen”</p>
-<blockquote>
-<div><p>Select integrator. Default is Berendsen but also langevin can be used</p>
-</div></blockquote>
-</p></li>
+<li><p><strong>dt</strong> (<em>float</em>) – time step (fs)</p></li>
+<li><p><strong>integrator</strong> (<em>str</em><em>, </em><em>default &quot;NVTBerendsen&quot;</em>) – Select integrator. Default is Berendsen but also langevin can be used</p></li>
 <li><p><strong>steps</strong> (<em>int</em>) – number of steps</p></li>
 <li><p><strong>temperature</strong> (<em>float</em><em> or </em><em>(</em><em>float</em><em>, </em><em>float</em><em>, </em><em>[</em><em>int</em><em>]</em><em>]</em><em>)</em><em>, or </em><em>list</em><em> of </em><em>dicts  default None</em>) – temperature control (Kelvin)
 - float: constant T

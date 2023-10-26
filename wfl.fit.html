@@ -488,7 +488,7 @@ Alternatively set by <cite>WFL_ACE_FIT_COMMAND</cite> env var.</p></li>
 <li><p><strong>run_dir</strong> (<em>str</em><em> or </em><em>Path</em><em>, </em><em>default '.'</em>) – directory to run in</p></li>
 <li><p><strong>dry_run</strong> (<em>bool</em><em>, </em><em>default False</em>) – do a dry run, which returns the matrix size, rather than the potential name</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default True</em>) – print verbose output</p></li>
-<li><p><strong>remote_info</strong> (dict or <code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.autoparallelize.RemoteInfo</span></code>, or ‘_IGNORE’ or None) – If present and not None and not ‘_IGNORE’, RemoteInfo or dict with kwargs for RemoteInfo
+<li><p><strong>remote_info</strong> (dict or <a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.RemoteInfo" title="wfl.autoparallelize.RemoteInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.autoparallelize.RemoteInfo</span></code></a>, or ‘_IGNORE’ or None) – If present and not None and not ‘_IGNORE’, RemoteInfo or dict with kwargs for RemoteInfo
 constructor which triggers running job in separately queued job on remote machine.  If None,
 will try to use env var WFL_EXPYRE_INFO used (see above). ‘_IGNORE’ is for
 internal use, to ensure that remotely running job does not itself attempt to spawn another
@@ -573,7 +573,7 @@ e.g. <cite>julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl</cite> 
 Alternatively set by WFL_ACE_FIT_COMMAND.</p></li>
 <li><p><strong>dry_run</strong> (<em>bool</em><em>, </em><em>default False</em>) – do a dry run, which returns the matrix size, rather than the potential file path</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default True</em>) – print verbose output</p></li>
-<li><p><strong>remote_info</strong> (dict or <code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.autoparallelize.RemoteInfo</span></code>, or ‘_IGNORE’ or None) – If present and not None and not ‘_IGNORE’, RemoteInfo or dict with kwargs for RemoteInfo
+<li><p><strong>remote_info</strong> (dict or <a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.RemoteInfo" title="wfl.autoparallelize.RemoteInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">wfl.autoparallelize.RemoteInfo</span></code></a>, or ‘_IGNORE’ or None) – If present and not None and not ‘_IGNORE’, RemoteInfo or dict with kwargs for RemoteInfo
 constructor which triggers running job in separately queued job on remote machine.  If None,
 will try to use env var WFL_EXPYRE_INFO used (see below). ‘_IGNORE’ is for
 internal use, to ensure that remotely running job does not itself attempt to spawn another
@@ -742,15 +742,15 @@ Where each tuple containes units lable and conversion factor from ASE-default un
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fitting_configs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – set of configurations to fit</p></li>
+<li><p><strong>fitting_configs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a>) – set of configurations to fit (mace param “train_file”)</p></li>
 <li><p><strong>mace_name</strong> (<em>str</em>) – name of MACE label</p></li>
 <li><p><strong>mace_fit_params</strong> (<em>dict</em>) – parameters for fitting a MACE model.</p></li>
 <li><p><strong>mace_fit_cmd</strong> (<em>str</em><em>, </em><em>default None.</em>) – command for excecuting the MACE fitting. (For example, “python ~/path_to_mace_cripts/run_train.py”)
 Alternatively set by <cite>WFL_MACE_FIT_COMMAND</cite> env var.</p></li>
-<li><p><strong>ref_property_prefix</strong> (<em>str</em><em>, </em><em>default &quot;REF_&quot;</em>) – string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)</p></li>
+<li><p><strong>ref_property_prefix</strong> (str, default “<a href="#id3"><span class="problematic" id="id4">REF_</span></a>”) – string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)</p></li>
 <li><p><strong>prev_checkpoint_file</strong> (<em>str</em><em>, </em><em>default None</em>) – Previous checkpoint file to restart from.</p></li>
-<li><p><strong>valid_configs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a><em>, </em><em>default None</em>) – set of configurations to validate (“valid_file”)</p></li>
-<li><p><strong>test_configs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a><em>, </em><em>default None</em>) – set of configurtions to test (“test_file”)</p></li>
+<li><p><strong>valid_configs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a><em>, </em><em>default None</em>) – set of configurations to validate (mace param “valid_file”)</p></li>
+<li><p><strong>test_configs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><em>ConfigSet</em></a><em>, </em><em>default None</em>) – set of configurtions to test (mace param “test_file”)</p></li>
 <li><p><strong>skip_if_present</strong> (<em>bool</em><em>, </em><em>default True</em>) – skip if final MACE file exists in expected place</p></li>
 <li><p><strong>run_dir</strong> (<em>str</em><em>, </em><em>default '.'</em>) – directory to run fitting in</p></li>
 <li><p><strong>verbose</strong> (<em>bool default True</em>) – verbose output</p></li>

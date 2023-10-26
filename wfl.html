@@ -442,7 +442,16 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.utils.set_autopara_per_item_info"><code class="docutils literal notranslate"><span class="pre">set_autopara_per_item_info()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wfl.autoparallelize.html#module-wfl.autoparallelize">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.AutoparaInfo"><code class="docutils literal notranslate"><span class="pre">AutoparaInfo</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.AutoparaInfo.update_defaults"><code class="docutils literal notranslate"><span class="pre">AutoparaInfo.update_defaults()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.RemoteInfo"><code class="docutils literal notranslate"><span class="pre">RemoteInfo</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.autoparallelize"><code class="docutils literal notranslate"><span class="pre">autoparallelize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.autoparallelize_docstring"><code class="docutils literal notranslate"><span class="pre">autoparallelize_docstring()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="wfl.calculators.html">wfl.calculators package</a><ul>
@@ -1019,7 +1028,8 @@ to appending to single file or top level list of configs.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>descriptor</strong> (<em>dict</em>) – nested structure with some contained dicts that have ‘sparse_method’ = ‘_2BRN_UNIFORM_FILE_’, and also <code class="docutils literal notranslate"><span class="pre">n_sparse</span></code>, <code class="docutils literal notranslate"><span class="pre">exponents</span></code>, <code class="docutils literal notranslate"><span class="pre">cutoff</span></code></p></li>
+<li><p><strong>descriptor</strong> (<em>dict</em>) – nested structure with some contained dicts that have ‘sparse_method’ = ‘_2BRN_UNIFORM_FILE_’,
+and also <code class="docutils literal notranslate"><span class="pre">n_sparse</span></code>, <code class="docutils literal notranslate"><span class="pre">exponents</span></code>, <code class="docutils literal notranslate"><span class="pre">cutoff</span></code></p></li>
 <li><p><strong>ident</strong> (<em>str</em><em>, </em><em>default ''</em>) – identifier string to add to sparsepoints filename</p></li>
 <li><p><strong>desc_i</strong> (<em>int</em><em>, </em><em>default 0</em>) – offset to descriptor number in filename</p></li>
 </ul>
