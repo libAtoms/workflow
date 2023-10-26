@@ -6,7 +6,6 @@ from ase.atoms import Atoms
 
 from wfl.configset import ConfigSet, OutputSpec
 from .utils import grouper, get_root_global_seed, set_autopara_per_item_info
-from .remoteinfo import RemoteInfo
 from .pool import do_in_pool
 
 from expyre import ExPyRe, ExPyReJobDiedError
@@ -18,8 +17,8 @@ def do_remotely(autopara_info, iterable=None, outputspec=None, op=None, args=[],
     Parameters
     ----------
     autopara_info: AutoparaInfo
-        object with all information on autoparallelizing remote job, including autopara_info.remote_info 
-        which contains RemoteInfo with information on remote job, including system, resources, job 
+        object with all information on autoparallelizing remote job, including autopara_info.remote_info
+        which contains RemoteInfo with information on remote job, including system, resources, job
         num_inputs_per_python_subprocess, etc, or dict of kwargs for its constructor
     quiet: bool, default False
         do not output (to stderr) progress info
@@ -136,10 +135,10 @@ def do_remotely(autopara_info, iterable=None, outputspec=None, op=None, args=[],
         stderr = None
         try:
             ats_out, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
-        except Exception as exc:
-            print("stdout","-"*30)
+        except Exception:
+            print("stdout", "-" * 30)
             print(stdout)
-            print("stderr", "-"*30)
+            print("stderr", "-" * 30)
             print(stderr)
             warnings.warn(f'Failed in remote job {xpr.id} on {xpr.system_name}')
             if not remote_info.ignore_failed_jobs:

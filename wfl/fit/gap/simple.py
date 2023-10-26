@@ -18,7 +18,7 @@ from expyre import ExPyRe
 
 def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None,
                 verbose=True, do_fit=True, remote_info=None, remote_label=None,
-                skip_if_present=False,  **kwargs):
+                skip_if_present=False, **kwargs):
     """Runs gap_fit
 
     Parameters
@@ -31,8 +31,8 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None
         filename to pass standard output to
     gap_fit_command: str, default "gap_fit"
         executable for gap_fit.
-        Alternatively set by WFL_GAP_FIT_COMMAND environment variable, 
-        which overrides this `gap_fit_command` argument. 
+        Alternatively set by WFL_GAP_FIT_COMMAND environment variable,
+        which overrides this `gap_fit_command` argument.
     verbose: bool, default True
     do_fit: bool, default True
         carry out the fit, otherwise only print fitting command
@@ -141,14 +141,14 @@ def run_gap_fit(fitting_configs, fitting_dict, stdout_file, gap_fit_command=None
         fitting_configs_scratch_filename = filename
         # use in actual fit
         fitting_configs_filename = fitting_configs_scratch_filename
-    
+
     # kwargs overwrite the fitting_dict given
     use_fitting_dict = dict(fitting_dict, atoms_filename=fitting_configs_filename, **kwargs)
 
     fitting_line = dict_to_gap_fit_string(use_fitting_dict)
 
     if gap_fit_command is None:
-        gap_fit_command = os.environ.get("WFL_GAP_FIT_COMMAND", None)        
+        gap_fit_command = os.environ.get("WFL_GAP_FIT_COMMAND", None)
         if gap_fit_command is None:
             gap_fit_command = "gap_fit"
 
@@ -222,7 +222,7 @@ def dict_to_gap_fit_string(param_dict):
 
 def _Path_to_str(param_dict):
 
-    possible_file_keys = ["atoms_filename", "at_file", "baseline_param_filename", 
+    possible_file_keys = ["atoms_filename", "at_file", "baseline_param_filename",
                           "core_param_file", "gap_file", "gp_file", "template_file"]
 
     for key in possible_file_keys:

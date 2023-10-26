@@ -20,7 +20,7 @@ class AbortOnCollision(AbortSimBase):
     """
 
     def __init__(self, collision_radius, n_failed_steps=3):
-        super().__init__(n_failed_steps)        
+        super().__init__(n_failed_steps)
         self.collision_radius = collision_radius
 
 

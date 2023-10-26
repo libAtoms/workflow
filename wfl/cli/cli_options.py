@@ -9,7 +9,7 @@ def _to_ConfigSet(ctx, param, value):
 def inputs(f):
     """Add a standard option for the ConfigSet inputs"""
     f = click.option("--inputs", "-i", required=True, multiple=True, callback=_to_ConfigSet,
-                    help='Input xyz file(s) to create ConfigSet from')(f) 
+                    help='Input xyz file(s) to create ConfigSet from')(f)
     return f
 
 
@@ -39,13 +39,13 @@ def param_fname(f):
     return f
 
 def prop_prefix(f):
-    f = click.option("--prop-prefix", "-pp", help='Prefix to be pre-pended to all evaluate properties. Defaults to "gap_"/"ace_"/"mace_" as appropriate')(f)
+    f = click.option("--prop-prefix", "-pp", help='Prefix to be pre-pended to all evaluate properties. '
+                                                  'Defaults to "gap_"/"ace_"/"mace_" as appropriate')(f)
     return f
 
 
 def num_inputs_per_python_subprocess(f):
-    f = click.option('--num-inputs-per-python-subprocess', default=10, 
-    show_default=True, type=click.INT, 
+    f = click.option('--num-inputs-per-python-subprocess', default=10,
+    show_default=True, type=click.INT,
     help="Number of configs to be evaluated per each calculator initialization")(f)
     return f
-

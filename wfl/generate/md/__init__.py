@@ -1,4 +1,3 @@
-import os
 import sys
 
 import numpy as np
@@ -35,8 +34,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         ASE calculator or routine to call to create calculator
     dt: float
         time step (fs)
-	integrator: str, default "NVTBerendsen"
-		Select integrator. Default is Berendsen but also langevin can be used
+    integrator: str, default "NVTBerendsen"
+        Select integrator. Default is Berendsen but also langevin can be used
     steps: int
         number of steps
     temperature: float or (float, float, [int]]), or list of dicts  default None
@@ -81,7 +80,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
     -------
         list(Atoms) trajectories
     """
-    assert integrator in ["NVTBerendsen", "Langevin"] 
+    assert integrator in ["NVTBerendsen", "Langevin"]
 
     calculator = construct_calculator_picklesafe(calculator)
 
@@ -103,7 +102,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             # create a stage dict from a constant or ramp
             t_stage_data = temperature
             # start with constant
-            t_stage = { 'T_i': t_stage_data[0], 'T_f' : t_stage_data[0], 'traj_frac': 1.0, 'n_stages': 10, 'steps': steps }
+            t_stage = {'T_i': t_stage_data[0], 'T_f': t_stage_data[0], 'traj_frac': 1.0, 'n_stages': 10, 'steps': steps}
             if len(t_stage_data) >= 2:
                 # set different final T for ramp
                 t_stage['T_f'] = t_stage_data[1]
@@ -115,7 +114,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             for t_stage in temperature:
                 if 'n_stages' not in t_stage:
                     t_stage['n_stages'] = 10
-    
+
     for at_i, at in enumerate(atoms_to_list(atoms)):
         if autopara_per_item_info is not None:
             np.random.seed(autopara_per_item_info[at_i]["rng_seed"])
@@ -152,7 +151,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             md_constructor = VelocityVerlet
             # one stage, simple
             all_stage_kwargs = [stage_kwargs.copy()]
-            all_run_kwargs = [ {'steps': steps} ]
+            all_run_kwargs = [{'steps': steps}]
 
         else:
             # NVT or NPT

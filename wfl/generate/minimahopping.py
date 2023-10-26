@@ -17,7 +17,7 @@ from wfl.utils.parallel import construct_calculator_picklesafe
 
 
 def _get_MD_trajectory(rundir):
-    
+
     md_traj = []
     mdtrajfiles = sorted([file for file in Path(rundir).glob("md*.traj")])
     for mdtraj in mdtrajfiles:

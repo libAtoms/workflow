@@ -13,7 +13,8 @@ class RemoteInfo:
     resources: dict or Resources
         expyre.resources.Resources or kwargs for its constructor
     num_inputs_per_queued_job: int, default -100
-        num_inputs_per_python_subprocess for each job. If negative will be multiplied by iterable_autopara_wrappable num_inputs_per_python_subprocess
+        num_inputs_per_python_subprocess for each job. If negative will be multiplied by iterable_autopara_wrappable
+        num_inputs_per_python_subprocess
     pre_cmds: list(str)
         commands to run before starting job
     post_cmds: list(str)
@@ -37,7 +38,7 @@ class RemoteInfo:
     ignore_failed_jobs: bool, default False
         skip failures in remote jobs
     resubmit_killed_jobs: bool, default False
-        resubmit jobs that were killed without an exit status (out of walltime or crashed), 
+        resubmit jobs that were killed without an exit status (out of walltime or crashed),
         hoping that other parameters such as walltime or memory have been changed to make run complete this time
     hash_ignore: list(str), default []
         list of arguments to ignore when doing hash of remote function arguments to determine if it's already been done
@@ -68,4 +69,5 @@ class RemoteInfo:
 
 
     def __str__(self):
-        return f'{self.sys_name} {self.job_name} {self.resources} {self.num_inputs_per_queued_job} {self.exact_fit} {self.partial_node} {self.timeout} {self.check_interval}'
+        return (f'{self.sys_name} {self.job_name} {self.resources} {self.num_inputs_per_queued_job} {self.exact_fit} '
+                f'{self.partial_node} {self.timeout} {self.check_interval}')

@@ -1,23 +1,28 @@
-import os, sys, yaml, subprocess, shutil
-import warnings, tempfile
+import os
+import sys
+import subprocess
+import shutil
+import warnings
+import tempfile
+
 import ase.io
+
 from expyre import ExPyRe
-from wfl.configset import ConfigSet, OutputSpec
+from wfl.configset import ConfigSet
 from wfl.autoparallelize.utils import get_remote_info
-from expyre.resources import Resources
-from pathlib import Path 
+from pathlib import Path
 from shutil import copyfile
 
 
-def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_property_prefix="REF_", 
-        prev_checkpoint_file=None, valid_configs=None, test_configs=None, skip_if_present=True, run_dir=".", 
+def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_property_prefix="REF_",
+        prev_checkpoint_file=None, valid_configs=None, test_configs=None, skip_if_present=True, run_dir=".",
         verbose=True, dry_run=False, remote_info=None, remote_label=None, wait_for_results=True):
     """
         Fit MACE model.
 
 
     **Environment Variables**
-    
+
     * WFL_MACE_FIT_COMMAND: command to execute mace fit, e.g.
       ``python $HOME/mace/scripts/run_train.py ``
 
@@ -36,7 +41,7 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
     ref_property_prefix: str, default "REF_"
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
     prev_checkpoint_file: str, default None
-        Previous checkpoint file to restart from. 
+        Previous checkpoint file to restart from.
     valid_configs: ConfigSet, default None
         set of configurations to validate (mace param "valid_file")
     test_configs: ConfigSet, default None
@@ -59,26 +64,26 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
         label to match in WFL_EXPYRE_INFO
     wait_for_results: bool, default True
         wait for results of remotely executed job, otherwise return after starting job
-    """ 
+    """
     run_dir = Path(run_dir)
-  
+
     assert isinstance(mace_fit_params, dict)
-    if prev_checkpoint_file != None: 
+    if prev_checkpoint_file is not None:
         assert Path(prev_checkpoint_file).is_file(), "No previous checkpoint file found!"
-        
+
     if skip_if_present:
         try:
             print(f"check whether already fitted model exists as {run_dir}/{mace_name}.model")
             if not Path(f"{run_dir}/{mace_name}.model").is_file():
                 raise FileNotFoundError
-    
+
             return mace_name
         except (FileNotFoundError, RuntimeError):
             pass
-    
+
     if remote_info != '_IGNORE':
         remote_info = get_remote_info(remote_info, remote_label)
-    
+
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.input_files.copy()
         # run dir will contain only things created by fitting, so it's safe to copy the
@@ -97,31 +102,31 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
             remote_info.env_vars.append('WFL_MACE_FIT_OMP_NUM_THREADS=$EXPYRE_NUM_CORES_PER_NODE')
         if not any([var.split('=')[0] == 'WFL_NUM_PYTHON_SUBPROCESSES' for var in remote_info.env_vars]):
             remote_info.env_vars.append('WFL_NUM_PYTHON_SUBPROCESSES=$EXPYRE_NUM_CORES_PER_NODE')
-    
+
         remote_func_kwargs = {'fitting_configs': fitting_configs, 'mace_name': mace_name,
-                            'mace_fit_params': mace_fit_params, 'remote_info': '_IGNORE', 'run_dir': run_dir,
-                            "mace_fit_cmd" : mace_fit_cmd, 'prev_checkpoint_file' : prev_checkpoint_file,
-                            "valid_configs": valid_configs, "test_configs": test_configs}
-    
+                              'mace_fit_params': mace_fit_params, 'remote_info': '_IGNORE', 'run_dir': run_dir,
+                              'mace_fit_cmd': mace_fit_cmd, 'prev_checkpoint_file': prev_checkpoint_file,
+                              'valid_configs': valid_configs, 'test_configs': test_configs}
+
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                      env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=fit,
-                     kwargs = remote_func_kwargs)
-    
+                     kwargs=remote_func_kwargs)
+
         xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
                   exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
-    
+
         if not wait_for_results:
             return None
         results, stdout, stderr = xpr.get_results(timeout=remote_info.timeout, check_interval=remote_info.check_interval)
-    
+
         sys.stdout.write(stdout)
         sys.stderr.write(stderr)
-    
+
         # no outputs to rename since everything should be in run_dir
         xpr.mark_processed()
-        
+
         return results
-    
+
     run_dir.mkdir(parents=True, exist_ok=True)
 
     if valid_configs is not None:
@@ -135,7 +140,7 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
         elif shutil.which("mace_run_train") is not None:
             mace_fit_cmd = shutil.which("mace_run_train")
         else:
-            raise Exception("Path for run_train.py not found.") 
+            raise Exception("Path for run_train.py not found.")
 
     fitting_configs_scratch_filename = _prep_configs_file(fitting_configs, mace_fit_params, "train_file")
 
@@ -148,22 +153,22 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
             mace_fit_cmd += f" --{key}"
         else:
             mace_fit_cmd += f" --{key}='{val}'"
- 
+
     if dry_run or verbose:
         print('fitting command:\n', mace_fit_cmd)
-    
+
     orig_omp_n = os.environ.get('OMP_NUM_THREADS', None)
     if 'WFL_MACE_FIT_OMP_NUM_THREADS' in os.environ:
         os.environ['OMP_NUM_THREADS'] = os.environ['WFL_MACE_FIT_OMP_NUM_THREADS']
-    
+
     try:
         remote_cwd = os.getcwd()
 
-        # previous checkpoint file should be moved by remote_info.input_files function 
+        # previous checkpoint file should be moved by remote_info.input_files function
         if prev_checkpoint_file is not None:
             checkpoint_dir = run_dir / "checkpoints"
             checkpoint_dir.mkdir(parents=True, exist_ok=True)
-            # check if file exists in the destination. 
+            # check if file exists in the destination.
             try:
                 copyfile(prev_checkpoint_file, f"{checkpoint_dir}/{Path(prev_checkpoint_file).stem}.pt")
             except shutil.SameFileError:
@@ -171,14 +176,21 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
 
         os.chdir(run_dir)
         subprocess.run(mace_fit_cmd, shell=True, check=True)
-        os.chdir(remote_cwd)    
-        
+        os.chdir(remote_cwd)
+
         if fitting_configs_scratch_filename is not None:
             Path(fitting_configs_scratch_filename).unlink()
+        if valid_configs is not None and valid_configs_scratch_filename is not None:
+            Path(valid_configs_scratch_filename).unlink()
+        if test_configs is not None and test_configs_scratch_filename is not None:
+            Path(test_configs_scratch_filename).unlink()
 
-    except subprocess.CalledProcessError as e:
-        print("Failure in calling MACE fitting with error code:", e.returncode)
-        raise e
+    except subprocess.CalledProcessError as exc:
+        print("Failure in calling MACE fitting with error code:", exc.returncode)
+        raise exc
+
+    if orig_omp_n is not None:
+        os.environ["OMP_NUM_THREADS"] = orig_omp_n
 
 
 def _prep_configs_file(configs, use_params, key):
@@ -195,9 +207,9 @@ def _prep_configs_file(configs, use_params, key):
         MACE fit parameters, will have input filename set based on where configs were written to
 
     Return:
-	-------
+    -------
     filename
-        temporary file name or None if already file is written beforehand 
+        temporary file name or None if already file is written beforehand
     """
 
     configs_filename = configs.one_file()
@@ -209,7 +221,7 @@ def _prep_configs_file(configs, use_params, key):
         if key in use_params.keys():
             warnings.warn(f"Ignoring configs file '{use_params[key]}' in mace_fit_params, "
                           f"instead using configs passed in and saved to '{filename}'.")
-    
+
         use_params[key] = filename
         ase.io.write(filename, configs)
 
