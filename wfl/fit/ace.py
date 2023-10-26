@@ -268,7 +268,7 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
         input_files = remote_info.input_files.copy()
         # run dir will contain only things created by fitting, so it's safe to copy the
         # entire thing back as output
-        output_files = remote_info + [str(run_dir)]
+        output_files = remote_info.output_files + [str(run_dir)]
 
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                       env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=run_ace_fit,
