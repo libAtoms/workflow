@@ -121,8 +121,9 @@ def descriptor_2brn_uniform_file(descriptor, ident='', desc_i=0):
 
     Parameters
     ----------
-    descriptor: dict 
-        nested structure with some contained dicts that have 'sparse_method' = '\_2BRN_UNIFORM_FILE\_', and also ``n_sparse``, ``exponents``, ``cutoff``
+    descriptor: dict
+        nested structure with some contained dicts that have 'sparse_method' = '\_2BRN_UNIFORM_FILE\_',
+        and also ``n_sparse``, ``exponents``, ``cutoff``
     ident: str, default ''
         identifier string to add to sparsepoints filename
     desc_i: int, default 0

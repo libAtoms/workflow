@@ -7,8 +7,9 @@ from wfl.configset import ConfigSet
 import ase.io
 import pytest
 
+if not os.environ.get("WFL_MACE_FIT_COMMAND") and shutil.which("mace_run_train") is None:
+    pytestmark = pytest.mark.skip(reason="No mace_run_train found in WFL_MACE_FIT_COMMAND or path")
 
-@pytest.mark.skipif(not os.environ.get("WFL_MACE_FIT_COMMAND") and shutil.which("mace_run_train") is None, reason="No mace_run_train found in WFL_MACE_FIT_COMMAND or path")
 def test_mace_fit_from_list(request, tmp_path, monkeypatch):
 
     monkeypatch.chdir(tmp_path)
@@ -29,7 +30,6 @@ def test_mace_fit_from_list(request, tmp_path, monkeypatch):
     assert (tmp_path / "test.model").stat().st_size > 0
 
 
-@pytest.mark.skipif(not os.environ.get("WFL_MACE_FIT_COMMAND") and shutil.which("mace_run_train") is None, reason="No mace_run_train found in WFL_MACE_FIT_COMMAND or path")
 def test_mace_fit(request, tmp_path, monkeypatch):
 
     monkeypatch.chdir(tmp_path)
@@ -50,3 +50,41 @@ def test_mace_fit(request, tmp_path, monkeypatch):
     assert (tmp_path / "test.model").stat().st_size > 0
 
 
+@pytest.mark.remote
+def test_mace_fit_from_list_remote(request, tmp_path, monkeypatch, expyre_systems, remoteinfo_env):
+    run_remote_test(test_mace_fit_from_list, request, tmp_path, monkeypatch, expyre_systems, remoteinfo_env)
+
+
+@pytest.mark.remote
+def test_mace_fit_remote(request, tmp_path, monkeypatch, expyre_systems, remoteinfo_env):
+    run_remote_test(test_mace_fit, request, tmp_path, monkeypatch, expyre_systems, remoteinfo_env)
+
+
+def run_remote_test(test_func, request, tmp_path, monkeypatch, expyre_systems, remoteinfo_env):
+    env_vars = ['WFL_ACE_FIT_OMP_NUM_THREADS=$EXPYRE_NUM_CORES_PER_NODE']
+    # add things that often have to be customized for MACE fitting to work. Should 
+    # this kind of mechanism be more generalized rather than hard wired here?
+    # after all, the person who knows the environment in which the tests are run 
+    # should know what env vars will need to be replicated in the remote job
+    if "PYTHONPATH" in os.environ:
+        env_vars += ['PYTHONPATH="' + os.environ["PYTHONPATH"] + '"']
+    if "LD_PRELOAD" in os.environ:
+        env_vars += ['LD_PRELOAD="' + os.environ["LD_PRELOAD"] + '"']
+
+    if "WFL_MACE_FIT_COMMAND" in os.environ:
+        env_vars += ["WFL_MACE_FIT_COMMAND=" + os.environ["WFL_MACE_FIT_COMMAND"]]
+    ri = {'resources' : {'max_time': '10m', 'num_nodes': 1},
+          'pre_cmds': [ f'export PYTHONPATH={Path(__file__).parent.parent}:$PYTHONPATH'],
+          'env_vars' : env_vars}
+
+    for sys_name in expyre_systems:
+        if sys_name.startswith('_'):
+            continue
+
+        ri['sys_name'] = sys_name
+        ri['job_name'] = 'pytest_mace_fit_'+sys_name
+
+        remoteinfo_env(ri)
+
+        monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps(ri))
+        test_func(request, tmp_path, monkeypatch) # , run_dir=f'run_dir_{sys_name}')

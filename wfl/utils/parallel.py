@@ -2,7 +2,7 @@
 try:
     from ase.calculators.calculator import BaseCalculator, Calculator
     _calc_types = (BaseCalculator, Calculator)
-except:
+except ImportError:
     from ase.calculators.calculator import Calculator
     _calc_types = Calculator
 

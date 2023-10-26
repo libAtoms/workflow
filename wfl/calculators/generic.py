@@ -1,5 +1,4 @@
 import warnings
-import functools
 
 from ase import Atoms
 from ase.calculators.calculator import all_changes

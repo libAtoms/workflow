@@ -1,10 +1,9 @@
-from pathlib import Path
 import click
 from wfl.cli import cli_options as opt
-from wfl.configset import ConfigSet, OutputSpec
 import wfl.descriptors.quippy
 import wfl.select.by_descriptor
 from wfl.select.simple import by_bool_func
+
 
 @click.command("cur")
 @click.option("--n-configs", "-N", type=click.INT, required=True,
@@ -19,7 +18,7 @@ from wfl.select.simple import by_bool_func
 @opt.outputs
 def cur(ctx, inputs, outputs, n_configs, key, keep_descriptor,
                 kernel_exponent, deterministic, stochastic_seed):
-    """Select structures by CUR"""    
+    """Select structures by CUR"""
 
     wfl.select.by_descriptor.CUR_conf_global(
         inputs=inputs,
@@ -27,12 +26,11 @@ def cur(ctx, inputs, outputs, n_configs, key, keep_descriptor,
         num=n_configs,
         at_descs_info_key=key, kernel_exp=kernel_exponent, stochastic=not deterministic,
         keep_descriptor_info=keep_descriptor,
-        stochastic_seed=stochastic_seed
-        )
+        stochastic_seed=stochastic_seed)
 
 
 @click.command("lambda")
-@click.option("--exec-code", "-e", required=True, 
+@click.option("--exec-code", "-e", required=True,
 help='String to be evaluated by the lambda function. Will be substituted into `eval(\"lambda atoms: \" + exec_code)`.')
 @click.pass_context
 @opt.inputs
@@ -45,7 +43,4 @@ def by_lambda(ctx, inputs, outputs, exec_code):
     by_bool_func(
         inputs=inputs,
         outputs=outputs,
-        at_filter=at_filter_fun
-    )
-
-    
+        at_filter=at_filter_fun)

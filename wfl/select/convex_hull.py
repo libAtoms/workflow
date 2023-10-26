@@ -1,6 +1,5 @@
 import sys
 
-from wfl.configset import ConfigSet
 from wfl.select.selection_space import composition_space_Zs, composition_space_coord
 from wfl.utils.convex_hull import find_hull
 

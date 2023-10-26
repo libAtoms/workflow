@@ -12,6 +12,7 @@ import numpy as np
 
 from .remoteinfo import RemoteInfo
 
+
 def grouper(n, iterable):
     """iterator that goes over iterable in specified size groups
 
@@ -47,7 +48,7 @@ def get_remote_info(remote_info, remote_label, env_var="WFL_EXPYRE_INFO"):
     remote_label: str, default None
         remote_label to use for operation, to match to remote_info dict keys.  If none, use calling routine filename '::' calling function
     env_var: str, default "WFL_EXPYRE_INFO"
-        environment var to get information from if not present in `remote\_info` argument
+        environment var to get information from if not present in `remote_info` argument
 
     Returns
     -------
@@ -61,7 +62,8 @@ def get_remote_info(remote_info, remote_label, env_var="WFL_EXPYRE_INFO"):
             remote_info = os.environ[env_var]
             if ' ' in remote_info:
                 # if it's not JSON, it must be a filename, so presence of space is suspicious
-                warnings.warn(f'remote_info "{remote_info}" from WFL_EXPYRE_INFO has whitespace, but not parseable as JSON/YAML with error {exc}')
+                warnings.warn(f'remote_info "{remote_info}" from WFL_EXPYRE_INFO has whitespace, but not parseable as '
+                              f'JSON/YAML with error {exc}')
         if isinstance(remote_info, str):
             # filename
             with open(remote_info) as fin:
@@ -102,6 +104,7 @@ def get_remote_info(remote_info, remote_label, env_var="WFL_EXPYRE_INFO"):
 
     return remote_info
 
+
 def get_root_global_seed(kwargs, op, label):
     """get root global seed from kwargs
 
@@ -118,7 +121,8 @@ def get_root_global_seed(kwargs, op, label):
 
     Returns
     -------
-    root_global_seed: int seed with value kwargs["autopara_rng_seed"] or random int if value is None or not in kwargs, or None if "autopara_rng_seed" is not in op's signature
+    root_global_seed: int seed with value kwargs["autopara_rng_seed"] or random int if value is None or not in
+                      kwargs, or None if "autopara_rng_seed" is not in op's signature
     """
     if "autopara_rng_seed" in inspect.signature(op).parameters:
         if kwargs.get("autopara_rng_seed") is None:

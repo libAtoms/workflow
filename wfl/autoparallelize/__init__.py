@@ -4,3 +4,5 @@ assert autoparallelize_docstring
 
 from .autoparainfo import AutoparaInfo
 from .remoteinfo import RemoteInfo
+
+__all__ = ["autoparallelize", "autoparallelize_docstring", "AutoparaInfo", "RemoteInfo"]

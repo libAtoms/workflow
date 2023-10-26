@@ -2,8 +2,6 @@ import sys
 
 import numpy as np
 
-from wfl.configset import ConfigSet
-
 
 def _select_by_bin(weights, bin_edges, quantities, n, kT, replace=False, verbose=False):
     if verbose:
@@ -35,7 +33,7 @@ def _select_by_bin(weights, bin_edges, quantities, n, kT, replace=False, verbose
             prefactor_h *= 2
     # binary search for optimal prefactor
     while prefactor_h - prefactor_l > 1.0e-10 * prefactor_h:
-        prefactor_m = (prefactor_l + prefactor_h)/2.0
+        prefactor_m = (prefactor_l + prefactor_h) / 2.0
         n_from_bin = [min(int(w), int(np.round(prefactor_m * np.exp(-bin_ctr / kT)))) for bin_ctr, w in
                       zip(bin_centers, weights)]
         total_n = sum(n_from_bin)

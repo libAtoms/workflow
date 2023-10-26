@@ -1,12 +1,9 @@
 import sys
-import os
-import warnings
-import re
 import docstring_parser
 import inspect
 
 
-from wfl.configset import ConfigSet, OutputSpec
+from wfl.configset import OutputSpec
 from .pool import do_in_pool
 from .remote import do_remotely
 from .autoparainfo import AutoparaInfo
@@ -101,7 +98,7 @@ def autoparallelize_docstring(wrapped_func, wrappable_func, input_iterable_type,
             returns_i = p_i
     if returns_i is not None:
         # replace returns
-        parsed.meta[returns_i] =  docstring_parser.DocstringReturns(*_autopara_docstring_returns)
+        parsed.meta[returns_i] = docstring_parser.DocstringReturns(*_autopara_docstring_returns)
     else:
         # append returns
         parsed.meta.append(docstring_parser.DocstringReturns(*_autopara_docstring_returns))
@@ -117,7 +114,9 @@ def autoparallelize(func, *args, default_autopara_info={}, **kwargs):
     .. code-block:: python
 
         def autoparallelized_op(*args, **kwargs):
-            return autoparallelize(op, *args, default_autopara_info={"autoparallelize_keyword_param_1": val, "autoparallelize_keyword_param_2": val, ... }, **kwargs )
+            return autoparallelize(op, *args,
+                default_autopara_info={"autoparallelize_keyword_param_1": val, "autoparallelize_keyword_param_2": val, ... },
+                **kwargs )
         autoparallelized_op.doc = autopara_docstring(op.__doc__, "iterable_contents")
 
     The autoparallelized function can then be called with
@@ -139,7 +138,8 @@ def autoparallelize(func, *args, default_autopara_info={}, **kwargs):
         function to wrap in _autoparallelize_ll()
 
     *args: list
-        positional arguments to func, plus optional first or first and second inputs (iterable) and outputs (OutputSpec) arguments to wrapped function
+        positional arguments to func, plus optional first or first and second inputs (iterable) and outputs (OutputSpec) arguments
+        to wrapped function
 
     default_autopara_info: dict, default {}
         dict with default values for AutoparaInfo constructor keywords setting default autoparallelization info

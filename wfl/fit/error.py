@@ -1,7 +1,5 @@
 import warnings
-import sys
 import re
-import itertools
 
 import pandas as pd
 import numpy as np
@@ -103,7 +101,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
 
     # compute diffs and store in all_diffs, and weights in all_weights
     all_diffs = {}
-    all_parity = { "ref": {}, "calc": {} }
+    all_parity = {"ref": {}, "calc": {}}
     all_weights = {}
 
     missed_prop_counter = {}
@@ -135,7 +133,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                 if by_species:
                     raise ValueError("/Z only possible in atom_properties")
                 data = at.info
-            else: # atom_properties
+            else:  # atom_properties
                 if per_atom:
                     raise ValueError("/atom only possible in config_properties")
                 data = at.arrays
@@ -166,7 +164,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                 # things by Z will lump them all together.
                 atom_split_indices = np.asarray(range(len(ref_quant)))
                 atom_split_groups = [(atom_split_indices, "")]
-            else: # atom_properties
+            else:  # atom_properties
                 # Make separate groups for each atomic number Z, so their errors
                 # can be tabulated separately.
                 Zs = at.numbers
@@ -197,14 +195,14 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                     selected_calc_quant = np.linalg.norm(selected_calc_quant, axis=1)
 
 
-                _dict_add([all_diffs, all_weights,            all_parity["ref"],   all_parity["calc"]],
-                          [diff,      _promote(weight, diff), selected_ref_quant,           selected_calc_quant        ],
+                _dict_add([all_diffs, all_weights,            all_parity["ref"],  all_parity["calc"]],
+                          [diff,      _promote(weight, diff), selected_ref_quant, selected_calc_quant],
                           at_category, prop + atom_split_index_label)
 
     if len(missed_prop_counter.keys()) > 0:
         for missed_prop, count in missed_prop_counter.items():
             if count == len(list(inputs)):
-                raise RuntimeError(f"Missing reference ({ref_property_prefix}) or calculated ({calc_property_prefix}) "\
+                raise RuntimeError(f"Missing reference ({ref_property_prefix}) or calculated ({calc_property_prefix}) "
                                     f"property '{missed_prop}' in all of the configs. Is the spelling correct? ")
             else:
                 warnings.warn(f"Missing reference or calculated property '{missed_prop}', {count} times")
@@ -221,7 +219,7 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
             MAE = np.sum(np.abs(diffs) * weights) / np.sum(weights)
             num = len(diffs)
 
-            all_errors[prop][cat] = {'RMSE': RMSE, 'MAE': MAE, 'count' : num}
+            all_errors[prop][cat] = {'RMSE': RMSE, 'MAE': MAE, 'count': num}
 
     # if len(all_diffs) == 0:
     #     raise RuntimeError(f"No values were found to calculate error from."\
@@ -257,15 +255,15 @@ def value_error_scatter(all_errors, all_diffs, all_parity, output, properties=No
     cmap: str, default None
         colormap name to use. If None use default based on number of categories.
     units_dict: dict, default None
-        dictionary with units for non-default properties. Example: 
+        dictionary with units for non-default properties. Example:
         {"energy": {"parity": ("eV", 1.0), "error": ("meV", 1.0e3)}},
-        Where each tuple containes units lable and conversion factor from ASE-default units.  
+        Where each tuple containes units lable and conversion factor from ASE-default units.
     """
 
     assert error_type in ["RMSE", "MAE"], f"'error_type' must be 'RMSE' or 'MAE', not {error_type}."
 
-    num_rows = sum([plot_parity, plot_error])   # one for parity, one for errors
-    num_columns = len(all_errors.keys()) # one column per property
+    num_rows = sum([plot_parity, plot_error])  # one for parity, one for errors
+    num_columns = len(all_errors.keys())  # one column per property
     side = 4.5
     fig = Figure(figsize=(side * num_columns, side * num_rows))
     gs = fig.add_gridspec(num_rows, num_columns, wspace=0.25, hspace=0.25)
@@ -360,16 +358,16 @@ def select_units(prop, plt_type, units_dict=None):
 
     Parameters
     ----------
-    prop: str 
-        name of property. By default upported "energy", "atomization_energy", "forces" and "virial", 
+    prop: str
+        name of property. By default upported "energy", "atomization_energy", "forces" and "virial",
         in combination with "/atom", "/comp", "/Z" as appropriate.
     plt_type: str in ["error", "parity"]
         type of plot
-    units_dict: dict, default None 
-        dictionary with units for non-default properties. Example: 
+    units_dict: dict, default None
+        dictionary with units for non-default properties. Example:
         {"energy": {"parity": ("eV", 1.0), "error": ("meV", 1.0e3)}},
-        Where each tuple containes units lable and conversion factor from ASE-default units. 
- 
+        Where each tuple containes units lable and conversion factor from ASE-default units.
+
 
     Returns
     -------
@@ -399,7 +397,7 @@ def select_units(prop, plt_type, units_dict=None):
         prop = re.sub(r"atomization_energy", "energy", prop)
 
     if prop not in use_units_dict or plt_type not in use_units_dict[prop]:
-        raise KeyError(f"Unknown property ({prop}) or plot type ({plt_type}).") 
+        raise KeyError(f"Unknown property ({prop}) or plot type ({plt_type}).")
 
     return use_units_dict[prop][plt_type]
 
@@ -413,7 +411,7 @@ def _annotate_parity_plot(ax, property, ref_property_prefix, calc_property_prefi
 
     xmin, xmax = ax.get_xlim()
     ymin, ymax = ax.get_ylim()
-    lims = (min([xmin, ymin])-0.1, max([xmax, ymax])+0.1)
+    lims = (min([xmin, ymin]) - 0.1, max([xmax, ymax]) + 0.1)
     ax.set_xlim(lims)
     ax.set_ylim(lims)
     ax.plot(lims, lims, c='k', linewidth=0.8)
@@ -444,10 +442,10 @@ def errors_dumps(errors, error_type="RMSE", precision=2):
 
     df = errors_to_dataframe(errors, error_type=error_type)
     df_str = df.to_string(
-        max_rows = None,
-        max_cols = None,
-        float_format = "{{:.{:d}f}}".format(precision).format,
-        sparsify = False
+        max_rows=None,
+        max_cols=None,
+        float_format="{{:.{:d}f}}".format(precision).format,
+        sparsify=False
     )
     return df_str
 
@@ -463,9 +461,9 @@ def errors_to_dataframe(errors, error_type="RMSE", units_dict=None):
     error_type: str in ["RMSE, "MAE"], default "RMSE"
         root-mean-square or maximum-absolute error
     units_dict: dict, None
-        dictionary with units for non-default properties. Example: 
+        dictionary with units for non-default properties. Example:
         {"energy": {"parity": ("eV", 1.0), "error": ("meV", 1.0e3)}},
-        Where each tuple containes units lable and conversion factor from ASE-default units. 
+        Where each tuple containes units lable and conversion factor from ASE-default units.
     """
     # errors keys
     # property : category : RMSE/MAE/count
@@ -503,7 +501,7 @@ def errors_to_dataframe(errors, error_type="RMSE", units_dict=None):
     df = pd.DataFrame.from_dict(df_errors)
 
     # sort rows alphabetically
-    new_rows =  [row for row in df.index if row != "_ALL_"]
+    new_rows = [row for row in df.index if row != "_ALL_"]
     new_rows = natural_sort(new_rows) + ["_ALL_"]
 
     df.sort_index(key=lambda index: pd.Index([new_rows.index(i) for i in index]), inplace=True)
@@ -511,6 +509,8 @@ def errors_to_dataframe(errors, error_type="RMSE", units_dict=None):
     return df
 
 def natural_sort(l):
-    convert = lambda text: int(text) if text.isdigit() else text.lower()
-    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+    def convert(text):
+        return int(text) if text.isdigit() else text.lower()
+    def alphanum_key(key):
+        return [convert(c) for c in re.split('([0-9]+)', key)]
     return sorted(l, key=alphanum_key)

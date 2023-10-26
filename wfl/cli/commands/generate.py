@@ -61,9 +61,4 @@ def buildcell(ctx, outputs, buildcell_input, buildcell_exec, n_configs,
         buildcell_input=buildcell_input_txt,
         extra_info=extra_info,
         perturbation=perturbation,
-        verbose=ctx.obj["verbose"]
-    )
-
-
-
-
+        verbose=ctx.obj["verbose"])
