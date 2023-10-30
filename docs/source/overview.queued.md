@@ -9,6 +9,12 @@ should be executed this way.  Any remote machine to be used requires that the `w
 module be installed.  If needed, commands needed to make this module available (e.g. setting `PYTHONPATH`)
 can be set on a per-machine basis in the `config.json` file mentioned below.
 
+```{warning}
+To facilitate restarts of interrupted operations, submitted jobs are cached.  If the code 
+executed by the job is changed, this may result in cached but incorrect output being used.
+See [discussion below](sec:example:restarts).
+```
+
 In addition, `wfl.fit.gap_simple`, `wfl.fit.gap_multistage`, and `wfl.fit.ace` have been wrapped, as a single
 job each.  The GAP simple fit is controlled by the `WFL_GAP_SIMPLE_FIT_REMOTEINFO` env var.  Setting
 this variable will also lead to the multistage fit submitting each simple fit as its own job.
@@ -17,8 +23,10 @@ with the `WFL_GAP_MULTISTAGE_FIT_REMOTEINFO` env var.  In principle, doing each 
 as its own job could enable running committee fits in parallel, but that is not supported right now.
 The env var `WFL_ACE_FIT_REMOTEINFO` is used for ACE fits.
 
-[NOTE: now that the multistage fit does very little other than the repeated simple fitting, does
-it need its own level of remote job execution]
+```{note}
+Now that the multistage fit does very little other than the repeated simple fitting, does
+it need its own level of remote job execution?
+```
 
 The `*REMOTEINFO` and `WFL_EXPYRE_INFO` environment variables allow to flexibly control which parts of 
 a (likely long and multi-file) fitting script are executed remotely and with what resources without a need
@@ -26,6 +34,7 @@ to change the script itself thus allowing for more flexibility. For simpler scri
 may be given to the to-be remotely submitted function instead of setting the environment variables. 
 
 
+(sec:example)=
 ## Example
 
 The workflow (`do_workflow.py`) is essentially identical to what you'd otherwise construct:
@@ -81,6 +90,9 @@ the initial `_`, not `.`, so it is more visible) can optionally be created at
 the directory hierarchy level that indicates the scope of the project,
 to separate the jobs database from any other project.
 
+(sec:example:restarts)=
+### Restarts
+
 Restarts are supposed to be handled automatically - if the workflow script is
 interrupted, just rerun it.  If the entire `autoparallelize` call is complete,
 the default behavior of `OutputSpec` will allow
@@ -95,10 +107,27 @@ argument (obviously only if ignoring it for the purpose of detecting
 duplicate submission is indeed correct).  All functions already ignore the
 `outputs` `OutputSpec` argument.
 
+```{warning}
+The hashing mechanism is only designed for interrupted runs, and does
+not detect changes to the called function (or to any functions that
+function calls).  If the code is being modified, the user should erase the
+`ExPyRe` staged job directories, and clean up the `sqlite` database file,
+before rerunning.  Using a per-project `_expyre` directory makes this
+easier, since the database file can simply be erased, otherwise the `xpr` command
+line tool needs to be used to delete the previously created jobs.
+
+Note that this is only relevant to incomplete autoparallelized
+operations, since any completed operation (once all the remote job outputs have
+been gathered into the location specified in the `OutputSpec`) no longer depends on 
+anything `ExPyRe`-related.  See also the warning in the 
+`OutputSpec` [documentation](overview.configset).
+```
+
 ## WFL\_EXPYRE\_INFO syntax
 
 The `WFL_EXPYRE_INFO` variable contains a JSON or the name of a file that contains a JSON.  The JSON encodes a dict with keys
-indicating particular function calls, and values containing arguments for constructing [`RemoteInfo`](wfl.autoparallelize.RemoteInfo) objects.
+indicating particular function calls, and values containing arguments for constructing 
+[`RemoteInfo`](wfl.autoparallelize.remoteinfo.RemoteInfo) objects.
 
 
 ### Keys
