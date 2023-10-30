@@ -377,6 +377,15 @@ document.write(`
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> can encapsulate one or multiple lists of <code class="docutils literal notranslate"><span class="pre">ase.atoms.Atoms</span></code> objects, or reference to stored sets of configuration in files (ABCD databases are currently unsupported). It can function as an iterator over all configs in the input, or iterate over groups of them according to the input definition with the <code class="docutils literal notranslate"><span class="pre">ConfigSet().groups()</span></code> method. The <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> must be initialized with its input configurations, files, or other <code class="docutils literal notranslate"><span class="pre">ConfigSet</span></code> objects.</p>
 <p><code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> works as the output layer, used for writing results during iterations, but the actual writing is not guaranteed to happen until the operation is closed with <code class="docutils literal notranslate"><span class="pre">OutputSpec.close()</span></code>. It is possible to map a different output file to each input file, which will result in the outputs corresponding to each input file ending up in a different output file.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>To efficiently restart interrupted operations, if the <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> object specifies storing the output
+data in a file, autoparallelized workflow operations will use the existing file instead of redoing the calculation.
+If the workflow code (or any functions that are called by it, directly or indirectly) are changed, this will not
+be detected, and the previous, perhaps no longer correct, output will still be used.
+The user must manually delete output files from operations that have been changed to force
+the calculation to be redone.</p>
+</div>
 <p>Users should consult the simple example in <a class="reference internal" href="first_example.html"><span class="doc">First Example</span></a>, or the documentation of the two classes at
 <a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wfl.configset.ConfigSet()</span></code></a> and <a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wfl.configset.OutputSpec()</span></code></a></p>
 <div class="section" id="internals-for-developers">

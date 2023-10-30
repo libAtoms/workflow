@@ -357,7 +357,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#restarts">Restarts</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl-expyre-info-syntax">WFL_EXPYRE_INFO syntax</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keys">Keys</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#values">Values</a></li>
@@ -388,6 +391,12 @@ env var <code class="docutils literal notranslate"><span class="pre">WFL_EXPYRE_
 should be executed this way.  Any remote machine to be used requires that the <code class="docutils literal notranslate"><span class="pre">wfl</span></code> python
 module be installed.  If needed, commands needed to make this module available (e.g. setting <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code>)
 can be set on a per-machine basis in the <code class="docutils literal notranslate"><span class="pre">config.json</span></code> file mentioned below.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>To facilitate restarts of interrupted operations, submitted jobs are cached.  If the code
+executed by the job is changed, this may result in cached but incorrect output being used.
+See <a class="reference internal" href="#sec-example-restarts"><span class="std std-ref">discussion below</span></a>.</p>
+</div>
 <p>In addition, <code class="docutils literal notranslate"><span class="pre">wfl.fit.gap_simple</span></code>, <code class="docutils literal notranslate"><span class="pre">wfl.fit.gap_multistage</span></code>, and <code class="docutils literal notranslate"><span class="pre">wfl.fit.ace</span></code> have been wrapped, as a single
 job each.  The GAP simple fit is controlled by the <code class="docutils literal notranslate"><span class="pre">WFL_GAP_SIMPLE_FIT_REMOTEINFO</span></code> env var.  Setting
 this variable will also lead to the multistage fit submitting each simple fit as its own job.
@@ -395,14 +404,17 @@ In addition, the multistage fit can be turned into a single job containing all t
 with the <code class="docutils literal notranslate"><span class="pre">WFL_GAP_MULTISTAGE_FIT_REMOTEINFO</span></code> env var.  In principle, doing each simple fit
 as its own job could enable running committee fits in parallel, but that is not supported right now.
 The env var <code class="docutils literal notranslate"><span class="pre">WFL_ACE_FIT_REMOTEINFO</span></code> is used for ACE fits.</p>
-<p>[NOTE: now that the multistage fit does very little other than the repeated simple fitting, does
-it need its own level of remote job execution]</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Now that the multistage fit does very little other than the repeated simple fitting, does
+it need its own level of remote job execution?</p>
+</div>
 <p>The <code class="docutils literal notranslate"><span class="pre">*REMOTEINFO</span></code> and <code class="docutils literal notranslate"><span class="pre">WFL_EXPYRE_INFO</span></code> environment variables allow to flexibly control which parts of
 a (likely long and multi-file) fitting script are executed remotely and with what resources without a need
 to change the script itself thus allowing for more flexibility. For simpler scripts, <code class="docutils literal notranslate"><span class="pre">RemoteInfo</span></code> python object
 may be given to the to-be remotely submitted function instead of setting the environment variables.</p>
 <div class="section" id="example">
-<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading">#</a></h2>
+<span id="sec-example"></span><h2>Example<a class="headerlink" href="#example" title="Permalink to this heading">#</a></h2>
 <p>The workflow (<code class="docutils literal notranslate"><span class="pre">do_workflow.py</span></code>) is essentially identical to what you’d otherwise construct:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
 <span class="kn">from</span> <span class="nn">wfl.generate_configs.minim</span> <span class="kn">import</span> <span class="n">run</span>
@@ -453,6 +465,8 @@ mentioned below), and a directory called <code class="docutils literal notransla
 the initial <code class="docutils literal notranslate"><span class="pre">_</span></code>, not <code class="docutils literal notranslate"><span class="pre">.</span></code>, so it is more visible) can optionally be created at
 the directory hierarchy level that indicates the scope of the project,
 to separate the jobs database from any other project.</p>
+<div class="section" id="restarts">
+<span id="sec-example-restarts"></span><h3>Restarts<a class="headerlink" href="#restarts" title="Permalink to this heading">#</a></h3>
 <p>Restarts are supposed to be handled automatically - if the workflow script is
 interrupted, just rerun it.  If the entire <code class="docutils literal notranslate"><span class="pre">autoparallelize</span></code> call is complete,
 the default behavior of <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> will allow
@@ -466,11 +480,28 @@ pickled deterministically (e.g. <code class="docutils literal notranslate"><span
 argument (obviously only if ignoring it for the purpose of detecting
 duplicate submission is indeed correct).  All functions already ignore the
 <code class="docutils literal notranslate"><span class="pre">outputs</span></code> <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> argument.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The hashing mechanism is only designed for interrupted runs, and does
+not detect changes to the called function (or to any functions that
+function calls).  If the code is being modified, the user should erase the
+<code class="docutils literal notranslate"><span class="pre">ExPyRe</span></code> staged job directories, and clean up the <code class="docutils literal notranslate"><span class="pre">sqlite</span></code> database file,
+before rerunning.  Using a per-project <code class="docutils literal notranslate"><span class="pre">_expyre</span></code> directory makes this
+easier, since the database file can simply be erased, otherwise the <code class="docutils literal notranslate"><span class="pre">xpr</span></code> command
+line tool needs to be used to delete the previously created jobs.</p>
+<p>Note that this is only relevant to incomplete autoparallelized
+operations, since any completed operation (once all the remote job outputs have
+been gathered into the location specified in the <code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code>) no longer depends on
+anything <code class="docutils literal notranslate"><span class="pre">ExPyRe</span></code>-related.  See also the warning in the
+<code class="docutils literal notranslate"><span class="pre">OutputSpec</span></code> <a class="reference internal" href="overview.configset.html"><span class="doc std std-doc">documentation</span></a>.</p>
+</div>
+</div>
 </div>
 <div class="section" id="wfl-expyre-info-syntax">
 <h2>WFL_EXPYRE_INFO syntax<a class="headerlink" href="#wfl-expyre-info-syntax" title="Permalink to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">WFL_EXPYRE_INFO</span></code> variable contains a JSON or the name of a file that contains a JSON.  The JSON encodes a dict with keys
-indicating particular function calls, and values containing arguments for constructing <a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.RemoteInfo" title="wfl.autoparallelize.RemoteInfo"><span class="xref myst py py-class"><code class="docutils literal notranslate"><span class="pre">RemoteInfo</span></code></span></a> objects.</p>
+indicating particular function calls, and values containing arguments for constructing
+<a class="reference internal" href="wfl.autoparallelize.html#wfl.autoparallelize.remoteinfo.RemoteInfo" title="wfl.autoparallelize.remoteinfo.RemoteInfo"><span class="xref myst py py-class"><code class="docutils literal notranslate"><span class="pre">RemoteInfo</span></code></span></a> objects.</p>
 <div class="section" id="keys">
 <h3>Keys<a class="headerlink" href="#keys" title="Permalink to this heading">#</a></h3>
 <p>Each key consist of a comma separated list of <code class="docutils literal notranslate"><span class="pre">remote_label</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;end_of_path_to_file::function_name&quot;</span></code>.</p>
@@ -568,7 +599,10 @@ in path):</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#restarts">Restarts</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl-expyre-info-syntax">WFL_EXPYRE_INFO syntax</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keys">Keys</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#values">Values</a></li>
