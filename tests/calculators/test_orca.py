@@ -26,9 +26,6 @@ from wfl.autoparallelize import AutoparaInfo
 pytestmark = pytest.mark.xfail(reason="calculator needs to be updated to work with latest gitlab version of ase")
 
 
-pytestmark = pytest.mark.xfail(reason="calculator needs to be updated to work with latest gitlab version of ase")
-
-
 ref_parameters = dict(charge=0,
                       mult=1,
                       orca_command="dummy_no_orca_exec",
