@@ -2,18 +2,11 @@
 Quantum Espresso interface
 """
 
-import os
-import tempfile
-import subprocess
-import warnings
-import shutil
 import shlex
 
 from copy import deepcopy
-from pathlib import Path
 import numpy as np
 
-from ase import Atoms
 from ase.calculators.calculator import all_changes
 from ase.calculators.espresso import Espresso as ASE_Espresso
 try:
@@ -23,8 +16,7 @@ except ImportError:
 from ase.io.espresso import kspacing_to_grid
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
-from .utils import clean_rundir, handle_nonperiodic, save_results
-from ..utils.misc import atoms_to_list
+from .utils import handle_nonperiodic
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["*.pwo"]
@@ -62,7 +54,7 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
 
     # new default value of num_inputs_per_python_subprocess for calculators.generic,
     # to override that function's built-in default of 10
-    wfl_generic_def_autopara_info = {"num_inputs_per_python_subprocess": 1}
+    wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
     def __init__(self, keep_files="default", rundir_prefix="run_QE_",
                  workdir=None, scratchdir=None,
@@ -107,12 +99,12 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
 
         try:
             super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
-            calculation_succeeded=True
+            calculation_succeeded = True
             if 'DFT_FAILED_ESPRESSO' in atoms.info:
                 del atoms.info['DFT_FAILED_ESPRESSO']
         except Exception as exc:
             atoms.info['DFT_FAILED_ESPRESSO'] = True
-            calculation_succeeded=False
+            calculation_succeeded = False
             raise exc
         finally:
             # from WFLFileIOCalculator
@@ -172,5 +164,3 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
                     self.parameters["koffset"] = k_offset
 
         return properties
-
-

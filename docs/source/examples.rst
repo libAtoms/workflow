@@ -17,6 +17,7 @@ Self-contained code snippets of common things that can be done with Workflow.
    examples.fhiaims_calculator.ipynb
    examples.mace.md
    examples.mlip_fitting.md
+   examples.daisy_chain_mlip_fitting.ipynb
    examples.normal_modes.md
    examples.smiles.md
    examples.md.md

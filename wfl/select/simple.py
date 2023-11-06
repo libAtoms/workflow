@@ -2,9 +2,7 @@ import sys
 from types import LambdaType
 
 import numpy as np
-from ase import Atoms
 
-from wfl.configset import ConfigSet
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 
 
@@ -36,9 +34,9 @@ def by_bool_func(*args, **kwargs):
         num_python_subprocesses = 0
     else:
         num_python_subprocesses = None
-    def_autopara_info={"num_python_subprocesses": num_python_subprocesses}
+    default_autopara_info = {"num_python_subprocesses": num_python_subprocesses}
     return autoparallelize(_select_autopara_wrappable, *args,
-           def_autopara_info=def_autopara_info, **kwargs)
+           default_autopara_info=default_autopara_info, **kwargs)
 autoparallelize_docstring(by_bool_func, _select_autopara_wrappable, "Atoms")
 
 # NOTE this could probably be done with autoparallelize by returning a list with multiple
@@ -68,7 +66,7 @@ def by_index(inputs, outputs, indices):
     multiple outputs for a single input, this cannot be done right now
     """
     if outputs.all_written():
-        sys.stderr.write(f'Returning before by_index since output is done\n')
+        sys.stderr.write('Returning before by_index since output is done\n')
         return outputs.to_ConfigSet()
 
     if len(indices) == 0:

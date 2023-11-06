@@ -6,7 +6,7 @@ from ase.atoms import Atoms
 try:
     from quippy.descriptors import Descriptor
 except ModuleNotFoundError as exc:
-    raise RuntimeError("quippy.descriptors module not found, install with 'python3 -m pip install quippy-ase'")
+    raise RuntimeError("quippy.descriptors module not found, install with 'python3 -m pip install quippy-ase'") from exc
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.quip_cli_strings import dict_to_quip_str
@@ -19,11 +19,11 @@ def from_any_to_Descriptor(descriptor_src, verbose=False):
     ----------
     descriptor_src: desc / list(desc) / dict(Zcenter : desc) / dict(Zcenter : list(desc))
         String to pass to quippy Descriptor. "Zcenter" denotes atomic number of the central atom".
-        Any "desc" value can be a string, a dict (converted to 
-        key=value string), or quippy.descriptors.Descriptor object. 
+        Any "desc" value can be a string, a dict (converted to
+        key=value string), or quippy.descriptors.Descriptor object.
 
-        Each ``descriptor_src`` type correponds to 
-        
+        Each ``descriptor_src`` type correponds to
+
             * a dictionary with None as keys: one or more descriptor for for all species.
             * a dictionary with integers as keys: one or more descriptor for for each species.
             * string, dictionary or ``Descriptor``: single descriptor
@@ -196,6 +196,6 @@ def _calc_autopara_wrappable(atoms, descs, key, per_atom, normalize=True, compos
 
 
 
-def calc(*args, **kwargs):
+def calculate(*args, **kwargs):
     return autoparallelize(_calc_autopara_wrappable, *args, **kwargs)
-autoparallelize_docstring(calc, _calc_autopara_wrappable, "Atoms")
+autoparallelize_docstring(calculate, _calc_autopara_wrappable, "Atoms")

@@ -10,13 +10,14 @@ except ModuleNotFoundError:
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 
 
-def smi_to_atoms(smi, useBasicKnowledge=True, useExpTorsionAnglePrefs=True):
+def smi_to_atoms(smi, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, randomSeed=-1):
     """Converts smiles to 3D Atoms object"""
 
     mol = Chem.MolFromSmiles(smi)
     mol = Chem.AddHs(mol)
     _ = AllChem.EmbedMolecule(mol, useBasicKnowledge=useBasicKnowledge,
-                              useExpTorsionAnglePrefs=useExpTorsionAnglePrefs)
+                              useExpTorsionAnglePrefs=useExpTorsionAnglePrefs,
+                              randomSeed=randomSeed)
 
     insert = 'Properties=species:S:1:pos:R:3'
     xyz = Chem.rdmolfiles.MolToXYZBlock(mol)
@@ -29,7 +30,8 @@ def smi_to_atoms(smi, useBasicKnowledge=True, useExpTorsionAnglePrefs=True):
 
 
 
-def _run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, extra_info=None):
+def _run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, extra_info=None,
+                            randomSeed=-1):
     """Creates atomic configurations by repeatedly running smi_to_xyz, I/O with OutputSpec.
 
     Parameters
@@ -42,6 +44,8 @@ def _run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePr
         impose experimental torsion angle preferences
     extra_info: dict, default {}
         extra fields to place into created atoms info dict
+    randomSeed: int, default -1
+        RDKit EmbedMolecule random seed for reproducibility
 
     Returns
     -------
@@ -57,7 +61,8 @@ def _run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePr
     atoms_list = []
     for smi in smiles:
         at = smi_to_atoms(smi=smi, useBasicKnowledge=useBasicKnowledge,
-                          useExpTorsionAnglePrefs=useExpTorsionAnglePrefs)
+                          useExpTorsionAnglePrefs=useExpTorsionAnglePrefs,
+                          randomSeed=randomSeed)
         at.info['smiles'] = smi
         for key, value in extra_info.items():
             at.info[key] = value
@@ -66,6 +71,6 @@ def _run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePr
     return atoms_list
 
 
-def run(*args, **kwargs):
+def smiles(*args, **kwargs):
     return autoparallelize(_run_autopara_wrappable, *args, **kwargs)
-autoparallelize_docstring(run, _run_autopara_wrappable, "SMILES string")
+autoparallelize_docstring(smiles, _run_autopara_wrappable, "SMILES string")

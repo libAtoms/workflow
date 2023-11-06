@@ -5,7 +5,7 @@ def _map_autopara_wrappable(atoms, map_func, args=[], kwargs={}):
 
     Parameters
     ----------
-    map_func: function(Atoms, *argsm, **kwargs)
+    map_func: function(Atoms, *args, **kwargs)
         function to apply
     args: list
         positional arguments to function
@@ -18,6 +18,6 @@ def _map_autopara_wrappable(atoms, map_func, args=[], kwargs={}):
 
     return outputs
 
-def run(*args, **kwargs):
+def map(*args, **kwargs):
     return autoparallelize(_map_autopara_wrappable, *args, **kwargs)
-autoparallelize_docstring(run, _map_autopara_wrappable, "Atoms")
+autoparallelize_docstring(map, _map_autopara_wrappable, "Atoms")

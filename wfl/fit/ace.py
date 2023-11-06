@@ -5,7 +5,6 @@ import itertools
 import subprocess
 import json
 import yaml
-import shlex
 from copy import deepcopy
 from pathlib import Path
 
@@ -14,13 +13,12 @@ import numpy as np
 import ase.io
 from ase.stress import voigt_6_to_full_3x3_stress
 
-from wfl.configset import OutputSpec 
+from wfl.configset import OutputSpec
 from wfl.autoparallelize.utils import get_remote_info
 from wfl.fit.utils import ace_fit_jl_path
 from wfl.utils.configs import find_isolated_atoms
 
 from expyre import ExPyRe
-import wfl.scripts
 
 def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
         ref_property_prefix='REF_', skip_if_present=False, run_dir='.', dry_run=False,
@@ -37,7 +35,7 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
       use julia multithreading (LSQ assembly)
     * WFL_ACE_FIT_BLAS_THREADS: used by ace_fit.jl for number of threads to set for BLAS
       multithreading in ace_fit
-    * WFL_ACE_FIT_COMMAND: command to execute ace_fit.jl, e.g. 
+    * WFL_ACE_FIT_COMMAND: command to execute ace_fit.jl, e.g.
       ``julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl``
 
 
@@ -52,8 +50,8 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
         Any file names (ACE, fitting configs) already present will be updated.
         See :func:`wfl.fit.ace.prepare_params` for other parameters that will be set automatically.
     ace_fit_command: str, default None
-        executable for ace_fit. 
-        e.g. ``julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl`` or similar. 
+        executable for ace_fit.
+        e.g. ``julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl`` or similar.
         Alternatively set by `WFL_ACE_FIT_COMMAND` env var.
     ref_property_prefix: str, default 'REF\_'
         string prefix added to atoms.info/arrays keys (energy, forces, virial, stress)
@@ -65,7 +63,7 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
         do a dry run, which returns the matrix size, rather than the potential name
     verbose: bool, default True
         print verbose output
-    remote_info: dict or :class:`wfl.autoparallelize.remoteinfo.RemoteInfo`, or '_IGNORE' or None
+    remote_info: dict or :class:`wfl.autoparallelize.RemoteInfo`, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
         will try to use env var WFL_EXPYRE_INFO used (see above). '_IGNORE' is for
@@ -91,7 +89,7 @@ def fit(fitting_configs, ACE_name, ace_fit_params, ace_fit_command=None,
 
     fitting_configs = prepare_configs(fitting_configs, ref_property_prefix)
     ace_fit_params = prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir, ref_property_prefix,
-                                    isolated_atom_info_key=isolated_atom_info_key, 
+                                    isolated_atom_info_key=isolated_atom_info_key,
                                     isolated_atom_info_value=isolated_atom_info_value)
 
     return run_ace_fit(fitting_configs, ace_fit_params,
@@ -113,7 +111,7 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
         set of configurations to fit
     ace_fit_params: dict
         dict with all fitting parameters for ACE1pack,
-        to be updated with 
+        to be updated with
 
         * ``(energy|force|virial)_key`` (with ref_property_prefix)
         * ``ACE_fname``
@@ -143,7 +141,7 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
 
     ace_fit_params["data"]["energy_key"] = f"{ref_property_prefix}energy"
     ace_fit_params["data"]["force_key"] = f"{ref_property_prefix}forces"
-    ace_fit_params["data"]["virial_key"] = f"{ref_property_prefix}virial" # TODO is this correct?
+    ace_fit_params["data"]["virial_key"] = f"{ref_property_prefix}virial"  # TODO is this correct?
 
     ace_filename = str(Path(run_dir) / (ACE_name + '.json'))
     if "ACE_fname" in ace_fit_params:
@@ -165,13 +163,13 @@ def prepare_params(ACE_name, fitting_configs, ace_fit_params, run_dir='.', ref_p
                 config_type = f"config_{at_i}"
                 at.info["config_type"] = config_type
                 if from_sigma is True:
-                    ace_fit_params["weights"][config_type] = { "E": default_weights.get("E", 1.0) / at.info.get("energy_sigma", 1.0),
-                                                               "F": default_weights.get("F", 1.0) / at.info.get("force_sigma", 1.0),
-                                                               "V": default_weights.get("V", 1.0) / at.info.get("virial_sigma", 1.0) }
+                    ace_fit_params["weights"][config_type] = {"E": default_weights.get("E", 1.0) / at.info.get("energy_sigma", 1.0),
+                                                              "F": default_weights.get("F", 1.0) / at.info.get("force_sigma", 1.0),
+                                                              "V": default_weights.get("V", 1.0) / at.info.get("virial_sigma", 1.0)}
                 else:
-                    ace_fit_params["weights"][config_type] = { "E": default_weights.get("E", 1.0) / at.info.get(from_sigma, 1.0),
-                                                               "F": default_weights.get("F", 1.0) / at.info.get(from_sigma, 1.0),
-                                                               "V": default_weights.get("V", 1.0) / at.info.get(from_sigma, 1.0) }
+                    ace_fit_params["weights"][config_type] = {"E": default_weights.get("E", 1.0) / at.info.get(from_sigma, 1.0),
+                                                              "F": default_weights.get("F", 1.0) / at.info.get(from_sigma, 1.0),
+                                                              "V": default_weights.get("V", 1.0) / at.info.get(from_sigma, 1.0)}
 
     return ace_fit_params
 
@@ -205,15 +203,15 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
         skip fitting if output is already present
     run_dir: str or Path, default '.'
         directory to run in
-    ace_fit_command: str, default None. 
-        executable for ace_fit. 
-        e.g. `julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl` or similar. 
+    ace_fit_command: str, default None.
+        executable for ace_fit.
+        e.g. `julia $HOME/.julia/packages/ACE1pack/ChRvA/scripts/ace_fit.jl` or similar.
         Alternatively set by WFL_ACE_FIT_COMMAND.
     dry_run: bool, default False
         do a dry run, which returns the matrix size, rather than the potential file path
     verbose: bool, default True
         print verbose output
-    remote_info: dict or :class:`wfl.autoparallelize.remoteinfo.RemoteInfo`, or '_IGNORE' or None
+    remote_info: dict or :class:`wfl.autoparallelize.RemoteInfo`, or '_IGNORE' or None
         If present and not None and not '_IGNORE', RemoteInfo or dict with kwargs for RemoteInfo
         constructor which triggers running job in separately queued job on remote machine.  If None,
         will try to use env var WFL_EXPYRE_INFO used (see below). '_IGNORE' is for
@@ -267,17 +265,15 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
 
     if remote_info is not None and remote_info != '_IGNORE':
         input_files = remote_info.input_files.copy()
-        output_files = remote_info.output_files.copy()
-
         # run dir will contain only things created by fitting, so it's safe to copy the
         # entire thing back as output
-        output_files.append(str(run_dir))
+        output_files = remote_info.output_files + [str(run_dir)]
 
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                       env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=run_ace_fit,
-                      kwargs= {'fitting_configs': fitting_configs, 'ace_fit_params': ace_fit_params,
-                               'run_dir': run_dir, 'ace_fit_command': ace_fit_command,
-                               'dry_run': dry_run, 'verbose': verbose, 'remote_info': '_IGNORE'})
+                      kwargs={'fitting_configs': fitting_configs, 'ace_fit_params': ace_fit_params,
+                              'run_dir': run_dir, 'ace_fit_command': ace_fit_command,
+                              'dry_run': dry_run, 'verbose': verbose, 'remote_info': '_IGNORE'})
 
         xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
                   exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
@@ -322,20 +318,18 @@ def run_ace_fit(fitting_configs, ace_fit_params, skip_if_present=False, run_dir=
     if ace_fit_command is None:
         ace_fit_command = ace_fit_jl_path()
 
-    orig_julia_num_threads = (os.environ.get('JULIA_NUM_THREADS', None))
     if 'WFL_ACE_FIT_JULIA_THREADS' in os.environ:
         os.environ['JULIA_NUM_THREADS'] = os.environ['WFL_ACE_FIT_JULIA_THREADS']
-
 
     cmd = f"{ace_fit_command} --params {ace_fit_params_filename} "
     if dry_run:
         cmd += "--dry-run "
 
-    ace_fit_blas_threads= os.environ.get("WFL_ACE_FIT_BLAS_THREADS", None)
+    ace_fit_blas_threads = os.environ.get("WFL_ACE_FIT_BLAS_THREADS", None)
     if ace_fit_blas_threads is not None:
         cmd += f"--num-blas-threads {int(ace_fit_blas_threads)} "
 
-    cmd +=  f"> {ace_file_base}.stdout 2> {ace_file_base}.stderr "
+    cmd += f"> {ace_file_base}.stdout 2> {ace_file_base}.stderr "
 
     if verbose:
         print('fitting command:\n', cmd)

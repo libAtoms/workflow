@@ -8,7 +8,7 @@ from pytest import approx
 from wfl.configset import ConfigSet, OutputSpec
 
 try:
-    from wfl.descriptors.quippy import calc
+    from wfl.descriptors.quippy import calculate
     from quippy.descriptors import Descriptor
 except ModuleNotFoundError:
     pytestmark = pytest.mark.skip(reason='no quippy')
@@ -23,7 +23,7 @@ def test_calc_descriptor_average_any_atomic_number():
     ats = get_ats()
     ci = ConfigSet(ats)
 
-    ats_desc = calc(ci, OutputSpec(),
+    ats_desc = calculate(ci, OutputSpec(),
                     'soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 average n_species=2 species_Z={6 14}', 'desc',
                     per_atom=False)
 
@@ -43,7 +43,7 @@ def test_calc_descriptor_average_any_atomic_number_normalization():
     ats = get_ats()
     ci = ConfigSet(ats)
 
-    ats_desc = calc(ci, OutputSpec(), 
+    ats_desc = calculate(ci, OutputSpec(), 
                     ['soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 average n_species=2 species_Z={6 14}', 
                      'soap n_max=3 l_max=3 cutoff=5.0 atom_sigma=0.5 average n_species=2 species_Z={6 14}'], 'desc',
                     per_atom=False)
@@ -51,7 +51,7 @@ def test_calc_descriptor_average_any_atomic_number_normalization():
     assert 1.0 == approx(np.linalg.norm(list(ats_desc)[0].info['desc']))
 
     ats[0].info.pop("desc", None)
-    ats_desc = calc(ci, OutputSpec(),
+    ats_desc = calculate(ci, OutputSpec(),
                     ['soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 average n_species=2 species_Z={6 14}', 
                      'soap n_max=3 l_max=3 cutoff=5.0 atom_sigma=0.5 average n_species=2 species_Z={6 14}'], 'desc', normalize=False,
                     per_atom=False)
@@ -65,7 +65,7 @@ def test_calc_descriptor_average_z_specific():
     descs = {6: 'soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 average Z=6 n_species=2 species_Z={6 14}',
              14: 'soap n_max=4 l_max=3 cutoff=5.0 atom_sigma=0.5 average Z=14 n_species=2 species_Z={6 14}'}
 
-    ats_desc = calc(ci, OutputSpec(), descs, 'desc', per_atom=False)
+    ats_desc = calculate(ci, OutputSpec(), descs, 'desc', per_atom=False)
 
     d6 = Descriptor(descs[6]).calc(ats[0])['data'][0]
     d14 = Descriptor(descs[14]).calc(ats[0])['data'][0]
@@ -87,7 +87,7 @@ def test_calc_descriptor_any_atomic_number():
     ats = get_ats()
     ci = ConfigSet(ats)
 
-    ats_desc = calc(ci, OutputSpec(),
+    ats_desc = calculate(ci, OutputSpec(),
                     'soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 n_species=2 species_Z={6 14}', 'desc',
                     per_atom=True)
 
@@ -108,7 +108,7 @@ def test_calc_descriptor_any_atomic_number_normalization():
     ats = get_ats()
     ci = ConfigSet(ats)
 
-    ats_desc = calc(ci, OutputSpec(), 
+    ats_desc = calculate(ci, OutputSpec(), 
                     ['soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 n_species=2 species_Z={6 14}', 
                      'soap n_max=3 l_max=3 cutoff=5.0 atom_sigma=0.5 n_species=2 species_Z={6 14}'], 'desc',
                     per_atom=True)
@@ -118,7 +118,7 @@ def test_calc_descriptor_any_atomic_number_normalization():
 
     del at.arrays["desc"]
 
-    ats_desc = calc(ci, OutputSpec(), 
+    ats_desc = calculate(ci, OutputSpec(), 
                     ['soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 n_species=2 species_Z={6 14}', 
                      'soap n_max=3 l_max=3 cutoff=5.0 atom_sigma=0.5 n_species=2 species_Z={6 14}'], 'desc',
                     per_atom=True, normalize=False)
@@ -134,7 +134,7 @@ def test_calc_descriptor_z_specific():
     descs = {6: 'soap n_max=4 l_max=4 cutoff=5.0 atom_sigma=0.5 Z=6 n_species=2 species_Z={6 14}',
              14: 'soap n_max=4 l_max=3 cutoff=5.0 atom_sigma=0.5 Z=14 n_species=2 species_Z={6 14}'}
 
-    ats_desc = calc(ci, OutputSpec(), descs, 'desc', per_atom=True)
+    ats_desc = calculate(ci, OutputSpec(), descs, 'desc', per_atom=True)
 
     d6 = Descriptor(descs[6]).calc(ats[0])['data']
     d14 = Descriptor(descs[14]).calc(ats[0])['data']

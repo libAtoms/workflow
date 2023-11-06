@@ -44,17 +44,32 @@ jobs:
       - name: Install latest ASE from gitlab
         run: pip install git+https://gitlab.com/ase/ase.git
 
-      - name: Install intel-mkl-full for phono3py
+      - name: Install intel-oneapi-mkl for phono3py
         run: |
-          wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
-          sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
-          sudo sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list'
-          sudo apt-get update
-          sudo apt-get install intel-mkl-64bit-2018.2-046
+          # based on
+          #   https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl-download.html?operatingsystem=linux&distributions=aptpackagemanager
+          # download the key to system keyring
+          wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
+          # add signed entry to apt sources and configure the APT client to use Intel repository:
+          echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+          sudo apt update
+          sudo apt install intel-oneapi-mkl
+          sudo apt install intel-oneapi-mkl-devel
 
       - name: Install phono3py from source
         run: |
-            source /opt/intel/compilers_and_libraries_2018.2.199/linux/mkl/bin/mklvars.sh intel64
+            # find mklvars
+            for pkg in $( apt list --installed | fgrep "installed" | fgrep "mkl" | sed "s#/.*##" ); do
+                if dpkg -L $pkg | egrep -q 'vars.sh$'; then
+                    mklvars=$( dpkg -L $pkg | egrep 'vars.sh$' )
+                    break
+                fi
+            done
+            if [ -z $mklvars ]; then
+                echo 'Failed to find *vars.sh in any pkg named *mkl*'
+                exit 1
+            fi
+            source $mklvars intel64
 
             git clone https://github.com/phonopy/phonopy
             cd phonopy
@@ -70,6 +85,16 @@ jobs:
 
       - name: Install Quippy from PyPI
         run: pip install quippy-ase
+
+      - name: MACE
+        run: |
+          echo "search for torch version"
+          torch_version=$( pip3 install torch== 2>&1 | fgrep 'from versions' | sed -e 's/.* //' -e 's/)//' )
+          echo "found torch version $torch_version, installing cpu-only variant"
+          python3 -m pip install torch==${torch_version}+cpu -f https://download.pytorch.org/whl/torch_stable.html
+          echo "installing mace"
+          python3 -m pip install git+https://github.com/ACEsuit/mace.git@develop
+          python3 -c "import mace; print(mace.__file__)"
 
       - name: Julia and ace fit
         run: |
@@ -110,6 +135,11 @@ jobs:
         run: |
           echo $HOME/bin >> $GITHUB_PATH
 
+      - name: Install xTB
+        run: |
+          conda install -c conda-forge xtb-python
+          pip install typing-extensions
+
       - name: Install MPI dependencies
         if: env.use-mpi
         run: |
@@ -148,7 +178,7 @@ jobs:
           # stop the build if there are Python syntax errors or undefined names
           flake8 wfl/ --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings.
-          flake8 wfl/ --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+          flake8 wfl/ --count --exit-zero --max-complexity=20 --max-line-length=140 --ignore=E127,E128 --statistics
 
       - name: Test with pytest - plain
         if: env.coverage-on-version != matrix.python-version

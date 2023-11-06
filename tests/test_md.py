@@ -7,6 +7,7 @@ from ase import Atoms
 import ase.io
 from ase.build import bulk
 from ase.calculators.emt import EMT
+from ase.units import fs
 from wfl.autoparallelize import autoparainfo
 
 from wfl.generate import md
@@ -44,7 +45,7 @@ def test_NVE(cu_slab):
     inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
-    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
+    atoms_traj = md.md(inputs, outputs, calculator=calc, steps=300, dt=1.0,
                            temperature = 500.0)
 
     atoms_traj = list(atoms_traj)
@@ -60,7 +61,7 @@ def test_NVT_const_T(cu_slab):
     inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
-    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
+    atoms_traj = md.md(inputs, outputs, calculator=calc, steps=300, dt=1.0,
                            temperature = 500.0, temperature_tau=30.0)
 
     atoms_traj = list(atoms_traj)
@@ -70,6 +71,39 @@ def test_NVT_const_T(cu_slab):
     assert all([at.info['MD_temperature_K'] == 500.0 for at in atoms_traj])
 
 
+def test_NVT_Langevin_const_T(cu_slab):
+
+    calc = EMT()
+
+    inputs = ConfigSet(cu_slab)
+    outputs = OutputSpec()
+
+    atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Langevin", steps=300, dt=1.0,
+                           temperature = 500.0, temperature_tau=100/fs)
+
+    atoms_traj = list(atoms_traj)
+    atoms_final = atoms_traj[-1]
+
+    assert len(atoms_traj) == 301
+    assert all([at.info['MD_temperature_K'] == 500.0 for at in atoms_traj])
+
+
+def test_NVT_const_T_mult_configs_distinct_seeds(cu_slab):
+
+    calc = EMT()
+
+    inputs = ConfigSet([cu_slab.copy() for _ in range(4)])
+    outputs = OutputSpec()
+
+    atoms_traj = md.md(inputs, outputs, calculator=calc, steps=300, dt=1.0,
+                           temperature = 500.0, temperature_tau=30.0, autopara_rng_seed=23875)
+
+    last_configs = [list(group)[-1] for group in atoms_traj.groups()]
+    last_vs = [np.linalg.norm(at.get_velocities()) for at in last_configs]
+    print("BOB last_vs", last_vs)
+    assert all([v != last_vs[0] for v in last_vs[1:]])
+
+
 def test_NVT_simple_ramp(cu_slab):
 
     calc = EMT()
@@ -77,7 +111,7 @@ def test_NVT_simple_ramp(cu_slab):
     inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
-    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
+    atoms_traj = md.md(inputs, outputs, calculator=calc, steps=300, dt=1.0,
                            temperature = (500.0, 100.0), temperature_tau=30.0)
 
     atoms_traj = list(atoms_traj)
@@ -99,7 +133,7 @@ def test_NVT_complex_ramp(cu_slab):
     inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
-    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
+    atoms_traj = md.md(inputs, outputs, calculator=calc, steps=300, dt=1.0,
                            temperature = [{'T_i': 100.0, 'T_f': 500.0, 'traj_frac': 0.5},
                                           {'T_i': 500.0, 'T_f': 500.0, 'traj_frac': 0.25},
                                           {'T_i': 500.0, 'T_f': 300.0, 'traj_frac': 0.25}],
@@ -131,7 +165,7 @@ def test_subselector_function_after(cu_slab):
     inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
-    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=300, dt=1.0,
+    atoms_traj = md.md(inputs, outputs, calculator=calc, steps=300, dt=1.0,
                            temperature = 500.0, traj_select_after_func=select_every_10_steps_for_tests_after)
 
     atoms_traj = list(atoms_traj)
@@ -146,7 +180,7 @@ def test_subselector_function_during(cu_slab):
         inputs = ConfigSet(cu_slab)
         outputs = OutputSpec()
 
-        atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=steps, dt=1.0,
+        atoms_traj = md.md(inputs, outputs, calculator=calc, steps=steps, dt=1.0,
                                temperature = 500.0, traj_select_during_func=select_every_10_steps_for_tests_during)
 
         atoms_traj = list(atoms_traj)
@@ -164,7 +198,7 @@ def test_md_abort_function(cu_slab):
     autopara_info = autoparainfo.AutoparaInfo(skip_failed=False)
 
     # why doesn't this throw an raise a RuntimeError even if md failed and `skip_failed` is False?
-    atoms_traj = md.sample(inputs, outputs, calculator=calc, steps=500, dt=10.0,
+    atoms_traj = md.md(inputs, outputs, calculator=calc, steps=500, dt=10.0,
                            temperature = 2000.0, abort_check=md_stopper, autopara_info=autopara_info) 
 
     assert len(list(atoms_traj)) < 501

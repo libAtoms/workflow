@@ -3,8 +3,6 @@ import warnings
 import numpy as np
 from scipy.sparse.linalg import LinearOperator, svds
 
-from wfl.configset import ConfigSet
-
 
 def do_svd(at_descs, num, do_vectors='vh'):
     def mv(v):
@@ -26,7 +24,7 @@ def _hashable_struct_data(at):
 
 def CUR(mat, num, stochastic=True, stochastic_seed=None, exclude_list=None):
     """Compute selection by CUR of descriptors with dot-product, with optional exponentiation
-    
+
     Parameters
     ----------
     mat: np.array(vec_len, n_vecs) or (n_vecs, n_vecs)

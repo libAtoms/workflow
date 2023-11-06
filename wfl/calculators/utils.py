@@ -68,7 +68,7 @@ def save_results(atoms, properties, results_prefix=None):
 
     # this would be simpler if we could just use calc.results, but some (e.g. Castep) don't use it
     if properties is None:
-        # This will not work for calculators like Castep that (as of some point at least) do not use 
+        # This will not work for calculators like Castep that (as of some point at least) do not use
         # results dict.  Such calculators will fail below, in the "if 'energy' in properties" statement.
         properties = list(atoms.calc.results.keys())
 
@@ -94,7 +94,7 @@ def save_results(atoms, properties, results_prefix=None):
         try:
             config_results['stress'] = atoms.get_stress()
         except PropertyNotImplementedError:
-            warnings.warn(f'"stress" was asked for, but not found in results.')
+            warnings.warn('"stress" was asked for, but not found in results.')
     if 'dipole' in properties:
         config_results['dipole'] = atoms.get_dipole_moment()
     if 'magmom' in properties:
@@ -112,13 +112,15 @@ def save_results(atoms, properties, results_prefix=None):
         atoms_results['magmoms'] = atoms.get_magnetic_moments()
     if 'energies' in properties:
         atoms_results['energies'] = atoms.get_potential_energies()
+    if 'converged' in properties and results_prefix is not None:
+        config_results['converged'] = atoms.get_calculator().read_convergence()
 
     if "extra_results" in dir(atoms.calc):
         if results_prefix is None and (len(atoms.calc.extra_results.get("config", {})) > 0 or
                                        len(atoms.calc.extra_results.get("atoms", {})) > 0):
             raise ValueError('Refusing to save calculator results into info/arrays fields with no prefix,'
                             ' too much chance of confusion with ASE extxyz reading/writing and conversion'
-                            ' to SinglePointCalculator') 
+                            ' to SinglePointCalculator')
 
         for key, vals in atoms.calc.extra_results["config"].items():
             config_results[key] = vals

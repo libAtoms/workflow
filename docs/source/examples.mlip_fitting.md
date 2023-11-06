@@ -1,5 +1,5 @@
 
-# Fitting a MLIP
+# Iterative GAP fitting 
 
 The following serves as a basic example of how to fit MLIPs (in this case a GAP for Cu slabs) using the ground functionalities of the wfl package. In theory you need no other previous installations other than wfl, ase, and working versions of QUIP and quippy.
 
@@ -56,7 +56,7 @@ from wfl.fit.gap.multistage import prep_params
 from wfl.fit.gap.multistage import fit as gap_fit
 from wfl.fit.error import calc as ref_calc
 from wfl.generate.md import sample as sample_md
-from wfl.generate.optimize import run as optimize
+from wfl.generate.optimize import optimize 
 from wfl.select.by_descriptor import greedy_fps_conf_global
 ```
 

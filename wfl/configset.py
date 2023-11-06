@@ -1,5 +1,7 @@
+import sys
+
 from pathlib import Path
-import glob
+
 
 from ase.atoms import Atoms
 import ase.io
@@ -17,7 +19,7 @@ class ConfigSet:
     (even of length 1), the top level of nesting returned by the iterators corresponds
     to each file.
 
-    Iterating over the ConfigSet returns a flattened list of configurations in the object, 
+    Iterating over the ConfigSet returns a flattened list of configurations in the object,
     with information about the nested structure (necessary for reproducing it in the
     output, see OutputSpec.store() below) available from the ConfigSet's cur_loc
     property or in the returned returned objects in Atoms.info["_ConfigSet_loc"].
@@ -120,8 +122,7 @@ class ConfigSet:
     def __str__(self):
         """Convert to string
         """
-        code = { Path: "F", Atoms : "A" }
-        out = f"ConfigSet with"
+        out = "ConfigSet with"
 
         if isinstance(self.items, Path):
             out += f" single file {self.items} {self._file_loc}"
@@ -241,7 +242,8 @@ class ConfigSet:
                     # any matching configs
                     raise RuntimeError(f"No matching configs in file {self.items} for location {self._file_loc}") from exc
 
-            ## print("DEBUG after possibly skipping, now should be at right place, at_loc", at_loc, "self._file_loc", self._file_loc, "cur_at_i", cur_at_i, "self._cur_at.numbers", self._cur_at[0].numbers)
+            ## print("DEBUG after possibly skipping, now should be at right place, at_loc", at_loc, "self._file_loc",
+            ##       self._file_loc, "cur_at_i", cur_at_i, "self._cur_at.numbers", self._cur_at[0].numbers)
             # now self._cur_at should be first config that matches self._file_loc
             requested_depth = len(self._file_loc.split(ConfigSet._loc_sep))
             ## print("DEBUG requested_depth", requested_depth)
@@ -270,7 +272,7 @@ class ConfigSet:
                     # get location of deeper iterator from at_loc down to one deeper than requested at this level
                     new_file_loc = ConfigSet._loc_sep.join(at_loc.split(ConfigSet._loc_sep)[0:requested_depth + 1])
                     ## print("DEBUG making and yielding ConfigSet with new _file_loc", new_file_loc)
-                    t = ConfigSet(self.items, _open_reader = self._open_reader, _cur_at = self._cur_at, _file_loc = new_file_loc)
+                    t = ConfigSet(self.items, _open_reader=self._open_reader, _cur_at=self._cur_at, _file_loc=new_file_loc)
                     ## print("DEBUG yielding ConfigSet", t, "_open_reader", t._open_reader, "_cur_at", self._cur_at)
                     yield t
                     ## print("DEBUG after yield, got self._cur_at", self._cur_at[0].numbers if self._cur_at[0] is not None else None)
@@ -302,7 +304,7 @@ class ConfigSet:
                     if "_ConfigSet_loc" in item.info:
                         del item.info["_ConfigSet_loc"]
                     yield item
-                else: # item must be sublist or Path
+                else:  # item must be sublist or Path
                     # yield a ConfigSet for each file or sublist
                     yield ConfigSet(item)
 
@@ -329,7 +331,7 @@ class ConfigSet:
     @staticmethod
     def _flat_iter(items):
         """Generator returning a flattened list of Atoms starting from a tree of nested lists
-        containing only Atoms as leaves. Stores original nested tree structure in 
+        containing only Atoms as leaves. Stores original nested tree structure in
         Atoms.info["_ConfigSet_loc"].
 
         Parameters
@@ -374,14 +376,21 @@ class OutputSpec:
 
     flush: bool, default True
         flush output after every write
+
+    write_kwargs: dict
+        optional extra kwargs to ase.io.write
+
+    tags: dict
+        dict of extra Atoms.info keys to set in written configs
     """
-    def __init__(self, files=None, *, file_root=None, overwrite=False, flush=True, write_kwargs={}):
+    def __init__(self, files=None, *, file_root=None, overwrite=False, flush=True, write_kwargs={}, tags={}):
         self.files = files
         self.configs = None
         self.file_root = Path(file_root if file_root is not None else "")
         self.flush = flush
         self.overwrite = overwrite
         self.write_kwargs = write_kwargs.copy()
+        self.tags = tags.copy()
 
         if self.files is not None:
             # store in file(s)
@@ -410,6 +419,23 @@ class OutputSpec:
 
     def _existing_output_files(self):
         return [self.file_root / f for f in self.files if (self.file_root / f).exists()]
+
+
+    def write(self, configs):
+        """Write a set of configurations to this OutputSpec
+
+        Parameters
+        ----------
+        configs: iterable(Atoms)
+            Configurations to write.  If ConfigSet, location will be saved
+        """
+        if not self.overwrite and self.all_written():
+            sys.stderr.write('Reusing existing output instead of writing ConfigSet contents since overwrite=False and output is done\n')
+            return
+
+        for at in configs:
+            self.store(at, at.info.get("_ConfigSet_loc"))
+        self.close()
 
 
     def store(self, configs, input_CS_loc=""):
@@ -559,9 +585,9 @@ class OutputSpec:
     def to_ConfigSet(self):
         if self.files is not None:
             if self.single_file:
-                cs = ConfigSet(self.files[0], file_root = self.file_root)
+                cs = ConfigSet(self.files[0], file_root=self.file_root)
             else:
-                cs = ConfigSet(self.files, file_root = self.file_root)
+                cs = ConfigSet(self.files, file_root=self.file_root)
         else:
             cs = ConfigSet(self.configs)
         return cs
@@ -583,6 +609,7 @@ class OutputSpec:
         if isinstance(configs, Atoms):
             if store_loc_stem is not None and len(store_loc_stem) > 0:
                 configs.info["_ConfigSet_loc"] = store_loc_stem
+            configs.info.update(self.tags)
             ase.io.write(self.cur_file, configs, **self._cur_write_kwargs)
             if self.flush:
                 self.cur_file.flush()

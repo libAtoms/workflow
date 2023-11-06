@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+from pathlib import Path 
 
 import ase.io
 from ase.build import bulk
@@ -19,6 +20,19 @@ def cu_slab():
 
     return atoms
 
+def test_return_md_traj(cu_slab, tmp_path):
+    
+    calc = EMT()
+    
+    input_configs = cu_slab
+    inputs = ConfigSet(input_configs)
+    outputs = OutputSpec()
+ 
+    atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=1, totalsteps=5, save_tmpdir=True, return_all_traj=True)
+
+    assert any(["minima" in at.info["config_type"] for at in atoms_opt])
+    assert any(["traj" in at.info["config_type"] for at in atoms_opt])
+
 
 def test_mult_files(cu_slab, tmp_path):
     ase.io.write(tmp_path / 'f1.xyz', [cu_slab] * 2)
@@ -29,7 +43,7 @@ def test_mult_files(cu_slab, tmp_path):
 
     calc = EMT()
 
-    atoms_opt = minimahopping.run(inputs, outputs, calc, fmax=1, totalsteps=3)
+    atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=1, totalsteps=3)
 
     n1 = len(ase.io.read(tmp_path / infiles[0].replace('.xyz', '.out.xyz'), ':'))
     n2 = len(ase.io.read(tmp_path / infiles[1].replace('.xyz', '.out.xyz'), ':'))
@@ -53,7 +67,7 @@ def test_relax(cu_slab):
     # where are trajectories fail is excluded. Thus, let's give it some trials to avoid this situation.
     trial = 0
     while trial < 10:
-        atoms_opt = minimahopping.run(inputs, outputs, calc, fmax=fmax, totalsteps=totalsteps)
+        atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=fmax, totalsteps=totalsteps)
         if len(list(atoms_opt)) > 0:
             break
         trial += 1
@@ -65,7 +79,7 @@ def test_relax(cu_slab):
         assert 1 <= len(list(ats)) <= totalsteps
 
     atoms_opt = list(atoms_opt)
-    assert all(['hopping_traj' in at.info['config_type'] for at in atoms_opt])
+    assert all(['minima' in at.info['config_type'] for at in atoms_opt])
 
     for at in atoms_opt:
         force_norms = np.linalg.norm(at.get_forces(), axis=1)

@@ -37,7 +37,7 @@ from ase.build import molecule
 from xtb.ase.calculator import XTB
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate import normal_modes as nm 
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 
 mols = [molecule("CH4"), molecule("H2O")]
 configset = ConfigSet(mols)

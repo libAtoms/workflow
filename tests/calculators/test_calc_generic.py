@@ -12,7 +12,7 @@ from pytest import approx
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.calculators.espresso import Espresso
-from wfl.autoparallelize.autoparainfo import AutoparaInfo
+from wfl.autoparallelize import AutoparaInfo
 
 ref_lj_energy = -4.52573996914352
 ref_morse_energy = -3.4187397762024867
@@ -55,7 +55,7 @@ def test_atoms_list():
 
 def test_run(tmp_path):
     mol_in = [molecule("CH4"), molecule("CH4")]
-    mol_out = generic.run(mol_in, OutputSpec(tmp_path / "run.xyz"), LennardJones(),
+    mol_out = generic.calculate(mol_in, OutputSpec(tmp_path / "run.xyz"), LennardJones(),
                           properties=["energy", "forces"], output_prefix="_auto_")
     assert isinstance(mol_out, ConfigSet)
     for at in mol_out:
@@ -70,10 +70,22 @@ def test_default_properties():
     assert "dummy_forces" in mol_out.arrays.keys()
 
 
+def test_config_specific_calculator(tmp_path):
+    mol_in = [molecule("CH4"), molecule("CH4"), molecule("CH4")]
+    mol_in[1].info["WFL_CALCULATOR_KWARGS"] = {'epsilon':2.0}
+    mol_in[2].info["WFL_CALCULATOR_INITIALIZER"] = EMT
+    calculator = [LennardJones, [], {}]
+    mol_out = generic.calculate(mol_in, OutputSpec(tmp_path / "run.xyz"), calculator, properties=["energy", "forces"], output_prefix="dummy_")
+
+    energies = []
+    for at in mol_out:
+        energies.append(at.info['dummy_energy'])
+    assert energies[0] == energies[1]/2 != energies[2]
+
 ####################################################################################################
 
 class EMT_override_def_autopara(EMT):
-    wfl_generic_def_autopara_info = {"num_inputs_per_python_subprocess": 5}
+    wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 5}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -88,7 +100,7 @@ def test_generic_autopara_defaults():
     l_stderr = StringIO()
     sys.stderr = l_stderr
     os = OutputSpec()
-    at_proc = generic.run(ci, os, EMT())
+    at_proc = generic.calculate(ci, os, EMT())
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=10" in l_stderr.getvalue()
 
@@ -96,7 +108,7 @@ def test_generic_autopara_defaults():
     l_stderr = StringIO()
     sys.stderr = l_stderr
     os = OutputSpec()
-    at_proc = generic.run(ci, os, EMT_override_def_autopara())
+    at_proc = generic.calculate(ci, os, EMT_override_def_autopara())
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=5" in l_stderr.getvalue()
 
@@ -106,7 +118,7 @@ def test_generic_autopara_defaults():
     l_stderr = StringIO()
     sys.stderr = l_stderr
     os = OutputSpec()
-    at_proc = generic.run(ci, os, calculator=EMT())
+    at_proc = generic.calculate(ci, os, calculator=EMT())
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=10" in l_stderr.getvalue()
 
@@ -114,7 +126,7 @@ def test_generic_autopara_defaults():
     l_stderr = StringIO()
     sys.stderr = l_stderr
     os = OutputSpec()
-    at_proc = generic.run(ci, os, calculator=EMT_override_def_autopara())
+    at_proc = generic.calculate(ci, os, calculator=EMT_override_def_autopara())
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=5" in l_stderr.getvalue()
 
@@ -122,7 +134,7 @@ def test_generic_autopara_defaults():
     l_stderr = StringIO()
     sys.stderr = l_stderr
     os = OutputSpec()
-    at_proc = generic.run(ci, os, calculator=EMT_override_def_autopara(), autopara_info=AutoparaInfo(num_inputs_per_python_subprocess=3))
+    at_proc = generic.calculate(ci, os, calculator=EMT_override_def_autopara(), autopara_info=AutoparaInfo(num_inputs_per_python_subprocess=3))
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=3" in l_stderr.getvalue()
 
@@ -137,6 +149,6 @@ def test_generic_DFT_autopara_defaults(tmp_path, monkeypatch):
 
     # try with DFT calc that overrides default
     sys.stderr = l_stderr
-    at_proc = generic.run(ci, os, Espresso(calculator_command="_DUMMY_", workdir=tmp_path))
+    at_proc = generic.calculate(ci, os, Espresso(calculator_command="_DUMMY_", workdir=tmp_path))
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=1" in l_stderr.getvalue()

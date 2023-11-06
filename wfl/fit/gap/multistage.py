@@ -4,8 +4,6 @@ from copy import deepcopy
 from pathlib import Path
 from xml.etree import cElementTree
 
-from pathlib import Path
-
 import ase.io
 import numpy as np
 import yaml
@@ -195,8 +193,9 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         xpr = ExPyRe(name=remote_info.job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                      env_vars=remote_info.env_vars, input_files=input_files, output_files=output_files, function=fit,
-                     kwargs={'fitting_configs': fitting_configs, 'GAP_name': GAP_name, 'params': params, 'ref_property_prefix': ref_property_prefix,
-                             'seeds': seeds, 'skip_if_present': skip_if_present, 'run_dir': run_dir, 
+                     kwargs={'fitting_configs': fitting_configs, 'GAP_name': GAP_name, 'params': params,
+                             'ref_property_prefix': ref_property_prefix,
+                             'seeds': seeds, 'skip_if_present': skip_if_present, 'run_dir': run_dir,
                              'num_committee': num_committee, 'committee_extra_seeds': committee_extra_seeds,
                              'committee_name_postfix': committee_name_postfix, 'verbose': verbose, 'remote_info': '_IGNORE'})
 
@@ -433,7 +432,7 @@ def fit(fitting_configs, GAP_name, params, ref_property_prefix='REF_',
 
         # do a simple fit using gap_simple_fit
         stdout_file = run_dir / f'stdout.{GAP_name}.stage_{i_stage}.gap_fit'
-        # If this function was called without a remote_info that applies to it, remote_info here 
+        # If this function was called without a remote_info that applies to it, remote_info here
         # will still be the real remote_info, which can then be used in the underlying simple fits
         # If we're here with the multistage fit running remotely, the wrapper above passed
         # _IGNORE as remote_info, so these fits will run in this job, not their own separate remote

@@ -14,7 +14,7 @@ def quippy(ctx, inputs, outputs, descriptor, key, local, force):
     calculate_descriptor(inputs, outputs, descriptor, key, local, force)
 
 def calculate_descriptor(inputs, outputs, descriptor, key, local, force):
-    wfl.descriptors.quippy.calc(
+    wfl.descriptors.quippy.calculate(
         inputs=inputs,
         outputs=outputs,
         descs=descriptor,

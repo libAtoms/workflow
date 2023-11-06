@@ -11,7 +11,7 @@ from ase.units import GPa
 
 from wfl.calculators.dft import evaluate_dft
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate.buildcell import run as run_buildcell
+from wfl.generate.buildcell import buildcell as run_buildcell
 
 
 @click.command('')
@@ -70,12 +70,12 @@ def cli(verbose, configuration, buildcell_inputs, buildcell_cmd, n_per_config, p
             evaluated_structs = OutputSpec(f'DFT_evaluated.{key}_{param_val}.xyz', file_root=run_dir)
 
             dft_evaluated[key][param_val] = evaluate_dft(
-                    inputs=structs, outputs=evaluated_structs,
-                    calculator_name=params['calculator'],
-                    workdir_root=os.path.join(run_dir, 'vasp_run'),
-                    calculator_kwargs=run_kwargs,
-                    output_prefix=output_prefix,
-                    keep_files='default' if verbose else False)
+                inputs=structs, outputs=evaluated_structs,
+                calculator_name=params['calculator'],
+                workdir_root=os.path.join(run_dir, 'vasp_run'),
+                calculator_kwargs=run_kwargs,
+                output_prefix=output_prefix,
+                keep_files='default' if verbose else False)
 
     print('E in eV/atom, F in eV/A, stress in GPa')
     print('"dX" is maximum over configs, atoms, and components, "mean" is mean absolute values over same set')

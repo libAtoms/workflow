@@ -105,7 +105,7 @@ def _largest_bulk_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=Tru
         at.info['orig_cell'] = np.array(at.cell)
 
         if ase_optimal:
-            n_dups = ase.build.supercells.find_optimal_cell_shape(at.cell, max_n_atoms // len(at), 'sc') # , lower_limit=-4, upper_limit=4)
+            n_dups = ase.build.supercells.find_optimal_cell_shape(at.cell, max_n_atoms // len(at), 'sc')  # , lower_limit=-4, upper_limit=4)
             sc = ase.build.make_supercell(at, n_dups)
             sc.info.update(at.info)
             at = sc
@@ -131,7 +131,8 @@ def _largest_bulk_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=Tru
 
 
 def largest_bulk(*args, **kwargs):
-    return autoparallelize(_largest_bulk_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
+    return autoparallelize(_largest_bulk_autopara_wrappable, *args,
+                           default_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
 autoparallelize_docstring(largest_bulk, _largest_bulk_autopara_wrappable, "Atoms")
 
 
@@ -176,7 +177,7 @@ def _vacancy_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, sy
                 inds = list(range(len(at)))
                 dists = at.get_distances(init_vac_i, inds, mic=True)
                 nearest_d = np.amin(dists[np.where(dists > 0.0)])
-                nns = np.where(np.logical_and(dists <= cluster_r*nearest_d, dists > 0.0))[0]
+                nns = np.where(np.logical_and(dists <= cluster_r * nearest_d, dists > 0.0))[0]
                 if len(nns) >= n_vac:
                     break
                 n_try += 1
@@ -186,7 +187,7 @@ def _vacancy_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, sy
                 warnings.warn(f'Failed to find vacancy with at least {n_vac}-1 neighbors after 20 tries')
                 continue
 
-            vac_i = np.concatenate(([init_vac_i], np.random.choice(nns, size=n_vac-1, replace=False)))
+            vac_i = np.concatenate(([init_vac_i], np.random.choice(nns, size=n_vac - 1, replace=False)))
         else:
             # entirely random set
             vac_i = np.random.choice(len(at), size=n_vac, replace=False)
@@ -210,7 +211,7 @@ def _vacancy_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, sy
 
 
 def vacancy(*args, **kwargs):
-    return autoparallelize(_vacancy_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
+    return autoparallelize(_vacancy_autopara_wrappable, *args, default_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
 autoparallelize_docstring(vacancy, _vacancy_autopara_wrappable, "Atoms")
 
 
@@ -235,7 +236,8 @@ def _antisite_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, s
         if > 0.0, multiply by 1st nn distance of initial antisite, and make antisites in cluster of
         atoms within this distance of initial antisite.
     Zs: iterable(int), default None
-        list of atomic numbers to be used to create antisites.  If none or length 0, use set of species already present in each config for itself.
+        list of atomic numbers to be used to create antisites.  If none or length 0, use set of species already present
+        in each config for itself.
 
     Returns
     -------
@@ -266,7 +268,7 @@ def _antisite_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, s
                 inds = list(range(len(at)))
                 dists = at.get_distances(init_antisite_i, inds, mic=True)
                 nearest_d = np.amin(dists[np.where(dists > 0.0)])
-                nns = np.where(np.logical_and(dists <= cluster_r*nearest_d, dists > 0.0))[0]
+                nns = np.where(np.logical_and(dists <= cluster_r * nearest_d, dists > 0.0))[0]
                 if len(nns) >= n_antisite:
                     break
                 n_try += 1
@@ -276,7 +278,7 @@ def _antisite_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, s
                 warnings.warn(f'Failed to find antisite with at least {n_antisite}-1 neighbors after 20 tries')
                 continue
 
-            antisite_i = np.concatenate(([init_antisite_i], np.random.choice(nns, size=n_antisite-1, replace=False)))
+            antisite_i = np.concatenate(([init_antisite_i], np.random.choice(nns, size=n_antisite - 1, replace=False)))
         else:
             # entirely random set
             antisite_i = np.random.choice(len(at), size=n_antisite, replace=False)
@@ -305,7 +307,7 @@ def _antisite_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, s
 
 
 def antisite(*args, **kwargs):
-    return autoparallelize(_antisite_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
+    return autoparallelize(_antisite_autopara_wrappable, *args, default_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
 autoparallelize_docstring(antisite, _antisite_autopara_wrappable, "Atoms")
 
 
@@ -354,7 +356,8 @@ def _interstitial_autopara_wrappable(atoms, max_n_atoms, pert=0.0, interstitial_
 
 
 def interstitial(*args, **kwargs):
-    return autoparallelize(_interstitial_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
+    return autoparallelize(_interstitial_autopara_wrappable, *args,
+                           default_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
 autoparallelize_docstring(interstitial, _interstitial_autopara_wrappable, "Atoms")
 
 
@@ -494,5 +497,5 @@ def _surface_autopara_wrappable(atoms, max_n_atoms, min_thickness, vacuum, simpl
 
 
 def surface(*args, **kwargs):
-    return autoparallelize(_surface_autopara_wrappable, *args, def_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
+    return autoparallelize(_surface_autopara_wrappable, *args, default_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
 autoparallelize_docstring(surface, _surface_autopara_wrappable, "Atoms")

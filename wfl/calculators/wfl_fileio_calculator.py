@@ -10,11 +10,11 @@ from ase.calculators.castep import Castep as ASE_Castep
 class WFLFileIOCalculator():
     """Mixin class implementing some methods that should be available to every
     WFL calculator that does I/O via files, i.e. DFT calculators
-    
+
     As a python mixin class, must be inherited from by the wrapping wfl calculator class _before_ the ASE calculator, i.e.
-    
+
     .. code-block:: python
-    
+
         from ase.calculators.dftcode import DftCodeCalculator as ASE_DftCodeCalculator
         class DftCodeCalculator(WFLFileIOCalculator, ASE_DftCodeCalculator):
             .
@@ -71,9 +71,9 @@ class WFLFileIOCalculator():
         else:
             directory = self._cur_rundir
 
-        # ASE's Castep unconventionally uses `_directory` and has its own setter  
+        # ASE's Castep unconventionally uses `_directory` and has its own setter
         # and getter functions that only allows setting non-preditermined attributes
-        # if they start with an underscore.  
+        # if they start with an underscore.
         if isinstance(self, ASE_Castep):
             self._directory = directory
         else:
@@ -81,13 +81,13 @@ class WFLFileIOCalculator():
 
     def clean_rundir(self, _default_keep_files, calculation_succeeded):
 
-        # ASE's Castep unconventionally uses `_directory` and has its own setter  
+        # ASE's Castep unconventionally uses `_directory` and has its own setter
         # and getter functions that only allows setting non-preditermined attributes
         # if they start with an underscore.
         if isinstance(self, ASE_Castep):
-            directory = self._directory 
+            directory = self._directory
         else:
-            directory = self.directory 
+            directory = self.directory
 
         utils_clean_rundir(directory, self._wfl_keep_files, _default_keep_files, calculation_succeeded)
         if self._wfl_scratchdir is not None:

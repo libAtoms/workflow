@@ -39,7 +39,7 @@ def test_run(tmp_path):
 
     mol_in = get_atoms()
 
-    serial_mol_out = generic.run(mol_in, OutputSpec(tmp_path / "run_serial.xyz"),
+    serial_mol_out = generic.calculate(mol_in, OutputSpec(tmp_path / "run_serial.xyz"),
                                  LennardJones(),
                                  properties=["energy", "forces"], output_prefix="_auto_")
     # check that serial output is correct type of object
@@ -52,7 +52,7 @@ def test_run(tmp_path):
 
     mol_in = get_atoms()
 
-    mpi_mol_out = generic.run(mol_in, OutputSpec(tmp_path / "run_mpi.xyz"), LennardJones(),
+    mpi_mol_out = generic.calculate(mol_in, OutputSpec(tmp_path / "run_mpi.xyz"), LennardJones(),
                               properties=["energy", "forces"], output_prefix="_auto_")
     # check that MPI parallel output is correct type of object
     assert isinstance(mpi_mol_out, ConfigSet)

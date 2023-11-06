@@ -1,9 +1,6 @@
 import os
 import re
-import shutil
-import tempfile
-import warnings
-from pathlib import Path 
+from pathlib import Path
 import subprocess
 
 import ase.io
@@ -15,8 +12,7 @@ from ase.calculators.calculator import CalculationFailed, Calculator, \
 from ase.calculators.orca import ORCA as ASE_ORCA
 
 from ..wfl_fileio_calculator import WFLFileIOCalculator
-from wfl.calculators.utils import clean_rundir, save_results
-from wfl.utils.misc import atoms_to_list, chunks
+from wfl.utils.misc import chunks
 
 
 _default_keep_files = ["*.inp", "*.out", "*.ase", "*.engrad", "*.xyz",
@@ -28,10 +24,10 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
 
     Notes
     -----
-        - "directory" argument cannot be present. Use rundir_prefix and workdir instead. 
+        - "directory" argument cannot be present. Use rundir_prefix and workdir instead.
         - Unless specified, multiplicity is set to singlet/doublet for
           closed-/open-shell structures
-        - Results from additional optimisation task (set to "opt" or "copt") are stored in `extra_results` dictionary. 
+        - Results from additional optimisation task (set to "opt" or "copt") are stored in `extra_results` dictionary.
 
     Parameters
     ----------
@@ -52,19 +48,19 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
         command for ORCA, without any prefix or redirection set.
         for example: "/path/to/orca"
         mutually exclusive with "command"
-    post_process: function that takes the current instance of the calculator and is to be 
-        executed after reading back results from file, but before all the files are deleted. 
-        For example, a localisation scheme that uses the wavefunction files and saves local 
-        charges to `ORCA.extra_results`. 
+    post_process: function that takes the current instance of the calculator and is to be
+        executed after reading back results from file, but before all the files are deleted.
+        For example, a localisation scheme that uses the wavefunction files and saves local
+        charges to `ORCA.extra_results`.
 
     **kwargs: arguments for ase.calculators.espresso.Espresso
     """
 
     implemented_properties = ["energy", "forces", "dipole"]
-    
+
     # new default value of num_inputs_per_python_subprocess for calculators.generic,
     # to override that function's built-in default of 10
-    wfl_generic_def_autopara_info = {"num_inputs_per_python_subprocess": 1}
+    wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
     # same as parent class, only multiplicity changed to trigger default
     default_parameters = dict(
@@ -85,7 +81,7 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
             self.command = f'{calculator_exec} PREFIX.inp > ' \
                            f'PREFIX.out'
         elif calculator_exec is None and "command" not in kwargs:
-            self.command = os.environ.pop("ASE_ORCA_COMMAND", "orca PREFIX.inp > PREFIX.out")
+            self.command = os.environ.get("ASE_ORCA_COMMAND", "orca PREFIX.inp > PREFIX.out")
         else:
             self.command = kwargs["command"]
 
@@ -97,11 +93,11 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
         self.extra_results["atoms"] = {}
         self.extra_results["config"] = {}
 
-        self.post_process = post_process 
+        self.post_process = post_process
 
 
     def calculate(self, atoms=None, properties=["energy", "forces"], system_changes=all_changes):
-        """Does the calculation. Handles the working directories in addition to regular 
+        """Does the calculation. Handles the working directories in addition to regular
         ASE calculation operations (writing input, executing, reading_results) """
 
         Calculator.calculate(self, atoms, properties, system_changes)
@@ -115,13 +111,13 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
             self.read_results()
             if self.post_process is not None:
                 self.post_process(self)
-            calculation_succeeded=True
+            calculation_succeeded = True
         except Exception as e:
-            calculation_succeeded=False
+            calculation_succeeded = False
             raise e
         finally:
-            # when exception is raised, `calculation_succeeded` is set to False, 
-            # the following code is executed and exception is re-raised. 
+            # when exception is raised, `calculation_succeeded` is set to False,
+            # the following code is executed and exception is re-raised.
             # from WFLFileIOCalculator
             self.clean_rundir(_default_keep_files, calculation_succeeded)
 
@@ -175,7 +171,7 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
                         str(atom.position[1]) + ' ' +
                         str(atom.position[2]) + '\n')
             f.write('*\n')
-    
+
     def pick_task(self):
         # energy and force calculation is enforced
         task = self.parameters["task"]
@@ -238,7 +234,7 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
         -----
         Each comment line in output xyz has "Coordinates from ORCA-job orca
         E -154.812399026326";
-        # TODO parse out forces as well 
+        # TODO parse out forces as well
         """
         opt_trj = ase.io.read(f'{self.label}_trj.xyz', ':')
         for at in opt_trj:
@@ -255,9 +251,9 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
 
         self.extra_results["opt_trajectory"] = opt_trj
 
-    # EG: The eigenvector reading is implemented incorrectly 
+    # EG: The eigenvector reading is implemented incorrectly
     def read_frequencies(self):
-        """Reads frequencies (dynamical matrix eigenvalues) and normal modes (eigenvectors) from output. 
+        """Reads frequencies (dynamical matrix eigenvalues) and normal modes (eigenvectors) from output.
         Currently broken. """
         raise NotImplementedError("Normal mode (eigenvector) parsing is broken")
         with open(self.label + '.out', mode='r', encoding='utf-8') as fd:
@@ -402,7 +398,8 @@ def natural_population_analysis(janpa_home_dir, orca_calc):
     subprocess.run(command, shell=True)     # think about how to handle errors, etc
 
     # 2. Clean up molden format
-    command = f"java -jar {janpa_home_dir / 'molden2molden.jar'} -i {label}.molden.input -o {label}.molden.cleanedup -fromorca3bf -orca3signs > {label}.molden2molden.stdout"
+    command = (f"java -jar {janpa_home_dir / 'molden2molden.jar'} -i {label}.molden.input -o {label}.molden.cleanedup "
+               f"-fromorca3bf -orca3signs > {label}.molden2molden.stdout")
     subprocess.run(command, shell=True)
 
     # 3. Run natural population analysis
@@ -410,10 +407,10 @@ def natural_population_analysis(janpa_home_dir, orca_calc):
     command = f'java -jar {janpa_home_dir / "janpa.jar"} -i {label}.molden.cleanedup > {npa_output}'
     subprocess.run(command, shell=True)
 
-    # 4. Save results 
+    # 4. Save results
     elements, electron_pop, npa_charge = parse_npa_output(npa_output)
-    assert np.all([v1==v2 for v1, v2 in zip(elements, ref_elements)])
-    orca_calc.extra_results["atoms"]["NPA_electron_population"] = electron_pop 
+    assert np.all([v1 == v2 for v1, v2 in zip(elements, ref_elements)])
+    orca_calc.extra_results["atoms"]["NPA_electron_population"] = electron_pop
     orca_calc.extra_results["atoms"]["NPA_charge"] = npa_charge
 
 
@@ -428,7 +425,7 @@ def parse_npa_output(fname):
 
     elements = []
     electron_pop = []
-    npa_charge = [] 
+    npa_charge = []
 
     block = pattern_npa_block.findall(text)[0]
     for line in block.split('\n'):
@@ -440,6 +437,3 @@ def parse_npa_output(fname):
             npa_charge.append(float(values[2]))
 
     return elements, np.array(electron_pop), np.array(npa_charge)
-
-
-

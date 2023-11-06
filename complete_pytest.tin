@@ -1,10 +1,12 @@
 #!/bin/bash
 
 module purge
-module load compiler/gnu python/system python_extras/quippy
+module load compiler/gnu python/system python_extras/quippy lapack/mkl
 
 # should include both tin and tin_ssh - not as good as real remote machine, but maybe close enough
-export EXPYRE_PYTEST_SYSTEMS='tin'
+if [ -z $EXPYRE_PYTEST_SYSTEMS ]; then
+    export EXPYRE_PYTEST_SYSTEMS='tin'
+fi
 
 echo  "GIT VERSION " $( git describe --always --tags --dirty ) > complete_pytest.tin.out 
 echo "" >> complete_pytest.tin.out 
@@ -19,6 +21,10 @@ export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
 # QE
 module load dft/pwscf
 # no ORCA
+
+# cpu-only torch
+export PYTHONPATH=${HOME}/pytorch_cpu/lib64/python3.9/site-packages:${PYTHONPATH}
+export LD_PRELOAD=${MKLROOT}/lib/intel64/libmkl_core.so:${MKLROOT}/lib/intel64/libmkl_sequential.so:${MKLROOT}/lib/intel64/libmkl_gf_lp64.so
 
 export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1
@@ -38,10 +44,12 @@ pytest -v -s --basetemp $pytest_dir --runremote --runslow --runperf -rxXs "$@" >
 l=`egrep '^=.*(passed|failed|skipped|xfailed)' complete_pytest.tin.out`
 
 echo "summary line $l"
-# ========== 123 passed, 10 skipped, 235 warnings in 2887.66s (0:48:07) ==========
+# ===== 152 passed, 17 skipped, 3 xpassed, 78 warnings in 4430.81s (1:13:50) =====
+lp=$( echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' )
 
-declare -A expected_n=( ["passed"]="123" ["skipped"]="10" ["warnings"]=235 )
-echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' | while read out; do
+declare -A expected_n=( ["passed"]="152" ["skipped"]="17" ["warnings"]=78 ["xpassed"]=3 )
+IFS=$'\n'
+for out in $lp; do
     out_n=$(echo $out | sed -e 's/^=* //' -e 's/ .*//' -e 's/,//')
     out_cat=$(echo $out | sed -e 's/.* //' -e 's/,//')
     if [[ -z ${expected_n[$out_cat]} ]]; then

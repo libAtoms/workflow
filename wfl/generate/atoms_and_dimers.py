@@ -2,8 +2,6 @@ import numpy as np
 from ase import data
 from ase.atoms import Atoms
 
-from wfl.configset import ConfigSet
-
 
 def prepare(outputs, atomic_numbers, bond_lengths=None, dimer_n_steps=41, dimer_factor_range=(0.65, 2.5),
             dimer_box_scale=6.0, extra_info=None, do_isolated_atoms=True, max_cutoff=None, fixed_cell=False):

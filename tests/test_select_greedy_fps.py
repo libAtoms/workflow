@@ -113,8 +113,8 @@ def test_greedy_fps_fake_descriptor(tmp_path):
 
 def test_greedy_fps_quippy_descriptor(tmp_path, quippy):
 
-    from wfl.descriptors.quippy import calc
-    greedy_fps(calc, tmp_path)
+    from wfl.descriptors.quippy import calculate
+    greedy_fps(calculate, tmp_path)
     
 
 def greedy_fps(calc_desc, tmp_path):

@@ -4,14 +4,11 @@ VASP calculator
 """
 
 import os
-from pathlib import Path
 
 import json
-from copy import deepcopy
 
 import numpy as np
 
-from ase.atoms import Atoms
 from ase.calculators.calculator import all_changes
 from ase.calculators.vasp.vasp import Vasp as ASE_Vasp
 
@@ -155,7 +152,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
 
 
     def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
-        """Do the calculation. Handles the working directories in addition to regular 
+        """Do the calculation. Handles the working directories in addition to regular
         ASE calculation operations (writing input, executing, reading_results)"""
 
         if atoms is not None:

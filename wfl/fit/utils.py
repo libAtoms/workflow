@@ -1,7 +1,5 @@
 import os
-import json
 import numpy as np
-import os
 import subprocess
 from pathlib import Path
 import shlex
@@ -9,7 +7,6 @@ import warnings
 
 from ase.constraints import voigt_6_to_full_3x3_stress
 
-from wfl.autoparallelize.remoteinfo import RemoteInfo
 from wfl.utils.julia import julia_exec_path
 
 
@@ -112,11 +109,11 @@ def copy_properties(configs, ref_property_keys, stress_to_virial=True, force=Tru
                         raise RuntimeError(f'at.info key CALC_{result_key} already exists)')
                     at.info[f'CALC_{result_key}'] = at.calc.results[result_key]
             if 'forces' in at.calc.results:
-                if f'CALC_forces' in at.arrays:
+                if 'CALC_forces' in at.arrays:
                     if force:
                         del at.arrays['CALC_forces']
                     else:
-                        raise RuntimeError(f'at.arrays key CALC_forces already exists')
+                        raise RuntimeError('at.arrays key CALC_forces already exists')
                 at.new_array('CALC_forces', at.calc.results['forces'])
             if 'CALC_hessian' in at.arrays:
                 # no Hessian (in the format we need) from calculator, remove any old ones

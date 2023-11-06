@@ -19,7 +19,7 @@ def smiles(ctx, smiles_string, extra_info, outputs):
         print(f'info: {extra_info}')
         print(outputs)
 
-    wfl.generate.smiles.run(smiles_string, outputs=outputs, extra_info=extra_info)
+    wfl.generate.smiles.smiles(smiles_string, outputs=outputs, extra_info=extra_info)
 
 
 @click.command("buildcell")
@@ -54,16 +54,11 @@ def buildcell(ctx, outputs, buildcell_input, buildcell_exec, n_configs,
     with open(buildcell_input) as bc_f:
         buildcell_input_txt = bc_f.read()
 
-    wfl.generate.buildcell.run(
+    wfl.generate.buildcell.buildcell(
         outputs=outputs,
         inputs=range(n_configs),
         buildcell_cmd=buildcell_exec,
         buildcell_input=buildcell_input_txt,
         extra_info=extra_info,
         perturbation=perturbation,
-        verbose=ctx.obj["verbose"]
-    )
-
-
-
-
+        verbose=ctx.obj["verbose"])
