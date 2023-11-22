@@ -4,6 +4,7 @@ from ase.calculators.calculator import all_properties, PropertyNotImplementedErr
 from ase.calculators.singlepoint import SinglePointCalculator
 
 from wfl.utils.file_utils import clean_dir
+import wfl.configset
 
 per_atom_properties = ['forces', 'stresses', 'charges', 'magmoms', 'energies']
 per_config_properties = ['energy', 'stress', 'dipole', 'magmom', 'free_energy']
@@ -165,3 +166,72 @@ def clean_rundir(rundir, keep_files, default_keep_files, calculation_succeeded):
         clean_dir(rundir, False, force=False)
     else:
         clean_dir(rundir, keep_files, force=False)
+
+
+def subsample(inputs, outputs, M, N_s, keep_isolated_atoms=True):
+    """
+    Draw subsamples (without replacement) from given configurations.
+
+    Parameter:
+    ----------
+    inputs: ConfigSet
+        Set of configurations to draw subsamples from
+        (e.g. full training set).
+    outputs: OutputSpec
+        Target for subsample sets of configurations.
+    M: int
+        Number of subsets to be drawn.
+    N_s: int
+        Number of samples per subsets.
+    keep_isolated_atoms: bool, default True
+        Make isolated atoms (if present) be part of each subset.
+
+    Returns:
+    --------
+    ConfigSet with subsample sets of configurations.
+
+    """
+    if outputs.all_written():
+        return outputs.to_ConfigSet()
+
+    # keep track of position in original set of configurations
+    samples = []
+    isolated_atoms = []  # keep isolated atoms for each subsample
+    for atoms_i in inputs:
+        atoms_i.info['_ConfigSet_loc__FullTraining'] = atoms_i.info['_ConfigSet_loc']
+        if keep_isolated_atoms and len(atoms_i) == 1:
+            isolated_atoms.append(atoms_i)
+        else:
+            samples.append(atoms_i)
+
+    N_s -= len(isolated_atoms)
+    assert 1 < N_s <= len(samples), 'Negative N_s (after reduction by number of isolated atoms)'
+    assert len(outputs.files) == M, f'`outputs` requires `M` files to be specified.'
+
+    indice_pool = np.arange(len(samples))
+    subsample_indices = []
+    for _ in range(M):
+        if N_s <= len(indice_pool):
+            selected_indices = np.random.choice(indice_pool, N_s, False)
+            indice_pool = indice_pool[~np.isin(indice_pool, selected_indices)]
+            subsample_indices.append(selected_indices)
+        else:
+            selected_indices_part_1 = indice_pool
+            # re-fill pool with indices, taking account of already selected ones,
+            # in order to avoid dublicate selections
+            indice_pool = np.arange(len(samples))
+            indice_pool = indice_pool[~np.isin(indice_pool, selected_indices_part_1)]
+            selected_indices_part_2 = np.random.choice(indice_pool, N_s-len(selected_indices_part_1), False)
+            indice_pool = indice_pool[~np.isin(indice_pool, selected_indices_part_2)]
+            selected_indices = np.concatenate((selected_indices_part_1, selected_indices_part_2))
+            subsample_indices.append(selected_indices)
+
+    subsamples = wfl.configset.ConfigSet([isolated_atoms + [samples[idx_i] for idx_i in idxs]
+                                          for idxs in subsample_indices])
+    for subsample_i in zip(subsamples):
+        for subsample_ij in subsample_i:
+            outputs.store(subsample_ij, subsamples.cur_loc)
+
+    outputs.close()
+    return outputs.to_ConfigSet()
+
