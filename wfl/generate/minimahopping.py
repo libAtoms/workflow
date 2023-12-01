@@ -2,10 +2,12 @@ import os
 import shutil
 import sys
 import tempfile
+from pathlib import Path
 
 import numpy as np
 from ase.optimize.minimahopping import MinimaHopping
 from ase.io.trajectory import Trajectory
+import ase.io
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.misc import atoms_to_list
@@ -13,11 +15,28 @@ from wfl.generate.utils import config_type_append
 from wfl.utils.parallel import construct_calculator_picklesafe
 
 
+
+def _get_MD_trajectory(rundir):
+
+    md_traj = []
+    mdtrajfiles = sorted([file for file in Path(rundir).glob("md*.traj")])
+    for mdtraj in mdtrajfiles:
+        for at in ase.io.read(f"{mdtraj}", ":"):
+            config_type_append(at, 'traj')
+            md_traj.append(at)
+
+    return md_traj
+
+
 # perform MinimaHopping on one ASE.atoms object
 def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
                      fmax, timestep, totalsteps, skip_failures, **opt_kwargs):
+    save_tmpdir = opt_kwargs.pop("save_tmpdir", False)
+    return_all_traj = opt_kwargs.pop("return_all_traj", False)
     workdir = os.getcwd()
+
     rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_')
+
     os.chdir(rundir)
     atom.calc = calculator
     try:
@@ -36,11 +55,15 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
             raise
     else:
         traj = []
+        if return_all_traj:
+            traj += _get_MD_trajectory(rundir)
+
         for hop_traj in Trajectory('minima.traj'):
-            config_type_append(hop_traj, 'hopping_traj')
+            config_type_append(hop_traj, 'minima')
             traj.append(hop_traj)
         os.chdir(workdir)
-        shutil.rmtree(rundir)
+        if not save_tmpdir:
+            shutil.rmtree(rundir)
         return traj
 
 

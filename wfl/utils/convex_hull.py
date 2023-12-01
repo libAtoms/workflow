@@ -7,7 +7,7 @@ from scipy.spatial import ConvexHull
 # where N is index number, but gives seg fault
 def find_hull(ps, below=True):
     """find convex hull of set of points
-    
+
     Parameters
     ----------
     ps: ndarray(n_ps, n_dim)

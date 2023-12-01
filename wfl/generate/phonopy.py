@@ -50,7 +50,7 @@ def _run_autopara_wrappable(atoms, displacements, strain_displs, ph2_supercell, 
             assert sc.shape == (3,)
             sc_mat = np.diag(sc)
         else:
-            assert sc.shape == (3,3)
+            assert sc.shape == (3, 3)
             sc_mat = sc
 
         return sc_mat
@@ -78,15 +78,15 @@ def _run_autopara_wrappable(atoms, displacements, strain_displs, ph2_supercell, 
 
                 if displ_i == 0:
                     # store undisplaced phonon (harmonic) config
-                    at_pert = Atoms(cell=d2_undispl.cell, positions=d2_undispl.positions, numbers=d2_undispl.numbers, pbc=[True]*3)
+                    at_pert = Atoms(cell=d2_undispl.cell, positions=d2_undispl.positions, numbers=d2_undispl.numbers, pbc=[True] * 3)
                     if ph3_sc_mat is not None and np.any(ph2_sc_mat != ph3_sc_mat):
                         # fc2 and fc3 are different supercells, need different undisplaced configs
-                        at_pert.info["config_type"] = f"phonon_harmonic_undispl"
+                        at_pert.info["config_type"] = "phonon_harmonic_undispl"
                     else:
-                        at_pert.info["config_type"] = f"phonon_undispl"
+                        at_pert.info["config_type"] = "phonon_undispl"
                     ats_pert[-1].append(at_pert)
                 for at in d2:
-                    at_pert = Atoms(cell=at.cell, positions=at.positions, numbers=at.numbers, pbc=[True]*3)
+                    at_pert = Atoms(cell=at.cell, positions=at.positions, numbers=at.numbers, pbc=[True] * 3)
                     at_pert.info["config_type"] = f"phonon_harmonic_{displ_i}"
                     ats_pert[-1].append(at_pert)
 
@@ -98,22 +98,22 @@ def _run_autopara_wrappable(atoms, displacements, strain_displs, ph2_supercell, 
 
                 if displ_i == 0 and (ph2_sc_mat is None or np.any(ph2_sc_mat != ph3_sc_mat)):
                     # store undisplaced fc3 (cubic) config
-                    at_pert = Atoms(cell=d3_undispl.cell, positions=d3_undispl.positions, numbers=d3_undispl.numbers, pbc=[True]*3)
+                    at_pert = Atoms(cell=d3_undispl.cell, positions=d3_undispl.positions, numbers=d3_undispl.numbers, pbc=[True] * 3)
                     if ph2_sc_mat is not None and np.any(ph2_sc_mat != ph3_sc_mat):
-                        at_pert.info["config_type"] = f"phonon_cubic_undispl"
+                        at_pert.info["config_type"] = "phonon_cubic_undispl"
                     else:
-                        at_pert.info["config_type"] = f"phonon_undispl"
+                        at_pert.info["config_type"] = "phonon_undispl"
                     ats_pert[-1].append(at_pert)
                 for at in d3:
-                    at_pert = Atoms(cell=at.cell, positions=at.positions, numbers=at.numbers, pbc=[True]*3)
+                    at_pert = Atoms(cell=at.cell, positions=at.positions, numbers=at.numbers, pbc=[True] * 3)
                     at_pert.info["config_type"] = f"phonon_cubic_{displ_i}"
                     ats_pert[-1].append(at_pert)
 
         for displ_i, displ in enumerate(strain_displs):
             for i0 in range(3):
-                for i1 in range(i0+1):
+                for i1 in range(i0 + 1):
                     F = np.eye(3)
-                    F[i0,i1] += displ
+                    F[i0, i1] += displ
                     at_pert = at0.copy()
                     at_pert.set_cell(at_pert.cell @ F, scale_atoms=True)
                     at_pert.info["config_type"] = f"phonon_strain_{displ_i}"
@@ -123,5 +123,5 @@ def _run_autopara_wrappable(atoms, displacements, strain_displs, ph2_supercell, 
 
 
 def phonopy(*args, **kwargs):
-    return autoparallelize(_run_autopara_wrappable, *args, default_autopara_info={"num_inputs_per_python_subprocess":10}, **kwargs)
+    return autoparallelize(_run_autopara_wrappable, *args, default_autopara_info={"num_inputs_per_python_subprocess": 10}, **kwargs)
 autoparallelize_docstring(phonopy, _run_autopara_wrappable, "Atoms")

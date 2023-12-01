@@ -13,7 +13,7 @@ from wfl.fit.ace import fit, prepare_params, prepare_configs
 try:
     ace_fit_jl_path()
 except:
-    pytestmark = pytest.mark.skip
+    pytestmark = pytest.mark.skip(reason="ace_fit_jl_path failed to find ace fitting script")
 
 def test_ace_fit_dry_run(request, tmp_path, monkeypatch, run_dir='run_dir'):
     print('getting fitting data from ', request.fspath)

@@ -62,7 +62,7 @@ def gap_relocate(old_file, new_file, extra_filename_glob=None, delete_old=False)
                 cleanup_files.append(Path(old_file).parent / extra_file.name)
                 sys.stderr.write(f'copying extra {cleanup_files[-1]} '
                                  f'{Path(new_file).parent / extra_file.name.replace(old_file.name, new_file.name, 1)}\n')
-                shutil.copyfile(cleanup_files[-1],  Path(new_file).parent / extra_file.name.replace(old_file.name, new_file.name, 1))
+                shutil.copyfile(cleanup_files[-1], Path(new_file).parent / extra_file.name.replace(old_file.name, new_file.name, 1))
 
     et.write(new_file)
     cleanup_files.append(old_file)
@@ -93,6 +93,5 @@ def _filename_rename(root, old_name, new_name):
 
 
 if __name__ == '__main__':
-    import sys
     assert len(sys.argv) == 3 or len(sys.argv) == 4
     gap_relocate(*sys.argv[1:])

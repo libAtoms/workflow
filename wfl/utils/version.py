@@ -10,7 +10,7 @@ def get_wfl_version():
                               "echo $(git describe --always --tags --dirty)",
                               shell=True, stdout=subprocess.PIPE) as gitv:
             version_str = gitv.stdout.read().strip().decode('utf-8')
-    except Exception as exc:
+    except Exception:
         version_str = ''
 
     if len(version_str.strip()) == 0:

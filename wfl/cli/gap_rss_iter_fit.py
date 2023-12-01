@@ -9,8 +9,6 @@ import wfl.autoparallelize.mpipool_support
 
 wfl.autoparallelize.mpipool_support.init()
 
-import os
-import sys
 import glob
 import json
 import pathlib
@@ -159,7 +157,7 @@ def prep(ctx, length_scales_file, verbose):
     print('length_scales\n' + pprint.pformat(length_scales, indent=2))
 
     # prep buildcell inputs using Zs, compositions, length scales
-    for buildcell_step_type, natom in params.get('prep/buildcell', {'default' : [6, 24]}).items():
+    for buildcell_step_type, natom in params.get('prep/buildcell', {'default': [6, 24]}).items():
         buildcell_inputs = {}
         for c_inds in compositions:
             if verbose:
@@ -376,7 +374,7 @@ def evaluate_ref(dft_in_configs, dft_evaluated_configs, params, run_dir, verbose
         outputs=dft_evaluated_configs,
         calculator=calculator(workdir=run_dir, keep_files=keep_files, **params.dft_params.get("kwargs", {})),
         output_prefix="REF_",
-        autopara_info = {'remote_label': 'REF_eval'}
+        autopara_info={'remote_label': 'REF_eval'}
     )
 
 
@@ -415,7 +413,7 @@ def do_fit_and_test(cur_iter, run_dir, params, fitting_configs, testing_configs=
             at.calc = None
         evaluated_configs = generic.calculate(fitting_configs, co, calculator, output_prefix="GAP_")
         fitting_error = wfl.fit.error.calc(evaluated_configs, calc_property_prefix="GAP_", ref_property_prefix="REF_",
-                category_keys = ['config_type', 'gap_rss_iter'])
+                category_keys=['config_type', 'gap_rss_iter'])
         with open(GAP_xml_file + '.fitting_err.json', 'w') as fout:
             json.dump(dict_tuple_keys_to_str(fitting_error[0]), fout)
         print('FITTING ERROR')
@@ -426,7 +424,7 @@ def do_fit_and_test(cur_iter, run_dir, params, fitting_configs, testing_configs=
             at.calc = None
         evaluated_configs = generic.calculate(testing_configs, co, calculator, output_prefix="GAP_")
         testing_error = wfl.fit.error.calc(evaluated_configs, calc_property_prefix="GAP_", ref_property_prefix="REF_",
-                category_keys = ['config_type', 'gap_rss_iter'])
+                category_keys=['config_type', 'gap_rss_iter'])
         with open(GAP_xml_file + '.testing_err.json', 'w') as fout:
             json.dump(dict_tuple_keys_to_str(testing_error[0]), fout)
         print('TESTING ERROR')
@@ -526,7 +524,7 @@ def get_buildcell_input_files(step_label, cur_iter):
     if use_filename is None:
         # look for non-iter-specific file
         for filename in files:
-            if filename.endswith(f".{step_label}.yaml") or filename.endswith(f".default.yaml"):
+            if filename.endswith(f".{step_label}.yaml") or filename.endswith(".default.yaml"):
                 use_filename = filename
                 break
 
@@ -578,13 +576,13 @@ def do_initial_step(ctx, cur_iter, verbose):
 
     atoms_dimers = ConfigSet('atoms_and_dimers.xyz')
 
-    GAP_xml_file = evaluate_iter_and_fit_all(cur_iter, run_dir, params, Params(params.get('initial_step'), cur_iter),
-                                             [grp['cur_confs'] for grp in groups.values()] + [atoms_dimers],
-                                             [grp['testing_confs'] for grp in groups.values()],
-                                             params.get('fit/database_modify_mod'),
-                                             params.get('fit/calc_fitting_error', default=True),
-                                             extra_fitting_files=params.get('fit/extra_fitting_files', default=[]),
-                                             seeds=ctx.obj['seeds'], verbose=verbose)
+    _ = evaluate_iter_and_fit_all(cur_iter, run_dir, params, Params(params.get('initial_step'), cur_iter),
+                                  [grp['cur_confs'] for grp in groups.values()] + [atoms_dimers],
+                                  [grp['testing_confs'] for grp in groups.values()],
+                                  params.get('fit/database_modify_mod'),
+                                  params.get('fit/calc_fitting_error', default=True),
+                                  extra_fitting_files=params.get('fit/extra_fitting_files', default=[]),
+                                  seeds=ctx.obj['seeds'], verbose=verbose)
 
     print_log('done')
     increment_active_iter(cur_iter)
@@ -635,13 +633,13 @@ def do_rss_step(ctx, cur_iter, verbose):
                                           params.get('global/config_selection_descriptor_local', default=False),
                                           verbose=verbose)
 
-    GAP_xml_file = evaluate_iter_and_fit_all(cur_iter, run_dir, params, Params(params.get('rss_step'), cur_iter),
-                                             [grp['cur_confs'] for grp in groups.values()],
-                                             [grp['testing_confs'] for grp in groups.values()],
-                                             params.get('fit/database_modify_mod'),
-                                             params.get('fit/calc_fitting_error', default=True),
-                                             extra_fitting_files=params.get('fit/extra_fitting_files', default=[]),
-                                             seeds=ctx.obj['seeds'], verbose=verbose)
+    _ = evaluate_iter_and_fit_all(cur_iter, run_dir, params, Params(params.get('rss_step'), cur_iter),
+                                  [grp['cur_confs'] for grp in groups.values()],
+                                  [grp['testing_confs'] for grp in groups.values()],
+                                  params.get('fit/database_modify_mod'),
+                                  params.get('fit/calc_fitting_error', default=True),
+                                  extra_fitting_files=params.get('fit/extra_fitting_files', default=[]),
+                                  seeds=ctx.obj['seeds'], verbose=verbose)
 
     print_log('done')
     increment_active_iter(cur_iter)
@@ -662,8 +660,10 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
     run_dir, Zs, compositions = step_startup(params, cur_iter)
 
     single_composition_group = params.get('global/single_composition_group', default=True)
-    minima_select_by_desc_method = params.get('MD_bulk_defect_step/prelim_select_by_desc_method', default=params.get('global/prelim_select_by_desc_method', default='CUR'))
-    select_by_desc_method = params.get('MD_bulk_defect_step/select_by_desc_method', default=params.get('global/select_by_desc_method', default='CUR'))
+    minima_select_by_desc_method = params.get('MD_bulk_defect_step/prelim_select_by_desc_method',
+                                              default=params.get('global/prelim_select_by_desc_method', default='CUR'))
+    select_by_desc_method = params.get('MD_bulk_defect_step/select_by_desc_method',
+                                       default=params.get('global/select_by_desc_method', default='CUR'))
     with open('gap_rss_iter_fit.prep.config_selection_descriptors.yaml') as fin:
         descriptor_strs = yaml.safe_load(fin)
 
@@ -787,7 +787,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
             defect_starting = wfl.select.simple.by_bool_func(defect_optimize_trajs,
                                                              OutputSpec(f'defect_minima.{grp_label}.xyz',
                                                                         file_root=run_dir),
-                                                             lambda at : at.info["optimize_config_type"].startswith("optimize_last"))
+                                                             lambda at: at.info["optimize_config_type"].startswith("optimize_last"))
         else:
             defect_starting = groups[grp_label]['defect_confs']
 
@@ -806,13 +806,13 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
         run_dir, cur_iter, groups, Params(params.get('MD_bulk_defect_step'), cur_iter), Zs, 'md_energy', select_by_desc_method,
         descriptor_strs, params.get('global/config_selection_descriptor_local', default=False), verbose=verbose)
 
-    GAP_xml_file = evaluate_iter_and_fit_all(cur_iter, run_dir, params, Params(params.get('MD_bulk_defect_step'), cur_iter),
-                                             [grp['cur_confs'] for grp in groups.values()],
-                                             [grp['testing_confs'] for grp in groups.values()],
-                                             params.get('fit/database_modify_mod'),
-                                             params.get('fit/calc_fitting_error', default=True),
-                                             extra_fitting_files=params.get('fit/extra_fitting_files', default=[]),
-                                             seeds=ctx.obj['seeds'], verbose=verbose)
+    _ = evaluate_iter_and_fit_all(cur_iter, run_dir, params, Params(params.get('MD_bulk_defect_step'), cur_iter),
+                                  [grp['cur_confs'] for grp in groups.values()],
+                                  [grp['testing_confs'] for grp in groups.values()],
+                                  params.get('fit/database_modify_mod'),
+                                  params.get('fit/calc_fitting_error', default=True),
+                                  extra_fitting_files=params.get('fit/extra_fitting_files', default=[]),
+                                  seeds=ctx.obj['seeds'], verbose=verbose)
 
     print_log('done')
     increment_active_iter(cur_iter)
@@ -922,7 +922,7 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
         print_log('selecting minima from trajectories')
         # select minima from trajs
         minima = wfl.select.simple.by_bool_func(trajs, OutputSpec(f'minima.{grp_label}.xyz', file_root=run_dir),
-                                                lambda at : at.info["optimize_config_type"].startswith("optimize_last"))
+                                                lambda at: at.info["optimize_config_type"].startswith("optimize_last"))
 
         if select_convex_hull:
             print_log('selecting convex hull of minima')
@@ -962,7 +962,7 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
             # select all configs for these indices from all trajs
             selected_traj = wfl.select.simple.by_bool_func(
                 trajs, OutputSpec(f'selected_rss_traj.{grp_label}.xyz', file_root=run_dir),
-                lambda at : at.info["buildcell_config_i"] in selected_minima_config_i)
+                lambda at: at.info["buildcell_config_i"] in selected_minima_config_i)
 
             groups[grp_label]['cur_confs'] = selected_traj
 

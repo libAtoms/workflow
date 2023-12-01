@@ -45,7 +45,7 @@ subcli_select.add_command(by_lambda)
 def subcli_eval(ctx):
     pass
 
-from wfl.cli.commands.eval import gap, ace, mace, atomization_energy 
+from wfl.cli.commands.eval import gap, ace, mace, atomization_energy
 subcli_eval.add_command(gap)
 subcli_eval.add_command(ace)
 subcli_eval.add_command(mace)
@@ -57,7 +57,5 @@ subcli_eval.add_command(atomization_energy)
 def subcli_descriptor(ctx):
     pass
 
-from wfl.cli.commands.descriptor import quippy 
+from wfl.cli.commands.descriptor import quippy
 subcli_descriptor.add_command(quippy)
-
-

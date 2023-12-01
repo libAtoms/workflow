@@ -2,18 +2,11 @@
 Quantum Espresso interface
 """
 
-import os
-import tempfile
-import subprocess
-import warnings
-import shutil
 import shlex
 
 from copy import deepcopy
-from pathlib import Path
 import numpy as np
 
-from ase import Atoms
 from ase.calculators.calculator import all_changes
 from ase.calculators.espresso import Espresso as ASE_Espresso
 try:
@@ -24,7 +17,6 @@ from ase.io.espresso import kspacing_to_grid
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
 from .utils import clean_rundir, save_results
-from ..utils.misc import atoms_to_list
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["*.pwo"]
@@ -107,7 +99,7 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
 
         try:
             super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
-            calculation_succeeded=True
+            calculation_succeeded = True
             if 'DFT_FAILED_ESPRESSO' in atoms.info:
                 del atoms.info['DFT_FAILED_ESPRESSO']
             if "_output_prefix" in atoms.info:
@@ -115,7 +107,7 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
                 atoms.info["_results_saved"] = True
         except Exception as exc:
             atoms.info['DFT_FAILED_ESPRESSO'] = True
-            calculation_succeeded=False
+            calculation_succeeded = False
             raise exc
         finally:
             # from WFLFileIOCalculator

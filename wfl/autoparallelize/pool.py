@@ -6,8 +6,6 @@ import inspect
 import functools
 from multiprocessing.pool import Pool
 
-from ase.atoms import Atoms
-
 from wfl.configset import ConfigSet
 from wfl.autoparallelize.mpipool_support import wfl_mpipool
 
@@ -33,7 +31,7 @@ def _wrapped_autopara_wrappable(op, iterable_arg, root_global_seed, prev_per_ite
         kwargs: dict
             dict of keyword args
         item_inputs: iterable(2-tuples)
-            One or more 2-tuples. First field of each is a 2-tuple (item_i, item), where item is 
+            One or more 2-tuples. First field of each is a 2-tuple (item_i, item), where item is
                 to be passed to function in iterable_arg and item_i is its number in the
                 overall list, and second field is a quantity to be passed back with the output.
 
@@ -71,7 +69,7 @@ def _wrapped_autopara_wrappable(op, iterable_arg, root_global_seed, prev_per_ite
 def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1, iterable=None, outputspec=None, op=None, iterable_arg=0,
                skip_failed=True, initializer=(None, []), args=[], kwargs={}):
     """parallelize some operation over an iterable
-    
+
     Parameters
     ----------
     num_python_subprocesses: int, default os.environ['WFL_NUM_PYTHON_SUBPROCESSES']
@@ -144,7 +142,8 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
             map_f = pool.map
         else:
             map_f = pool.imap
-        results = map_f(functools.partial(_wrapped_autopara_wrappable, op, iterable_arg, root_global_seed, prev_per_item_info, args, kwargs), items_inputs_generator)
+        results = map_f(functools.partial(_wrapped_autopara_wrappable, op, iterable_arg, root_global_seed,
+                                          prev_per_item_info, args, kwargs), items_inputs_generator)
 
         if not wfl_mpipool:
             # only close pool if it's from multiprocessing.pool
@@ -167,10 +166,11 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
     else:
         # do directly: still not trivial because of num_inputs_per_python_subprocess
         # NOTE: this does not pickle configs to send to the remote processes, so called function
-        # can change configs in-place, which is different from Pool.map().  Should we pickle and 
+        # can change configs in-place, which is different from Pool.map().  Should we pickle and
         # unpickle to better reproduce the behavior of Pool.map() ?
         for items_inputs_group in items_inputs_generator:
-            result_group = _wrapped_autopara_wrappable(op, iterable_arg, root_global_seed, prev_per_item_info, args, kwargs, items_inputs_group)
+            result_group = _wrapped_autopara_wrappable(op, iterable_arg, root_global_seed, prev_per_item_info, args,
+                                                       kwargs, items_inputs_group)
 
             if outputspec is not None:
                 for at, from_input_loc in result_group:

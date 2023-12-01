@@ -1,4 +1,3 @@
-import os
 import sys
 
 import ase.units
@@ -37,7 +36,7 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
            results_prefix='optimize_', verbose=False, update_config_type=True,
            autopara_rng_seed=None, autopara_per_item_info=None,
            **opt_kwargs):
-    """runs a structure optimization 
+    """runs a structure optimization
 
     Parameters
     ----------
@@ -115,7 +114,7 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
         at.calc = calculator
         if pressure is not None:
             p = sample_pressure(pressure, at)
-            at.info[f'optimize_pressure_GPa'] = p
+            at.info['optimize_pressure_GPa'] = p
             p *= ase.units.GPa
             wrapped_at = ExpCellFilter(at, scalar_pressure=p)
         else:
@@ -203,9 +202,9 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
 
 
 def optimize(*args, **kwargs):
-    default_autopara_info={"num_inputs_per_python_subprocess":10}
+    default_autopara_info = {"num_inputs_per_python_subprocess": 10}
 
-    return autoparallelize(_run_autopara_wrappable, *args, 
+    return autoparallelize(_run_autopara_wrappable, *args,
                            default_autopara_info=default_autopara_info, **kwargs)
 autoparallelize_docstring(optimize, _run_autopara_wrappable, "Atoms")
 

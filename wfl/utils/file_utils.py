@@ -25,7 +25,7 @@ def clean_dir(directory, keep_files, force=False):
     # if the dir is non-existent
     if not os.path.isdir(directory):
         if force:
-            raise FileNotFoundError(f"No directory to be cleaned", directory)
+            raise FileNotFoundError(f"No directory to be cleaned {directory}")
         else:
             return
 

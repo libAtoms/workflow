@@ -1,4 +1,3 @@
-import os
 import sys
 
 import numpy as np
@@ -6,6 +5,7 @@ from ase.md.nptberendsen import NPTBerendsen
 from ase.md.nvtberendsen import NVTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.md.verlet import VelocityVerlet
+from ase.md.langevin import Langevin
 from ase.units import GPa, fs
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
@@ -18,7 +18,7 @@ from ..utils import config_type_append
 bar = 1.0e-4 * GPa
 
 
-def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, temperature_tau=None,
+def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBerendsen", temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
               traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False, update_config_type=True,
               traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None,
@@ -34,6 +34,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
         ASE calculator or routine to call to create calculator
     dt: float
         time step (fs)
+    integrator: str, default "NVTBerendsen"
+        Select integrator. Default is Berendsen but also langevin can be used
     steps: int
         number of steps
     temperature: float or (float, float, [int]]), or list of dicts  default None
@@ -43,7 +45,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
         - [ {'T_i': float, 'T_f' : float, 'traj_frac' : flot, 'n_stages': int=10}, ... ] list of stages, each one a ramp, with
         duration defined as fraction of total number of steps
     temperature_tau: float, default None
-        time scale that enables Berendsen constant T temperature rescaling (fs)
+        Time scale for thermostat (fs). Directly used for Berendsen integrator, or as 1/friction for Langevin integrator.
     pressure: None / float / tuple
         applied pressure distribution (GPa) as parsed by wfl.utils.pressure.sample_pressure()
         enabled Berendsen constant P volume rescaling
@@ -78,6 +80,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
     -------
         list(Atoms) trajectories
     """
+    assert integrator in ["NVTBerendsen", "Langevin"]
 
     calculator = construct_calculator_picklesafe(calculator)
 
@@ -99,7 +102,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
             # create a stage dict from a constant or ramp
             t_stage_data = temperature
             # start with constant
-            t_stage = { 'T_i': t_stage_data[0], 'T_f' : t_stage_data[0], 'traj_frac': 1.0, 'n_stages': 10, 'steps': steps }
+            t_stage = {'T_i': t_stage_data[0], 'T_f': t_stage_data[0], 'traj_frac': 1.0, 'n_stages': 10, 'steps': steps}
             if len(t_stage_data) >= 2:
                 # set different final T for ramp
                 t_stage['T_f'] = t_stage_data[1]
@@ -148,13 +151,14 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
             md_constructor = VelocityVerlet
             # one stage, simple
             all_stage_kwargs = [stage_kwargs.copy()]
-            all_run_kwargs = [ {'steps': steps} ]
+            all_run_kwargs = [{'steps': steps}]
+
         else:
             # NVT or NPT
             all_stage_kwargs = []
             all_run_kwargs = []
 
-            stage_kwargs['taut'] = temperature_tau * fs
+#            stage_kwargs['taut'] = temperature_tau * fs
 
             if pressure is not None:
                 md_constructor = NPTBerendsen
@@ -162,7 +166,13 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, temperature=None, t
                 stage_kwargs['compressibility_au'] = compressibility
                 stage_kwargs['taup'] = temperature_tau * fs * 3 if pressure_tau is None else pressure_tau * fs
             else:
-                md_constructor = NVTBerendsen
+                if integrator == "NVTBerendsen":
+                    md_constructor = NVTBerendsen
+                    stage_kwargs['taut'] = temperature_tau * fs
+
+                elif integrator == "Langevin":
+                    md_constructor = Langevin
+                    stage_kwargs["friction"] = 1 / (temperature_tau * fs)
 
             for t_stage_i, t_stage in enumerate(temperature):
                 stage_steps = t_stage['traj_frac'] * steps

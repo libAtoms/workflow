@@ -2,28 +2,16 @@
 Quantum Castep interface
 """
 
-import os
-import tempfile
-import subprocess
-import warnings
-import shutil
-import shlex
-
 from copy import deepcopy
-from pathlib import Path
-import numpy as np
 
-from ase import Atoms
 from ase.calculators.calculator import all_changes
 from ase.calculators.castep import Castep as ASE_Castep
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
-from .utils import clean_rundir
-from ..utils.misc import atoms_to_list
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["*.castep", "*.param", "*.cell"]
-_default_properties = ["energy", "forces", "stress"]           
+_default_properties = ["energy", "forces", "stress"]
 
 
 class Castep(WFLFileIOCalculator, ASE_Castep):
@@ -49,7 +37,7 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
     calculator_exec: str
         command for Castep, without any prefix or redirection set.
         for example: "mpirun -n 4 castep.mpi"
-        Alternative for "castep_command", for consistency with other wfl calculators. 
+        Alternative for "castep_command", for consistency with other wfl calculators.
 
     **kwargs: arguments for ase.calculators.Castep.Castep
     """
@@ -67,7 +55,7 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
         if calculator_exec is not None:
             if "castep_command" in kwargs:
                 raise ValueError("Cannot specify both calculator_exec and command")
-            kwargs["castep_command"] = calculator_exec 
+            kwargs["castep_command"] = calculator_exec
 
         if kwargs.get("castep_pp_path", None) is None:
             # make sure we are looking for pspot if path given
@@ -96,23 +84,23 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
         orig_pbc = self.atoms.pbc.copy()
         try:
             super().calculate(atoms=atoms)
-            calculation_succeeded=True
+            calculation_succeeded = True
             if 'DFT_FAILED_CASTEP' in atoms.info:
                 del atoms.info['DFT_FAILED_CASTEP']
         except Exception as exc:
             atoms.info['DFT_FAILED_CASTEP'] = True
-            calculation_succeeded=False
+            calculation_succeeded = False
             raise exc
         finally:
-            # ASE castep calculator does not ever raise an exception when it fails.  Instead, 
-            # you get things like stress being None, which lead to TypeError when save_results 
-            # calls get_stress().
+            # ASE castep calculator does not ever raise an exception when
+            # it fails.  Instead, you get things like stress being None,
+            # which lead to TypeError when save_results calls get_stress().
             for property in properties:
                 result = self.get_property(property)
                 if result is None:
                     calculation_succeeded = False
                     atoms.info["DFT_FAILED_CASTEP"] = True
-            
+
             # from WFLFileIOCalculator
             self.clean_rundir(_default_keep_files, calculation_succeeded)
 

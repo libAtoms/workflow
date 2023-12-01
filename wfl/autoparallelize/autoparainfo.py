@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 class AutoparaInfo:
     """Object containing information required to autoparallelize a function
 

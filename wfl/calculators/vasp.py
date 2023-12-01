@@ -4,14 +4,11 @@ VASP calculator
 """
 
 import os
-from pathlib import Path
 
 import json
-from copy import deepcopy
 
 import numpy as np
 
-from ase.atoms import Atoms
 from ase.calculators.calculator import all_changes
 from ase.calculators.vasp.vasp import Vasp as ASE_Vasp
 
@@ -71,7 +68,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
                  workdir=None, scratchdir=None,
                  calculator_exec=None, calculator_exec_gamma=None,
                  **kwargs):
-        
+
         # get initialparams from env var
         kwargs_use = {}
         if 'WFL_VASP_KWARGS' in os.environ:
@@ -140,7 +137,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
             # set k-points for nonperiodic systems
             self.float_params["kspacing"] = 1.0e8
             self.bool_params["kgamma"] = True
-        
+
 
     def per_config_restore(self, atoms):
         # undo pbc change
@@ -159,7 +156,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
 
 
     def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
-        """Do the calculation. Handles the working directories in addition to regular 
+        """Do the calculation. Handles the working directories in addition to regular
         ASE calculation operations (writing input, executing, reading_results)"""
 
         if atoms is not None:

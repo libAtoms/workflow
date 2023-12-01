@@ -29,7 +29,7 @@ def dict_to_quip_str(d, list_brackets='{}'):
         try:
             # try treating as an iterable
             return sep.join([str(vv) for vv in v])
-        except TypeError as exc:
+        except TypeError:
             return v
 
     string = ''

@@ -34,8 +34,10 @@ def save_results(atoms, properties, results_prefix=None):
                          ' to SinglePointCalculator')
 
     if properties is None:
-        # This will not work for calculators like Castep that (as of some point at least) do not use 
-        # results dict, but there's nothing we can do about that here.
+        # This will not work for calculators like Castep that (as of some point
+        # at least) do not use results dict.  Such calculators will fail below,
+        # in the "if 'energy' in properties" statement.
+
         properties = list(atoms.calc.results.keys())
 
     if results_prefix is not None:
@@ -56,6 +58,9 @@ def save_results(atoms, properties, results_prefix=None):
         except PropertyNotImplementedError:
             config_results['energy'] = atoms.get_potential_energy()
     if 'stress' in properties:
+        # OLD COMMENT:  Quantum Espresso doesn't calculate stress, even if asked for, if pbc=False.
+        # hopefully this is taken care of by generic calculator cleaning up handling of 
+        # nonperiodic cells
         config_results['stress'] = atoms.get_stress()
     if 'dipole' in properties:
         config_results['dipole'] = atoms.get_dipole_moment()
@@ -73,7 +78,7 @@ def save_results(atoms, properties, results_prefix=None):
         atoms_results['magmoms'] = atoms.get_magnetic_moments()
     if 'energies' in properties:
         atoms_results['energies'] = atoms.get_potential_energies()
-    if 'converged' in properties and results_prefix != None:
+    if 'converged' in properties and results_prefix is not None:
         config_results['converged'] = atoms.get_calculator().read_convergence()
 
     if "extra_results" in dir(atoms.calc):
@@ -81,7 +86,7 @@ def save_results(atoms, properties, results_prefix=None):
                                        len(atoms.calc.extra_results.get("atoms", {})) > 0):
             raise ValueError('Refusing to save calculator results into info/arrays fields with no prefix,'
                             ' too much chance of confusion with ASE extxyz reading/writing and conversion'
-                            ' to SinglePointCalculator') 
+                            ' to SinglePointCalculator')
 
         for key, vals in atoms.calc.extra_results["config"].items():
             config_results[key] = vals

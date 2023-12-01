@@ -10,7 +10,7 @@ from ase.calculators.calculator import all_changes, CalculationFailed
 from ase.calculators.calculator import Calculator
 
 from wfl.calculators import orca
-from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
+# from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 
 
 def evaluate_basin_hopping(*args, **kwargs):
@@ -135,7 +135,7 @@ class BasinHoppingORCA(Calculator):
                  orcasimpleinput='UHF PBE def2-SVP tightscf', orcablocks=None,
                  orca_command='orca',
                  keep_files=False, uhf=True, **kwargs):
- 
+
         super(BasinHoppingORCA, self).__init__(atoms=atoms, **kwargs)
 
         # calculator settings
