@@ -172,7 +172,7 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
         pseudo_dir=os.path.dirname(pspot),
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-        calculator_command=qe_cmd,
+        calculator_exec=qe_cmd,
         workdir=tmp_path
     ) 
 
