@@ -71,8 +71,9 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
                 # older syntax
                 kwargs_command["command"] = f"{calculator_exec} > aims.out"
             else:
-                # newer syntax
-                kwargs_command["profile"] = AimsProfile(argv=shlex.split(calculator_exec))
+                # newer syntax, pass as 1st argument, since keyword keeps on changin
+                # (argv -> exc -> binary)
+                kwargs_command["profile"] = AimsProfile(shlex.split(calculator_exec))
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,

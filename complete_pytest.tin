@@ -2,6 +2,9 @@
 
 module purge
 module load compiler/gnu python/system python_extras/quippy lapack/mkl
+module load torch/cpu
+
+export JULIA_PROJECT=${PWD}/tests/assets/julia
 
 # should include both tin and tin_ssh - not as good as real remote machine, but maybe close enough
 if [ -z $EXPYRE_PYTEST_SYSTEMS ]; then
@@ -21,10 +24,6 @@ export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
 # QE
 module load dft/pwscf
 # no ORCA
-
-# cpu-only torch
-export PYTHONPATH=${HOME}/pytorch_cpu/lib64/python3.9/site-packages:${PYTHONPATH}
-export LD_PRELOAD=${MKLROOT}/lib/intel64/libmkl_core.so:${MKLROOT}/lib/intel64/libmkl_sequential.so:${MKLROOT}/lib/intel64/libmkl_gf_lp64.so
 
 export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1

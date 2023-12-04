@@ -70,8 +70,9 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
             else:
                 if " -in " in calculator_exec:
                     raise ValueError("calculator_exec should not include espresso command line arguments such as ' -in PREFIX.pwi'")
-                # newer syntax
-                kwargs_command["profile"] = EspressoProfile(argv=shlex.split(calculator_exec))
+                # newer syntax, but pass binary without a keyword (which changed from "argv" to "exc"
+                # to "binary" over time), assuming it's first argument
+                kwargs_command["profile"] = EspressoProfile(shlex.split(calculator_exec))
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
