@@ -71,7 +71,7 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
                 # older syntax
                 kwargs_command["command"] = f"{calculator_exec} > aims.out"
             else:
-                # newer syntax, pass as 1st argument, since keyword keeps on changin
+                # newer syntax, pass as 1st argument, since keyword keeps on changing
                 # (argv -> exc -> binary)
                 kwargs_command["profile"] = AimsProfile(shlex.split(calculator_exec))
 

@@ -2,7 +2,7 @@
 
 module purge
 module load compiler/gnu python/system python_extras/quippy lapack/mkl
-module load torch/cpu
+module load python_extras/torch/cpu
 
 export JULIA_PROJECT=${PWD}/tests/assets/julia
 
