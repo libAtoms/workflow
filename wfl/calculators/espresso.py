@@ -16,7 +16,7 @@ except ImportError:
 from ase.io.espresso import kspacing_to_grid
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
-from .utils import clean_rundir, save_results
+from .utils import save_results, parse_genericfileio_profile_argv
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["*.pwo"]
@@ -74,10 +74,13 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
                 # to "binary" over time), assuming it's first argument
                 if "pseudo_dir" not in kwargs_command:
                     raise ValueError(f"calculator_exec kwargs also requires pseudo_dir to create EspressoProfile")
+                argv = shlex.split(calculator_exec)
                 try:
-                    kwargs_command["profile"] = EspressoProfile(argv=shlex.split(calculator_exec))
+                    kwargs_command["profile"] = EspressoProfile(argv=argv)
                 except TypeError:
-                    kwargs_command["profile"] = EspressoProfile(shlex.split(calculator_exec), kwargs_command.pop("pseudo_dir"))
+                    binary, parallel_info = parse_genericfileio_profile_argv(argv)
+                    kwargs_command["profile"] = EspressoProfile(binary=binary, pseudo_path=kwargs_command.pop("pseudo_dir"),
+                                                                parallel_info=parallel_info)
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,

@@ -172,9 +172,13 @@ jobs:
           sinfo -s --long
           mkdir $HOME/.expyre
           cp .github/workflows_assets/config.json $HOME/.expyre
+
+      - name: Set up pw.x for running in wfl
+        run: |
           echo "which pw.x"
           which pw.x
           ls -l /usr/bin/pw.x
+          export WFL_PYTEST_ASE_ESPRESSO_COMMAND=pw.x
 
       - name: Lint with flake8
         run: |

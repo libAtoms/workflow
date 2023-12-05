@@ -15,6 +15,7 @@ except ImportError:
     AimsProfile = None
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
+from .utils import parse_genericfileio_profile_argv
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["control.in", "geometry.in", "aims.out"]
@@ -71,9 +72,12 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
                 # older syntax
                 kwargs_command["command"] = f"{calculator_exec} > aims.out"
             else:
-                # newer syntax, pass as 1st argument, since keyword keeps on changing
-                # (argv -> exc -> binary)
-                kwargs_command["profile"] = AimsProfile(shlex.split(calculator_exec))
+                argv = shlex.split(calculator_exec)
+                try:
+                    kwargs_command["profile"] = AimsProfile(argv=argv)
+                except TypeError:
+                    binary, parallel_info = parse_genericfileio_profile_argv(argv)
+                    kwargs_command["profile"] = AimsProfile(binary=binary, parallel_info=parallel_info)
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
