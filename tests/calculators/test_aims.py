@@ -56,6 +56,9 @@ def test_setup_calc_params(parameters_nonperiodic):
     }
     parameters.update(parameters_periodic)
 
+    # needed so new ASE versions don't complain about a lack of configuration
+    parameters["calculator_exec"] = "_DUMMY_"
+
     # PBC is FFF
     atoms = Atoms("H")
     calc = wfl.calculators.aims.Aims(**parameters)

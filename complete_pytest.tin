@@ -4,6 +4,10 @@ module purge
 module load compiler/gnu python/system python_extras/quippy lapack/mkl
 module load python_extras/torch/cpu
 
+if [ ! -z $WFL_PYTHONPATH_EXTRA ]; then
+    export PYTHONPATH=${WFL_PYTHONPATH_EXTRA}:${PYTHONPATH}
+fi
+
 export JULIA_PROJECT=${PWD}/tests/assets/julia
 
 # should include both tin and tin_ssh - not as good as real remote machine, but maybe close enough
