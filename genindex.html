@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="" >
 
   <head>
     <meta charset="utf-8" />
@@ -18,12 +18,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -32,9 +32,9 @@
     <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
@@ -120,6 +120,7 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
   
 
 <a class="navbar-brand logo" href="index.html">
@@ -267,6 +268,7 @@
 </button>
 
 
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -276,6 +278,7 @@ document.write(`
   </button>
 `);
 </script>
+
 
 <script>
 document.write(`
@@ -321,7 +324,6 @@ document.write(`
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
- | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
@@ -1093,14 +1095,6 @@ document.write(`
   </ul></td>
 </tr></table>
 
-<h2 id="H">H</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="wfl.calculators.html#wfl.calculators.utils.handle_nonperiodic">handle_nonperiodic() (in module wfl.calculators.utils)</a>
-</li>
-  </ul></td>
-</tr></table>
-
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -1225,6 +1219,8 @@ document.write(`
         <li><a href="wfl.calculators.html#module-wfl.calculators.espresso">wfl.calculators.espresso</a>
 </li>
         <li><a href="wfl.calculators.html#module-wfl.calculators.generic">wfl.calculators.generic</a>
+</li>
+        <li><a href="wfl.calculators.html#module-wfl.calculators.kpts">wfl.calculators.kpts</a>
 </li>
         <li><a href="wfl.calculators.html#module-wfl.calculators.mopac">wfl.calculators.mopac</a>
 </li>
@@ -1425,6 +1421,8 @@ document.write(`
 </li>
       <li><a href="wfl.utils.html#wfl.utils.params.Params">Params (class in wfl.utils.params)</a>
 </li>
+      <li><a href="wfl.calculators.html#wfl.calculators.utils.parse_genericfileio_profile_argv">parse_genericfileio_profile_argv() (in module wfl.calculators.utils)</a>
+</li>
       <li><a href="wfl.calculators.orca.html#wfl.calculators.orca.parse_npa_output">parse_npa_output() (in module wfl.calculators.orca)</a>
 </li>
       <li><a href="wfl.calculators.html#wfl.calculators.vasp.Vasp.per_config_restore">per_config_restore() (wfl.calculators.vasp.Vasp method)</a>
@@ -1575,6 +1573,12 @@ document.write(`
 
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="wfl.calculators.html#wfl.calculators.kpts.universal_kspacing_k_mesh">universal_kspacing_k_mesh() (in module wfl.calculators.kpts)</a>
+</li>
+      <li><a href="wfl.calculators.html#wfl.calculators.kpts.universal_kspacing_n_k">universal_kspacing_n_k() (in module wfl.calculators.kpts)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wfl.autoparallelize.html#wfl.autoparallelize.AutoparaInfo.update_defaults">update_defaults() (wfl.autoparallelize.AutoparaInfo method)</a>
 
@@ -1966,6 +1970,13 @@ document.write(`
 
       <ul>
         <li><a href="wfl.calculators.html#module-wfl.calculators.generic">module</a>
+</li>
+      </ul></li>
+      <li>
+    wfl.calculators.kpts
+
+      <ul>
+        <li><a href="wfl.calculators.html#module-wfl.calculators.kpts">module</a>
 </li>
       </ul></li>
       <li>
@@ -2531,7 +2542,7 @@ document.write(`
               
               
                 <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                  
 <div class="prev-next-area">
 </div>
                 </footer>
@@ -2556,6 +2567,7 @@ By N. Bernstein, T. K. Stenczel, E. Gelzinyte
   
   <div class="footer-item">
     
+
   </div>
   
   <div class="footer-item">
@@ -2575,8 +2587,8 @@ By N. Bernstein, T. K. Stenczel, E. Gelzinyte
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
+  <script src="_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
 
   <footer class="bd-footer">
   </footer>

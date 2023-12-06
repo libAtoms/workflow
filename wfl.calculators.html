@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="" >
 
   <head>
     <meta charset="utf-8" />
@@ -18,12 +18,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -32,9 +32,9 @@
     <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
@@ -122,6 +122,7 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
   
 
 <a class="navbar-brand logo" href="index.html">
@@ -317,6 +318,7 @@
 </button>
 
 
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -326,6 +328,7 @@ document.write(`
   </button>
 `);
 </script>
+
 
 <script>
 document.write(`
@@ -396,6 +399,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.generic.calculate"><code class="docutils literal notranslate"><span class="pre">calculate()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.calculators.kpts">wfl.calculators.kpts module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.kpts.universal_kspacing_k_mesh"><code class="docutils literal notranslate"><span class="pre">universal_kspacing_k_mesh()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.kpts.universal_kspacing_n_k"><code class="docutils literal notranslate"><span class="pre">universal_kspacing_n_k()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.calculators.mopac">wfl.calculators.mopac module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.mopac.MOPAC"><code class="docutils literal notranslate"><span class="pre">MOPAC</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.mopac.MOPAC.calculate"><code class="docutils literal notranslate"><span class="pre">MOPAC.calculate()</span></code></a></li>
@@ -406,7 +414,7 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.calculators.utils">wfl.calculators.utils module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.utils.clean_rundir"><code class="docutils literal notranslate"><span class="pre">clean_rundir()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.utils.handle_nonperiodic"><code class="docutils literal notranslate"><span class="pre">handle_nonperiodic()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.utils.parse_genericfileio_profile_argv"><code class="docutils literal notranslate"><span class="pre">parse_genericfileio_profile_argv()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.utils.save_results"><code class="docutils literal notranslate"><span class="pre">save_results()</span></code></a></li>
 </ul>
 </li>
@@ -708,7 +716,8 @@ or FileIOCalculator.calculate() for the v3.22.1</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.setup_calc_params">
 <span class="sig-name descname"><span class="pre">setup_calc_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.espresso.Espresso.setup_calc_params" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Setup calculator params based on atoms structure (pbc) and requested properties</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="wfl.calculators.espresso.Espresso.wfl_generic_default_autopara_info">
@@ -760,6 +769,54 @@ None for SinglePointCalculator instead of info/arrays.</p></li>
 </dd></dl>
 
 </div>
+<div class="section" id="module-wfl.calculators.kpts">
+<span id="wfl-calculators-kpts-module"></span><h2>wfl.calculators.kpts module<a class="headerlink" href="#module-wfl.calculators.kpts" title="Permalink to this heading">#</a></h2>
+<p>Universal k-spacing functions</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.calculators.kpts.universal_kspacing_k_mesh">
+<span class="sig-prename descclassname"><span class="pre">wfl.calculators.kpts.</span></span><span class="sig-name descname"><span class="pre">universal_kspacing_k_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kspacing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kgamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inversion_sym</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.kpts.universal_kspacing_k_mesh" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate universal kspacing, but never &gt; 1 for pbc False</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kspacing</strong> (<em>float</em>) – spacing in reciprocal space (assuming magnitude of reciprical lattice vectors includes factor of 2 pi</p></li>
+<li><p><strong>cell</strong> (<em>ase.cell.Cell</em>) – cell of atomic configuration</p></li>
+<li><p><strong>pbc</strong> (<em>(</em><em>bool</em><em>, </em><em>bool</em><em>, </em><em>bool</em><em>)</em>) – Whether direction is periodic and should be k-point sampled</p></li>
+<li><p><strong>kgamma</strong> (<em>bool</em><em>, </em><em>default True</em>) – use Gamma centered mesh</p></li>
+<li><p><strong>inversion_sym</strong> (<em>bool</em><em>, </em><em>default False</em>) – use inversion symmetry to fold k-points</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>kmesh</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list((float, float, float)) positions of BZ points in reciprocal lattice coordinates</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.calculators.kpts.universal_kspacing_n_k">
+<span class="sig-prename descclassname"><span class="pre">wfl.calculators.kpts.</span></span><span class="sig-name descname"><span class="pre">universal_kspacing_n_k</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kspacing</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.kpts.universal_kspacing_n_k" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate universal kspacing, but never &gt; 1 for pbc False</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kspacing</strong> (<em>float</em>) – spacing in reciprocal space (assuming magnitude of reciprical lattice vectors includes factor of 2 pi</p></li>
+<li><p><strong>cell</strong> (<em>ase.cell.Cell</em>) – cell of atomic configuration</p></li>
+<li><p><strong>pbc</strong> (<em>(</em><em>bool</em><em>, </em><em>bool</em><em>, </em><em>bool</em><em>)</em>) – Whether direction is periodic and should be k-point sampled</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>kmesh</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list((float, float, float)) positions of BZ points in reciprocal lattice coordinates</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-wfl.calculators.mopac">
 <span id="wfl-calculators-mopac-module"></span><h2>wfl.calculators.mopac module<a class="headerlink" href="#module-wfl.calculators.mopac" title="Permalink to this heading">#</a></h2>
 <p>MOPAC interface</p>
@@ -805,21 +862,19 @@ or FileIOCalculator.calculate() for the v3.22.1</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="wfl.calculators.utils.handle_nonperiodic">
-<span class="sig-prename descclassname"><span class="pre">wfl.calculators.utils.</span></span><span class="sig-name descname"><span class="pre">handle_nonperiodic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_mixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.utils.handle_nonperiodic" title="Permalink to this definition">#</a></dt>
-<dd><p>prepare for a calculation by filtering out stress if nonperiodic</p>
+<dt class="sig sig-object py" id="wfl.calculators.utils.parse_genericfileio_profile_argv">
+<span class="sig-prename descclassname"><span class="pre">wfl.calculators.utils.</span></span><span class="sig-name descname"><span class="pre">parse_genericfileio_profile_argv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.utils.parse_genericfileio_profile_argv" title="Permalink to this definition">#</a></dt>
+<dd><p>Parse a command provided as a conventional argv into the separate
+structures that generic file-io calculators use to construct their Profile</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>Atoms</em>) – input configuration</p></li>
-<li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – list of properties to calculate</p></li>
-<li><p><strong>allow_mixed</strong> (<em>bool</em><em>, </em><em>default=False</em>) – allow mixed periodicity, ie. not only TTT and FFF</p></li>
-</ul>
+<dd class="field-odd"><p><strong>argv</strong> (<em>list</em><em>(</em><em>str</em><em>)</em>) – command to execute, split into separate arguments (e.g. using shlex.split?)</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>nonperiodic</strong> (<em>bool</em>)</p></li>
-<li><p><strong>use_properties</strong> (<em>list</em>) – list of properties, filtering out stress for nonperiodic systems</p></li>
+<li><p><strong>binary</strong> (<em>str binary to execute</em>)</p></li>
+<li><p><strong>parallel_info</strong> (<em>dict with parallel info, in particular “binary” for mpirun/mpiexec/srun etc,</em>) – and additional fields to reconstruct rest of command line (all fake, depending
+on details of how ASE constructs the final command line</p></li>
 </ul>
 </p>
 </dd>
@@ -830,6 +885,8 @@ or FileIOCalculator.calculate() for the v3.22.1</p>
 <dt class="sig sig-object py" id="wfl.calculators.utils.save_results">
 <span class="sig-prename descclassname"><span class="pre">wfl.calculators.utils.</span></span><span class="sig-name descname"><span class="pre">save_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.utils.save_results" title="Permalink to this definition">#</a></dt>
 <dd><p>saves results of a calculation in a SinglePointCalculator or info/arrays keys</p>
+<p>If atoms.info[“__calculator_results_saved”] is true, assume that results have already been saved
+and instead just remove this key and continue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -896,7 +953,7 @@ ASE calculation operations (writing input, executing, reading_results)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wfl.calculators.vasp.Vasp.per_config_setup">
-<span class="sig-name descname"><span class="pre">per_config_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonperiodic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.vasp.Vasp.per_config_setup" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">per_config_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.calculators.vasp.Vasp.per_config_setup" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -979,7 +1036,7 @@ can’t ever be sure it’s not needed anymore, so let’s not do it automatical
               
               
                 <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                  
 <div class="prev-next-area">
     <a class="left-prev"
        href="wfl.autoparallelize.html"
@@ -1053,6 +1110,11 @@ can’t ever be sure it’s not needed anymore, so let’s not do it automatical
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.generic.calculate"><code class="docutils literal notranslate"><span class="pre">calculate()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.calculators.kpts">wfl.calculators.kpts module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.kpts.universal_kspacing_k_mesh"><code class="docutils literal notranslate"><span class="pre">universal_kspacing_k_mesh()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.kpts.universal_kspacing_n_k"><code class="docutils literal notranslate"><span class="pre">universal_kspacing_n_k()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.calculators.mopac">wfl.calculators.mopac module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.mopac.MOPAC"><code class="docutils literal notranslate"><span class="pre">MOPAC</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.mopac.MOPAC.calculate"><code class="docutils literal notranslate"><span class="pre">MOPAC.calculate()</span></code></a></li>
@@ -1063,7 +1125,7 @@ can’t ever be sure it’s not needed anymore, so let’s not do it automatical
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.calculators.utils">wfl.calculators.utils module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.utils.clean_rundir"><code class="docutils literal notranslate"><span class="pre">clean_rundir()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.utils.handle_nonperiodic"><code class="docutils literal notranslate"><span class="pre">handle_nonperiodic()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.utils.parse_genericfileio_profile_argv"><code class="docutils literal notranslate"><span class="pre">parse_genericfileio_profile_argv()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.calculators.utils.save_results"><code class="docutils literal notranslate"><span class="pre">save_results()</span></code></a></li>
 </ul>
 </li>
@@ -1109,6 +1171,7 @@ By N. Bernstein, T. K. Stenczel, E. Gelzinyte
   
   <div class="footer-item">
     
+
   </div>
   
   <div class="footer-item">
@@ -1128,8 +1191,8 @@ By N. Bernstein, T. K. Stenczel, E. Gelzinyte
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
+  <script src="_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
 
   <footer class="bd-footer">
   </footer>
