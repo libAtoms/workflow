@@ -9,46 +9,11 @@ per_atom_properties = ['forces', 'stresses', 'charges', 'magmoms', 'energies']
 per_config_properties = ['energy', 'stress', 'dipole', 'magmom', 'free_energy']
 
 
-def handle_nonperiodic(atoms, properties, allow_mixed=False):
-    """prepare for a calculation by filtering out stress if nonperiodic
-
-    Parameters
-    ----------
-    atoms: Atoms
-        input configuration
-    properties: list(str)
-        list of properties to calculate
-    allow_mixed: bool, default=False
-        allow mixed periodicity, ie. not only TTT and FFF
-
-    Returns
-    -------
-    nonperiodic: bool
-    use_properties: list
-        list of properties, filtering out stress for nonperiodic systems
-    """
-
-    use_properties = list(properties)
-    nonperiodic = False
-
-    if np.all(atoms.pbc):
-        # keep stress
-        pass
-    else:
-        nonperiodic = True
-        if 'stress' in use_properties:
-            use_properties.remove('stress')
-        if 'stresses' in use_properties:
-            use_properties.remove('stresses')
-
-        if np.any(atoms.pbc) and not allow_mixed:
-            raise RuntimeError(f'atoms.pbc {atoms.pbc} neither all T or all F')
-
-    return nonperiodic, use_properties
-
-
 def save_results(atoms, properties, results_prefix=None):
     """saves results of a calculation in a SinglePointCalculator or info/arrays keys
+
+    If atoms.info["__calculator_results_saved"] is true, assume that results have already been saved
+    and instead just remove this key and continue
 
     Parameters
     ----------
@@ -60,19 +25,21 @@ def save_results(atoms, properties, results_prefix=None):
         if None, store in SinglePointCalculator, else store in results_prefix+<property>.
         str with length 0 is forbidden
     """
+    if atoms.info.pop("__calculator_results_saved", False):
+        return
 
     if isinstance(results_prefix, str) and len(results_prefix) == 0:
         raise ValueError('Refusing to save calculator results into info/arrays fields with no prefix,'
                          ' too much chance of confusion with ASE extxyz reading/writing and conversion'
                          ' to SinglePointCalculator')
 
-    # this would be simpler if we could just use calc.results, but some (e.g. Castep) don't use it
     if properties is None:
-        # This will not work for calculators like Castep that (as of some point at least) do not use
-        # results dict.  Such calculators will fail below, in the "if 'energy' in properties" statement.
+        # This will not work for calculators like Castep that (as of some point
+        # at least) do not use results dict.  Such calculators will fail below,
+        # in the "if 'energy' in properties" statement.
+
         properties = list(atoms.calc.results.keys())
 
-    # clean up for saving in info/arrays
     if results_prefix is not None:
         for p in per_config_properties:
             if results_prefix + p in atoms.info:
@@ -81,27 +48,26 @@ def save_results(atoms, properties, results_prefix=None):
             if results_prefix + p in atoms.arrays:
                 del atoms.arrays[results_prefix + p]
 
-    # copy per-config results
+    # copy per-config and per-atom results
     config_results = {}
-    atoms.calc.atoms = atoms
+    atoms_results = {}
+    # use Atoms.get_<prop> methods
     if 'energy' in properties:
         try:
             config_results['energy'] = atoms.get_potential_energy(force_consistent=True)
         except PropertyNotImplementedError:
             config_results['energy'] = atoms.get_potential_energy()
     if 'stress' in properties:
-        # Quantum Espresso doesn't calculate stress, even if asked for, if pbc=False.
-        try:
-            config_results['stress'] = atoms.get_stress()
-        except PropertyNotImplementedError:
-            warnings.warn('"stress" was asked for, but not found in results.')
+        # OLD COMMENT:  Quantum Espresso doesn't calculate stress, even if asked for, if pbc=False.
+        # hopefully this is taken care of by generic calculator cleaning up handling of
+        # nonperiodic cells
+        config_results['stress'] = atoms.get_stress()
     if 'dipole' in properties:
         config_results['dipole'] = atoms.get_dipole_moment()
     if 'magmom' in properties:
         config_results['magmom'] = atoms.get_magnetic_moment()
 
     # copy per-atom results
-    atoms_results = {}
     if 'forces' in properties:
         atoms_results['forces'] = atoms.get_forces()
     if 'stresses' in properties:
@@ -165,3 +131,32 @@ def clean_rundir(rundir, keep_files, default_keep_files, calculation_succeeded):
         clean_dir(rundir, False, force=False)
     else:
         clean_dir(rundir, keep_files, force=False)
+
+def parse_genericfileio_profile_argv(argv):
+    """Parse a command provided as a conventional argv into the separate
+    structures that generic file-io calculators use to construct their Profile
+
+    Parameters
+    ----------
+    argv: list(str)
+        command to execute, split into separate arguments (e.g. using shlex.split?)
+
+    Returns
+    -------
+    binary: str binary to execute
+    parallel_info: dict with parallel info, in particular "binary" for mpirun/mpiexec/srun etc,
+                   and additional fields to reconstruct rest of command line (all fake, depending
+                   on details of how ASE constructs the final command line
+    """
+    binary = argv[-1]
+    parallel_info = None
+    if len(argv) > 1:
+        # assume earlier arguments are parallel execution dependent, in particular
+        # mpirun/mpiexec/srun [other mpi argument] pw_executable
+        parallel_info = {"binary": argv[0]}
+        for arg in argv[1:-1]:
+            # add additional arguments, faked into a dict that ASE will convert into
+            # a proper command line
+            parallel_info[arg] = True
+
+    return binary, parallel_info

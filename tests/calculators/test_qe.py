@@ -38,10 +38,9 @@ def qe_cmd_and_pseudo(tmp_path_factory):
         Si pseudo potential file
     """
 
-    if not which("pw.x"):
-        skip("no pw.x executable")
-    else:
-        cmd = which("pw.x")
+    cmd = os.environ.get("PYTEST_WFL_ASE_ESPRESSO_COMMAND")
+    if cmd is None:
+        skip("no PYTEST_WFL_ASE_ESPRESSO_COMMAND to specify executable")
 
     # originally downloaded from here, but broken due to need for account/license click
     # url = "https://www.quantum-espresso.org/upf_files/Si.pbe-n-kjpaw_psl.1.0.0.UPF"
@@ -63,13 +62,13 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
 
     qe_cmd, pspot = qe_cmd_and_pseudo
 
-
     kw = dict(
         pseudopotentials=dict(Si=os.path.basename(pspot)),
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
-        pseudo_dir=os.path.dirname(pspot),
         kpts=(2, 3, 4),
         conv_thr=0.0001,
+        calculator_exec=qe_cmd,
+        pseudo_dir=os.path.dirname(pspot),
         workdir=tmp_path
     ) 
 
@@ -86,9 +85,12 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     # PBC = FFF
     atoms = Atoms("H", cell=[1, 1, 1], pbc=False)
     properties = ["energy", "stress", "forces"] 
+    ## removing stress here to duplicate what calculators.generic would do
+    properties.remove("stress")
+    ##
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    properties = calc.setup_calc_params(properties)
+    calc.setup_calc_params(properties)
 
     assert "tstress" in calc.parameters
     assert not calc.parameters["tstress"]
@@ -107,15 +109,15 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     kw["koffset"] = True
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    properties = calc.setup_calc_params(properties)
+    calc.setup_calc_params(properties)
 
     assert "tstress" in calc.parameters
-    assert not calc.parameters["tstress"]
+    assert calc.parameters["tstress"]
 
     assert "tprnfor" in calc.parameters
     assert calc.parameters["tprnfor"]
 
-    assert "stress" not in properties
+    assert "stress" in properties
 
     assert calc.parameters["kpts"] == (2, 1, 1)
     assert calc.parameters["kspacing"] is None
@@ -128,7 +130,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     kw["koffset"] = False 
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    properties = calc.setup_calc_params(properties)
+    calc.setup_calc_params(properties)
 
     assert calc.parameters["koffset"] is False
 
@@ -140,15 +142,15 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     kw["koffset"] = (0, 1, 0)
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
-    properties = calc.setup_calc_params(properties)
+    calc.setup_calc_params(properties)
 
     assert "tstress" in calc.parameters
-    assert not calc.parameters["tstress"]
+    assert calc.parameters["tstress"]
 
     assert "tprnfor" in calc.parameters
     assert calc.parameters["tprnfor"]
 
-    assert "stress" not in properties
+    assert "stress" in properties
     assert calc.parameters["kpts"] == (63, 1, 1)
     assert calc.parameters["kspacing"] is None
     assert calc.parameters["koffset"] == (0, 0, 0)
@@ -166,10 +168,10 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
     kw = dict(
         pseudopotentials=dict(Si=os.path.basename(pspot)),
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
-        pseudo_dir=os.path.dirname(pspot),
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-        calculator_command=qe_cmd,
+        calculator_exec=qe_cmd,
+        pseudo_dir=os.path.dirname(pspot),
         workdir=tmp_path
     ) 
 
@@ -222,9 +224,10 @@ def test_wfl_Espresso_calc(tmp_path, qe_cmd_and_pseudo):
     kw = dict(
         pseudopotentials=dict(Si=os.path.basename(pspot)),
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
-        pseudo_dir=os.path.dirname(pspot),
         kpts=(2, 2, 2),
-        conv_thr=0.0001
+        conv_thr=0.0001,
+        calculator_exec=qe_cmd,
+        pseudo_dir=os.path.dirname(pspot)
     ) 
 
     calc = wfl.calculators.espresso.Espresso(
@@ -245,9 +248,10 @@ def test_wfl_Espresso_calc_via_generic(tmp_path, qe_cmd_and_pseudo):
     kw = dict(
         pseudopotentials=dict(Si=os.path.basename(pspot)),
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
-        pseudo_dir=os.path.dirname(pspot),
         kpts=(2, 2, 2),
         conv_thr=0.0001,
+        calculator_exec=qe_cmd,
+        pseudo_dir=os.path.dirname(pspot),
         workdir=tmp_path
     ) 
 
@@ -268,6 +272,8 @@ def test_wfl_Espresso_calc_via_generic(tmp_path, qe_cmd_and_pseudo):
         autopara_info=autoparainfo
     )
 
+    ats = list(ci)
+    assert not any("qe_calculation_failed" in at.info for at in ats[:-1])
     assert "qe_calculation_failed" in list(ci)[-1].info
 
 

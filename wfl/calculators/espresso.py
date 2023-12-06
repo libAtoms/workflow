@@ -16,7 +16,7 @@ except ImportError:
 from ase.io.espresso import kspacing_to_grid
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
-from .utils import handle_nonperiodic
+from .utils import save_results, parse_genericfileio_profile_argv
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["*.pwo"]
@@ -70,8 +70,17 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
             else:
                 if " -in " in calculator_exec:
                     raise ValueError("calculator_exec should not include espresso command line arguments such as ' -in PREFIX.pwi'")
-                # newer syntax
-                kwargs_command["profile"] = EspressoProfile(argv=shlex.split(calculator_exec))
+                # newer syntax, but pass binary without a keyword (which changed from "argv" to "exc"
+                # to "binary" over time), assuming it's first argument
+                if "pseudo_dir" not in kwargs_command:
+                    raise ValueError(f"calculator_exec kwargs also requires pseudo_dir to create EspressoProfile")
+                argv = shlex.split(calculator_exec)
+                try:
+                    kwargs_command["profile"] = EspressoProfile(argv=argv)
+                except TypeError:
+                    binary, parallel_info = parse_genericfileio_profile_argv(argv)
+                    kwargs_command["profile"] = EspressoProfile(binary=binary, pseudo_path=kwargs_command.pop("pseudo_dir"),
+                                                                parallel_info=parallel_info)
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
@@ -92,7 +101,7 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
             self.atoms = atoms.copy()
 
         # this may modify self.parameters, will reset them back to initial after calculation
-        properties = self.setup_calc_params(properties)
+        self.setup_calc_params(properties)
 
         # from WFLFileIOCalculator
         self.setup_rundir()
@@ -102,6 +111,9 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
             calculation_succeeded = True
             if 'DFT_FAILED_ESPRESSO' in atoms.info:
                 del atoms.info['DFT_FAILED_ESPRESSO']
+            if "_output_prefix" in atoms.info:
+                save_results(atoms, properties, atoms.info["_output_prefix"])
+                atoms.info["_results_saved"] = True
         except Exception as exc:
             atoms.info['DFT_FAILED_ESPRESSO'] = True
             calculation_succeeded = False
@@ -115,52 +127,46 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
             self.parameters = deepcopy(self.initial_parameters)
 
     def setup_calc_params(self, properties):
-
-        # first determine if we do a non-periodic calculation.
-        # and update the properties that we will use.
-        nonperiodic, properties = handle_nonperiodic(self.atoms, properties, allow_mixed=True)
-
+        """Setup calculator params based on atoms structure (pbc) and requested properties
+        """
         # update the parameters with the cool wfl logic
         self.parameters["tprnfor"] = "forces" in properties
         self.parameters["tstress"] = "stress" in properties
 
-        if nonperiodic:
-            if not np.any(self.atoms.get_pbc()):
-                # FFF -> gamma point only
-                self.parameters["kpts"] = None
-                self.parameters["kspacing"] = None
-                self.parameters["koffset"] = False
+        if np.all(~self.atoms.pbc):
+            # FFF -> gamma point only
+            self.parameters["kpts"] = None
+            self.parameters["kspacing"] = None
+            self.parameters["koffset"] = False
+        elif np.any(~self.atoms.pbc):
+            # mixed T & F
+            if "kspacing" in self.parameters:
+                # need to create the grid,
+                # `kspacing` overwrites `kpts`
+                # we set it in there and
+                self.parameters["kpts"] = kspacing_to_grid(
+                    self.atoms, spacing=self.parameters["kspacing"] / (2.0 * np.pi)
+                )
+
+            # kspacing None anyways
+            self.parameters["kspacing"] = None
+
+            # original, or overwritten from kspacing
+            if "kpts" in self.parameters:
+                # any no-periodic direction has 1 k-point only
+                kpts = np.array(self.parameters["kpts"])
+                kpts[~self.atoms.get_pbc()] = 1
+                self.parameters["kpts"] = tuple(kpts)
+
+            # k-point offset
+            k_offset = self.parameters.get("koffset", False)
+            if k_offset is True:
+                k_offset = (1, 1, 1)
+
+            if k_offset:
+                # set to zero on any non-periodic ones
+                k_offset = np.array(k_offset)
+                k_offset[~self.atoms.get_pbc()] = 0
+                self.parameters["koffset"] = tuple(k_offset)
             else:
-                # mixed T & F
-                if "kspacing" in self.parameters:
-                    # need to create the grid,
-                    # `kspacing` overwrites `kpts`
-                    # we set it in there and
-                    self.parameters["kpts"] = kspacing_to_grid(
-                        self.atoms, spacing=self.parameters["kspacing"] / (2.0 * np.pi)
-                    )
-
-                # kspacing None anyways
-                self.parameters["kspacing"] = None
-
-                # original, or overwritten from kspacing
-                if "kpts" in self.parameters:
-                    # any no-periodic direction has 1 k-point only
-                    kpts = np.array(self.parameters["kpts"])
-                    kpts[~self.atoms.get_pbc()] = 1
-                    self.parameters["kpts"] = tuple(kpts)
-
-                # k-point offset
-                k_offset = self.parameters.get("koffset", False)
-                if k_offset is True:
-                    k_offset = (1, 1, 1)
-
-                if k_offset:
-                    # set to zero on any non-periodic ones
-                    k_offset = np.array(k_offset)
-                    k_offset[~self.atoms.get_pbc()] = 0
-                    self.parameters["koffset"] = tuple(k_offset)
-                else:
-                    self.parameters["koffset"] = k_offset
-
-        return properties
+                self.parameters["koffset"] = k_offset

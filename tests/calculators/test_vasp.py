@@ -27,7 +27,7 @@ def test_vasp_gamma(tmp_path, monkeypatch):
         outputs=OutputSpec('vasp_out.gamma.env.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, encut=200, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
                         keep_files=True),
-        output_prefix='TEST_', 
+        output_prefix='TEST_',
     )
 
     run_dir = list(tmp_path.glob('run_VASP_*'))
@@ -53,7 +53,7 @@ def test_vasp_gamma(tmp_path, monkeypatch):
         outputs=OutputSpec('vasp_out.gamma.command.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, encut=200, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
                         keep_files=True, command_gamma=command_gamma),
-        output_prefix='TEST_', 
+        output_prefix='TEST_',
     )
 
     run_dir = list(tmp_path.glob('run_VASP_*'))
@@ -89,6 +89,42 @@ def test_vasp(tmp_path):
     assert 'TEST_energy' in ats[0].info
     assert 'TEST_stress' in ats[0].info
     assert 'TEST_forces' in ats[0].arrays
+    # import sys
+    # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
+
+
+def test_vasp_universal_kspacing(tmp_path):
+    ats = [Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3),
+                  Atoms('Si', cell=(3, 3, 3), pbc=[True] * 3),
+                  Atoms('Si', cell=(2, 2, 2), pbc=[True, True, False]),
+                  Atoms('Si', cell=(2, 2, 2), pbc=[True, True, False])]
+    ats[3].info["WFL_CALCULATOR_KWARGS"] = {"universal_kspacing": {"kspacing": 1.0, "kgamma": False}}
+    ase.io.write(tmp_path / 'vasp_in.xyz', ats, format='extxyz')
+
+    configs_eval = generic.calculate(
+        inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
+        outputs=OutputSpec('vasp_out.regular.xyz', file_root=tmp_path),
+        calculator=(Vasp, [], {"workdir": tmp_path, "encut": 200, "universal_kspacing": {"kspacing": 1.0},
+                               "pp": os.environ['PYTEST_VASP_POTCAR_DIR'], "keep_files": True}),
+        output_prefix='TEST_')
+
+    run_dirs = sorted(tmp_path.glob("run_VASP_*"), key=lambda f: f.stat().st_mtime)
+
+    for run_dir, expected_mesh, expected_offset in zip(run_dirs,
+                                                       [(4, 4, 4), (3, 3, 3), (4, 4, 1), (4, 4, 1)],
+                                                       ["gamma"] * 3 + ["monkhorst-pack"]):
+        nfiles = len(list(os.scandir(run_dir)))
+        assert nfiles == 19
+        with open(run_dir / "KPOINTS") as fin:
+            l = fin.readlines()
+            assert l[2].strip().lower() == expected_offset
+            assert expected_mesh == tuple([int(f) for f in l[3].strip().split()])
+
+    ats = list(configs_eval)
+    for at in ats:
+        assert 'TEST_energy' in at.info
+        assert 'TEST_stress' in at.info
+        assert 'TEST_forces' in at.arrays
     # import sys
     # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
 
@@ -215,7 +251,7 @@ def test_vasp_VASP_PP_PATH(tmp_path, monkeypatch):
         inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
         outputs=OutputSpec('vasp_out.gamma.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, encut=200, keep_files=True),
-        output_prefix='TEST_', 
+        output_prefix='TEST_',
     )
 
     run_dir = list(tmp_path.glob('run_VASP_*'))
@@ -237,7 +273,7 @@ def test_vasp_scratchdir(tmp_path, monkeypatch):
         inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
         outputs=OutputSpec('vasp_out.gamma.xyz', file_root=tmp_path),
         calculator=Vasp(workdir=tmp_path, scratchdir="/tmp", encut=200, keep_files=True),
-        output_prefix='TEST_', 
+        output_prefix='TEST_',
     )
 
     run_dir = list(tmp_path.glob('run_VASP_*'))

@@ -147,8 +147,9 @@ def test_generic_DFT_autopara_defaults(tmp_path, monkeypatch):
 
     l_stderr = StringIO()
 
-    # try with DFT calc that overrides default
+    # try with a calculator that overrides an autopara default, namely a DFT calculator
+    # that sets num_inputs_per_python_subprocess=1
     sys.stderr = l_stderr
-    at_proc = generic.calculate(ci, os, Espresso(calculator_command="_DUMMY_", workdir=tmp_path))
+    at_proc = generic.calculate(ci, os, Espresso(calculator_exec="_DUMMY_EXEC_", pseudo_dir="_DUMMY_DIR_", workdir=tmp_path))
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=1" in l_stderr.getvalue()

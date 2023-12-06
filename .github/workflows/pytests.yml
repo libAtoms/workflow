@@ -42,7 +42,10 @@ jobs:
         run: pip install wheel setuptools numpy scipy click matplotlib pandas pyyaml spglib rdkit-pypi flake8 pytest pytest-cov
 
       - name: Install latest ASE from gitlab
-        run: pip install git+https://gitlab.com/ase/ase.git
+        run: |
+          pip install git+https://gitlab.com/ase/ase.git
+          echo -n "ASE VERSION "
+          python3 -c "import ase; print(ase.__file__, ase.__version__)"
 
       - name: Install intel-oneapi-mkl for phono3py
         run: |
@@ -169,9 +172,13 @@ jobs:
           sinfo -s --long
           mkdir $HOME/.expyre
           cp .github/workflows_assets/config.json $HOME/.expyre
+
+      - name: Set up pw.x for running in wfl
+        run: |
           echo "which pw.x"
           which pw.x
           ls -l /usr/bin/pw.x
+          export WFL_PYTEST_ASE_ESPRESSO_COMMAND=pw.x
 
       - name: Lint with flake8
         run: |

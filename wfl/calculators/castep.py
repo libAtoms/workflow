@@ -8,7 +8,6 @@ from ase.calculators.calculator import all_changes
 from ase.calculators.castep import Castep as ASE_Castep
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
-from .utils import handle_nonperiodic
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["*.castep", "*.param", "*.cell"]
@@ -77,11 +76,12 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
             self.atoms = atoms.copy()
 
         # this may modify self.parameters, will reset them back to initial after calculation
-        nonperiodic, properties = self.setup_calc_params(properties)
+        self.setup_calc_params(properties)
 
         # from WFLFileIOCalculator
         self.setup_rundir()
 
+        orig_pbc = self.atoms.pbc.copy()
         try:
             super().calculate(atoms=atoms)
             calculation_succeeded = True
@@ -92,9 +92,9 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
             calculation_succeeded = False
             raise exc
         finally:
-            # ASE castep calculator does not
-            # always (ever?) raise an exception when it fails.  Instead, you get things like
-            # stress being None, which lead to TypeError when save_results calls get_stress().
+            # ASE castep calculator does not ever raise an exception when
+            # it fails.  Instead, you get things like stress being None,
+            # which lead to TypeError when save_results calls get_stress().
             for property in properties:
                 result = self.get_property(property)
                 if result is None:
@@ -104,16 +104,10 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
             # from WFLFileIOCalculator
             self.clean_rundir(_default_keep_files, calculation_succeeded)
 
-            if nonperiodic:
-                # reset it, because Castep overwrites the PBC to True without question
-                self.atoms.set_pbc(False)
+            # reset pbc because Castep overwrites it to True
+            self.atoms.pbc = orig_pbc(False)
 
 
     def setup_calc_params(self, properties):
-
-        # first determine if we do a non-periodic calculation.
-        # and update the properties that we will use.
-        nonperiodic, properties = handle_nonperiodic(self.atoms, properties)
-        self.param.__setattr__("calculate_stress", "stress" in properties)
-
-        return nonperiodic, properties
+        # calculate stress if requested
+        self.param.calculate_stress = "stress" in properties
