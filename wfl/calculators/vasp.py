@@ -4,6 +4,7 @@ VASP calculator
 """
 
 import os
+import shutil
 
 import json
 
@@ -15,6 +16,10 @@ from ase.calculators.vasp.vasp import Vasp as ASE_Vasp
 from .wfl_fileio_calculator import WFLFileIOCalculator
 from .utils import save_results
 from .kpts import universal_kspacing_n_k
+
+from ase.calculators.vasp.create_input import float_keys, exp_keys, string_keys, int_keys, bool_keys
+from ase.calculators.vasp.create_input import list_int_keys, list_bool_keys, list_float_keys, special_keys, dict_keys
+
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["POSCAR", "INCAR", "KPOINTS", "OUTCAR", "vasprun.xml", "vasp.out"]
@@ -99,6 +104,12 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
 
         self.universal_kspacing = kwargs_use.pop("universal_kspacing", None)
 
+        self.multi_calculation_kwargs = kwargs_use.pop("multi_calculation_kwargs", None)
+        if self.multi_calculation_kwargs is None:
+            self.multi_calculation_kwargs = [{}]
+
+        self.debug = kwargs_use.pop("debug", False)
+
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
                          workdir=workdir, scratchdir=scratchdir, **kwargs_use)
@@ -155,6 +166,30 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
         self.bool_params["kgamma"] = self._orig_kgamma
 
 
+    def param_dict_of_key(self, k):
+        if k in float_keys:
+            d = self.float_params
+        elif k in exp_keys:
+            d = self.exp_params
+        elif k in string_keys:
+            d = self.string_params
+        elif k in int_keys:
+            d = self.int_params
+        elif k in bool_keys:
+            d = self.bool_params
+        elif k in list_int_keys:
+            d = self.list_int_params
+        elif k in list_bool_keys:
+            d = self.list_bool_params
+        elif k in list_float_keys:
+            d = self.list_float_params
+        elif k in special_keys:
+            d = self.special_params
+        elif k in dict_keys:
+            d = self.dict_params
+        return d
+
+
     def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
         """Do the calculation. Handles the working directories in addition to regular
         ASE calculation operations (writing input, executing, reading_results)"""
@@ -197,7 +232,28 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
         atoms.info.pop('DFT_FAILED_VASP', None)
         calculation_succeeded = False
         try:
-            super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
+            for multi_i, multi_calculation_kwargs_set in enumerate(self.multi_calculation_kwargs):
+                if self.debug: print(f"multi_calculation instance {multi_i}")
+                if multi_calculation_kwargs_set is None:
+                    multi_calculation_kwargs_set = {}
+                prev_vals = {}
+                prev_dicts = {}
+                for k, v in multi_calculation_kwargs_set.items():
+                    if self.debug: print("  multi_calculation override", k, v)
+                    # figure out which dict this param goes in
+                    d = self.param_dict_of_key(k)
+                    # save prev value and dict it's in (for easy restoring later)
+                    prev_vals[k] = d[k]
+                    prev_dicts[k] = d
+                    if self.debug: print("  multi_calculation save prev val", prev_vals[k])
+                    # set new value
+                    d[k] = v
+                super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
+                if self.debug: shutil.copy(self._cur_rundir / "OUTCAR", self._cur_rundir / f"OUTCAR.{multi_i}")
+                # restore previous values
+                for k, v in multi_calculation_kwargs_set.items():
+                    if self.debug: print("  multi_calculation restoring from prev val", k, prev_vals[k])
+                    prev_dicts[k][k] = prev_vals[k]
             calculation_succeeded = True
             # save results here (if possible) so that save_results() called by calculators.generic
             # won't trigger additional calculations due to the ASE caching noticing the change in pbc
