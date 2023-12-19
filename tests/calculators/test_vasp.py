@@ -1,4 +1,5 @@
 from pathlib import Path
+import shutil
 import glob
 import os
 import copy
@@ -328,3 +329,36 @@ def test_vasp_per_configuration(tmp_path):
 
     assert ats[0].info['TEST_energy'] > ats[1].info['TEST_energy'] > ats[2].info['TEST_energy']
     # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
+
+
+def test_vasp_multi_calc(tmp_path):
+    ase.io.write(tmp_path / 'vasp_in.xyz', Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), format='extxyz')
+
+    configs_eval = generic.calculate(
+        inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
+        outputs=OutputSpec("vasp_out_ref.xyz", file_root=tmp_path),
+        calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
+                        keep_files=True),
+        output_prefix='TEST_')
+    e_GGA = list(configs_eval)[0].info["TEST_energy"]
+    run_dir = list(tmp_path.glob('run_VASP_*'))[0]
+    with open(run_dir / "OUTCAR") as fin:
+        n_loop_GGA = sum(["LOOP" in l for l in fin])
+    shutil.rmtree(run_dir)
+    print("GGA E", e_GGA, "loops", n_loop_GGA)
+
+    configs_eval = generic.calculate(
+        inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
+        outputs=OutputSpec('vasp_out.regular.xyz', file_root=tmp_path),
+        calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
+                        # keep_files=True, gga='PZ'),
+                        keep_files=True, multi_calculation_kwargs=[{'lwave': True, 'gga': 'PZ'}, {}]),
+        output_prefix='TEST_')
+    e_test = list(configs_eval)[0].info["TEST_energy"]
+    run_dir = list(tmp_path.glob('run_VASP_*'))[0]
+    with open(run_dir / "OUTCAR") as fin:
+        n_loop_test = sum(["LOOP" in l for l in fin])
+    print("LDA + GGA E", e_test, "loops", n_loop_test)
+
+    assert np.abs(e_GGA - e_test) < 1.0e-4
+    assert n_loop_test < n_loop_GGA - 2
