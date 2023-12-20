@@ -1,4 +1,5 @@
 import warnings
+import traceback
 
 from ase import Atoms
 from ase.calculators.calculator import all_changes
@@ -111,9 +112,9 @@ def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_
             # pytest seems to hide these warnings for some reason
             import sys
             if "pytest" in sys.modules:
-                print(f'WARNING: calculation failed with exception {exc}')
+                print(f'WARNING: calculation failed with exception {exc}\n{traceback.format_exc()}')
             ############################################################
-            warnings.warn(f'calculation failed with exception {exc}')
+            warnings.warn(f'calculation failed with exception {exc}\n{traceback.format_exc()}')
             at.info[f'{output_prefix}calculation_failed'] = True
 
         # clean up

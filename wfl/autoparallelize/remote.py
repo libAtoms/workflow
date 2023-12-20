@@ -92,7 +92,7 @@ def do_remotely(autopara_info, iterable=None, outputspec=None, op=None, args=[],
         # ignore configset out for hashing of inputs, since that doesn't affect function
         #     calls that have to happen (also it's not repeatable for some reason)
         xprs.append(ExPyRe(name=job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
-                            hash_ignore=remote_info.hash_ignore + ['outputspec'],
+                            hash_ignore=remote_info.hash_ignore + ['outputspec', 'num_python_subprocesses', 'num_inputs_per_python_subprocess'],
                             env_vars=remote_info.env_vars, input_files=remote_info.input_files,
                             output_files=remote_info.output_files, function=do_in_pool,
                             kwargs={'num_python_subprocesses': autopara_info.num_python_subprocesses,
