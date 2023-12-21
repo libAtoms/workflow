@@ -67,6 +67,13 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
     """
     run_dir = Path(run_dir)
 
+    # fill in some params from standard function arguments
+    mace_fit_params["name"] = mace_name
+    mace_fit_params["energy_key"] = ref_property_prefix + "energy"
+    mace_fit_params["forces_key"] = ref_property_prefix + "forces"
+    if "compute_stress" in mace_fit_params:
+        mace_fit_params["stress_key"] = ref_property_prefix + "stress"
+
     assert isinstance(mace_fit_params, dict)
     if prev_checkpoint_file is not None:
         assert Path(prev_checkpoint_file).is_file(), "No previous checkpoint file found!"
@@ -156,6 +163,9 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
 
     if dry_run or verbose:
         print('fitting command:\n', mace_fit_cmd)
+        if dry_run:
+            warnings.warn("Exiting mace.fit without fitting, because dry_run is True")
+            return None
 
     orig_omp_n = os.environ.get('OMP_NUM_THREADS', None)
     if 'WFL_MACE_FIT_OMP_NUM_THREADS' in os.environ:

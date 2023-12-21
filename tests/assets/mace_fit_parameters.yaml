@@ -1,11 +1,7 @@
-name: test
-train_file: B_DFT_data.xyz
 valid_fraction: 0.05
 config_type_weights: '{"Default":1.0}'
 E0s:
   5: -0.0046603
-energy_key: REF_energy
-forces_key: REF_forces
 hidden_irreps: '128x0e + 128x1o'
 device: cpu
 ema: null

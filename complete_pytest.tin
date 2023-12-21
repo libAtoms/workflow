@@ -42,8 +42,14 @@ else
     pytest_dir=$HOME/pytest_wfl
 fi
 
+if [ -z $WFL_PYTEST_NO_RUN_REMOTE ]; then
+    runremote="--runremote"
+else
+    echo "Omitting --runremote" 1>&2
+fi
+
 rm -rf $pytest_dir
-pytest -v -s --basetemp $pytest_dir --runremote --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
+pytest -v -s --basetemp $pytest_dir ${runremote} --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
 
 l=`egrep '^=.*(passed|failed|skipped|xfailed)' complete_pytest.tin.out`
 
