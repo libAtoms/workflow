@@ -3,7 +3,7 @@ import sys
 import ase.units
 import numpy as np
 import spglib
-from ase.constraints import ExpCellFilter
+from ase.filters import FrechetCellFilter
 from ase.optimize.precon import PreconLBFGS
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
@@ -32,8 +32,8 @@ PreconLBFGS.log = _new_log
 
 
 def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
-           keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
-           results_prefix='optimize_', verbose=False, update_config_type=True,
+           stress_mask=None, keep_symmetry=True, traj_step_interval=1, traj_subselect=None,
+           skip_failures=True, results_prefix='optimize_', verbose=False, update_config_type=True,
            autopara_rng_seed=None, autopara_per_item_info=None,
            **opt_kwargs):
     """runs a structure optimization
@@ -52,6 +52,8 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
         max number of steps
     pressure: None / float / tuple
         applied pressure distribution (GPa), as parsed by wfl.utils.pressure.sample_pressure()
+    stress_mask: None / list(bool)
+        mask for stress components to pass to variable-cell filter
     keep_symmetry: bool, default True
         constrain symmetry to maintain initial
     traj_step_interval: int, default 1
@@ -116,7 +118,7 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
             p = sample_pressure(pressure, at)
             at.info['optimize_pressure_GPa'] = p
             p *= ase.units.GPa
-            wrapped_at = ExpCellFilter(at, scalar_pressure=p)
+            wrapped_at = FrechetCellFilter(at, scalar_pressure=p, mask=stress_mask)
         else:
             wrapped_at = at
 
@@ -225,18 +227,19 @@ def subselect_from_traj(traj, subselect=None):
         - int: (not implemented) how many samples to take from the trajectory.
         - str: specific method
 
+          - "last": returns [last_config]
           - "last_converged": returns [last_config] if converged, or None if not.
 
     """
     if subselect is None:
         return traj
-
+    elif subselect == "last":
+        return [traj[-1]]
     elif subselect == "last_converged":
         converged_configs = [at for at in traj if at.info["optimize_config_type"] == "optimize_last_converged"]
         if len(converged_configs) == 0:
             return None
         else:
             return converged_configs
-
     raise RuntimeError(f'Subselecting confgs from trajectory with rule '
                        f'"subselect={subselect}" is not yet implemented')
