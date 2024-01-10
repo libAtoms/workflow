@@ -28,7 +28,7 @@ def test_return_md_traj(cu_slab, tmp_path):
     inputs = ConfigSet(input_configs)
     outputs = OutputSpec()
  
-    atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=1, totalsteps=5, save_tmpdir=True, return_all_traj=True)
+    atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=1, totalsteps=5, save_tmpdir=True, return_all_traj=True, workdir=tmp_path)
 
     assert any(["minima" in at.info["config_type"] for at in atoms_opt])
     assert any(["traj" in at.info["config_type"] for at in atoms_opt])
@@ -43,7 +43,7 @@ def test_mult_files(cu_slab, tmp_path):
 
     calc = EMT()
 
-    atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=1, totalsteps=3)
+    atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=1, totalsteps=3, workdir=tmp_path)
 
     n1 = len(ase.io.read(tmp_path / infiles[0].replace('.xyz', '.out.xyz'), ':'))
     n2 = len(ase.io.read(tmp_path / infiles[1].replace('.xyz', '.out.xyz'), ':'))
@@ -51,7 +51,7 @@ def test_mult_files(cu_slab, tmp_path):
     assert n1 == n2 * 2
 
 
-def test_relax(cu_slab):
+def test_relax(cu_slab, tmp_path):
 
     calc = EMT()
 
@@ -67,7 +67,7 @@ def test_relax(cu_slab):
     # where are trajectories fail is excluded. Thus, let's give it some trials to avoid this situation.
     trial = 0
     while trial < 10:
-        atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=fmax, totalsteps=totalsteps)
+        atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=fmax, totalsteps=totalsteps, workdir=tmp_path)
         if len(list(atoms_opt)) > 0:
             break
         trial += 1

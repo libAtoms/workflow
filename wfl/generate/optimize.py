@@ -103,7 +103,7 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
         org_constraints = at.constraints
 
         if keep_symmetry:
-            sym = FixSymmetry(at)
+            sym = FixSymmetry(at, adjust_cell=False)
             # Append rather than overwrite constraints
             at.set_constraint([*at.constraints, sym])
 
