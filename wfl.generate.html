@@ -635,13 +635,14 @@ odd numbers of atoms, <code class="docutils literal notranslate"><span class="pr
 <li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
 <li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
 <li><p><strong>Ediff0</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>eV</em><em>)</em>) – initial energy acceptance threshold</p></li>
-<li><p><strong>T0</strong> (<em>float</em><em>, </em><em>default 1000</em><em> (</em><em>K</em><em>)</em>) – initial MD ‘temperature’</p></li>
-<li><p><strong>minima_threshold</strong> (<em>float</em><em>, </em><em>default 0.5</em><em> (</em><em>Å</em><em>)</em>) – threshold for identical configs</p></li>
+<li><p><strong>T0</strong> (<em>float</em><em>, </em><em>default 1000</em><em> (</em><em>K</em><em>)</em>) – initial MD temperature</p></li>
+<li><p><strong>minima_threshold</strong> (<em>float</em><em>, </em><em>default 0.5</em><em> (</em><em>A</em><em>)</em>) – threshold for identical configs</p></li>
 <li><p><strong>mdmin</strong> (<em>int</em><em>, </em><em>default 2</em>) – criteria to stop MD simulation (number of minima)</p></li>
-<li><p><strong>fmax</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>eV/Å</em><em>)</em>) – max force for optimizations</p></li>
+<li><p><strong>fmax</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>eV/A</em><em>)</em>) – max force for optimizations</p></li>
 <li><p><strong>timestep</strong> (<em>float</em><em>, </em><em>default 1</em><em> (</em><em>fs</em><em>)</em>) – timestep for MD simulations</p></li>
 <li><p><strong>totalsteps</strong> (<em>int</em><em>, </em><em>default 10</em>) – number of steps</p></li>
 <li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip optimizations that raise an exception</p></li>
+<li><p><strong>workdir</strong> (<em>str/Path default None</em>) – workdir for saving files</p></li>
 <li><p><strong>opt_kwargs</strong> – keyword arguments for MinimaHopping</p></li>
 <li><p><strong>autopara_rng_seed</strong> (<em>int</em><em>, </em><em>default None</em>) – global seed used to initialize rng so that each operation uses a different but
 deterministic local seed, use a random value if None</p></li>
