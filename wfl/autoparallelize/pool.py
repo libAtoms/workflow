@@ -4,6 +4,18 @@ import warnings
 import inspect
 
 import functools
+
+# seems to conflict with torch's own multiprocessing
+# try:
+#     # make multiprocessing use dill instead of pickle, mainly to support lambdas.  See
+#     #   https://stackoverflow.com/questions/19984152/what-can-multiprocessing-and-dill-do-together
+#     import dill, multiprocessing
+#     dill.Pickler.dumps, dill.Pickler.loads = dill.dumps, dill.loads
+#     multiprocessing.reduction.ForkingPickler = dill.Pickler
+#     multiprocessing.reduction.dump = dill.dump
+# except ModuleNotFoundError:
+#     pass
+
 from multiprocessing.pool import Pool
 
 from wfl.configset import ConfigSet

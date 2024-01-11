@@ -30,10 +30,14 @@ def _get_MD_trajectory(rundir):
 
 # perform MinimaHopping on one ASE.atoms object
 def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
-                     fmax, timestep, totalsteps, skip_failures, **opt_kwargs):
+                     fmax, timestep, totalsteps, skip_failures, workdir=None, **opt_kwargs):
     save_tmpdir = opt_kwargs.pop("save_tmpdir", False)
     return_all_traj = opt_kwargs.pop("return_all_traj", False)
-    workdir = os.getcwd()
+    origdir = Path.cwd()
+    if workdir is None:
+        workdir = Path.cwd()
+    else:
+        workdir = Path(workdir)
 
     rundir = tempfile.mkdtemp(dir=workdir, prefix='Opt_hopping_')
 
@@ -50,6 +54,7 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
             sys.stderr.flush()
             os.chdir(workdir)
             shutil.rmtree(rundir)
+            os.chdir(origdir)
             return None
         else:
             raise
@@ -61,14 +66,17 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
         for hop_traj in Trajectory('minima.traj'):
             config_type_append(hop_traj, 'minima')
             traj.append(hop_traj)
-        os.chdir(workdir)
         if not save_tmpdir:
+            os.chdir(workdir)
             shutil.rmtree(rundir)
+        os.chdir(origdir)
         return traj
+
+    os.chdir(origdir)
 
 
 def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2,
-                           fmax=1, timestep=1, totalsteps=10, skip_failures=True,
+                           fmax=1, timestep=1, totalsteps=10, skip_failures=True, workdir=None,
                            autopara_rng_seed=None, autopara_per_item_info=None,
                            **opt_kwargs):
     """runs a structure optimization
@@ -82,12 +90,12 @@ def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_thresho
     Ediff0: float, default 1 (eV)
         initial energy acceptance threshold
     T0: float, default 1000 (K)
-        initial MD ‘temperature’
-    minima_threshold: float, default 0.5 (Å)
+        initial MD temperature
+    minima_threshold: float, default 0.5 (A)
         threshold for identical configs
     mdmin: int, default 2
         criteria to stop MD simulation (number of minima)
-    fmax: float, default 1 (eV/Å)
+    fmax: float, default 1 (eV/A)
         max force for optimizations
     timestep: float, default 1 (fs)
         timestep for MD simulations
@@ -95,6 +103,8 @@ def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_thresho
         number of steps
     skip_failures: bool, default True
         just skip optimizations that raise an exception
+    workdir: str/Path default None
+        workdir for saving files
     opt_kwargs
         keyword arguments for MinimaHopping
     autopara_rng_seed: int, default None
@@ -115,7 +125,7 @@ def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_thresho
 
         traj = _atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold,
                                  mdmin=mdmin, fmax=fmax, timestep=timestep, totalsteps=totalsteps,
-                                 skip_failures=skip_failures, **opt_kwargs)
+                                 skip_failures=skip_failures, workdir=workdir, **opt_kwargs)
         all_trajs.append(traj)
 
     return all_trajs
