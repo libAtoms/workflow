@@ -11,7 +11,7 @@ from .pool import do_in_pool
 from expyre import ExPyRe, ExPyReJobDiedError
 
 
-def do_remotely(autopara_info, iterable=None, outputspec=None, op=None, args=[], kwargs={}, quiet=False):
+def do_remotely(autopara_info, iterable=None, outputspec=None, op=None, args=[], kwargs={}, quiet=False, wait_for_results=True):
     """run tasks as series of remote jobs
 
     Parameters
@@ -109,6 +109,9 @@ def do_remotely(autopara_info, iterable=None, outputspec=None, op=None, args=[],
             sys.stderr.write(f'Starting job for {xpr.id}\n')
         xpr.start(resources=remote_info.resources, system_name=remote_info.sys_name, header_extra=remote_info.header_extra,
                   exact_fit=remote_info.exact_fit, partial_node=remote_info.partial_node)
+
+    if not wait_for_results:
+        return None
 
     if remote_info.resubmit_killed_jobs:
         # need to loop over all jobs and get results with timeout 0, to look for all failures

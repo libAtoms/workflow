@@ -182,7 +182,7 @@ def autoparallelize(func, *args, default_autopara_info={}, **kwargs):
 #
 # some ifs (int positional vs. str keyword) could be removed if we required that the iterable be passed into a kwarg.
 
-def _autoparallelize_ll(autopara_info, iterable, outputspec, op, *args, **kwargs):
+def _autoparallelize_ll(autopara_info, iterable, outputspec, op, *args, wait_for_results=True, **kwargs):
     """Parallelize some operation over an iterable
 
     Parameters
@@ -220,7 +220,7 @@ def _autoparallelize_ll(autopara_info, iterable, outputspec, op, *args, **kwargs
 
     if remote_info is not None:
         autopara_info.remote_info = remote_info
-        out = do_remotely(autopara_info, iterable, outputspec, op, args=args, kwargs=kwargs)
+        out = do_remotely(autopara_info, iterable, outputspec, op, args=args, kwargs=kwargs, wait_for_results=wait_for_results)
     else:
         out = do_in_pool(autopara_info.num_python_subprocesses, autopara_info.num_inputs_per_python_subprocess,
                          iterable, outputspec, op,

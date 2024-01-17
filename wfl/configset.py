@@ -404,6 +404,11 @@ class OutputSpec:
             if len(absolute_files) > 0 and self.file_root != Path(""):
                 raise ValueError(f"Got file_root {file_root} but files {absolute_files} are absolute paths")
             self.files = [Path(f) for f in self.files]
+
+            # wipe tmp files
+            for f in self.files:
+                tmp_f = self.file_root / f.parent / ("tmp." + f.name)
+                tmp_f.unlink(missing_ok=True)
         else:
             # store in memory
             self.configs = []
