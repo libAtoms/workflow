@@ -178,7 +178,7 @@ jobs:
           echo "which pw.x"
           which pw.x
           ls -l /usr/bin/pw.x
-          export WFL_PYTEST_ASE_ESPRESSO_COMMAND=pw.x
+          export PYTEST_WFL_ASE_ESPRESSO_COMMAND=pw.x
 
       - name: Lint with flake8
         run: |
