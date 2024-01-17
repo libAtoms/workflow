@@ -4,6 +4,10 @@ module purge
 module load compiler/gnu python/system python_extras/quippy lapack/mkl
 module load python_extras/torch/cpu
 
+if [ -z "$WFL_PYTEST_EXPYRE_INFO" ]; then
+    echo "To override partition used, set WFL_PYTEST_EXPYRE_INFO='{"resources" : {"partitions": "DESIRED_PARTITION"}}'" 1>&2
+fi
+
 if [ ! -z $WFL_PYTHONPATH_EXTRA ]; then
     export PYTHONPATH=${WFL_PYTHONPATH_EXTRA}:${PYTHONPATH}
 fi

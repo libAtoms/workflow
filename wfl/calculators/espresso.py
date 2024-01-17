@@ -79,7 +79,9 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
                     kwargs_command["profile"] = EspressoProfile(argv=argv)
                 except TypeError:
                     binary, parallel_info = parse_genericfileio_profile_argv(argv)
-                    kwargs_command["profile"] = EspressoProfile(binary=binary, pseudo_path=kwargs_command.pop("pseudo_dir"),
+                    # argument names keep changing (e.g. pseudo_path -> pseudo_dir), just pass first two as positional
+                    # and hope order doesn't change
+                    kwargs_command["profile"] = EspressoProfile(binary, kwargs_command.pop("pseudo_dir"),
                                                                 parallel_info=parallel_info)
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
