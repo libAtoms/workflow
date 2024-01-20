@@ -16,6 +16,7 @@ export JULIA_PROJECT=${PWD}/tests/assets/julia
 
 # should include both tin and tin_ssh - not as good as real remote machine, but maybe close enough
 if [ -z $EXPYRE_PYTEST_SYSTEMS ]; then
+    echo "Set EXPYRE_PYTEST_SYSTEMS to regexp matching existing systems to test on. Defaulting to 'tin', which also matches 'tin_ssh'" 1>&2
     export EXPYRE_PYTEST_SYSTEMS='tin'
 fi
 
@@ -53,6 +54,10 @@ else
 fi
 
 rm -rf $pytest_dir
+if [ -d $pytest_dir ]; then
+    echo "Refusing to run after failing to delete $pytest_dir" 1>&2
+    exit 1
+fi
 pytest -v -s --basetemp $pytest_dir ${runremote} --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
 
 l=`egrep '^=.*(passed|failed|skipped|xfailed)' complete_pytest.tin.out`
