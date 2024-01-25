@@ -21,8 +21,8 @@ bar = 1.0e-4 * GPa
 def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBerendsen", temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
               traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False, update_config_type=True,
-              traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None,
-              autopara_rng_seed=None, autopara_per_item_info=None):
+              traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None, rng=None,
+              _autopara_per_item_info=None):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for
     sampling configs
 
@@ -72,9 +72,11 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
     abort_check: default None,
         wfl.generate.md.abort_base.AbortBase - derived class that
         checks the MD snapshots and aborts the simulation on some condition.
-    autopara_rng_seed: int, default None
-        global seed used to initialize rng so that each operation uses a different but
-        deterministic local seed, use a random value if None
+    rng: numpy.random.Generator, default None
+        random number generator to use (needed for pressure sampling, initial temperature, or Langevin dynamics)
+    _autopara_per_item_info: dict
+        INTERNALLY used by autoparallelization framework to make runs reproducible (see
+        wfl.autoparallelize.autoparallelize() docs)
 
     Returns
     -------
@@ -91,8 +93,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
     else:
         logfile = None
 
-    if temperature_tau is None and not isinstance(temperature, float):
-        raise RuntimeError('NVE (temperature_tau is None) can only accept temperature=float for initial T')
+    if temperature_tau is None and (temperature is not None and not isinstance(temperature, (float, int))):
+        raise RuntimeError(f'NVE (temperature_tau is None) can only accept temperature=float for initial T, got {type(temperature)}')
 
     if temperature is not None:
         if isinstance(temperature, (float, int)):
@@ -116,13 +118,14 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
                     t_stage['n_stages'] = 10
 
     for at_i, at in enumerate(atoms_to_list(atoms)):
-        if autopara_per_item_info is not None:
-            np.random.seed(autopara_per_item_info[at_i]["rng_seed"])
+        # get rng from autopara_per_item info if available ("rng" arg that was passed in was
+        # already used by autoparallelization framework to set "rng" key in per-item dict)
+        rng = _autopara_per_item_info[at_i].get("rng")
 
         at.calc = calculator
         compressibility = None
         if pressure is not None:
-            pressure = sample_pressure(pressure, at)
+            pressure = sample_pressure(pressure, at, rng=rng)
             at.info['MD_pressure_GPa'] = pressure
             # convert to ASE internal units
             pressure *= GPa
@@ -139,7 +142,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
 
         if temperature is not None:
             # set initial temperature
-            MaxwellBoltzmannDistribution(at, temperature_K=temperature[0]['T_i'], force_temp=True, communicator=None)
+            assert rng is not None
+            MaxwellBoltzmannDistribution(at, temperature_K=temperature[0]['T_i'], force_temp=True, communicator=None, rng=rng)
             Stationary(at, preserve_temperature=True)
 
         stage_kwargs = {'timestep': dt * fs, 'logfile': logfile}
@@ -158,13 +162,12 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             all_stage_kwargs = []
             all_run_kwargs = []
 
-#            stage_kwargs['taut'] = temperature_tau * fs
-
             if pressure is not None:
                 md_constructor = NPTBerendsen
                 stage_kwargs['pressure_au'] = pressure
                 stage_kwargs['compressibility_au'] = compressibility
-                stage_kwargs['taup'] = temperature_tau * fs * 3 if pressure_tau is None else pressure_tau * fs
+                stage_kwargs['taut'] = temperature_tau * fs
+                stage_kwargs['taup'] = pressure_tau * fs if pressure_tau is not None else temperature_tau * fs * 3
             else:
                 if integrator == "NVTBerendsen":
                     md_constructor = NVTBerendsen
@@ -173,6 +176,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
                 elif integrator == "Langevin":
                     md_constructor = Langevin
                     stage_kwargs["friction"] = 1 / (temperature_tau * fs)
+                    assert rng is not None
+                    stage_kwargs["rng"] = rng
 
             for t_stage_i, t_stage in enumerate(temperature):
                 stage_steps = t_stage['traj_frac'] * steps
@@ -216,7 +221,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             if verbose:
                 print('run stage', stage_kwargs, run_kwargs)
 
-            # avoid double counting of steps and end of each stage and beginning of next
+            # avoid double counting of steps at end of each stage and beginning of next
             cur_step -= 1
 
             if temperature_tau is not None:
