@@ -211,8 +211,6 @@ def _autoparallelize_ll(autopara_info, iterable, outputspec, op, *args, wait_for
     else:
         rng_op = None
 
-    print("BOB _autoparallelize_ll got rng_op", rng_op)
-
     if isinstance(autopara_info.iterable_arg, int):
         assert len(args) >= autopara_info.iterable_arg
         # otherwise not enough args were provided

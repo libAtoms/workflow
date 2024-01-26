@@ -154,7 +154,6 @@ def items_inputs_generator(iterable, num_inputs_per_group, rng):
     generator that returns a sequence of items, each a tuple (item, item_i, item's _ConfigSet_loc, unique rng)
         (NOTE: _ConfigSet_loc is None unless item is ase.atoms.Atoms, rng is None unless rng is provided)
     """
-    print("BOB items_inputs_generator got rng", rng)
     return grouper(num_inputs_per_group,
                    ((item, item_i,
                      item.info.get("_ConfigSet_loc") if isinstance(item, Atoms) else None,

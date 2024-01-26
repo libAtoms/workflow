@@ -104,7 +104,6 @@ def _largest_bulk_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=Tru
 
     supercells = []
     for at_i, at in enumerate(atoms):
-        rng = _autopara_per_atom_
         if primitive:
             at = _get_primitive(at, symprec=symprec)
 
@@ -431,8 +430,6 @@ def _surface_autopara_wrappable(atoms, max_n_atoms, min_thickness, vacuum, simpl
         if primitive:
             at = _get_primitive(at, symprec=symprec)
 
-        rng = _autopara_per_item_info[at_i].get("rng")
-
         if simple_cut:
             # surface plane formed by two lattice vectors
 
@@ -452,6 +449,8 @@ def _surface_autopara_wrappable(atoms, max_n_atoms, min_thickness, vacuum, simpl
             s2[surf_i] = 1
 
         else:
+            rng = _autopara_per_item_info[at_i]["rng"]
+
             # surface plane formed by 2 supercell vectors up to max_surface_cell_indices
             # pick 1st vector
             s0 = np.zeros(3, dtype=int)

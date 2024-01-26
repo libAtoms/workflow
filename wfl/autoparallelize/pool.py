@@ -110,8 +110,6 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
     """
     assert len(initializer) == 2, f"Bad initializer {initializer}"
 
-    print("BOB pool do_in_pool got rng", rng)
-
     if num_python_subprocesses is None:
         num_python_subprocesses = int(os.environ.get('WFL_NUM_PYTHON_SUBPROCESSES', 0))
 

@@ -377,12 +377,12 @@ def do_md_deterministic(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     # run locally
     co = OutputSpec([f.replace('_i_', '_o_local_') for f in infiles])
     results_loc = md.md(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=10, dt=0.2, temperature=100.0, temperature_tau=10.0,
-                            autopara_rng_seed=20)
+                        rng=np.random.default_rng(20))
 
     co = OutputSpec([f.replace('_i_', '_o_') for f in infiles])
     t0 = time.time()
     results_remote = md.md(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=10, dt=0.2, temperature=100.0, temperature_tau=10.0,
-                               autopara_rng_seed=20, autopara_info={"remote_info": ri})
+                           rng=np.random.default_rng(20), autopara_info={"remote_info": ri})
     dt = time.time() - t0
     print('remote parallel calc_time', dt)
 
