@@ -67,7 +67,7 @@ def cli(ctx, verbose, configuration, buildcell_cmd, cur_iter, seeds):
         warnings.warn(f'Setting initial seeds to {ctx.obj["seeds"]}.  If autoparallelization '
                        'is on (WFL_NUM_PYTHON_SUBPROCESSES, etc), this will not affect runs on other threads.')
         ctx.obj['seeds'] = [int(s) for s in ctx.obj['seeds'].split(',')]
-        np.random.seed(ctx.obj['seeds'][0])
+        ctx.obj['rng'] = np.random.default_rng(ctx.obj['seeds'][0])
         del ctx.obj['seeds'][0]
 
     print_log('GAP_RSS_ITER_FIT STARTING, code version ' + get_wfl_version(), blank_lines=True)
@@ -572,7 +572,7 @@ def do_initial_step(ctx, cur_iter, verbose):
     select_fitting_and_testing_for_groups(run_dir, cur_iter, groups, Params(params.get('initial_step'), cur_iter), Zs,
                                           None, select_by_desc_method, descriptor_strs,
                                           params.get('global/config_selection_descriptor_local', default=False),
-                                          flat_histo=False, verbose=verbose)
+                                          flat_histo=False, rng=ctx.obj['rng'], verbose=verbose)
 
     atoms_dimers = ConfigSet('atoms_and_dimers.xyz')
 
@@ -626,12 +626,12 @@ def do_rss_step(ctx, cur_iter, verbose):
                        params.get('global/config_selection_descriptor_local', default=False),
                        prev_GAP, select_convex_hull=params.get('rss_step/select_convex_hull'),
                        get_entire_trajectories=True, optimize_kwargs=params.get('rss_step/optimize_kwargs', {}),
-                       verbose=verbose)
+                       rng=ctx.obj['rng'], verbose=verbose)
 
     select_fitting_and_testing_for_groups(run_dir, cur_iter, groups, Params(params.get('rss_step'), cur_iter), Zs,
                                           'optimize_energy', select_by_desc_method, descriptor_strs,
                                           params.get('global/config_selection_descriptor_local', default=False),
-                                          verbose=verbose)
+                                          rng=ctx.obj['rng'], verbose=verbose)
 
     _ = evaluate_iter_and_fit_all(cur_iter, run_dir, params, Params(params.get('rss_step'), cur_iter),
                                   [grp['cur_confs'] for grp in groups.values()],
@@ -690,7 +690,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                            minima_select_by_desc_method, descriptor_strs,
                            params.get('global/config_selection_descriptor_local', default=False),
                            prev_GAP, select_convex_hull=False, get_entire_trajectories=False,
-                           optimize_kwargs=optimize_kwargs, verbose=verbose)
+                           optimize_kwargs=optimize_kwargs, rng=ctx.obj['rng'], verbose=verbose)
     else:
         # this will not try to preserve group structure
         groups = {'ALL': {'cur_confs': ConfigSet([minima_file]), 'frac': 1.0}}
@@ -715,11 +715,11 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
     for grp_label in groups:
         n_bulk_MD = int(params.get('MD_bulk_defect_step/N_bulk', 0) * groups[grp_label]['frac'])
 
-        # go through configs, reading from file if necessary, to get number so that np.random.choice()
+        # go through configs, reading from file if necessary, to get number so that rng.choice()
         # selection below doesn't have to do it repeatedly
         n_minima = len([None for at in groups[grp_label]['cur_confs']])
 
-        minima_inds = np.random.choice(range(n_minima), n_bulk_MD)
+        minima_inds = ctx.obj['rng'].choice(range(n_minima), n_bulk_MD)
         selected_minima = wfl.select.simple.by_index(
             groups[grp_label]['cur_confs'],
             OutputSpec(f'MD_minima.bulk.{grp_label}.xyz', file_root=run_dir),
@@ -746,7 +746,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
             if n_configs <= 0:
                 continue
             for extra_label, extra_kwargs in sc_extra_args:
-                minima_inds = np.random.choice(range(n_minima), n_configs)
+                minima_inds = ctx.obj['rng'].choice(range(n_minima), n_configs)
                 label = base_label
                 if len(extra_label) > 0:
                     label += '.' + extra_label
@@ -756,7 +756,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
 
                 defect_confs.append(sc_func(selected_minima, OutputSpec(f'MD_cells.{label}.{grp_label}.xyz',
                                                                         file_root=run_dir),
-                                            max_n_atoms=max_n_atoms, **extra_kwargs))
+                                            max_n_atoms=max_n_atoms, rng=ctx.obj['rng'], **extra_kwargs))
         # NOTE: grouping all the defect configurations this way makes for better potential parallelism
         # since all the MDs can run side by side, but possibly worse restart for interrupted jobs, since the
         # results are all-or-none on the entire set.
@@ -775,7 +775,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                               calculator=(Potential, None, {'param_filename': prev_GAP}),
                               steps=bulk_MD_n_steps, dt=MD_dt,
                               temperature=bulk_MD_T_range, temperature_tau=10.0 * MD_dt,
-                              pressure=MD_pressure, traj_step_interval=25)
+                              pressure=MD_pressure, traj_step_interval=25, rng=ctx.obj['rng'])
 
         if params.get('MD_bulk_defect_step/optimize_before_MD', default=True):
             # minim defects
@@ -783,7 +783,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                                            OutputSpec(f'defect_optimize_trajs.{grp_label}.xyz',
                                                       file_root=run_dir),
                                            calculator=(Potential, None, {'param_filename': prev_GAP}),
-                                           precon='ID', keep_symmetry=True, **optimize_kwargs)
+                                           precon='ID', keep_symmetry=True, rng=ctx.obj['rng'], **optimize_kwargs)
             defect_starting = wfl.select.simple.by_bool_func(defect_optimize_trajs,
                                                              OutputSpec(f'defect_minima.{grp_label}.xyz',
                                                                         file_root=run_dir),
@@ -797,14 +797,14 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
                                 calculator=(Potential, None, {'param_filename': prev_GAP}),
                                 steps=defect_MD_n_steps, dt=MD_dt,
                                 temperature=defect_MD_T_range, temperature_tau=10.0 * MD_dt,
-                                pressure=MD_pressure, traj_step_interval=50)
+                                pressure=MD_pressure, traj_step_interval=50, rng=ctx.obj['rng'])
 
         groups[grp_label]['cur_confs'] = ConfigSet([bulk_traj, defect_traj])
 
     print_log('selecting by flat histogram + by-descriptor from MD trajectories')
     select_fitting_and_testing_for_groups(
         run_dir, cur_iter, groups, Params(params.get('MD_bulk_defect_step'), cur_iter), Zs, 'md_energy', select_by_desc_method,
-        descriptor_strs, params.get('global/config_selection_descriptor_local', default=False), verbose=verbose)
+        descriptor_strs, params.get('global/config_selection_descriptor_local', default=False), rng=ctx.obj['rng'], verbose=verbose)
 
     _ = evaluate_iter_and_fit_all(cur_iter, run_dir, params, Params(params.get('MD_bulk_defect_step'), cur_iter),
                                   [grp['cur_confs'] for grp in groups.values()],
@@ -872,7 +872,7 @@ def do_reevaluate_and_fit_step(ctx, cur_iter, verbose):
 
 def RSS_minima_diverse(run_dir, groups, step_params, Zs,
                        select_by_desc_method, config_selection_descriptor_strs, config_selection_descriptor_local,
-                       prev_GAP, select_convex_hull, get_entire_trajectories, optimize_kwargs={}, verbose=False):
+                       prev_GAP, select_convex_hull, get_entire_trajectories, optimize_kwargs={}, rng=None, verbose=False):
     """do RSS, select diverse minima using flat histogram + descriptor-based, optionally convex hull
 
     Parameters
@@ -917,7 +917,7 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
         trajs = optimize.optimize(groups[grp_label]['cur_confs'],
                           OutputSpec(f'optimize_traj.{grp_label}.xyz', file_root=run_dir),
                           calculator=(Potential, None, {'param_filename': prev_GAP}),
-                          precon='ID', keep_symmetry=True, **optimize_kwargs)
+                          precon='ID', keep_symmetry=True, rng=rng, **optimize_kwargs)
 
         print_log('selecting minima from trajectories')
         # select minima from trajs
@@ -945,7 +945,7 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
             vol_range=step_params.get('vol_range', 0.25), compos_range=step_params.get('composition_range', 0.01),
             by_desc_exclude_list=exclude_list, flat_histo_by_bin=step_params.get('flat_histo_by_bin', True),
             flat_histo_replacement=step_params.get('flat_histo_with_replacement', False),
-            verbose=verbose)
+            rng=rng, verbose=verbose)
 
         if select_convex_hull:
             selected_minima = ConfigSet([minima_config_by_desc, groups[grp_label]['convex_hull']])
@@ -972,7 +972,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
                             config_selection_descriptor_strs, config_selection_descriptor_local, by_desc_select_N,
                             testing_N, by_desc_exclude_list, vol_range=0.25, compos_range=0.01, prev_selected_descs=None,
                             flat_histo_by_bin=True, flat_histo_replacement=False,
-                            verbose=False):
+                            rng=None, verbose=False):
     """select by doing flat histo (optionally) and then by descriptor
 
     Parameters
@@ -1042,7 +1042,7 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
         configs_init = biased_select_conf(configs_rel_E, OutputSpec(f'{file_label}_flat_histo.{grp_label}.xyz',
                                                                     file_root=run_dir),
                                           num=flat_histo_N, info_field='E_per_atom_dist_to_nearby',
-                                          kT=flat_histo_kT,
+                                          rng=rng, kT=flat_histo_kT,
                                           by_bin=flat_histo_by_bin,       ## Default changed, not compatible with old behavior
                                           replace=flat_histo_replacement,
                                           verbose=verbose)
@@ -1050,21 +1050,21 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
         # flat_histo_N < 0 means select at random (UGLY HACK)
         # NOTE: the following should probably be refactored into a simple routine
         n_configs = sum([1 for at in configs])
-        selected_inds = np.random.choice(n_configs, size=-flat_histo_N, replace=False)
+        selected_inds = rng.choice(n_configs, size=-flat_histo_N, replace=False)
         configs_init = wfl.select.simple.by_index(configs,
             OutputSpec(f'{file_label}_random_init.{grp_label}.xyz', file_root=run_dir),
             selected_inds)
 
     if select_by_desc_method == 'random':
         n_configs = sum([1 for at in configs_init])
-        selected_inds = np.random.choice(n_configs, size=by_desc_select_N, replace=False)
+        selected_inds = rng.choice(n_configs, size=by_desc_select_N, replace=False)
         configs_selected = wfl.select.simple.by_index(configs_init,
             OutputSpec(f'{file_label}_random_selected.{grp_label}.xyz', file_root=run_dir),
             selected_inds)
         if testing_N > 0:
             avail_inds = set(list(range(n_configs)))
             avail_inds -= set(selected_inds)
-            selected_testing_inds = np.random.choice(list(avail_inds), size=testing_N, replace=False)
+            selected_testing_inds = rng.choice(list(avail_inds), size=testing_N, replace=False)
             testing_configs = wfl.select.simple.by_index(configs_init,
                 OutputSpec(f'{file_label}_testing.{grp_label}.xyz', file_root=run_dir),
                 selected_testing_inds)
@@ -1084,11 +1084,13 @@ def flat_histo_then_by_desc(run_dir, configs, file_label, grp_label, Zs,
         extra_kwargs = {}
         if select_by_desc_method == 'CUR':
             selector_func = wfl.select.by_descriptor.CUR_conf_global
-            extra_kwargs = {'kernel_exp': 4}  # fixme parameter
+            extra_kwargs['kernel_exp'] = 4 # fixme parameter
+            extra_kwargs['rng'] = rng
         elif select_by_desc_method == 'greedy_fps' or select_by_desc_method == 'greedy_fps_all_iters':
             selector_func = wfl.select.by_descriptor.greedy_fps_conf_global
+            extra_kwargs['rng'] = rng
             if select_by_desc_method == 'greedy_fps_all_iters':
-                extra_kwargs = {'prev_selected_descs': prev_selected_descs}
+                extra_kwargs['prev_selected_descs'] = prev_selected_descs
         else:
             raise RuntimeError(f'Unknown method for selection by descriptor "{select_by_desc_method}"')
 
@@ -1147,7 +1149,7 @@ def load_old_descriptors_arrays(run_dirs, basename, grp_label):
 
 
 def select_fitting_and_testing_for_groups(run_dir, cur_iter, groups, step_params, Zs, E_info_field, select_by_desc_method,
-                                          descriptor_strs, descriptor_local, flat_histo=True, verbose=False):
+                                          descriptor_strs, descriptor_local, flat_histo=True, rng=None, verbose=False):
     """select fitting and testing configurations from a pool of configs for each group
 
     Parameters
@@ -1205,7 +1207,7 @@ def select_fitting_and_testing_for_groups(run_dir, cur_iter, groups, step_params
             int(step_params.get('fitting_by_desc_select_N') * grp_frac),
             testing_N=int(step_params.get('testing_by_desc_select_N') * grp_frac),
             by_desc_exclude_list=groups[grp_label].get('convex_hull', None), prev_selected_descs=prev_selected_descs,
-            verbose=verbose)
+            rng=rng, verbose=verbose)
 
         # save configs
         groups[grp_label]['cur_confs'] = fitting_confs

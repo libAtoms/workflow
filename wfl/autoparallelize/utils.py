@@ -107,36 +107,6 @@ def get_remote_info(remote_info, remote_label, env_var="WFL_EXPYRE_INFO"):
     return remote_info
 
 
-# def get_root_global_seed(kwargs, op, label):
-#     """get root global seed from kwargs
-#
-#     See https://numpy.org/doc/stable/reference/random/parallel.html#sequence-of-integer-seeds
-#
-#     Parameters
-#     ----------
-#     kwargs: dict
-#         operation keyword arguments
-#     op: callable
-#         operation function
-#     label: any
-#         label for warning if using random seed
-#
-#     Returns
-#     -------
-#     root_global_seed: int seed with value kwargs["autopara_rng_seed"] or random int if value is None or not in
-#                       kwargs, or None if "autopara_rng_seed" is not in op's signature
-#     """
-#     if "autopara_rng_seed" in inspect.signature(op).parameters:
-#         if kwargs.get("autopara_rng_seed") is None:
-#             root_global_seed = np.random.randint(2 ** 32 - 1)
-#             warnings.warn(f"Using random root seed {root_global_seed} for {label}")
-#         else:
-#             root_global_seed = kwargs["autopara_rng_seed"]
-#     else:
-#         root_global_seed = None
-#
-#     return root_global_seed
-
 def items_inputs_generator(iterable, num_inputs_per_group, rng):
     """Returns generator that returns tuples consisting of items, and associated data
 

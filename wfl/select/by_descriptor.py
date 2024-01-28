@@ -153,7 +153,7 @@ def write_selected_and_clean(inputs, outputs, selected, at_descs_info_key=None, 
 
 
 def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None, kernel_exp=None, stochastic=True,
-                    stochastic_seed=None, keep_descriptor_info=True, exclude_list=None, center=True,
+                    rng=None, keep_descriptor_info=True, exclude_list=None, center=True,
                     leverage_score_key=None):
     """Select atoms from a list or iterable using CUR on global (per-config) descriptors
 
@@ -165,8 +165,8 @@ def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
         where to write output to
     num: int
         number to select
-    stochastic_seed: int, default None
-        fix seed of random number generator
+    rng: int, default None
+        random number generator
     at_descs: np.array(n_descs, desc_len), mutually exclusive with at_descs_info_key
         list of descriptor vectors
     at_descs_info_key: str, mutually exclusive with at_descs
@@ -212,7 +212,7 @@ def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
             descs_mat = at_descs
 
     selected, _ = CUR(mat=descs_mat, num=num, stochastic=stochastic,
-                      stochastic_seed=stochastic_seed, exclude_list=exclude_ind_list)
+                      rng=rng, exclude_list=exclude_ind_list)
 
     write_selected_and_clean(inputs, outputs, selected, at_descs_info_key, keep_descriptor_info)
 

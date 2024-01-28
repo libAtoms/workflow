@@ -123,7 +123,7 @@ def _largest_bulk_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=Tru
         at.info["config_type"] = "supercell_bulk"
 
         if pert != 0.0:
-            at.positions += pert * _autopara_per_atom_info[at_i]["rng"].normal(size=at.positions.shape)
+            at.positions += pert * _autopara_per_item_info[at_i]["rng"].normal(size=at.positions.shape)
 
         ####################################################################################################
         # workaround for non-working results invalidation when number of atoms has changed
@@ -178,12 +178,14 @@ def _vacancy_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, sy
             warnings.warn(f'Cannot make {n_vac} vacancies in structure with {len(at)} atoms')
             continue
 
+        rng = _autopara_per_item_info[at_i]['rng']
+
         if cluster_r > 0.0:
             # cluster
             nns = []
             n_try = 0
             while n_try < 20:
-                init_vac_i = np.random.choice(len(at))
+                init_vac_i = rng.choice(len(at))
                 inds = list(range(len(at)))
                 dists = at.get_distances(init_vac_i, inds, mic=True)
                 nearest_d = np.amin(dists[np.where(dists > 0.0)])
@@ -197,10 +199,10 @@ def _vacancy_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, sy
                 warnings.warn(f'Failed to find vacancy with at least {n_vac}-1 neighbors after 20 tries')
                 continue
 
-            vac_i = np.concatenate(([init_vac_i], np.random.choice(nns, size=n_vac - 1, replace=False)))
+            vac_i = np.concatenate(([init_vac_i], rng.choice(nns, size=n_vac - 1, replace=False)))
         else:
             # entirely random set
-            vac_i = np.random.choice(len(at), size=n_vac, replace=False)
+            vac_i = rng.choice(len(at), size=n_vac, replace=False)
 
         at.info["vacancy_Z"] = at.numbers[vac_i]
         at.info["vacancy_pos"] = at.positions[vac_i]
@@ -213,7 +215,7 @@ def _vacancy_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, sy
 
 
         if pert != 0.0:
-            at.positions += pert * _autopara_per_item_info[at_i]["rng"](size=at.positions.shape)
+            at.positions += pert * rng.normal(size=at.positions.shape)
         ####################################################################################################
         # workaround for non-working results invalidation when number of atoms has changed
         at.calc = None
@@ -266,6 +268,8 @@ def _antisite_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, s
             warnings.warn(f"Cannot make {n_antisite} antisites in structure with {len(at)} atoms")
             continue
 
+        rng = _autopara_per_item_info[at_i]['rng']
+
         if Zs is None or len(Zs) == 0:
             avail_Zs = set(at.numbers)
         else:
@@ -280,7 +284,7 @@ def _antisite_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, s
             nns = []
             n_try = 0
             while n_try < 20:
-                init_antisite_i = np.random.choice(len(at))
+                init_antisite_i = rng.choice(len(at))
                 inds = list(range(len(at)))
                 dists = at.get_distances(init_antisite_i, inds, mic=True)
                 nearest_d = np.amin(dists[np.where(dists > 0.0)])
@@ -294,14 +298,14 @@ def _antisite_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, s
                 warnings.warn(f'Failed to find antisite with at least {n_antisite}-1 neighbors after 20 tries')
                 continue
 
-            antisite_i = np.concatenate(([init_antisite_i], np.random.choice(nns, size=n_antisite - 1, replace=False)))
+            antisite_i = np.concatenate(([init_antisite_i], rng.choice(nns, size=n_antisite - 1, replace=False)))
         else:
             # entirely random set
-            antisite_i = np.random.choice(len(at), size=n_antisite, replace=False)
+            antisite_i = rng.choice(len(at), size=n_antisite, replace=False)
 
         antisite_Zs = []
         for ii in antisite_i:
-            Z_new = np.random.choice(list(avail_Zs - set([at.numbers[ii]])))
+            Z_new = rng.choice(list(avail_Zs - set([at.numbers[ii]])))
             antisite_Zs.append([at.numbers[ii], Z_new])
             at.numbers[ii] = Z_new
 
@@ -315,7 +319,7 @@ def _antisite_autopara_wrappable(atoms, max_n_atoms, pert=0.0, primitive=True, s
 
 
         if pert != 0.0:
-            at.positions += pert * _autopara_per_atom_info[at_i]["rng"](size=at.positions.shape)
+            at.positions += pert * rng.normal(size=at.positions.shape)
         ####################################################################################################
         # workaround for non-working results invalidation when identity of atoms has changed
         at.calc = None
@@ -357,19 +361,21 @@ def _interstitial_autopara_wrappable(atoms, max_n_atoms, pert=0.0, interstitial_
     """
     supercells = _largest_bulk_autopara_wrappable(atoms, max_n_atoms, primitive=primitive, symprec=symprec)
     for at_i, at in enumerate(supercells):
+        rng = _autopara_per_item_info[at_i]['rng']
+
         voids = np.asarray(find_voids(at))
         p_raw = voids[:, 0] ** interstitial_probability_radius_exponent
-        i_ind = np.random.choice(range(len(p_raw)), p=p_raw / np.sum(p_raw))
+        i_ind = rng.choice(range(len(p_raw)), p=p_raw / np.sum(p_raw))
         i_pos = voids[i_ind][1:4]
         # NOTE: probably need a better heuristic for multicomponent systems
         #       does it need to be as detailed as a per-group probability distribution?
-        i_Z = np.random.choice(list(set(at.numbers)))
+        i_Z = rng.choice(list(set(at.numbers)))
         at += Atoms(numbers=[i_Z], positions=[i_pos])
         at.info["interstitial"] = len(at) - 1
         at.info["config_type"] = "supercell_interstitial"
 
         if pert != 0.0:
-            at.positions += pert * _autopara_per_atom_info[at_i]["rng"](size=at.positions.shape)
+            at.positions += pert * rng.normal(size=at.positions.shape)
         ####################################################################################################
         # workaround for non-working results invalidation when number of atoms has changed
         at.calc = None
@@ -388,8 +394,8 @@ def _are_lin_dep(v1, v2):
 
 
 def _surface_autopara_wrappable(atoms, max_n_atoms, min_thickness, vacuum, simple_cut=False, max_surface_cell_indices=1,
-               duplicate_in_plane=True, pert=0.0,
-               primitive=True, symprec=1.0e-3, rng=None, _autopara_per_item_info=None):
+               duplicate_in_plane=True, pert=0.0, primitive=True, symprec=1.0e-3,
+               rng=None, _autopara_per_item_info=None):
     """make surface supercells
 
     Parameters
@@ -434,7 +440,7 @@ def _surface_autopara_wrappable(atoms, max_n_atoms, min_thickness, vacuum, simpl
             # surface plane formed by two lattice vectors
 
             # out of plane vector random or longest better?
-            # surf_i = np.random.randint(3)
+            # surf_i = rng.randint(3)
             surf_i = np.argmax(np.linalg.norm(at.get_cell(), axis=1))
 
             other_indices = [0, 1, 2]

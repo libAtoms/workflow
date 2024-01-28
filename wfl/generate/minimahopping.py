@@ -123,6 +123,8 @@ def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_thresho
 
     for at_i, at in enumerate(atoms_to_list(atoms)):
         if _autopara_per_item_info is not None:
+            # minima hopping doesn't let you pass in a np.random.Generator, so set a global seed using
+            # current generator
             np.random.seed(_autopara_per_item_info[at_i]["rng"].integers(2 ** 32))
 
         traj = _atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold,
