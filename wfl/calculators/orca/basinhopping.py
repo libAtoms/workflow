@@ -448,7 +448,9 @@ class BasinHoppingORCA(Calculator):
 
         # reset the number of rotations there is more than the 2/3 number
         # of electrons in the system
-        warnings.warn("BasinHoppingOrca using np.random, not reproducible")
+        # Now BasinHoppingOrca uses a passed-in np.random.Generator, hopefully
+        #   the following warnings is indeed no longer relevant
+        # warnings.warn("BasinHoppingOrca using np.random, not reproducible")
         n_from_a = min(self.rng.integers(self.n_orb + 1),
                        int(i_homo_a * 2 / 3) + 1)
         n_from_b = min(self.n_orb - n_from_a, int(i_homo_b * 2 / 3) + 1)
