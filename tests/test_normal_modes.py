@@ -12,7 +12,7 @@ def test_getting_normal_modes():
 
     at = ase.io.read(os.path.join(ref_path, 'water_dftb_nms.xyz'))
 
-    my_vib = nm.NormalModes(at, prop_prefix='')
+    my_vib = nm.NormalModes(at, prop_prefix='REF_')
 
 
     # test that displacements are done ok
@@ -23,8 +23,7 @@ def test_getting_normal_modes():
         assert np.all(ref_at.positions == approx(my_at.positions))
 
     # test that numerical normal modes are derived ok
-    with pytest.warns(UserWarning):
-        my_vib._write_nm_to_atoms(displaced_ats=ref_displaced_ats)
+    my_vib._write_nm_to_atoms(displaced_ats=ref_displaced_ats)
 
     ref_evals = np.array([-9.80822573e-03, -1.13790069e-06, -1.95746658e-09, 2.88386017e-07,
                           2.07461576e-03, 2.12618732e-03, 6.96424592e+00, 4.66006089e+01,
@@ -58,14 +57,14 @@ def test_sample_normal_modes():
     nm_fn = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                          'assets/normal_modes/water_dftb_nms.xyz')
 
-    my_vib = nm.NormalModes(nm_fn, prop_prefix='')
+    my_vib = nm.NormalModes(nm_fn, prop_prefix='REF_')
     temp = 300
     at = my_vib.sample_normal_modes(temp=temp, sample_size=1)[0]
     info = list(at.info.keys())
 
     assert len(info) == 2
-    assert 'normal_mode_energy' in info
-    assert approx(at.info['normal_mode_temperature']) == temp
+    assert 'REF_normal_mode_energy' in info
+    assert approx(at.info['REF_normal_mode_temperature']) == temp
 
     at = my_vib.sample_normal_modes(temp=300, sample_size=1,
                            info_to_keep='free_energy')[0]
@@ -93,7 +92,7 @@ def test_view(tmp_path):
                             'assets/normal_modes/')
 
     nm_fn = os.path.join(ref_path, 'water_dftb_nms.xyz')
-    my_vib = nm.NormalModes(nm_fn, prop_prefix='')
+    my_vib = nm.NormalModes(nm_fn, prop_prefix='REF_')
 
     my_vib.view(output_dir=tmp_path, normal_mode_numbers=7)
     my_mode = ase.io.read(os.path.join(tmp_path, 'nm_7.xyz'), ':')
@@ -106,7 +105,7 @@ def test_view(tmp_path):
 def test_print_summary():
     nm_fn = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                          'assets/normal_modes/water_dftb_nms.xyz')
-    my_vib = nm.NormalModes(nm_fn, prop_prefix='')
+    my_vib = nm.NormalModes(nm_fn, prop_prefix='REF_')
 
     # just check that it prints successfully
     my_vib.summary()

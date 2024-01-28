@@ -1,90 +1,90 @@
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61964839667216 free_energy=-111.61964839667216 disp_direction=0x- pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61964839667216 REF_free_energy=-111.61964839667216 disp_direction=0x- pbc="F F F"
 O       -0.01000000      -0.00000000       0.11442792       0.00004202      -0.00000000      -0.00247550
 H       -0.00000000       0.78302105      -0.47462996      -0.00002101      -0.00128625       0.00123775
 H        0.00000000      -0.78302105      -0.47462996      -0.00002101       0.00128625       0.00123775
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61964839667216 free_energy=-111.61964839667216 disp_direction=0x+ pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61964839667216 REF_free_energy=-111.61964839667216 disp_direction=0x+ pbc="F F F"
 O        0.01000000      -0.00000000       0.11442792      -0.00004202      -0.00000000      -0.00247550
 H       -0.00000000       0.78302105      -0.47462996       0.00002101      -0.00128625       0.00123775
 H        0.00000000      -0.78302105      -0.47462996       0.00002101       0.00128625       0.00123775
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61641230140648 free_energy=-111.61641230140648 disp_direction=0y- pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61641230140648 REF_free_energy=-111.61641230140648 disp_direction=0y- pbc="F F F"
 O        0.00000000      -0.01000000       0.11442792      -0.00000000       0.64712717       0.01700441
 H       -0.00000000       0.78302105      -0.47462996      -0.00000000      -0.31627108       0.23501960
 H        0.00000000      -0.78302105      -0.47462996       0.00000000      -0.33085609      -0.25202401
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61641230140644 free_energy=-111.61641230140644 disp_direction=0y+ pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61641230140644 REF_free_energy=-111.61641230140644 disp_direction=0y+ pbc="F F F"
 O        0.00000000       0.01000000       0.11442792       0.00000000      -0.64712717       0.01700441
 H       -0.00000000       0.78302105      -0.47462996      -0.00000000       0.33085609      -0.25202401
 H        0.00000000      -0.78302105      -0.47462996       0.00000000       0.31627108       0.23501960
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61769816623836 free_energy=-111.61769816623836 disp_direction=0z- pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61769816623836 REF_free_energy=-111.61769816623836 disp_direction=0z- pbc="F F F"
 O        0.00000000      -0.00000000       0.10442792       0.00000000      -0.00000000       0.39022551
 H       -0.00000000       0.78302105      -0.47462996       0.00000000       0.18695694      -0.19511276
 H        0.00000000      -0.78302105      -0.47462996      -0.00000000      -0.18695694      -0.19511276
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61773561839831 free_energy=-111.61773561839831 disp_direction=0z+ pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61773561839831 REF_free_energy=-111.61773561839831 disp_direction=0z+ pbc="F F F"
 O        0.00000000      -0.00000000       0.12442792       0.00000000      -0.00000000      -0.38220511
 H       -0.00000000       0.78302105      -0.47462996      -0.00000000      -0.17626900       0.19110255
 H        0.00000000      -0.78302105      -0.47462996       0.00000000       0.17626900       0.19110255
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61964843062746 free_energy=-111.61964843062746 disp_direction=1x- pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61964843062746 REF_free_energy=-111.61964843062746 disp_direction=1x- pbc="F F F"
 O        0.00000000      -0.00000000       0.11442792      -0.00001825       0.00206632      -0.00059594
 H       -0.01000000       0.78302105      -0.47462996       0.00001984      -0.00167817       0.00107520
 H        0.00000000      -0.78302105      -0.47462996      -0.00000159      -0.00038815      -0.00047927
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61964843062746 free_energy=-111.61964843062746 disp_direction=1x+ pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61964843062746 REF_free_energy=-111.61964843062746 disp_direction=1x+ pbc="F F F"
 O        0.00000000      -0.00000000       0.11442792       0.00001825       0.00206632      -0.00059594
 H        0.01000000       0.78302105      -0.47462996      -0.00001984      -0.00167817       0.00107520
 H        0.00000000      -0.78302105      -0.47462996       0.00000159      -0.00038815      -0.00047927
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61800643635685 free_energy=-111.61800643635685 disp_direction=1y- pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61800643635685 REF_free_energy=-111.61800643635685 disp_direction=1y- pbc="F F F"
 O        0.00000000      -0.00000000       0.11442792      -0.00000000      -0.33060535       0.19004189
 H       -0.00000000       0.77302105      -0.47462996       0.00000000       0.33052639      -0.22078611
 H        0.00000000      -0.78302105      -0.47462996       0.00000000       0.00007896       0.03074422
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61805983610446 free_energy=-111.61805983610446 disp_direction=1y+ pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61805983610446 REF_free_energy=-111.61805983610446 disp_direction=1y+ pbc="F F F"
 O        0.00000000      -0.00000000       0.11442792       0.00000000       0.31653042      -0.17328217
 H       -0.00000000       0.79302105      -0.47462996      -0.00000000      -0.31553039       0.20439703
 H        0.00000000      -0.78302105      -0.47462996      -0.00000000      -0.00100004      -0.03111486
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61871620519298 free_energy=-111.61871620519298 disp_direction=1z- pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61871620519298 REF_free_energy=-111.61871620519298 disp_direction=1z- pbc="F F F"
 O        0.00000000      -0.00000000       0.11442792       0.00000000       0.23820019      -0.19088479
 H       -0.00000000       0.78302105      -0.48462996      -0.00000000      -0.20709253       0.18636244
 H        0.00000000      -0.78302105      -0.47462996      -0.00000000      -0.03110765       0.00452235
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61869927942718 free_energy=-111.61869927942718 disp_direction=1z+ pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61869927942718 REF_free_energy=-111.61869927942718 disp_direction=1z+ pbc="F F F"
 O        0.00000000      -0.00000000       0.11442792       0.00000000      -0.24872158       0.19533874
 H       -0.00000000       0.78302105      -0.46462996      -0.00000000       0.21797550      -0.18983270
 H        0.00000000      -0.78302105      -0.47462996      -0.00000000       0.03074608      -0.00550604
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61964843062752 free_energy=-111.61964843062752 disp_direction=2x- pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61964843062752 REF_free_energy=-111.61964843062752 disp_direction=2x- pbc="F F F"
 O        0.00000000      -0.00000000       0.11442792      -0.00001825      -0.00206632      -0.00059594
 H       -0.00000000       0.78302105      -0.47462996      -0.00000159       0.00038815      -0.00047927
 H       -0.01000000      -0.78302105      -0.47462996       0.00001984       0.00167817       0.00107520
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61964843062752 free_energy=-111.61964843062752 disp_direction=2x+ pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61964843062752 REF_free_energy=-111.61964843062752 disp_direction=2x+ pbc="F F F"
 O        0.00000000      -0.00000000       0.11442792       0.00001825      -0.00206632      -0.00059594
 H       -0.00000000       0.78302105      -0.47462996       0.00000159       0.00038815      -0.00047927
 H        0.01000000      -0.78302105      -0.47462996      -0.00001984       0.00167817       0.00107520
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61805983610444 free_energy=-111.61805983610444 disp_direction=2y- pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61805983610444 REF_free_energy=-111.61805983610444 disp_direction=2y- pbc="F F F"
 O        0.00000000      -0.00000000       0.11442792       0.00000000      -0.31653042      -0.17328217
 H       -0.00000000       0.78302105      -0.47462996      -0.00000000       0.00100004      -0.03111486
 H        0.00000000      -0.79302105      -0.47462996       0.00000000       0.31553039       0.20439703
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61800643635685 free_energy=-111.61800643635685 disp_direction=2y+ pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61800643635685 REF_free_energy=-111.61800643635685 disp_direction=2y+ pbc="F F F"
 O        0.00000000      -0.00000000       0.11442792      -0.00000000       0.33060535       0.19004189
 H       -0.00000000       0.78302105      -0.47462996       0.00000000      -0.00007896       0.03074422
 H        0.00000000      -0.77302105      -0.47462996      -0.00000000      -0.33052639      -0.22078611
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61871620519298 free_energy=-111.61871620519298 disp_direction=2z- pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61871620519298 REF_free_energy=-111.61871620519298 disp_direction=2z- pbc="F F F"
 O        0.00000000      -0.00000000       0.11442792      -0.00000000      -0.23820019      -0.19088479
 H       -0.00000000       0.78302105      -0.47462996       0.00000000       0.03110765       0.00452235
 H        0.00000000      -0.78302105      -0.48462996       0.00000000       0.20709253       0.18636244
 3
-Properties=species:S:1:pos:R:3:forces:R:3 energy=-111.61869927942719 free_energy=-111.61869927942719 disp_direction=2z+ pbc="F F F"
+Properties=species:S:1:pos:R:3:REF_forces:R:3 REF_energy=-111.61869927942719 REF_free_energy=-111.61869927942719 disp_direction=2z+ pbc="F F F"
 O        0.00000000      -0.00000000       0.11442792      -0.00000000       0.24872158       0.19533874
 H       -0.00000000       0.78302105      -0.47462996       0.00000000      -0.03074608      -0.00550604
 H        0.00000000      -0.78302105      -0.46462996       0.00000000      -0.21797550      -0.18983270
