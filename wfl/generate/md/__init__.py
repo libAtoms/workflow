@@ -91,7 +91,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
     else:
         logfile = None
 
-    if temperature_tau is None and not isinstance(temperature, float):
+    if temperature_tau is None and (temperature is not None and not isinstance(temperature, float)):
         raise RuntimeError('NVE (temperature_tau is None) can only accept temperature=float for initial T')
 
     if temperature is not None:
