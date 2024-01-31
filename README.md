@@ -13,7 +13,11 @@ For examples and more information see [documentation](https://libatoms.github.io
 
 v0.2.0:
 
-- Replace all (hopefully) uses of `np.random.<sampling_method>` with passing of explicit `np.random.Generator` objects, to improve reproducibilty of scripts, and reduce chances that existing jobs will not be cached due to uncontrolled changes in random seed.  Note that this change breaks backward compatibility because many functions now _require_ an `rng` argument.
+- Change all wfl operations to use explicit random number generator [pull 285](https://github.com/libAtoms/workflow/pull/285), to improve reproducibility of scripts and reduce the chances that on script rerun, cached jobs will not be recognized due to uncontrolled change in random seed (as in [issue 283](https://github.com/libAtoms/workflow/issues/283) and [issue 284](https://github.com/libAtoms/workflow/issues/284)).  Note that this change breaks backward compatibility because many functions now _require_ an `rng` argument, for example
+  ```python
+  rng = np.random.default_rng(1)
+  md_configs = md.md(..., rng=rng, ...)
+  ```
 
 v0.1.0:
 
