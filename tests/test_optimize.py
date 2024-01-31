@@ -221,9 +221,8 @@ def test_subselect_from_traj(cu_slab):
         _autopara_per_item_info = [{} for _ in range(len(inputs))]
     )
 
-    assert len(atoms_opt[1]) == 1
-    assert isinstance(atoms_opt[1][0], Atoms)  # and not None
     assert atoms_opt[0] is None
+    assert isinstance(atoms_opt[1], Atoms)  # not None
 
     # check that iterable_loop handles Nones as expected
     inputs = ConfigSet([cu_slab.copy(), cu_slab_optimised.copy()])
