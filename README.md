@@ -11,16 +11,13 @@ For examples and more information see [documentation](https://libatoms.github.io
 
 # Recent changes
 
-Renames:
+v0.2.0:
 
-- `generic.run()` -> `generic.calculate()`
-- `wfl.map.run()` -> `wfl.map.map()` 
-- `wfl.generate.md.sample()` -> `wfl.generate.md.md()`
-- `wfl.generate.optimize.run()` -> `wfl.generate.optimize.optimize()`
-- `wfl.generate.buildcell.run()` -> `wfl.generate.buildcell.buildcell()`
-- `wfl.generate.minimahopping.run()` -> `wfl.generate.minimahopping.minimahopping()`
-- `phonopy.run()` -> `phonopy.phonopy()`
-- `smiles.run()` -> `smiles.smiles()`
-- `wfl.descriptors.quippy.calc()` -> `wfl.descriptors.quippy.calculate()`
+- Replace all (hopefully) uses of `np.random.<sampling_method>` with passing of explicit `np.random.Generator` objects, to improve reproducibilty of scripts, and reduce chances that existing jobs will not be cached due to uncontrolled changes in random seed.  Note that this change breaks backward compatibility because many functions now _require_ an `rng` argument.
 
+v0.1.0:
 
+- make it possible to fire off several remote autoparallellized ops without waiting for their jobs to finish
+- multi-pass calclation in `Vasp`, to allow for things like GGA followed by HSE
+- MACE fitting, including remote jobs
+- various bug fixes
