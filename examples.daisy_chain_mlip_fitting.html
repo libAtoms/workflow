@@ -470,6 +470,15 @@ document.write(`
 </pre></div>
 </div>
 </div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># set random seed, so that MD runs, etc are reproducible and we can check for RMSEs.</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">20230301</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="Reference-calculator">
 <h2>Reference calculator<a class="headerlink" href="#Reference-calculator" title="Permalink to this heading">#</a></h2>
@@ -540,11 +549,13 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># regenerate smiles_confgis with a random seed set for testing purposes</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># regenerate smiles_configs with a random seed set for testing purposes</span>
 <span class="c1"># this cell is hidden from docs.</span>
 
 <span class="n">outputs</span> <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="s2">&quot;1.ch.rdkit.xyz&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">smiles_configs</span> <span class="o">=</span> <span class="n">smiles</span><span class="o">.</span><span class="n">smiles</span><span class="p">(</span><span class="n">all_smiles</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">randomSeed</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
+<span class="c1"># set seed for smiles generation to a value from our (reproducible) random number generator</span>
+<span class="n">smiles_configs</span> <span class="o">=</span> <span class="n">smiles</span><span class="o">.</span><span class="n">smiles</span><span class="p">(</span><span class="n">all_smiles</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">randomSeed</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">,</span>
+                                                                                        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)))</span>
 </pre></div>
 </div>
 </div>
@@ -675,7 +686,7 @@ document.write(`
     <span class="n">inputs</span><span class="o">=</span><span class="n">md_soap_global</span><span class="p">,</span>
     <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
     <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>                    <span class="c1"># target number of structures to pick</span>
-    <span class="n">at_descs_info_key</span><span class="o">=</span><span class="s2">&quot;SOAP&quot;</span><span class="p">)</span>
+    <span class="n">at_descs_info_key</span><span class="o">=</span><span class="s2">&quot;SOAP&quot;</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
 
 
 <span class="n">train_fname</span> <span class="o">=</span> <span class="s2">&quot;6.1.train.xyz&quot;</span>
@@ -801,11 +812,14 @@ document.write(`
     <span class="n">num_cores</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
     <span class="n">partitions</span> <span class="o">=</span> <span class="s2">&quot;standard&quot;</span><span class="p">)</span>
 
+<span class="c1"># note - set OMP_NUM_THREADS to prevent GAP evaluation from using OpenMP,</span>
+<span class="c1"># as it clashes with multiprocessing.pool, which wfl uses</span>
 <span class="n">remote_info</span> <span class="o">=</span> <span class="n">RemoteInfo</span><span class="p">(</span>
     <span class="n">sys_name</span> <span class="o">=</span> <span class="s2">&quot;github&quot;</span><span class="p">,</span>
     <span class="n">job_name</span> <span class="o">=</span> <span class="s2">&quot;gap-eval&quot;</span><span class="p">,</span>
     <span class="n">resources</span> <span class="o">=</span> <span class="n">resources</span><span class="p">,</span>
     <span class="n">check_interval</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">env_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;OMP_NUM_THREADS=1&quot;</span><span class="p">],</span>
     <span class="n">input_files</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;gap.xml*&quot;</span><span class="p">])</span>
 
 <span class="n">gap_calc_autopara_info</span> <span class="o">=</span> <span class="n">AutoparaInfo</span><span class="p">(</span>

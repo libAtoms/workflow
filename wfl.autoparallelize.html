@@ -405,8 +405,8 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.autoparallelize.utils">wfl.autoparallelize.utils module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.get_remote_info"><code class="docutils literal notranslate"><span class="pre">get_remote_info()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.get_root_global_seed"><code class="docutils literal notranslate"><span class="pre">get_root_global_seed()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.grouper"><code class="docutils literal notranslate"><span class="pre">grouper()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.items_inputs_generator"><code class="docutils literal notranslate"><span class="pre">items_inputs_generator()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.set_autopara_per_item_info"><code class="docutils literal notranslate"><span class="pre">set_autopara_per_item_info()</span></code></a></li>
 </ul>
 </li>
@@ -484,10 +484,9 @@ specified when wrapping function, otherwise to class-wide defaults</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parallelized_op</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="p">[</span><span class="n">args</span> <span class="n">of</span> <span class="n">op</span><span class="p">],</span> <span class="n">autopara_info</span><span class="o">=</span><span class="n">AutoparaInfo</span><span class="p">(</span><span class="n">arg1</span><span class="o">=</span><span class="n">val1</span><span class="p">,</span> <span class="o">...</span><span class="p">),</span> <span class="p">[</span><span class="n">kwargs</span> <span class="n">of</span> <span class="n">op</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>If the op takes the argument <cite>autopara_per_item_info</cite> a list of dicts with info for each item will be
-passed, currently including <cite>rng_seed</cite> and <cite>item_i</cite>.</p>
-<p>If op takes the argument <cite>autopara_rng_seed</cite> it will be used as a global seed to generate the per-item seeds
-from.</p>
+<p>If the op takes the argument <cite>_autopara_per_item_info</cite> a list of dicts with info for each item will be
+passed, always including <cite>item_i</cite>. If op takes the argument <cite>rng</cite>, per-item dict will also include key <cite>rng</cite>
+with a <cite>numpy.random.Generator</cite> with a unique state for each item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -542,7 +541,7 @@ function, others wait to do mpipool stuff.  Initialises
 <span id="wfl-autoparallelize-pool-module"></span><h2>wfl.autoparallelize.pool module<a class="headerlink" href="#module-wfl.autoparallelize.pool" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.autoparallelize.pool.do_in_pool">
-<span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.pool.</span></span><span class="sig-name descname"><span class="pre">do_in_pool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_python_subprocesses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_inputs_per_python_subprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputspec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable_arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_failed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initializer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(None,</span> <span class="pre">[])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.pool.do_in_pool" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.pool.</span></span><span class="sig-name descname"><span class="pre">do_in_pool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_python_subprocesses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_inputs_per_python_subprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputspec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable_arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_failed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initializer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(None,</span> <span class="pre">[])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.pool.do_in_pool" title="Permalink to this definition">#</a></dt>
 <dd><p>parallelize some operation over an iterable</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -570,7 +569,7 @@ function, others wait to do mpipool stuff.  Initialises
 <span id="wfl-autoparallelize-remote-module"></span><h2>wfl.autoparallelize.remote module<a class="headerlink" href="#module-wfl.autoparallelize.remote" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.autoparallelize.remote.do_remotely">
-<span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.remote.</span></span><span class="sig-name descname"><span class="pre">do_remotely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">autopara_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputspec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.remote.do_remotely" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.remote.</span></span><span class="sig-name descname"><span class="pre">do_remotely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">autopara_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputspec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.remote.do_remotely" title="Permalink to this definition">#</a></dt>
 <dd><p>run tasks as series of remote jobs</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -647,28 +646,6 @@ RemoteInfo kwrgs with keys that match end of stack trace with function names sep
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="wfl.autoparallelize.utils.get_root_global_seed">
-<span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.utils.</span></span><span class="sig-name descname"><span class="pre">get_root_global_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.utils.get_root_global_seed" title="Permalink to this definition">#</a></dt>
-<dd><p>get root global seed from kwargs</p>
-<p>See <a class="reference external" href="https://numpy.org/doc/stable/reference/random/parallel.html#sequence-of-integer-seeds">https://numpy.org/doc/stable/reference/random/parallel.html#sequence-of-integer-seeds</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>kwargs</strong> (<em>dict</em>) – operation keyword arguments</p></li>
-<li><p><strong>op</strong> (<em>callable</em>) – operation function</p></li>
-<li><p><strong>label</strong> (<em>any</em>) – label for warning if using random seed</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>root_global_seed</strong> – kwargs, or None if “autopara_rng_seed” is not in op’s signature</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int seed with value kwargs[“autopara_rng_seed”] or random int if value is None or not in</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="wfl.autoparallelize.utils.grouper">
 <span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.utils.</span></span><span class="sig-name descname"><span class="pre">grouper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.utils.grouper" title="Permalink to this definition">#</a></dt>
 <dd><p>iterator that goes over iterable in specified size groups</p>
@@ -686,17 +663,37 @@ RemoteInfo kwrgs with keys that match end of stack trace with function names sep
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="wfl.autoparallelize.utils.items_inputs_generator">
+<span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.utils.</span></span><span class="sig-name descname"><span class="pre">items_inputs_generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_inputs_per_group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.utils.items_inputs_generator" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns generator that returns tuples consisting of items, and associated data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iterable</strong> (<em>iterable</em>) – input quantities (often of type ase.atoms.Atoms)</p></li>
+<li><p><strong>num_inputs_per_group</strong> (<em>int</em>) – number of inputs that will be included in each group</p></li>
+<li><p><strong>rng</strong> (<em>numpy.random.Generator</em><em> or </em><em>None</em>) – rng to generate rngs for each item</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(NOTE: _ConfigSet_loc is None unless item is ase.atoms.Atoms, rng is None unless rng is provided)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>generator that returns a sequence of items, each a tuple (item, item_i, item’s _ConfigSet_loc, unique rng)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="wfl.autoparallelize.utils.set_autopara_per_item_info">
-<span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.utils.</span></span><span class="sig-name descname"><span class="pre">set_autopara_per_item_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_global_seed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev_per_item_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_i_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.utils.set_autopara_per_item_info" title="Permalink to this definition">#</a></dt>
-<dd><p>Set some per-config information based on a root global seed and list of sequence ids</p>
-<p>See <a class="reference external" href="https://numpy.org/doc/stable/reference/random/parallel.html#sequence-of-integer-seeds">https://numpy.org/doc/stable/reference/random/parallel.html#sequence-of-integer-seeds</a></p>
+<span class="sig-prename descclassname"><span class="pre">wfl.autoparallelize.utils.</span></span><span class="sig-name descname"><span class="pre">set_autopara_per_item_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inherited_per_item_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_i_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.autoparallelize.utils.set_autopara_per_item_info" title="Permalink to this definition">#</a></dt>
+<dd><p>Set some per-config information</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>kwargs</strong> (<em>dict</em>) – keyword args of op</p></li>
 <li><p><strong>op</strong> (<em>callable</em>) – operation function</p></li>
-<li><p><strong>root_global_seed</strong> (<em>int</em><em> or </em><em>None</em>) – root global seed, or None if no per-item rng seed is needed</p></li>
-<li><p><strong>prev_per_item_info</strong> (<em>list</em><em>(</em><em>dict</em><em>)</em>) – list of per-item info dicts that needs to be split up to these particular items</p></li>
+<li><p><strong>inherited_per_item_info</strong> (<em>list</em><em>(</em><em>dict</em><em>)</em>) – list of per-item info dicts that needs to be split up to these particular items</p></li>
+<li><p><strong>rng_list</strong> (<em>list</em><em>(</em><em>numpy.random.Generator</em><em>) or </em><em>list</em><em>(</em><em>None</em><em>)</em>) – rng (unique) for each item</p></li>
 <li><p><strong>item_i_list</strong> (<em>int</em>) – list of sequence numbers for the items that these per-info items correspond to</p></li>
 </ul>
 </dd>
@@ -781,10 +778,9 @@ hoping that other parameters such as walltime or memory have been changed to mak
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parallelized_op</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="p">[</span><span class="n">args</span> <span class="n">of</span> <span class="n">op</span><span class="p">],</span> <span class="n">autopara_info</span><span class="o">=</span><span class="n">AutoparaInfo</span><span class="p">(</span><span class="n">arg1</span><span class="o">=</span><span class="n">val1</span><span class="p">,</span> <span class="o">...</span><span class="p">),</span> <span class="p">[</span><span class="n">kwargs</span> <span class="n">of</span> <span class="n">op</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>If the op takes the argument <cite>autopara_per_item_info</cite> a list of dicts with info for each item will be
-passed, currently including <cite>rng_seed</cite> and <cite>item_i</cite>.</p>
-<p>If op takes the argument <cite>autopara_rng_seed</cite> it will be used as a global seed to generate the per-item seeds
-from.</p>
+<p>If the op takes the argument <cite>_autopara_per_item_info</cite> a list of dicts with info for each item will be
+passed, always including <cite>item_i</cite>. If op takes the argument <cite>rng</cite>, per-item dict will also include key <cite>rng</cite>
+with a <cite>numpy.random.Generator</cite> with a unique state for each item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -889,8 +885,8 @@ to wrapped function</p></li>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.autoparallelize.utils">wfl.autoparallelize.utils module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.get_remote_info"><code class="docutils literal notranslate"><span class="pre">get_remote_info()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.get_root_global_seed"><code class="docutils literal notranslate"><span class="pre">get_root_global_seed()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.grouper"><code class="docutils literal notranslate"><span class="pre">grouper()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.items_inputs_generator"><code class="docutils literal notranslate"><span class="pre">items_inputs_generator()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.autoparallelize.utils.set_autopara_per_item_info"><code class="docutils literal notranslate"><span class="pre">set_autopara_per_item_info()</span></code></a></li>
 </ul>
 </li>

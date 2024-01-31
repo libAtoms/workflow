@@ -452,10 +452,6 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.utils.round_sig_figs.round_sig_figs"><code class="docutils literal notranslate"><span class="pre">round_sig_figs()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.utils.vector_utils">wfl.utils.vector_utils module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.utils.vector_utils.random_three_vector"><code class="docutils literal notranslate"><span class="pre">random_three_vector()</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.utils.version">wfl.utils.version module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.utils.version.get_wfl_version"><code class="docutils literal notranslate"><span class="pre">get_wfl_version()</span></code></a></li>
 </ul>
@@ -805,7 +801,7 @@ object when creating the pool.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="wfl.utils.pressure.sample_pressure">
-<span class="sig-prename descclassname"><span class="pre">wfl.utils.pressure.</span></span><span class="sig-name descname"><span class="pre">sample_pressure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pressure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.pressure.sample_pressure" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">wfl.utils.pressure.</span></span><span class="sig-name descname"><span class="pre">sample_pressure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pressure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.pressure.sample_pressure" title="Permalink to this definition">#</a></dt>
 <dd><p>Sample pressure for calculation with various modes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -823,6 +819,7 @@ max 1000 tries</p></li>
 </dl>
 </p></li>
 <li><p><strong>at</strong> (<em>ase.Atoms</em><em>, </em><em>default None</em>) – atoms object, only needed or used if mode is <cite>info</cite></p></li>
+<li><p><strong>rng</strong> (<em>numpy Generator object</em><em>, </em><em>default None</em>) – random number generator to use. Only required if pressure will be generated randomly</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -907,36 +904,6 @@ has been used as the kwargs of a format() call.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>string representation of v, rounded to n_sig_figs significant figures</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="module-wfl.utils.vector_utils">
-<span id="wfl-utils-vector-utils-module"></span><h2>wfl.utils.vector_utils module<a class="headerlink" href="#module-wfl.utils.vector_utils" title="Permalink to this heading">#</a></h2>
-<dl class="simple">
-<dt>General utilities to supplement the other submodules.</dt><dd><ul class="simple">
-<li><dl class="simple">
-<dt>Vector operations:</dt><dd><ul>
-<li><p>random 3D vector</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.utils.vector_utils.random_three_vector">
-<span class="sig-prename descclassname"><span class="pre">wfl.utils.vector_utils.</span></span><span class="sig-name descname"><span class="pre">random_three_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wfl.utils.vector_utils.random_three_vector" title="Permalink to this definition">#</a></dt>
-<dd><p>Generates a random 3D unit vector (direction) with a uniform spherical distribution
-Algo from <a class="reference external" href="http://stackoverflow.com/questions/5408276/python-uniform-spherical-distribution">http://stackoverflow.com/questions/5408276/python-uniform-spherical-distribution</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>x, y, z</strong> – random vector</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1113,10 +1080,6 @@ Algo from <a class="reference external" href="http://stackoverflow.com/questions
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.utils.round_sig_figs">wfl.utils.round_sig_figs module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.utils.round_sig_figs.round_sig_figs"><code class="docutils literal notranslate"><span class="pre">round_sig_figs()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.utils.vector_utils">wfl.utils.vector_utils module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.utils.vector_utils.random_three_vector"><code class="docutils literal notranslate"><span class="pre">random_three_vector()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.utils.version">wfl.utils.version module</a><ul class="nav section-nav flex-column">

@@ -527,8 +527,9 @@ Used during MD loop with one config at a time, returning True/False</p></li>
 Used at end of MD loop with entire trajectory as list, returns subset</p></li>
 <li><p><strong>abort_check</strong> (<em>default None</em><em>,</em>) – wfl.generate.md.abort_base.AbortBase - derived class that
 checks the MD snapshots and aborts the simulation on some condition.</p></li>
-<li><p><strong>autopara_rng_seed</strong> (<em>int</em><em>, </em><em>default None</em>) – global seed used to initialize rng so that each operation uses a different but
-deterministic local seed, use a random value if None</p></li>
+<li><p><strong>rng</strong> (<em>numpy.random.Generator</em><em>, </em><em>default None</em>) – random number generator to use (needed for pressure sampling, initial temperature, or Langevin dynamics)</p></li>
+<li><p><strong>_autopara_per_item_info</strong> (<em>dict</em>) – INTERNALLY used by autoparallelization framework to make runs reproducible (see
+wfl.autoparallelize.autoparallelize() docs)</p></li>
 <li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>

@@ -132,14 +132,6 @@ wfl.utils.round\_sig\_figs module
    :undoc-members:
    :show-inheritance:
 
-wfl.utils.vector\_utils module
-------------------------------
-
-.. automodule:: wfl.utils.vector_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 wfl.utils.version module
 ------------------------
 

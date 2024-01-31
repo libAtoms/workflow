@@ -391,8 +391,10 @@ the selection criteria.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> 
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">wfl</span><span class="o">,</span> <span class="nn">pathlib</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">wfl</span>
 <span class="kn">from</span> <span class="nn">wfl.configset</span> <span class="kn">import</span> <span class="n">ConfigSet</span><span class="p">,</span> <span class="n">OutputSpec</span>
 <span class="kn">from</span> <span class="nn">wfl.descriptors.quippy</span> <span class="kn">import</span> <span class="n">calculate</span> <span class="k">as</span> <span class="n">calc_descriptors</span>
 <span class="kn">from</span> <span class="nn">wfl.select.by_descriptor</span> <span class="kn">import</span> <span class="n">greedy_fps_conf_global</span>
@@ -415,7 +417,7 @@ the selection criteria.</p>
 <span class="c1"># Step 2: Sampling</span>
 <span class="n">fps_out</span>          <span class="o">=</span> <span class="n">OutputSpec</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="n">work_dir</span><span class="o">/</span><span class="s2">&quot;out_fps.xyz&quot;</span><span class="p">)</span>
 <span class="n">nsamples</span>         <span class="o">=</span> <span class="mi">8</span>
-<span class="n">selected_configs</span> <span class="o">=</span> <span class="n">greedy_fps_conf_global</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">md_desc</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">fps_out</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">nsamples</span><span class="p">,</span> <span class="n">at_descs_info_key</span><span class="o">=</span><span class="s1">&#39;desc&#39;</span><span class="p">,</span> <span class="n">keep_descriptor_info</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">selected_configs</span> <span class="o">=</span> <span class="n">greedy_fps_conf_global</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">md_desc</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">fps_out</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">nsamples</span><span class="p">,</span> <span class="n">at_descs_info_key</span><span class="o">=</span><span class="s1">&#39;desc&#39;</span><span class="p">,</span> <span class="n">keep_descriptor_info</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>

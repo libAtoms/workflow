@@ -640,8 +640,9 @@ odd numbers of atoms, <code class="docutils literal notranslate"><span class="pr
 <li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip optimizations that raise an exception</p></li>
 <li><p><strong>workdir</strong> (<em>str/Path default None</em>) – workdir for saving files</p></li>
 <li><p><strong>opt_kwargs</strong> – keyword arguments for MinimaHopping</p></li>
-<li><p><strong>autopara_rng_seed</strong> (<em>int</em><em>, </em><em>default None</em>) – global seed used to initialize rng so that each operation uses a different but
-deterministic local seed, use a random value if None</p></li>
+<li><p><strong>rng</strong> (<em>numpy.random.Generator</em><em>, </em><em>default None</em>) – random number generator to use (needed for pressure sampling, initial temperature, or Langevin dynamics)</p></li>
+<li><p><strong>_autopara_per_item_info</strong> (<em>dict</em>) – INTERNALLY used by autoparallelization framework to make runs reproducible (see
+wfl.autoparallelize.autoparallelize() docs)</p></li>
 <li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
@@ -915,6 +916,8 @@ stored in atoms.info/arrays</p></li>
 atoms within this distance of initial antisite.</p></li>
 <li><p><strong>Zs</strong> (<em>iterable</em><em>(</em><em>int</em><em>)</em><em>, </em><em>default None</em>) – list of atomic numbers to be used to create antisites.  If none or length 0, use set of species already present
 in each config for itself.</p></li>
+<li><p><strong>rng</strong> (<em>numpy.random.Generator</em>) – random number generator</p></li>
+<li><p><strong>_autopara_per_item_info</strong> (<em>list</em>) – internal use</p></li>
 <li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
@@ -941,6 +944,8 @@ in each config for itself.</p></li>
 <li><p><strong>interstitial_probability_radius_exponent</strong> (<em>float</em><em>, </em><em>default 3.0</em>) – probability of selecting an interstitial void is proportional to its radius to this power</p></li>
 <li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
 <li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
+<li><p><strong>rng</strong> (<em>numpy.random.Generator</em>) – random number generator</p></li>
+<li><p><strong>_autopara_per_item_info</strong> (<em>list</em>) – internal use</p></li>
 <li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
@@ -967,6 +972,8 @@ in each config for itself.</p></li>
 <li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
 <li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
 <li><p><strong>ase_optimal</strong> (<em>bool</em><em>, </em><em>default False</em>) – use ase.build.supercells.find_optimal_cell_shape</p></li>
+<li><p><strong>rng</strong> (<em>numpy.random.Generator</em>) – random number generator</p></li>
+<li><p><strong>_autopara_per_item_info</strong> (<em>list</em>) – internal use</p></li>
 <li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
@@ -998,6 +1005,8 @@ vectors with indices up to +/- max_surface_cell_indices</p></li>
 <li><p><strong>pert</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – magnitude of random displacement</p></li>
 <li><p><strong>primitive</strong> (<em>bool</em><em>, </em><em>default True</em>) – reduce input Atoms to primitive cell using spglib</p></li>
 <li><p><strong>symprec</strong> (<em>float</em><em>, </em><em>default 1.0e-3</em>) – symprec for primitive lattice check</p></li>
+<li><p><strong>rng</strong> (<em>numpy.random.Generator</em>) – random number generator</p></li>
+<li><p><strong>_autopara_per_item_info</strong> (<em>list</em>) – internal use</p></li>
 <li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
@@ -1026,6 +1035,8 @@ vectors with indices up to +/- max_surface_cell_indices</p></li>
 <li><p><strong>n_vac</strong> (<em>int</em><em>, </em><em>default 1</em>) – number of vacancies to create in each supercell</p></li>
 <li><p><strong>cluster_r</strong> (<em>float</em><em>, </em><em>default 0.0</em>) – if &gt; 0.0, multiply by 1st nn distance of initial vacancy, and make vacancies in cluster of
 atoms within this distance of initial vacancy.</p></li>
+<li><p><strong>rng</strong> (<em>numpy.random.Generator</em>) – random number generator</p></li>
+<li><p><strong>_autopara_per_item_info</strong> (<em>list</em>) – internal use</p></li>
 <li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
 </ul>
 </dd>
