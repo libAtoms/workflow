@@ -114,6 +114,9 @@ class BasinHoppingORCA(Calculator):
     orca_command: str
         command of ORCA calculator as in path
 
+    rng: np.random.Generator
+        random number generator
+
     keep_files: bool
         to keep the resultant files from each calculation
 
@@ -133,10 +136,12 @@ class BasinHoppingORCA(Calculator):
                  forces_tol=0.05, seed="orca", n_orb=10, max_angle=60.,
                  smearing=5000., maxiter=500, chained_hops=True,
                  orcasimpleinput='UHF PBE def2-SVP tightscf', orcablocks=None,
-                 orca_command='orca',
+                 orca_command='orca', rng=None,
                  keep_files=False, uhf=True, **kwargs):
 
         super(BasinHoppingORCA, self).__init__(atoms=atoms, **kwargs)
+
+        assert rng is not None, "Random number generator rng is required"
 
         # calculator settings
         self.seed = seed
@@ -145,6 +150,7 @@ class BasinHoppingORCA(Calculator):
         self.orcasimpleinput = orcasimpleinput
         self.orcablocks = (orcablocks if orcablocks is not None else "")
         self.orca_command = orca_command
+        self.rng = rng
 
         # basin hopping settings
         if n_hop < 1:
@@ -442,21 +448,24 @@ class BasinHoppingORCA(Calculator):
 
         # reset the number of rotations there is more than the 2/3 number
         # of electrons in the system
-        n_from_a = min(np.random.randint(self.n_orb + 1),
+        # Now BasinHoppingOrca uses a passed-in np.random.Generator, hopefully
+        #   the following warnings is indeed no longer relevant
+        # warnings.warn("BasinHoppingOrca using np.random, not reproducible")
+        n_from_a = min(self.rng.integers(self.n_orb + 1),
                        int(i_homo_a * 2 / 3) + 1)
         n_from_b = min(self.n_orb - n_from_a, int(i_homo_b * 2 / 3) + 1)
 
         n_rotations_used = n_from_a + n_from_b
         idx_occ = np.concatenate(
-            [np.random.choice(idx_occ_a, n_from_a, replace=False),
-             np.random.choice(idx_occ_b, n_from_b, replace=False)])
+            [self.rng.choice(idx_occ_a, n_from_a, replace=False),
+             self.rng.choice(idx_occ_b, n_from_b, replace=False)])
         idx_virtual = np.concatenate(
-            [np.random.choice(idx_virtual_a, n_from_a, replace=False),
-             np.random.choice(idx_virtual_b, n_from_b, replace=False)])
+            [self.rng.choice(idx_virtual_a, n_from_a, replace=False),
+             self.rng.choice(idx_virtual_b, n_from_b, replace=False)])
         spin = np.zeros(n_rotations_used, dtype=int)
         spin[n_from_a:] += 1
 
-        angles = np.random.rand(n_rotations_used) * self.max_angle
+        angles = self.rng.uniform(size=n_rotations_used) * self.max_angle
 
         rot_string = "Rotate \n"
         for i in range(n_rotations_used):

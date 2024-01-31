@@ -46,7 +46,7 @@ def test_NVE(cu_slab):
     outputs = OutputSpec()
 
     atoms_traj = md.md(inputs, outputs, calculator=calc, steps=300, dt=1.0,
-                           temperature = 500.0)
+                       temperature=500.0, rng=np.random.default_rng(1))
 
     atoms_traj = list(atoms_traj)
     atoms_final = atoms_traj[-1]
@@ -62,7 +62,7 @@ def test_NVT_const_T(cu_slab):
     outputs = OutputSpec()
 
     atoms_traj = md.md(inputs, outputs, calculator=calc, steps=300, dt=1.0,
-                           temperature = 500.0, temperature_tau=30.0)
+                       temperature=500.0, temperature_tau=30.0, rng=np.random.default_rng(1))
 
     atoms_traj = list(atoms_traj)
     atoms_final = atoms_traj[-1]
@@ -79,7 +79,7 @@ def test_NVT_Langevin_const_T(cu_slab):
     outputs = OutputSpec()
 
     atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Langevin", steps=300, dt=1.0,
-                           temperature = 500.0, temperature_tau=100/fs)
+                           temperature=500.0, temperature_tau=100/fs, rng=np.random.default_rng(1))
 
     atoms_traj = list(atoms_traj)
     atoms_final = atoms_traj[-1]
@@ -96,11 +96,10 @@ def test_NVT_const_T_mult_configs_distinct_seeds(cu_slab):
     outputs = OutputSpec()
 
     atoms_traj = md.md(inputs, outputs, calculator=calc, steps=300, dt=1.0,
-                           temperature = 500.0, temperature_tau=30.0, autopara_rng_seed=23875)
+                       temperature=500.0, temperature_tau=30.0, rng=np.random.default_rng(23875))
 
     last_configs = [list(group)[-1] for group in atoms_traj.groups()]
     last_vs = [np.linalg.norm(at.get_velocities()) for at in last_configs]
-    print("BOB last_vs", last_vs)
     assert all([v != last_vs[0] for v in last_vs[1:]])
 
 
@@ -112,7 +111,7 @@ def test_NVT_simple_ramp(cu_slab):
     outputs = OutputSpec()
 
     atoms_traj = md.md(inputs, outputs, calculator=calc, steps=300, dt=1.0,
-                           temperature = (500.0, 100.0), temperature_tau=30.0)
+                       temperature=(500.0, 100.0), temperature_tau=30.0, rng=np.random.default_rng(1))
 
     atoms_traj = list(atoms_traj)
     atoms_final = atoms_traj[-1]
@@ -134,10 +133,10 @@ def test_NVT_complex_ramp(cu_slab):
     outputs = OutputSpec()
 
     atoms_traj = md.md(inputs, outputs, calculator=calc, steps=300, dt=1.0,
-                           temperature = [{'T_i': 100.0, 'T_f': 500.0, 'traj_frac': 0.5},
-                                          {'T_i': 500.0, 'T_f': 500.0, 'traj_frac': 0.25},
-                                          {'T_i': 500.0, 'T_f': 300.0, 'traj_frac': 0.25}],
-                           temperature_tau=30.0)
+                           temperature=[{'T_i': 100.0, 'T_f': 500.0, 'traj_frac': 0.5},
+                                        {'T_i': 500.0, 'T_f': 500.0, 'traj_frac': 0.25},
+                                        {'T_i': 500.0, 'T_f': 300.0, 'traj_frac': 0.25}],
+                           temperature_tau=30.0, rng=np.random.default_rng(1))
 
     atoms_traj = list(atoms_traj)
     atoms_final = atoms_traj[-1]
@@ -166,7 +165,8 @@ def test_subselector_function_after(cu_slab):
     outputs = OutputSpec()
 
     atoms_traj = md.md(inputs, outputs, calculator=calc, steps=300, dt=1.0,
-                           temperature = 500.0, traj_select_after_func=select_every_10_steps_for_tests_after)
+                       temperature=500.0, traj_select_after_func=select_every_10_steps_for_tests_after,
+                       rng=np.random.default_rng(1))
 
     atoms_traj = list(atoms_traj)
     assert len(atoms_traj) == 31
@@ -181,7 +181,8 @@ def test_subselector_function_during(cu_slab):
         outputs = OutputSpec()
 
         atoms_traj = md.md(inputs, outputs, calculator=calc, steps=steps, dt=1.0,
-                               temperature = 500.0, traj_select_during_func=select_every_10_steps_for_tests_during)
+                           temperature=500.0, traj_select_during_func=select_every_10_steps_for_tests_during,
+                           rng=np.random.default_rng(1))
 
         atoms_traj = list(atoms_traj)
         assert len(atoms_traj) == 31
@@ -199,6 +200,7 @@ def test_md_abort_function(cu_slab):
 
     # why doesn't this throw an raise a RuntimeError even if md failed and `skip_failed` is False?
     atoms_traj = md.md(inputs, outputs, calculator=calc, steps=500, dt=10.0,
-                           temperature = 2000.0, abort_check=md_stopper, autopara_info=autopara_info) 
+                       temperature=2000.0, abort_check=md_stopper, autopara_info=autopara_info,
+                       rng=np.random.default_rng(1))
 
     assert len(list(atoms_traj)) < 501

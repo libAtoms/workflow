@@ -15,9 +15,9 @@ def test_orca_utils(tmp_path):
     at_ch4 = molecule("CH4")
     at_ch3 = molecule("CH3")
 
-    calc_even = BasinHoppingORCA(scratchdir=tmp_path)
+    calc_even = BasinHoppingORCA(scratchdir=tmp_path, rng=np.random.default_rng(1))
     calc_even.atoms = at_ch4
-    calc_odd = BasinHoppingORCA()
+    calc_odd = BasinHoppingORCA(rng=np.random.default_rng(1))
     calc_odd.atoms = at_ch3
 
     # HOMO
@@ -44,7 +44,7 @@ def test_orca_utils(tmp_path):
 def test_orca_process_results(tmp_path):
     # setup
     at_ch4 = molecule("CH4")
-    calc = BasinHoppingORCA(scratchdir=tmp_path, forces_tol=0.05)
+    calc = BasinHoppingORCA(scratchdir=tmp_path, forces_tol=0.05, rng=np.random.default_rng(1))
     calc.atoms = at_ch4
 
     # shape errors, correct are (3, 10) and (3, 10, 5, 3)

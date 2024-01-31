@@ -5,13 +5,13 @@ import warnings
 from ase.atoms import Atoms
 
 from wfl.configset import ConfigSet, OutputSpec
-from .utils import grouper, get_root_global_seed, set_autopara_per_item_info
+from .utils import items_inputs_generator, set_autopara_per_item_info
 from .pool import do_in_pool
 
 from expyre import ExPyRe, ExPyReJobDiedError
 
 
-def do_remotely(autopara_info, iterable=None, outputspec=None, op=None, args=[], kwargs={}, quiet=False, wait_for_results=True):
+def do_remotely(autopara_info, iterable=None, outputspec=None, op=None, rng=None, args=[], kwargs={}, quiet=False, wait_for_results=True):
     """run tasks as series of remote jobs
 
     Parameters
@@ -41,17 +41,10 @@ def do_remotely(autopara_info, iterable=None, outputspec=None, op=None, args=[],
     if remote_info.num_inputs_per_queued_job < 0:
         remote_info.num_inputs_per_queued_job = -remote_info.num_inputs_per_queued_job * autopara_info.num_inputs_per_python_subprocess
 
-    if isinstance(iterable, ConfigSet):
-        items_inputs_generator = grouper(remote_info.num_inputs_per_queued_job,
-                                         ((item, item[1].info.get("_ConfigSet_loc")) for item in enumerate(iterable)))
-    else:
-        items_inputs_generator = grouper(remote_info.num_inputs_per_queued_job,
-                                         ((item, None) for item in enumerate(iterable)))
+    items_inputs = items_inputs_generator(iterable, remote_info.num_inputs_per_queued_job, rng)
 
-    # for local seeds if requested
-    root_global_seed = get_root_global_seed(kwargs, op, f"{op} {remote_info.job_name}")
     # other per-item info
-    prev_per_item_info = kwargs.get("autopara_per_item_info")
+    inherited_per_item_info = kwargs.get("_autopara_per_item_info")
 
     # create all jobs (count on expyre detection of identical jobs to avoid rerunning things unnecessarily)
     xprs = []
@@ -59,38 +52,40 @@ def do_remotely(autopara_info, iterable=None, outputspec=None, op=None, args=[],
     input_locs = []
     # list of all items, wastes space so used only if remote_info.ignore_failed_jobs is True
     all_items = []
-    for chunk_i, items_gen in enumerate(items_inputs_generator):
-        items = []
+    for chunk_i, items_gen in enumerate(items_inputs):
+        item_list = []
         item_i_list = []
-        for ((item_i, item), cur_input_loc) in items_gen:
+        rng_list = []
+        for (item, item_i, cur_input_loc, rng) in items_gen:
             if isinstance(item, Atoms):
                 # special things to do when item is Atoms
                 if 'EXPYRE_REMOTE_JOB_FAILED' in item.info:
                     del item.info['EXPYRE_REMOTE_JOB_FAILED']
 
-            items.append(item)
-            input_locs.append(cur_input_loc)
+            item_list.append(item)
             item_i_list.append(item_i)
+            input_locs.append(cur_input_loc)
+            rng_list.append(rng)
 
-        set_autopara_per_item_info(kwargs, op, root_global_seed, prev_per_item_info, item_i_list)
+        set_autopara_per_item_info(kwargs, op, inherited_per_item_info, rng_list, item_i_list)
 
         if remote_info.ignore_failed_jobs:
-            all_items.append(items)
+            all_items.append(item_list)
 
         job_name = remote_info.job_name + f'_chunk_{chunk_i}'
         if not quiet:
             sys.stderr.write(f'Creating job {job_name}\n')
 
         if isinstance(iterable, ConfigSet):
-            job_iterable = ConfigSet(items)
+            job_iterable = ConfigSet(item_list)
         else:
-            job_iterable = items
+            job_iterable = item_list
         co = OutputSpec()
 
         # NOTE: would it be cleaner if remote function was autoparallelize() instead of do_in_pool()
         #
-        # ignore configset out for hashing of inputs, since that doesn't affect function
-        #     calls that have to happen (also it's not repeatable for some reason)
+        # ignore OutputSpec for hashing of inputs, since that doesn't affect function
+        #   calls that have to happen (also, it's not repeatable for some reason)
         xprs.append(ExPyRe(name=job_name, pre_run_commands=remote_info.pre_cmds, post_run_commands=remote_info.post_cmds,
                             hash_ignore=remote_info.hash_ignore + ['outputspec', 'num_python_subprocesses', 'num_inputs_per_python_subprocess'],
                             env_vars=remote_info.env_vars, input_files=remote_info.input_files,

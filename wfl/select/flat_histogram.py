@@ -3,7 +3,7 @@ import sys
 import numpy as np
 
 
-def _select_by_bin(weights, bin_edges, quantities, n, kT, replace=False, verbose=False):
+def _select_by_bin(weights, bin_edges, quantities, n, rng, kT=-1.0, replace=False, verbose=False):
     if verbose:
         print('got histogram', len(weights), weights)
 
@@ -53,7 +53,7 @@ def _select_by_bin(weights, bin_edges, quantities, n, kT, replace=False, verbose
     while n_excess > 0:
         bin_max = np.max(n_from_bin)
         max_bins = np.where(n_from_bin == bin_max)[0]
-        n_from_bin[max_bins[np.random.choice(range(len(max_bins)), min(n_excess, len(max_bins)), replace=False)]] -= 1
+        n_from_bin[max_bins[rng.choice(range(len(max_bins)), min(n_excess, len(max_bins)), replace=False)]] -= 1
         n_excess = sum(n_from_bin) - n
 
     assert sum(n_from_bin) == n
@@ -66,12 +66,12 @@ def _select_by_bin(weights, bin_edges, quantities, n, kT, replace=False, verbose
     selected_inds = []
     for bin_i in range(len(weights)):
         bin_list = np.where(bin_of_quantities == bin_i)[0]
-        selected_inds.extend(np.random.choice(bin_list, n_from_bin[bin_i], replace=False))
+        selected_inds.extend(rng.choice(bin_list, n_from_bin[bin_i], replace=False))
 
     return selected_inds
 
 
-def _select_by_individual_weight(weights, bin_edges, quantities, n, kT, replace=False, verbose=False):
+def _select_by_individual_weight(weights, bin_edges, quantities, n, rng, kT=-1.0, replace=False, verbose=False):
     min_quantity = np.min(quantities)
 
     # if this out of range then histogram is broken
@@ -87,10 +87,10 @@ def _select_by_individual_weight(weights, bin_edges, quantities, n, kT, replace=
     # Doesn't work well when n is a significant fraction of len(prob),
     # even if enough samples are available to respect probabilities,
     # but manual implementation isn't any better.
-    return np.random.choice(np.arange(len(config_prob)), n, replace=replace, p=config_prob)
+    return rng.choice(np.arange(len(config_prob)), n, replace=replace, p=config_prob)
 
 
-def _select_indices_flat_boltzmann_biased(quantities, n, kT=-1.0, bins='auto', by_bin=True, replace=False, verbose=False):
+def _select_indices_flat_boltzmann_biased(quantities, n, rng, kT=-1.0, bins='auto', by_bin=True, replace=False, verbose=False):
     """Select samples by Boltzmann-weight biased flat histogram
 
     Parameters
@@ -99,6 +99,8 @@ def _select_indices_flat_boltzmann_biased(quantities, n, kT=-1.0, bins='auto', b
         quantities to histogram/bias
     n: int
         number of samples to return
+    rng: np.random.Generator
+        random number generator
     kT: float, default -1
         if > 0 temperature to bias by
         [kT] should have the same unit as the "quantities" parameter
@@ -123,12 +125,12 @@ def _select_indices_flat_boltzmann_biased(quantities, n, kT=-1.0, bins='auto', b
     weights, bin_edges = np.histogram(quantities, bins=bins)
 
     if by_bin:
-        return _select_by_bin(weights, bin_edges, quantities, n, kT, replace=replace, verbose=verbose)
+        return _select_by_bin(weights, bin_edges, quantities, n, rng=rng, kT=kT, replace=replace, verbose=verbose)
     else:
-        return _select_by_individual_weight(weights, bin_edges, quantities, n, kT, replace=replace, verbose=verbose)
+        return _select_by_individual_weight(weights, bin_edges, quantities, n, rng=rng, kT=kT, replace=replace, verbose=verbose)
 
 
-def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', by_bin=True, replace=False, verbose=False):
+def biased_select_conf(inputs, outputs, num, info_field, rng, kT=-1.0, bins='auto', by_bin=True, replace=False, verbose=False):
     """select configurations by Boltzmann biased flat histogram on some quantity in Atoms.info
 
     Parameters
@@ -141,6 +143,8 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
         number of configs to select
     info_field: string
         Atoms.info key for quantity by which to do flat histogram and Boltzmann bias
+    rng: np.random.Generator
+        random number generator
     kT: float, default -1
         Boltzmann bias temperature, <= 0 to not bias
         [kT] should have the same unit as the "info_field" parameter
@@ -172,7 +176,7 @@ def biased_select_conf(inputs, outputs, num, info_field, kT=-1.0, bins='auto', b
             pass
 
     # convert to set for faster checking (O(1)?) of "in" below
-    selected_indices = _select_indices_flat_boltzmann_biased(quantities, num, kT, bins=bins,
+    selected_indices = _select_indices_flat_boltzmann_biased(quantities, num, rng=rng, kT=kT, bins=bins,
                                                              by_bin=by_bin, replace=replace, verbose=verbose)
 
     selected_indices = sorted(selected_indices)
