@@ -1,4 +1,5 @@
 import sys
+import re
 
 from pathlib import Path
 
@@ -148,7 +149,7 @@ class ConfigSet:
             ## print("DEBUG __iter__ one file", self.items)
             for at_i, at in enumerate(ase.io.iread(self.items, **self.read_kwargs)):
                 loc = at.info.get("_ConfigSet_loc", ConfigSet._loc_sep + str(at_i))
-                if loc.startswith(self._file_loc):
+                if len(self._file_loc) == 0 or re.match(self._file_loc + r'\b', loc):
                     ## print("DEBUG matching loc", loc, "file_loc", self._file_loc)
                     loc = loc.replace(self._file_loc, "", 1)
                     ## print("DEBUG stripped loc", loc)
@@ -160,7 +161,7 @@ class ConfigSet:
             for file_i, filepath in enumerate(self.items):
                 for at_i, at in enumerate(ase.io.iread(filepath, **self.read_kwargs)):
                     loc = ConfigSet._loc_sep + str(file_i) + at.info.get("_ConfigSet_loc", ConfigSet._loc_sep + str(at_i))
-                    if loc.startswith(self._file_loc):
+                    if len(self._file_loc) == 0 or re.match(self._file_loc + r'\b', loc):
                         loc = loc.replace(self._file_loc, "", 1)
                         at.info["_ConfigSet_loc"] = loc
                         self._cur_loc = at.info.get("_ConfigSet_loc")
@@ -200,20 +201,20 @@ class ConfigSet:
             return self._cur_at[0].info.get("_ConfigSet_loc", ConfigSet._loc_sep + str(at_i) if at_i is not None else None)
 
         if isinstance(self.items, Path):
-            ## print("DEBUG groups() for one file self._open_reader", self._open_reader, "self._cur_at", self._cur_at)
+            ## print("DEBUG groups() for one file self._open_reader", self._open_reader, "self._cur_at", self._cur_at) ##DEBUG
             # one file, return a ConfigSet for each group, or a sequence of individual Atoms
             if self._open_reader is None or self._cur_at[0] is None:
                 # initialize reading of file
-                ## print("DEBUG initializing reader", self.items)
+                ## print("DEBUG initializing reader", self.items) ##DEBUG
                 self._open_reader = ase.io.iread(self.items, **self.read_kwargs)
                 self._cur_at = [None]
-                ## print("DEBUG setting initial self._cur_at = [None]")
+                ## print("DEBUG setting initial self._cur_at = [None]") ##DEBUG
                 try:
-                    ## print("DEBUG advancing, getting at_loc with cur_at_i", cur_at_i)
+                    ## print("DEBUG advancing, getting at_loc with cur_at_i", cur_at_i) ##DEBUG
                     at_loc = advance(cur_at_i)
-                    ## print("DEBUG got at_loc", at_loc)
+                    ## print("DEBUG got at_loc", at_loc) ##DEBUG
                 except StopIteration:
-                    ## print("DEBUG got EOF, returning")
+                    ## print("DEBUG got EOF, returning") ##DEBUG
                     # indicate EOF
                     self._cur_at = [None]
                     return
@@ -223,12 +224,12 @@ class ConfigSet:
 
             try:
                 # Skip any that don't match self._file_loc
-                ## print("DEBUG first skipping non-matching, at_loc", at_loc, "self._file_loc", self._file_loc)
+                ## print("DEBUG first skipping non-matching, at_loc", at_loc, "self._file_loc", self._file_loc) ##DEBUG
                 while not at_loc.startswith(self._file_loc):
                     at_loc = advance()
-                ## print("DEBUG after first skipping non-matching, new at_loc", at_loc)
+                ## print("DEBUG after first skipping non-matching, new at_loc", at_loc) ##DEBUG
             except StopIteration:
-                ## print("DEBUG starting second skipping")
+                ## print("DEBUG starting second skipping") ##DEBUG
                 # Failed to find config that matches self._file_loc from current position of reader.
                 # Search again from start (in case we're doing something out of order)
                 self._open_reader = ase.io.iread(self.items, **self.read_kwargs)
@@ -242,42 +243,42 @@ class ConfigSet:
                     # any matching configs
                     raise RuntimeError(f"No matching configs in file {self.items} for location {self._file_loc}") from exc
 
-            ## print("DEBUG after possibly skipping, now should be at right place, at_loc", at_loc, "self._file_loc",
-            ##       self._file_loc, "cur_at_i", cur_at_i, "self._cur_at.numbers", self._cur_at[0].numbers)
+            ## print("DEBUG after possibly skipping, now should be at right place, at_loc", at_loc, "self._file_loc", ##DEBUG
+                  ## self._file_loc, "cur_at_i", cur_at_i, "self._cur_at.numbers", self._cur_at[0].numbers) ##DEBUG
             # now self._cur_at should be first config that matches self._file_loc
             requested_depth = len(self._file_loc.split(ConfigSet._loc_sep))
-            ## print("DEBUG requested_depth", requested_depth)
+            ## print("DEBUG requested_depth", requested_depth) ##DEBUG
             if len(at_loc.split(ConfigSet._loc_sep)) == requested_depth + 1:
-                ## print("DEBUG in right container, starting to yield atoms")
+                ## print("DEBUG in right container, starting to yield atoms") ##DEBUG
                 # in right container, yield Atoms
                 while at_loc.startswith(self._file_loc):
                     if "_ConfigSet_loc" in self._cur_at[0].info:
                         del self._cur_at[0].info["_ConfigSet_loc"]
-                    ## print("DEBUG   in loop, yielding Atoms")
+                    ## print("DEBUG   in loop, yielding Atoms") ##DEBUG
                     yield self._cur_at[0]
                     cur_at_i += 1
                     try:
                         at_loc = advance(cur_at_i)
                     except StopIteration:
-                        ## print("DEBUG   EOF while yielding atoms")
+                        ## print("DEBUG   EOF while yielding atoms") ##DEBUG
                         # indicate EOF
                         self._cur_at[0] = None
                         return
                 return
             else:
-                ## print("DEBUG right place, but need to go deeper")
+                ## print("DEBUG right place, but need to go deeper") ##DEBUG
                 # at first config that matches self._file_loc, but there are deeper levels to nest into
 
                 while at_loc.startswith(self._file_loc):
                     # get location of deeper iterator from at_loc down to one deeper than requested at this level
                     new_file_loc = ConfigSet._loc_sep.join(at_loc.split(ConfigSet._loc_sep)[0:requested_depth + 1])
-                    ## print("DEBUG making and yielding ConfigSet with new _file_loc", new_file_loc)
+                    ## print("DEBUG making and yielding ConfigSet with new _file_loc", new_file_loc) ##DEBUG
                     t = ConfigSet(self.items, _open_reader=self._open_reader, _cur_at=self._cur_at, _file_loc=new_file_loc)
-                    ## print("DEBUG yielding ConfigSet", t, "_open_reader", t._open_reader, "_cur_at", self._cur_at)
+                    ## print("DEBUG yielding ConfigSet", t, "_open_reader", t._open_reader, "_cur_at", self._cur_at) ##DEBUG
                     yield t
-                    ## print("DEBUG after yield, got self._cur_at", self._cur_at[0].numbers if self._cur_at[0] is not None else None)
+                    ## print("DEBUG after yield, got self._cur_at", self._cur_at[0].numbers if self._cur_at[0] is not None else None) ##DEBUG
                     if self._cur_at[0] is None:
-                        ## print("DEBUG got EOF, returning")
+                        ## print("DEBUG got EOF, returning") ##DEBUG
                         # got EOF deeper inside, exit
                         return
                     # self._cur_at could have advanced when calling function iterated over yielded
@@ -289,12 +290,12 @@ class ConfigSet:
                         try:
                             at_loc = advance()
                         except StopIteration:
-                            ## print("DEBUG past yielded iterator got EOF")
+                            ## print("DEBUG past yielded iterator got EOF") ##DEBUG
                             self._cur_at[0] = None
                             return
                     # now we should be past configs that could have been consumed by previously yielded iterator
 
-                    ## print("DEBUG end of loop, now at_loc is", at_loc)
+                    ## print("DEBUG end of loop, now at_loc is", at_loc) ##DEBUG
 
         else:
             # self.items is list(Atoms) or list(...list(Atoms)) or list(Path)
