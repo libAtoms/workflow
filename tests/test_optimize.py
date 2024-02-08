@@ -181,7 +181,7 @@ def test_relax_fixed_vol(cu_slab):
 
 def test_subselect_from_traj(cu_slab):
 
-    calc = EMT()
+    calc = (EMT, [], {})
 
     cu_slab_optimised = cu_slab.copy()
     cu_slab_optimised.set_positions(expected_relaxed_positions_constant_pressure)
