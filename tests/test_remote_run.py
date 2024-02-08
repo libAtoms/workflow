@@ -293,7 +293,7 @@ def test_resubmit_killed_jobs(tmp_path, expyre_systems, monkeypatch, remoteinfo_
 def do_resubmit_killed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     # make sure that jobs that time out can be resubmitted automatically
     ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
-          'resources': {'max_time': '1m', 'num_nodes': 1},
+          'resources': {'max_time': '10s', 'num_nodes': 1},
           'num_inputs_per_queued_job': 1, 'check_interval': 10}
     remoteinfo_env(ri)
 
@@ -324,12 +324,9 @@ def do_resubmit_killed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri['resubmit_killed_jobs'] = True
     monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps({"test_resubmit_killed_jobs": ri}))
     print("BOB ######### second run, should time out")
-    try:
+    with pytest.raises(ExPyReJobDiedError):
         results = generic.calculate(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
                               raise_calc_exceptions=True, autopara_info=AutoparaInfo(remote_label="test_resubmit_killed_jobs"))
-    except ExPyReJobDiedError:
-        # ignore timeout in initial call
-        pass
 
     # now resubmit with longer time
     ri['resources']['max_time'] = '5m'
