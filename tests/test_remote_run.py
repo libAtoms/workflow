@@ -300,7 +300,7 @@ def do_resubmit_killed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     print("RemoteInfo", ri)
 
     ats = [Atoms('C') for _ in range(3)]
-    n = 20
+    n = 40
     ats[1] = Atoms(f'C{n**3}', positions=np.asarray(np.meshgrid(range(n), range(n), range(n))).reshape((3, -1)).T,
                    cell=[n]*3, pbc=[True]*3)
 
