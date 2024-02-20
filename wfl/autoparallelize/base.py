@@ -125,12 +125,9 @@ def autoparallelize(func, *args, default_autopara_info={}, **kwargs):
 
         parallelized_op(inputs, outputs, [args of op], autopara_info=AutoparaInfo(arg1=val1, ...), [kwargs of op])
 
-    If the op takes the argument `autopara_per_item_info` a list of dicts with info for each item will be
-    passed, currently including `rng_seed` and `item_i`.
-
-    If op takes the argument `autopara_rng_seed` it will be used as a global seed to generate the per-item seeds
-    from.
-
+    If the op takes the argument `_autopara_per_item_info` a list of dicts with info for each item will be
+    passed, always including `item_i`. If op takes the argument `rng`, per-item dict will also include key `rng`
+    with a `numpy.random.Generator` with a unique state for each item.
 
     Parameters
     ----------
@@ -206,6 +203,14 @@ def _autoparallelize_ll(autopara_info, iterable, outputspec, op, *args, wait_for
     """
     remote_info = get_remote_info(autopara_info.remote_info, autopara_info.remote_label)
 
+    # always spawn, to ensure that repeated calling of (identical) script gives ops
+    # identical rng state
+    global_rng = kwargs.pop("rng", None)
+    if global_rng is not None:
+        rng_op = global_rng.spawn(1)[0]
+    else:
+        rng_op = None
+
     if isinstance(autopara_info.iterable_arg, int):
         assert len(args) >= autopara_info.iterable_arg
         # otherwise not enough args were provided
@@ -220,11 +225,12 @@ def _autoparallelize_ll(autopara_info, iterable, outputspec, op, *args, wait_for
 
     if remote_info is not None:
         autopara_info.remote_info = remote_info
-        out = do_remotely(autopara_info, iterable, outputspec, op, args=args, kwargs=kwargs, wait_for_results=wait_for_results)
+        out = do_remotely(autopara_info, iterable, outputspec, op, rng=rng_op, args=args, kwargs=kwargs,
+                          wait_for_results=wait_for_results)
     else:
         out = do_in_pool(autopara_info.num_python_subprocesses, autopara_info.num_inputs_per_python_subprocess,
                          iterable, outputspec, op,
                          autopara_info.iterable_arg, skip_failed=autopara_info.skip_failed, initializer=autopara_info.initializer,
-                         args=args, kwargs=kwargs)
+                         rng=rng_op, args=args, kwargs=kwargs)
 
     return out

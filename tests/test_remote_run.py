@@ -144,7 +144,7 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     monkeypatch.setenv('WFL_EXPYRE_NO_MARK_PROCESSED', '1')
 
     t0 = time.time()
-    results = generic.calculate(inputs=ci, outputs=co, calculator=calc, properties=["energy", "forces"],
+    results = generic.calculate(inputs=ci, outputs=co, calculator=(EMT, [], {}), properties=["energy", "forces"],
                           autopara_info={"remote_info": ri})
     dt = time.time() - t0
     print('remote parallel calc_time', dt)
@@ -161,7 +161,7 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     co = OutputSpec(tmp_path / f'ats_o_{sys_name}.xyz')
 
     t0 = time.time()
-    results = generic.calculate(inputs=ci, outputs=co, calculator=calc, properties=["energy", "forces"],
+    results = generic.calculate(inputs=ci, outputs=co, calculator=(EMT, [], {}), properties=["energy", "forces"],
                           autopara_info={"remote_info": ri})
     dt_rerun = time.time() - t0
     print('remote parallel calc_time', dt_rerun)
@@ -293,18 +293,18 @@ def test_resubmit_killed_jobs(tmp_path, expyre_systems, monkeypatch, remoteinfo_
 def do_resubmit_killed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     # make sure that jobs that time out can be resubmitted automatically
     ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
-          'resources': {'max_time': '1m', 'num_nodes': 1},
+          'resources': {'max_time': '10s', 'num_nodes': 1},
           'num_inputs_per_queued_job': 1, 'check_interval': 10}
     remoteinfo_env(ri)
 
     print("RemoteInfo", ri)
 
     ats = [Atoms('C') for _ in range(3)]
-    n = 20
+    n = 40
     ats[1] = Atoms(f'C{n**3}', positions=np.asarray(np.meshgrid(range(n), range(n), range(n))).reshape((3, -1)).T,
                    cell=[n]*3, pbc=[True]*3)
 
-    calc = EMT()
+    calc = (EMT, [], {})
 
     # first just ignore failures
     ri['ignore_failed_jobs'] = True
@@ -324,12 +324,9 @@ def do_resubmit_killed_jobs(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri['resubmit_killed_jobs'] = True
     monkeypatch.setenv('WFL_EXPYRE_INFO', json.dumps({"test_resubmit_killed_jobs": ri}))
     print("BOB ######### second run, should time out")
-    try:
+    with pytest.raises(ExPyReJobDiedError):
         results = generic.calculate(inputs=ConfigSet(ats), outputs=OutputSpec(), calculator=calc, properties=["energy", "forces"],
                               raise_calc_exceptions=True, autopara_info=AutoparaInfo(remote_label="test_resubmit_killed_jobs"))
-    except ExPyReJobDiedError:
-        # ignore timeout in initial call
-        pass
 
     # now resubmit with longer time
     ri['resources']['max_time'] = '5m'
@@ -377,12 +374,12 @@ def do_md_deterministic(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     # run locally
     co = OutputSpec([f.replace('_i_', '_o_local_') for f in infiles])
     results_loc = md.md(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=10, dt=0.2, temperature=100.0, temperature_tau=10.0,
-                            autopara_rng_seed=20)
+                        rng=np.random.default_rng(20))
 
     co = OutputSpec([f.replace('_i_', '_o_') for f in infiles])
     t0 = time.time()
     results_remote = md.md(inputs=ci, outputs=co, calculator=(EMT, [], {}), steps=10, dt=0.2, temperature=100.0, temperature_tau=10.0,
-                               autopara_rng_seed=20, autopara_info={"remote_info": ri})
+                           rng=np.random.default_rng(20), autopara_info={"remote_info": ri})
     dt = time.time() - t0
     print('remote parallel calc_time', dt)
 

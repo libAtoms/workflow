@@ -6,7 +6,7 @@
 #SBATCH --exclusive
 #SBATCH --output=test_cli_rss_create_ref.stdout
 #SBATCH --error=test_cli_rss_create_ref.stderr
-#SBATCH --time=2:00:00
+#SBATCH --time=6:00:00
 
 pwd
 
@@ -21,8 +21,8 @@ export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1
 
-export VASP_COMMAND=vasp.serial
-export VASP_COMMAND_GAMMA=vasp.gamma_serial
+export ASE_VASP_COMMAND=vasp.serial
+export ASE_VASP_COMMAND_GAMMA=vasp.gamma.serial
 export VASP_PP_PATH=$VASP_PATH/pot/rev_54/PBE
 export GRIF_BUILDCELL_CMD=$HOME/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
 

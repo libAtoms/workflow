@@ -11,7 +11,7 @@ def c(at):
 
 
 def test_flat_histo_to_nearby(tmp_path):
-    np.random.seed(5)
+    rng = np.random.default_rng(5)
 
     n_at = 30
     n3 = 0
@@ -20,18 +20,18 @@ def test_flat_histo_to_nearby(tmp_path):
 
     ats = []
     for at_i in range(1000):
-        n1 = np.random.randint(n_at + 1)
+        n1 = rng.integers(n_at + 1)
         ################################################################################
-        # n2 = np.random.randint((n_at-n1) + 1)
+        # n2 = rng.integers((n_at-n1) + 1)
         # if n1+n2 < n_at:
-        # n3 = np.random.randint((n_at - n1 - n2) + 1)
+        # n3 = rng.integers((n_at - n1 - n2) + 1)
         # else:
         # n3 = 0
         ################################################################################
         n2 = n_at - n1
         ################################################################################
         at = Atoms(f'Si{n1}C{n2}H{n3}', cell=(1, 1, 1), pbc=[True] * 3)
-        at.cell *= (len(at) * np.random.uniform(3, 8)) ** (1.0 / 3.0)
+        at.cell *= (len(at) * rng.uniform(3, 8)) ** (1.0 / 3.0)
 
         ################################################################################
         # E_min = np.linalg.norm(np.array(c(at))-p_center)
@@ -39,7 +39,7 @@ def test_flat_histo_to_nearby(tmp_path):
         E_min = np.linalg.norm(np.array(c(at)) - p_center)
         ################################################################################
 
-        at.info['energy'] = np.random.uniform(E_min, 5.0)
+        at.info['energy'] = rng.uniform(E_min, 5.0)
         at.info['config_i'] = at_i
         ats.append(at)
 
@@ -50,7 +50,7 @@ def test_flat_histo_to_nearby(tmp_path):
 
     selected_ats = biased_select_conf(output_ats,
                                       OutputSpec('test_flat_histo_relative.selected.xyz', file_root=tmp_path),
-                                      10, 'E_dist_to_nearby', kT=0.05)
+                                      10, 'E_dist_to_nearby', kT=0.05, rng=rng)
 
     print("selected_ats", [at.info['config_i'] for at in selected_ats])
-    assert [at.info['config_i'] for at in selected_ats] == [134, 248, 278, 375, 377, 398, 685, 799, 851, 993]
+    assert [at.info['config_i'] for at in selected_ats] == [22, 32, 53, 301, 307, 389, 590, 723, 895, 906]

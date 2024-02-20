@@ -5,7 +5,7 @@ class PressureRecursionError(BaseException):
     pass
 
 
-def sample_pressure(pressure, at=None):
+def sample_pressure(pressure, at=None, rng=None):
     """Sample pressure for calculation with various modes
 
     Parameters
@@ -21,6 +21,9 @@ def sample_pressure(pressure, at=None):
 
     at: ase.Atoms, default None
         atoms object, only needed or used if mode is `info`
+
+    rng: numpy Generator object, default None
+        random number generator to use. Only required if pressure will be generated randomly
 
     Returns
     -------
@@ -43,7 +46,7 @@ def sample_pressure(pressure, at=None):
         elif pressure[0] == 'exponential':
             if len(pressure) != 2:
                 raise ValueError()
-            p = pressure[1] * np.random.exponential(1.0)
+            p = pressure[1] * rng.exponential(1.0)
         elif pressure[0] == 'normal_positive':
             if len(pressure) != 3:
                 raise ValueError()
@@ -53,11 +56,11 @@ def sample_pressure(pressure, at=None):
                 n_try += 1
                 if n_try >= 1000:
                     raise RuntimeError('Failed to get positive from normal distribution in 1000 iterations')
-                p = np.random.normal(pressure[1], pressure[2])
+                p = rng.normal(pressure[1], pressure[2])
         elif pressure[0] == 'uniform':
             if len(pressure) != 3:
                 raise ValueError()
-            p = np.random.uniform(pressure[1], pressure[2])
+            p = rng.uniform(pressure[1], pressure[2])
         else:
             raise ValueError()
     except ValueError as exc:

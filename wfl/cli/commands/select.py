@@ -1,4 +1,5 @@
 import click
+import numpy as np
 from wfl.cli import cli_options as opt
 import wfl.descriptors.quippy
 import wfl.select.by_descriptor
@@ -12,7 +13,7 @@ from wfl.select.simple import by_bool_func
 @click.option("--kernel_exponent", type=click.FLOAT, help="exponent of dot-product for kernel")
 @click.option("--deterministic", is_flag=True, help="use deterministic (not stochastic) CUR selection")
 @click.option("--key", required=True, type=click.STRING, help="Atoms.info (global) or Atoms.arrays (local) for descriptor vector")
-@click.option("--stochastic-seed", type=click.INT, help="seed for `np.random.seed()` in stochastic CUR.")
+@click.option("--stochastic-seed", type=click.INT, help="seed for `np.random.default_rng()` in stochastic CUR.")
 @click.pass_context
 @opt.inputs
 @opt.outputs
@@ -26,7 +27,7 @@ def cur(ctx, inputs, outputs, n_configs, key, keep_descriptor,
         num=n_configs,
         at_descs_info_key=key, kernel_exp=kernel_exponent, stochastic=not deterministic,
         keep_descriptor_info=keep_descriptor,
-        stochastic_seed=stochastic_seed)
+        rng=np.random.default_rng(stochastic_seed))
 
 
 @click.command("lambda")

@@ -7,8 +7,9 @@ import wfl
 def get_wfl_version():
     try:
         with subprocess.Popen("cd '" + os.path.dirname(__file__) + "'; " +
-                              "echo $(git describe --always --tags --dirty)",
-                              shell=True, stdout=subprocess.PIPE) as gitv:
+                              "git describe --always --tags --dirty",
+                              shell=True, stdout=subprocess.PIPE,
+                              env={'PATH': os.environ['PATH']}) as gitv:
             version_str = gitv.stdout.read().strip().decode('utf-8')
     except Exception:
         version_str = ''

@@ -22,7 +22,7 @@ def _hashable_struct_data(at):
             at.get_initial_magnetic_moments().tobytes())
 
 
-def CUR(mat, num, stochastic=True, stochastic_seed=None, exclude_list=None):
+def CUR(mat, num, stochastic=True, rng=None, exclude_list=None):
     """Compute selection by CUR of descriptors with dot-product, with optional exponentiation
 
     Parameters
@@ -33,8 +33,8 @@ def CUR(mat, num, stochastic=True, stochastic_seed=None, exclude_list=None):
         number to select
     stochastic: bool, default True
         use stochastic selection algorithm
-    stochastic_seed: int, default None
-        fix seed of random number generator
+    rng: numpy.random.Generator
+        random number generator, required if stochastic
     exclude_list: list(int), default None
         list of descriptor indices to exclude
 
@@ -56,9 +56,7 @@ def CUR(mat, num, stochastic=True, stochastic_seed=None, exclude_list=None):
         raise RuntimeError(f'Asked for {num} configs but only {sum(c_scores > 0)} are available')
 
     if stochastic:
-        if stochastic_seed is not None:
-            np.random.seed(stochastic_seed)
-        selected_inds = np.random.choice(range(mat.shape[1]), size=num, replace=False, p=c_scores)
+        selected_inds = rng.choice(range(mat.shape[1]), size=num, replace=False, p=c_scores)
     else:
         selected_inds = np.argsort(c_scores)[-num:]
 
@@ -155,7 +153,7 @@ def write_selected_and_clean(inputs, outputs, selected, at_descs_info_key=None, 
 
 
 def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None, kernel_exp=None, stochastic=True,
-                    stochastic_seed=None, keep_descriptor_info=True, exclude_list=None, center=True,
+                    rng=None, keep_descriptor_info=True, exclude_list=None, center=True,
                     leverage_score_key=None):
     """Select atoms from a list or iterable using CUR on global (per-config) descriptors
 
@@ -167,8 +165,8 @@ def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
         where to write output to
     num: int
         number to select
-    stochastic_seed: int, default None
-        fix seed of random number generator
+    rng: int, default None
+        random number generator
     at_descs: np.array(n_descs, desc_len), mutually exclusive with at_descs_info_key
         list of descriptor vectors
     at_descs_info_key: str, mutually exclusive with at_descs
@@ -214,7 +212,7 @@ def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
             descs_mat = at_descs
 
     selected, _ = CUR(mat=descs_mat, num=num, stochastic=stochastic,
-                      stochastic_seed=stochastic_seed, exclude_list=exclude_ind_list)
+                      rng=rng, exclude_list=exclude_ind_list)
 
     write_selected_and_clean(inputs, outputs, selected, at_descs_info_key, keep_descriptor_info)
 
@@ -223,7 +221,7 @@ def CUR_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
 
 def greedy_fps_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_key=None,
                            keep_descriptor_info=True, exclude_list=None,
-                           prev_selected_descs=None, O_N_sq=False, verbose=False):
+                           prev_selected_descs=None, O_N_sq=False, rng=None, verbose=False):
     """Select atoms from a list or iterable using greedy farthest point selection on global (per-config) descriptors
 
     Parameters
@@ -246,6 +244,8 @@ def greedy_fps_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_ke
         if present, list of previously selected descriptors to also be farthest from
     O_N_sq: bool, default False
         use O(N^2) algorithm with smaller prefactor
+    rng: numpy.random.Generator
+        random number generator
     verbose: bool, default False
         more verbose output
 
@@ -292,7 +292,7 @@ def greedy_fps_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_ke
             p = np.ones(similarities.shape[1])
             p[exclude_ind_list] = 0.0
             p /= np.sum(p)
-            selected_indices = [np.random.choice(range(similarities.shape[1]), p=p)]
+            selected_indices = [rng.choice(range(similarities.shape[1]), p=p)]
             similarities[:, selected_indices[-1]] = max_similarity
         else:
             selected_indices = []
@@ -332,7 +332,7 @@ def greedy_fps_conf_global(inputs, outputs, num, at_descs=None, at_descs_info_ke
             p = np.ones(at_descs.shape[1])
             p[exclude_ind_list] = 0.0
             p /= np.sum(p)
-            selected_indices = [np.random.choice(range(at_descs.shape[1]), p=p)]
+            selected_indices = [rng.choice(range(at_descs.shape[1]), p=p)]
             similarities_arr = np.asarray([at_descs[:, selected_indices[-1]].T @ at_descs])
             similarities_arr[:, selected_indices[-1]] = max_similarity
 

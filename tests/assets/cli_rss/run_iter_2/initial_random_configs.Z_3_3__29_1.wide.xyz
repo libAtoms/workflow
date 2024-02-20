@@ -1,88 +1,96 @@
 8
-Lattice="4.22579 0.0 0.0 2.1128945319629424 6.263303162461569 0.0 2.1128945319629424 0.041890104996838554 6.263163076593523" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=70 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="35 Cmm2 C 2 -2 @ 0.01" pbc="T T T"
-Li       4.22578942       7.34071098       3.26204448
-Li       4.22578964       2.99412575      -1.05556657
-Li       4.22579007      -0.11658078       2.07601496
-Li       4.22578900       4.23000445       6.39362602
-Li       4.22578953       1.38062248       4.91544688
-Li       4.22578953       4.49132901       1.78386534
-Cu       2.11289453       0.43779284       5.86460356
-Cu       2.11289453       3.54849936       2.73302202
+Lattice="5.21047 0.0 0.0 -0.5466899871361017 5.215013532682838 0.0 -2.227033279557243 -2.5335681016290157 6.298703561388839" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=70 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="1 P1 P 1 @ 0.01" _ConfigSet_loc=" / 0" pbc="T T T"
+Li       3.03259492       0.15960628       5.28258096
+Li       2.09478592      -2.11691913       6.39232245
+Li      -1.27210629       2.59010140       1.66185751
+Li      -0.00668256      -0.82056174       3.77988161
+Li      -1.05025106       2.65847862       5.78928205
+Li       2.35225590       2.98832990       3.81067849
+Cu       0.83516440       3.94038905       1.62839816
+Cu       0.23100139       1.66607427       3.88119122
 8
-Lattice="5.97222 0.0 0.0 2.654575846150834 5.3498260537546996 0.0 2.654575846150834 1.6462101661698876 5.090248608293262" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=71 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="146 R3 R 3 @ 0.01" pbc="T T T"
-Li       5.22541657       4.62007045       0.89478681
-Li       6.46122177       1.65982137       2.22447275
-Li       4.35877427       3.67051943       4.12056388
-Li       4.54745920       2.03033005       0.35625428
-Li       3.84002732       1.31475385       2.90760294
-Li       2.88458030       3.64518199       1.82219294
-Cu       0.38117386       0.23638137       0.17198881
-Cu       9.83736627       6.10054988       4.43870137
+Lattice="4.27265 0.0 0.0 0.0 4.27265 0.0 0.0 0.0 9.02853" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=71 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="115 P-4m2 P -4 -2 @ 0.01" _ConfigSet_loc=" / 1" pbc="T T T"
+Li       1.06815823       3.20449177       2.27641654
+Li       1.06815823       1.06815823       6.75211346
+Li       3.20449177       1.06815823       2.27641654
+Li       3.20449177       3.20449177       6.75211346
+Li       0.00000000       0.00000000       4.51426500
+Li       2.13632500       2.13632500       4.51426500
+Cu       2.13632500       2.13632500       0.00000000
+Cu       0.00000000       0.00000000       0.00000000
 4
-Lattice="4.38421 0.0 0.0 1.0644551781834564 4.253026275223141 0.0 1.0644551781834564 0.8308742955501057 4.171076647909091" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=72 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="146 R3 R 3 @ 0.01" pbc="T T T"
-Li       3.44376681       1.22938389       0.57328320
-Li       1.61452281       3.14590338       1.09369842
-Li       2.02872065       1.15657053       2.87162068
-Cu       5.19877071       4.05796791       3.32935213
+Lattice="4.51177 0.0 0.0 -1.356408239825724 4.303048363640929 0.0 -1.356408239825724 -1.8497689648393234 3.8851743843166346" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=72 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="146 R3 R 3 @ 0.01" _ConfigSet_loc=" / 2" pbc="T T T"
+Li       2.27278448       0.43867768       0.71475709
+Li      -0.26490099      -0.34315996       2.38347095
+Li      -0.24764561       2.30496416       0.70333273
+Cu       1.35270439       1.84471793       2.92141647
 8
-Lattice="3.51195 0.0 0.0 1.3630943224832301 5.218804012646383 0.0 0.2437729073227193 0.4742999025467937 7.844314031736588" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=73 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="1 P1 P 1 @ 0.01" pbc="T T T"
-Li       2.31804797       3.49255241       2.86941713
-Li       0.38314110      -0.12991365       0.65122005
-Li       2.46611141       2.07962638       6.85895366
-Li       3.29750057       4.59959152       6.33872111
-Li       1.49597545       5.51346353       4.46007144
-Li       3.90177872       2.75825448       0.78670547
-Cu       0.79006158       2.62419457       5.08574569
-Cu       2.13912699       1.25529425       1.76821507
-4
-Lattice="4.75203 0.0 0.0 2.159603485912503 4.232954276215911 0.0 2.159603485912503 1.3226255167112955 4.0210152507891275" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=74 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="146 R3 R 3 @ 0.01" pbc="T T T"
-Li       3.45997573       1.25467118       2.91714885
-Li       4.39002611       1.64452350       0.28036127
-Li       2.69003802       3.55593737       1.47458269
-Cu       7.96755408       4.87964129       3.53178476
-4
-Lattice="2.74626 0.0 0.0 0.9049276889070871 4.655180432620123 0.0 0.9049276889070871 0.47244278331042033 4.631144855945146" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=75 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="5 C2 C 2y @ 0.01" pbc="T T T"
-Li       1.35611428       3.16037238      -0.28241416
-Li       3.20000110       5.08784082       1.45842856
-Li       0.90492769       1.47525664       3.52082510
-Cu       2.27805769       2.85945838       1.98823107
+Lattice="5.82789 0.0 0.0 0.0 5.92726 0.0 0.0 -2.963629999999999 5.133157734835353" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=73 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="149 P312 P 3 2 @ 0.01" _ConfigSet_loc=" / 3" pbc="T T T"
+Li       1.66893053       3.48862313       0.23841310
+Li       1.66893053       3.97647663       2.90202970
+Li       1.66893053       1.42579024       1.99271493
+Li       4.15895947       4.50146976       1.99271493
+Li       4.15895947       2.43863687       0.23841310
+Li       4.15895947       1.95078337       2.90202970
+Cu       4.65509591       0.00000000       0.00000000
+Cu       1.17279409       0.00000000       0.00000000
 8
-Lattice="5.49696 0.0 0.0 0.9764349808795384 5.4095419371435485 0.0 0.9764349808795384 0.815965346400684 5.347648504079899" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=76 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="146 R3 R 3 @ 0.01" pbc="T T T"
-Li       4.18533716       3.96308493       1.39361324
-Li       2.68748606       3.76787458       3.70753113
-Li       4.64350910       1.89275150       3.16552716
-Li       3.60502567       1.47738795       0.51353415
-Li       1.35925506       3.41793407       1.38302383
-Li       2.09426033       1.00320169       3.17021491
-Cu       1.17511979       0.98199782       0.84352631
-Cu       6.97546502       5.82910060       5.00713912
+Lattice="5.14258 0.0 0.0 0.0 5.99291 0.0 0.0 -2.9964549999999988 5.190012302593801" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=74 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="143 P3 P 3 @ 0.01" _ConfigSet_loc=" / 4" pbc="T T T"
+Li       2.64803478       3.59301263       3.69858442
+Li       2.64803478       4.40301615       0.22907988
+Li       2.64803478       0.99333532       1.26234853
+Li       4.69783477      -0.59406578       2.01819960
+Li       4.69783477      -0.95160998       4.69538856
+Li       4.69783477       1.54567577       3.66643644
+Cu       1.22706176       2.99645530       1.73000393
+Cu       4.06901191       2.99645530       1.73000393
 8
-Lattice="4.21866 0.0 0.0 1.9425366246663998 4.941046825747522 0.0 0.452947315755759 0.895203518897725 8.233157393886186" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=77 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="1 P1 P 1 @ 0.01" pbc="T T T"
-Li       2.00443205       1.80485720       7.12495712
-Li       4.39128166       4.80053226       1.21170918
-Li       3.82520584       3.75029481       6.68903696
-Li       3.87778325       1.73466899       3.42587442
-Li       1.76845184       0.63492039       4.70307590
-Li       2.28194918       3.24185715       1.85296264
-Cu       1.74254722       4.01646704       4.81047908
-Cu       4.42909788       1.55665981       0.99351075
+Lattice="5.53734 0.0 0.0 -2.768669999999999 4.795477109391724 0.0 0.0 0.0 5.75182" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=75 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="158 P3c1 P 3 -2\"c @ 0.01" _ConfigSet_loc=" / 5" pbc="T T T"
+Li       4.30648207       1.34154000       5.13119057
+Li       1.77723724       0.39518424       5.13119057
+Li       2.22229153       3.05875239       5.13119057
+Li       3.76010332       0.39518424       2.25528057
+Li       3.31504903       3.05875239       2.25528057
+Li       1.23085849       1.34154000       2.25528057
+Cu      -0.00000028       3.19698490       3.99440259
+Cu      -0.00000028       3.19698490       1.11849259
 8
-Lattice="5.73194 0.0 0.0 1.1939272428934844 5.606217432661416 0.0 1.1939272428934844 0.9664371966278786 5.522288750803494" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=78 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="146 R3 R 3 @ 0.01" pbc="T T T"
-Li       7.28271350       3.98995999       0.74138880
-Li       2.90394506       6.82759422       3.80242217
-Li       5.41938913       1.81492827       6.06989381
-Li       2.96323196       4.15048349       3.45664020
-Li       4.64722769       2.03998796       3.49246936
-Li       4.67667077       3.75547789       1.40739284
-Cu       5.69990085       4.61384581       3.87651417
-Cu       0.98998808       0.80135646       0.67329291
+Lattice="5.10596 0.0 0.0 0.0 5.86931 0.0 0.0 -2.9346549999999985 5.082971562686044" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=76 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="158 P3c1 P 3 -2\"c @ 0.01" _ConfigSet_loc=" / 6" pbc="T T T"
+Li       0.94352065      -1.51908542       3.74524324
+Li       0.94352065       0.45072192       1.89478338
+Li       0.94352065       1.06836350       4.52591651
+Li       3.49650065      -1.06836350       4.52591651
+Li       3.49650065       1.51908542       3.74524324
+Li       3.49650065      -0.45072192       1.89478338
+Cu       0.74381379       2.93465529       1.69432368
+Cu       3.29679379       2.93465529       1.69432368
 8
-Lattice="4.81718 0.0 0.0 0.0 4.81718 0.0 0.0 0.0 6.72424" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=79 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="115 P-4m2 P -4 -2 @ 0.01" pbc="T T T"
-Li       4.81718000       2.40859000       5.50412396
-Li       2.40859000       0.00000000       1.22011604
-Li       2.40859000       0.00000000       4.75768155
-Li       0.00000000       2.40859000       1.96655845
-Li       2.40859000       2.40859000       3.36212000
-Li       2.40859000       2.40859000       6.72424000
-Cu       0.00000000       0.00000000       3.36212000
-Cu       0.00000000       0.00000000       6.72424000
+Lattice="4.98188 0.0 0.0 0.4613246030755826 4.960474568526399 0.0 0.4613246030755826 0.420412078594097 4.942626996766937" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=77 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="148 R-3 -R 3 @ 0.01" _ConfigSet_loc=" / 7" pbc="T T T"
+Li       1.59588336      -0.29272155       2.99780707
+Li       3.09726423       1.31472405      -0.54573967
+Li      -0.14368422       3.12399219       1.35624647
+Li       4.30864585       5.67360820       1.94481993
+Li       2.80726497       4.06616260       5.48836666
+Li       6.04821343       2.25689446       3.58638053
+Cu       4.77886909       4.35505558       4.00034729
+Cu       1.12566011       1.02583106       0.94227971
+8
+Lattice="4.08264 0.0 0.0 0.0 6.87626 0.0 0.0 -3.438129999999999 5.955015843026786" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=78 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="190 P-62c P -6c -2c @ 0.01" _ConfigSet_loc=" / 8" pbc="T T T"
+Li       1.31190411       0.37151367       2.41068510
+Li       1.31190411       1.16465829       5.07141417
+Li       1.31190411      -1.53617299       4.42793302
+Li       3.35322411       1.90195770       1.52708282
+Li       3.35322411       3.80964436       3.54433075
+Li       3.35322411       4.60278897       0.88360168
+Cu       3.35241942      -0.00000034       3.97001076
+Cu       1.31109942       3.43813034       1.98500508
+8
+Lattice="5.3792 0.0 0.0 -2.6895999999999987 4.658523852037253 0.0 0.0 0.0 6.10532" Properties=species:S:1:pos:R:3 config_type=buildcell buildcell_config_i=79 RSS_min_vol_per_atom=9.0 buildcell_type=wide gap_rss_group=ALL gap_rss_iter=2 buildcell_symmetry="173 P6_3 P 6c @ 0.01" _ConfigSet_loc=" / 9" pbc="T T T"
+Li       1.60432542       0.40643012       0.59980801
+Li       4.22505848       1.18617151       0.59980801
+Li       2.23941610       3.06592222       0.59980801
+Li       1.08527458       4.25209373       3.65246801
+Li      -1.53545848       3.47235234       3.65246801
+Li       0.45018390       1.59260163       3.65246801
+Cu       2.68960027       1.55284113       2.54008114
+Cu      -0.00000027       3.10568272       5.59274114

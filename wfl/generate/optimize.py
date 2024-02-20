@@ -34,7 +34,7 @@ PreconLBFGS.log = _new_log
 def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
            stress_mask=None, keep_symmetry=True, traj_step_interval=1, traj_subselect=None,
            skip_failures=True, results_prefix='optimize_', verbose=False, update_config_type=True,
-           autopara_rng_seed=None, autopara_per_item_info=None,
+           rng=None, _autopara_per_item_info=None,
            **opt_kwargs):
     """runs a structure optimization
 
@@ -70,9 +70,11 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
         append at.info['optimize_config_type'] at.info['config_type']
     opt_kwargs
         keyword arguments for PreconLBFGS
-    autopara_rng_seed: int, default None
-        global seed used to initialize rng so that each operation uses a different but
-        deterministic local seed, use a random value if None
+    rng: numpy.random.Generator, default None
+        random number generator to use (needed for pressure sampling, initial temperature, or Langevin dynamics)
+    _autopara_per_item_info: dict
+        INTERNALLY used by autoparallelization framework to make runs reproducible (see
+        wfl.autoparallelize.autoparallelize() docs)
 
     Returns
     -------
@@ -96,8 +98,9 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
     all_trajs = []
 
     for at_i, at in enumerate(atoms_to_list(atoms)):
-        if autopara_per_item_info is not None:
-            np.random.seed(autopara_per_item_info[at_i]["rng_seed"])
+        # get rng from autopara_per_item info if available ("rng" arg that was passed in was
+        # already used by autoparallelization framework to set "rng" key in per-item dict)
+        rng = _autopara_per_item_info[at_i].get("rng")
 
         # original constraints
         org_constraints = at.constraints
@@ -115,7 +118,7 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
 
         at.calc = calculator
         if pressure is not None:
-            p = sample_pressure(pressure, at)
+            p = sample_pressure(pressure, at, rng=rng)
             at.info['optimize_pressure_GPa'] = p
             p *= ase.units.GPa
             wrapped_at = FrechetCellFilter(at, scalar_pressure=p, mask=stress_mask)
@@ -234,12 +237,8 @@ def subselect_from_traj(traj, subselect=None):
     if subselect is None:
         return traj
     elif subselect == "last":
-        return [traj[-1]]
+        return traj[-1]
     elif subselect == "last_converged":
-        converged_configs = [at for at in traj if at.info["optimize_config_type"] == "optimize_last_converged"]
-        if len(converged_configs) == 0:
-            return None
-        else:
-            return converged_configs
+        return traj[-1] if (traj[-1].info["optimize_config_type"] == "optimize_last_converged") else None
     raise RuntimeError(f'Subselecting confgs from trajectory with rule '
                        f'"subselect={subselect}" is not yet implemented')

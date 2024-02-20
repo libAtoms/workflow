@@ -66,6 +66,11 @@ def save_results(atoms, properties, results_prefix=None):
         config_results['dipole'] = atoms.get_dipole_moment()
     if 'magmom' in properties:
         config_results['magmom'] = atoms.get_magnetic_moment()
+    try:
+        if results_prefix is not None:
+            config_results['converged'] = atoms.calc.converged
+    except AttributeError as exc:
+        pass
 
     # copy per-atom results
     if 'forces' in properties:
@@ -78,8 +83,6 @@ def save_results(atoms, properties, results_prefix=None):
         atoms_results['magmoms'] = atoms.get_magnetic_moments()
     if 'energies' in properties:
         atoms_results['energies'] = atoms.get_potential_energies()
-    if 'converged' in properties and results_prefix is not None:
-        config_results['converged'] = atoms.get_calculator().read_convergence()
 
     if "extra_results" in dir(atoms.calc):
         if results_prefix is None and (len(atoms.calc.extra_results.get("config", {})) > 0 or
@@ -125,7 +128,9 @@ def clean_rundir(rundir, keep_files, default_keep_files, calculation_succeeded):
         files to keep if keep_files == 'default' or calculation_succeeded is False
     calculation_succeeded: bool
     """
-    if keep_files == 'default' or not calculation_succeeded:
+    if not calculation_succeeded:
+        clean_dir(rundir, set(default_keep_files) | set(keep_files if keep_files else []), force=False)
+    elif keep_files == 'default':
         clean_dir(rundir, default_keep_files, force=False)
     elif not keep_files:
         clean_dir(rundir, False, force=False)

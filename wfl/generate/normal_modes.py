@@ -309,8 +309,7 @@ class NormalModes:
 
         n = len(normal_mode_numbers)
 
-        cov = np.eye(n) * energies_for_modes /\
-              self.eigenvalues[normal_mode_numbers]
+        cov = np.eye(n) * energies_for_modes / self.eigenvalues[normal_mode_numbers]
         norm = stats.multivariate_normal(mean=np.zeros(n), cov=cov,
                                          allow_singular=True)
 

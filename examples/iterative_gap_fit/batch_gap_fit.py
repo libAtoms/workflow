@@ -76,7 +76,7 @@ def get_ref_error(in_file, out_file, gap_file, **kwargs):
     return error
 
 
-def run_md(atoms, out_file, gap_file, **kwargs):
+def run_md(atoms, out_file, gap_file, rng, **kwargs):
     """
     Generates new configs via the wfl.generate_configs.md sample function.
 
@@ -91,7 +91,7 @@ def run_md(atoms, out_file, gap_file, **kwargs):
     in_config = ConfigSet(atoms)
     out_config = OutputSpec(files=out_file)
     calculator = (Potential, None, {'param_filename': gap_file})
-    sample_md(in_config, out_config, calculator=calculator, **kwargs)
+    sample_md(in_config, out_config, calculator=calculator, rng=rng, **kwargs)
     return None
 
 
@@ -305,6 +305,7 @@ def get_file_names(GAP_dir, MD_dir, fit_idx, calc='md'):
 
 def main(max_count=5, verbose=False):
     workdir = os.path.join(os.path.dirname(__file__))
+    rng = np.random.default_rng(1)
 
     ### GAP parameters
     gap_params = os.path.join(workdir, 'multistage_gap_params.json')
@@ -367,7 +368,7 @@ def main(max_count=5, verbose=False):
 
         if calc == 'md':
             # Run an MD to create new structures
-            run_md(md_configs, files["calc_out"], files["gap"], **md_params)
+            run_md(md_configs, files["calc_out"], files["gap"], rng=rng, **md_params)
         elif calc == 'optimize':
             # Run an ase relaxation, to create new structures.
             run_optimize(md_configs, files["calc_out"], files["gap"], **optimize_params)

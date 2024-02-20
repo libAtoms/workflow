@@ -181,7 +181,7 @@ def test_relax_fixed_vol(cu_slab):
 
 def test_subselect_from_traj(cu_slab):
 
-    calc = EMT()
+    calc = (EMT, [], {})
 
     cu_slab_optimised = cu_slab.copy()
     cu_slab_optimised.set_positions(expected_relaxed_positions_constant_pressure)
@@ -198,6 +198,7 @@ def test_subselect_from_traj(cu_slab):
         pressure=-1.1215,
         steps=2,
         traj_subselect=None,
+        _autopara_per_item_info = [{} for _ in range(len(inputs))]
     )
 
     assert len(atoms_opt[0]) == 3
@@ -217,11 +218,11 @@ def test_subselect_from_traj(cu_slab):
         pressure=-1.1215,
         steps=2,
         traj_subselect="last_converged",
+        _autopara_per_item_info = [{} for _ in range(len(inputs))]
     )
 
-    assert len(atoms_opt[1]) == 1
-    assert isinstance(atoms_opt[1][0], Atoms)  # and not None
     assert atoms_opt[0] is None
+    assert isinstance(atoms_opt[1], Atoms)  # not None
 
     # check that iterable_loop handles Nones as expected
     inputs = ConfigSet([cu_slab.copy(), cu_slab_optimised.copy()])
