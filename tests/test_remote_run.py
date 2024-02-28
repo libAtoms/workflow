@@ -10,6 +10,7 @@ import numpy as np
 import ase.io
 from ase.atoms import Atoms
 
+from ase.build import bulk
 from ase.calculators.emt import EMT
 
 import pytest
@@ -21,6 +22,7 @@ from wfl.calculators import generic
 from wfl.generate import optimize, md
 from wfl.calculators import generic
 from wfl.calculators.vasp import Vasp
+from wfl.calculators.espresso import Espresso
 from wfl.autoparallelize import AutoparaInfo
 
 from expyre.func import ExPyReJobDiedError
@@ -31,6 +33,14 @@ def test_generic_calc(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
             continue
 
         do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env)
+
+
+def test_generic_calc_qe(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
+    for sys_name in expyre_systems:
+        if sys_name.startswith('_'):
+            continue
+
+        do_generic_calc_qe(tmp_path, sys_name, monkeypatch, remoteinfo_env)
 
 
 def test_minim(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
@@ -172,6 +182,52 @@ def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
 
     # maybe can do the test without being so sensitive to timing?
     assert dt_rerun < dt / 4.0
+
+
+# copied from calculators/test_qe.py::test_qe_calc
+def do_generic_calc_qe(tmp_path, sys_name, monkeypatch, remoteinfo_env):
+    ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
+          'resources': {'max_time': '1h', 'num_nodes': 1},
+          'num_inputs_per_queued_job': -36, 'check_interval': 10}
+
+    qe_cmd = os.environ.get("PYTEST_WFL_ASE_ESPRESSO_COMMAND")
+    if qe_cmd is None:
+        pytest.skip("no PYTEST_WFL_ASE_ESPRESSO_COMMAND to specify executable")
+    pspot = tmp_path / "Si.UPF"
+    shutil.copy(Path(__file__).parent / "assets" / "QE" / "Si.pz-vbc.UPF", pspot)
+
+    remoteinfo_env(ri)
+    print('RemoteInfo', ri)
+
+    at = bulk("Si")
+    at.positions[0, 0] += 0.01
+    at0 = Atoms("Si", cell=[6.0, 6.0, 6.0], positions=[[3.0, 3.0, 3.0]], pbc=False)
+
+    kw = dict(
+        pseudopotentials=dict(Si=pspot.name),
+        input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
+        kpts=(2, 2, 2),
+        conv_thr=0.0001,
+        calculator_exec=qe_cmd,
+        pseudo_dir=str(pspot.parent)
+    )
+
+    calc = (Espresso, [], kw)
+
+    # output container
+    c_out = OutputSpec("qe_results.xyz", file_root=tmp_path)
+
+    results = generic.calculate(
+        inputs=[at0, at],
+        outputs=c_out,
+        calculator=calc,
+        output_prefix='QE_',
+        autopara_info={"remote_info": ri}
+    )
+
+    for at in results:
+        assert "QE_energy" in at.info
+        assert "QE_forces" in at.arrays
 
 
 def do_minim(tmp_path, sys_name, monkeypatch, remoteinfo_env):

@@ -32,7 +32,7 @@ export ASE_VASP_COMMAND_GAMMA=vasp.gamma.serial
 export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
 # QE
 module load dft/pwscf
-export PYTEST_WFL_ASE_ESPRESSO_COMMAND="mpirun -np 1 pw.x"
+export PYTEST_WFL_ASE_ESPRESSO_COMMAND="env MPIRUN_EXTRA_ARGS='-np 1' pw.x"
 # no ORCA
 
 export OPENBLAS_NUM_THREADS=1
