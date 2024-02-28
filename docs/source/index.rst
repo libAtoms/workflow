@@ -21,7 +21,21 @@ Quick start that installs all of the mandatory dependencies:
 
 .. code-block:: sh
 
-	pip install git+https://github.com/libAtoms/workflow
+	python3 -m pip install git+https://github.com/libAtoms/workflow
+
+.. warning::
+
+    `wfl` requires ASE, so `ase` is listed as a `pip` dependency,
+    and if not already installed, `pip install` will install the latest
+    `pypi` release.  However, because of the large delay in producing new
+    releases, the latest `pypi` version is often quite old, and `wfl`
+    has some functionality that requires a newer version.  To ensure
+    a sufficiently up-to-date version is available, before installing
+    `wfl` install the latest `ase` from gitlab, with a command such as
+
+    .. code-block:: sh
+
+            python3 -m pip install git+https://gitlab.com/ase/ase
 
 ***************************************
 Repository
