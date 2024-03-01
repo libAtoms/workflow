@@ -4,7 +4,8 @@ import ase.units
 import numpy as np
 import spglib
 from ase.constraints import ExpCellFilter
-from ase.optimize.precon import PreconFIRE
+#from ase.optimize.precon import PreconFIRE
+from ase.optimize import FIRE
 from ase.neb import NEB
 from ase.dyneb import DyNEB
 
@@ -15,7 +16,7 @@ from wfl.utils.parallel import construct_calculator_picklesafe
 from wfl.utils.pressure import sample_pressure
 from .utils import config_type_append
 
-orig_log = PreconFIRE.log
+orig_log = FIRE.log
 
 
 def _new_log(self, forces=None):
@@ -92,7 +93,7 @@ def _run_autopara_wrappable(images, calculator, fmax=1.0e-3, smax=None, steps=10
         at.calc = calculator
 
     neb = DyNEB(images, k=0.2, climb=True, allow_shared_calculator=True, scale_fmax = 1)
-    opt = PreconFIRE(neb, **opt_kwargs_to_use)
+    opt = FIRE(neb, **opt_kwargs_to_use)
 
         # default status, will be overwritten for first and last configs in traj
 #        at.info['optimize_config_type'] = 'optimize_mid'
@@ -138,6 +139,7 @@ def _run_autopara_wrappable(images, calculator, fmax=1.0e-3, smax=None, steps=10
 #        traj.append(new_config)
 
     # set for first config, to be overwritten if it's also last config
+#    print("traj : ", traj)
 
     for at in traj[0]:
         at.info['neb_config_type'] = 'neb_initial'
@@ -166,7 +168,8 @@ def _run_autopara_wrappable(images, calculator, fmax=1.0e-3, smax=None, steps=10
     traj = subselect_from_traj(traj, subselect=traj_subselect)
 
     all_trajs.append(traj)
-
+    
+    print("Hello!")
     return all_trajs
 
 
@@ -175,7 +178,7 @@ def NEB(*args, **kwargs):
 
     return autoparallelize(_run_autopara_wrappable, *args,
                            default_autopara_info=default_autopara_info, **kwargs)
-autoparallelize_docstring(NEB, _run_autopara_wrappable, "Atoms")
+#autoparallelize_docstring(NEB, _run_autopara_wrappable, "Atoms")
 
 
 # Just a placeholder for now. Could perhaps include:
