@@ -34,7 +34,7 @@ def _new_log(self, forces=None):
 #PreconFIRE.log = _new_log
 
 
-def _run_autopara_wrappable(images, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
+def _run_autopara_wrappable(list_of_images, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
            keep_symmetry=True, traj_step_interval=1, traj_subselect=None, skip_failures=True,
            results_prefix='optimize_', verbose=False, update_config_type=True,
            autopara_rng_seed=None, autopara_per_item_info=None,
@@ -43,7 +43,7 @@ def _run_autopara_wrappable(images, calculator, fmax=1.0e-3, smax=None, steps=10
 
     Parameters
     ----------
-    images: list(Atoms)
+    list_of_images: list(Atoms)
         input configs
     calculator: Calculator / (initializer, args, kwargs)
         ASE calculator or routine to call to create calculator
@@ -83,14 +83,15 @@ def _run_autopara_wrappable(images, calculator, fmax=1.0e-3, smax=None, steps=10
 
     all_trajs = []
 
-    for at_i, at in enumerate(atoms_to_list(images)):
-        if autopara_per_item_info is not None:
-            np.random.seed(autopara_per_item_info[at_i]["rng_seed"])
-
-        # original constraints
-        org_constraints = at.constraints
-
-        at.calc = calculator
+    for images in list_of_images:
+        for at_i, at in enumerate(atoms_to_list(images)):
+            if autopara_per_item_info is not None:
+                np.random.seed(autopara_per_item_info[at_i]["rng_seed"])
+    
+            # original constraints
+            org_constraints = at.constraints
+    
+            at.calc = calculator
 
     neb = DyNEB(images, k=0.2, climb=True, allow_shared_calculator=True, scale_fmax = 1)
     opt = FIRE(neb, **opt_kwargs_to_use)
@@ -169,7 +170,6 @@ def _run_autopara_wrappable(images, calculator, fmax=1.0e-3, smax=None, steps=10
 
     all_trajs.append(traj)
     
-    print("Hello!")
     return all_trajs
 
 
@@ -202,7 +202,8 @@ def subselect_from_traj(traj, subselect=None):
     """
     if subselect is None:
         return traj
-
+    elif subselect == "last":
+        return [at for subtraj in traj for at in subtraj if at.info["neb_config_type"] == "neb_last_unconverged"]
     elif subselect == "last_converged":
         converged_configs = [at for subtraj in traj for at in subtraj if at.info["neb_config_type"] == "neb_last_converged"]
         if len(converged_configs) == 0:
