@@ -55,7 +55,13 @@ def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_
         calculator_default = None
 
     if output_prefix == '_auto_':
-        output_prefix = calculator.__class__.__name__ + '_'
+        if isinstance(calculator, tuple):
+            # constructor, get name directly
+            calc_class = calculator[0].__name__
+        else:
+            # calculator object, get name from class
+            calc_class = calculator.__class__.__name__
+        output_prefix = calc_class + '_'
 
     at_out = []
     for at in atoms_to_list(atoms):

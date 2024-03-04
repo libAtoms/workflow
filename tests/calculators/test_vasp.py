@@ -362,3 +362,40 @@ def test_vasp_multi_calc(tmp_path):
 
     assert np.abs(e_GGA - e_test) < 1.0e-4
     assert n_loop_test < n_loop_GGA - 2
+
+
+def test_vasp_unconverged(tmp_path):
+    ase.io.write(tmp_path / 'vasp_in.xyz', Atoms('Si', cell=(2, 2, 2), pbc=[True] * 3), format='extxyz')
+
+    configs_eval = generic.calculate(
+        inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
+        outputs=OutputSpec('vasp_out.regular.xyz', file_root=tmp_path),
+        calculator=Vasp(workdir=tmp_path, encut=200, kspacing=1.0, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
+                        keep_files=True),
+        output_prefix='TEST_')
+
+    run_dir = list(tmp_path.glob('run_VASP_*'))
+    nfiles = len(list(os.scandir(run_dir[0])))
+
+    assert nfiles == 18
+
+    ats = list(configs_eval)
+    print("initial run converged?", ats[0].info["TEST_converged"])
+    assert ats[0].info["TEST_converged"]
+
+
+    configs_eval = generic.calculate(
+        inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
+        outputs=OutputSpec('vasp_out.unconverged.xyz', file_root=tmp_path),
+        calculator=Vasp(workdir=tmp_path, encut=200, nelm=6, kspacing=1.0, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
+                        keep_files=True),
+        output_prefix='TEST_')
+
+    run_dir = list(tmp_path.glob('run_VASP_*'))
+    nfiles = len(list(os.scandir(run_dir[0])))
+
+    assert nfiles == 18
+
+    ats = list(configs_eval)
+    print("second run converged?", ats[0].info["TEST_converged"])
+    assert not ats[0].info["TEST_converged"]

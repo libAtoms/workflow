@@ -66,6 +66,11 @@ def save_results(atoms, properties, results_prefix=None):
         config_results['dipole'] = atoms.get_dipole_moment()
     if 'magmom' in properties:
         config_results['magmom'] = atoms.get_magnetic_moment()
+    try:
+        if results_prefix is not None:
+            config_results['converged'] = atoms.calc.converged
+    except AttributeError as exc:
+        pass
 
     # copy per-atom results
     if 'forces' in properties:
@@ -78,8 +83,6 @@ def save_results(atoms, properties, results_prefix=None):
         atoms_results['magmoms'] = atoms.get_magnetic_moments()
     if 'energies' in properties:
         atoms_results['energies'] = atoms.get_potential_energies()
-    if 'converged' in properties and results_prefix is not None:
-        config_results['converged'] = atoms.get_calculator().read_convergence()
 
     if "extra_results" in dir(atoms.calc):
         if results_prefix is None and (len(atoms.calc.extra_results.get("config", {})) > 0 or
