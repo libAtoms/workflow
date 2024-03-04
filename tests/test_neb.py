@@ -17,7 +17,7 @@ from ase.constraints import FixAtoms
 #from wfl.generate.neb import _run_autopara_wrappable # NEB as wflNEB
 #from wfl.generate.neb import NEB as wflNEB
 from wfl.generate import neb 
-
+from wfl.autoparallelize.autoparainfo import AutoparaInfo
 from wfl.configset import ConfigSet, OutputSpec
 
 
@@ -72,10 +72,12 @@ def prepare_images():
     final.calc = EMT()
     relax = QuasiNewton(final)
     relax.run(fmax=0.05)
-    
+
+    initial.calc = None
+    final.calc = None
+
     return initial, final
 
-#initial, final = prepare_images()
 
 #def test_mult_files(prepare_images, tmp_path):
 #    ase.io.write(tmp_path / 'f1.xyz', [prepare_images] * 2)
@@ -103,8 +105,7 @@ def prepare_images():
 
 def test_neb(prepare_images):
     
-    calc = EMT()
-#    calc = (EMT, [], {})
+    calc = (EMT, [], {})
     initial, final = prepare_images
 
     images = [initial]
@@ -114,14 +115,14 @@ def test_neb(prepare_images):
     images.append(final)
     
     # Carry out idpp interpolation.
-    dyn = DyNEB(images)
-    dyn.interpolate('idpp')
+    dyn1 = DyNEB(images)
+    dyn1.interpolate('idpp')
 
-    inputs = ConfigSet(dyn.images)
+    inputs = ConfigSet([dyn1.images])
     outputs = OutputSpec()
-    print("input : ", inputs)
+
     images_opt = neb.NEB(
-        inputs,
+        inputs.groups(),
 		outputs,
         calc,
         logfile="-",
@@ -137,4 +138,46 @@ def test_neb(prepare_images):
 
     assert np.all([at.info["config_type"] == "neb_last_converged" for at in images_opt])
 
+
+def test_neb_autopara(prepare_images):
+    
+    calc = (EMT, [], {})
+    initial, final = prepare_images
+
+    images1 = [initial]
+    for i in range(5):
+        images1.append(initial.copy())
+    images1.append(final)
+
+    images2 = [initial]
+    for i in range(6):
+        images2.append(initial.copy())
+    images2.append(final)
+
+    # Carry out idpp interpolation.
+    dyn1 = DyNEB(images1)
+    dyn1.interpolate('idpp')
+    dyn2 = DyNEB(images2)
+    dyn2.interpolate("idpp")
+
+    inputs = ConfigSet([dyn1.images, dyn2.images])
+    outputs = OutputSpec(["out1.xyz", "out2.xyz"])
+
+    images_opt = neb.NEB(
+        inputs.groups(),
+		outputs,
+        calc,
+		autopara_info= AutoparaInfo(num_python_subprocesses=2, num_inputs_per_python_subprocess=1),
+        logfile="-",
+        verbose=True,
+        allow_shared_calculator = True,
+    )
+
+    images_opt = list(images_opt)[-7:]
+
+#    assert atoms_opt.positions == approx(
+#        expected_relaxed_positions_constant_pressure, abs=3e-3
+#    )
+
+    assert np.all([at.info["config_type"] == "neb_last_converged" for at in images_opt])
 
