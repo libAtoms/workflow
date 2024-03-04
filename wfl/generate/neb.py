@@ -70,7 +70,7 @@ def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
     
             at.calc = calculator
 
-    neb = DyNEB(images, **neb_kwargs)
+    neb = DyNEB(list(images), **neb_kwargs)
     opt = FIRE(neb, logfile=logfile)
 
     traj = []
