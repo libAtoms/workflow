@@ -240,5 +240,6 @@ def subselect_from_traj(traj, subselect=None):
         return traj[-1]
     elif subselect == "last_converged":
         return traj[-1] if (traj[-1].info["optimize_config_type"] == "optimize_last_converged") else None
+
     raise RuntimeError(f'Subselecting confgs from trajectory with rule '
                        f'"subselect={subselect}" is not yet implemented')

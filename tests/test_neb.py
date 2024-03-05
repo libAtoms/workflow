@@ -41,9 +41,9 @@ def prepare_images():
                              latticeconstant=3.9)
     
     # Add some vacuum to the slab.
-    uc = slab.get_cell()
+    uc = slab.cell
     uc[2] += [0., 0., 10.]  # There are ten layers of vacuum.
-    uc = slab.set_cell(uc, scale_atoms=False)
+    slab.set_cell(uc, scale_atoms=False)
     
     # Some positions needed to place the atom in the correct place.
     x1 = 1.379
@@ -53,7 +53,6 @@ def prepare_images():
     y2 = 2.238
     z1 = 7.165
     z2 = 6.439
-    
     
     # Add the adatom to the list of atoms and set constraints of surface atoms.
     slab += Atoms('N', [((x2 + x1) / 2, y1, z1 + 1.5)])
@@ -79,40 +78,12 @@ def prepare_images():
     return initial, final
 
 
-#def test_mult_files(prepare_images, tmp_path):
-#    ase.io.write(tmp_path / 'f1.xyz', [prepare_images] * 2)
-#    ase.io.write(tmp_path / 'f2.xyz', prepare_images)
-#    infiles = [str(tmp_path / 'f1.xyz'), str(tmp_path / 'f2.xyz')]
-#    inputs = ConfigSet(infiles)
-#    outputs = OutputSpec([f.replace('.xyz', '.out.xyz') for f in infiles])
-#
-#    calc = (EMT, None, None)
-#
-#    atoms_opt = neb.NEB(
-#        inputs.groups(),
-#        outputs,
-#        calc,
-#        fmax=5e-2,
-#        logfile="-",
-#        verbose=True,
-#    )
-#
-#    n1 = len(ase.io.read(tmp_path / infiles[0].replace(".xyz", ".out.xyz"), ":"))
-#    n2 = len(ase.io.read(tmp_path / infiles[1].replace(".xyz", ".out.xyz"), ":"))
-#
-#    assert n1 == n2 * 2
-
-
 def test_neb(prepare_images):
     
     calc = (EMT, [], {})
     initial, final = prepare_images
 
-    images = [initial]
-    for i in range(5):
-        images.append(initial.copy())
-    
-    images.append(final)
+    images = [initial.copy() for _ in range(6)] + [final.copy()]
     
     # Carry out idpp interpolation.
     dyn1 = DyNEB(images)
@@ -139,20 +110,31 @@ def test_neb(prepare_images):
     assert np.all([at.info["config_type"] == "neb_last_converged" for at in images_opt])
 
 
-def test_neb_autopara(prepare_images):
-    
+def test_neb_autopara_full_mult_files(prepare_images, tmp_path):
+    do_test_neb_autopara_full(prepare_images, tmp_path,
+                              [tmp_path / 'out_1.xyz', tmp_path / 'out_2.xyz'])
+
+
+def test_neb_autopara_full_one_file(prepare_images, tmp_path):
+    do_test_neb_autopara_full(prepare_images, tmp_path, tmp_path / 'out.xyz')
+
+
+def test_neb_autopara_last_mult_files(prepare_images, tmp_path):
+    do_test_neb_autopara_last(prepare_images, tmp_path,
+                              [tmp_path / 'out_1.xyz', tmp_path / 'out_2.xyz'])
+
+
+def test_neb_autopara_last_one_file(prepare_images, tmp_path):
+    do_test_neb_autopara_last(prepare_images, tmp_path, tmp_path / 'out.xyz')
+
+
+def do_test_neb_autopara_full(prepare_images, tmp_path, output_files):
+
     calc = (EMT, [], {})
     initial, final = prepare_images
 
-    images1 = [initial]
-    for i in range(5):
-        images1.append(initial.copy())
-    images1.append(final)
-
-    images2 = [initial]
-    for i in range(6):
-        images2.append(initial.copy())
-    images2.append(final)
+    images1 = [initial.copy() for _ in range(6)] + [final.copy()]
+    images2 = [initial.copy() for _ in range(6)] + [final.copy()]
 
     # Carry out idpp interpolation.
     dyn1 = DyNEB(images1)
@@ -160,17 +142,19 @@ def test_neb_autopara(prepare_images):
     dyn2 = DyNEB(images2)
     dyn2.interpolate("idpp")
 
+    # this one writes to multiple files
     inputs = ConfigSet([dyn1.images, dyn2.images])
-    outputs = OutputSpec(["out1.xyz", "out2.xyz"])
+    outputs = OutputSpec(output_files)
 
     images_opt = neb.NEB(
         inputs.groups(),
-		outputs,
+        outputs,
         calc,
-		autopara_info= AutoparaInfo(num_python_subprocesses=2, num_inputs_per_python_subprocess=1),
+        autopara_info=AutoparaInfo(num_python_subprocesses=2,
+                                   num_inputs_per_python_subprocess=1),
         logfile="-",
         verbose=True,
-        allow_shared_calculator = True,
+        allow_shared_calculator=True,
     )
 
     images_opt = list(images_opt)[-7:]
@@ -181,3 +165,41 @@ def test_neb_autopara(prepare_images):
 
     assert np.all([at.info["config_type"] == "neb_last_converged" for at in images_opt])
 
+
+def do_test_neb_autopara_last(prepare_images, tmp_path, output_files):
+
+    calc = (EMT, [], {})
+    initial, final = prepare_images
+
+    images1 = [initial.copy() for _ in range(6)] + [final.copy()]
+    images2 = [initial.copy() for _ in range(6)] + [final.copy()]
+
+    # Carry out idpp interpolation.
+    dyn1 = DyNEB(images1)
+    dyn1.interpolate('idpp')
+    dyn2 = DyNEB(images2)
+    dyn2.interpolate("idpp")
+
+    # this one writes to one files
+    inputs = ConfigSet([dyn1.images, dyn2.images])
+    outputs = OutputSpec(output_files)
+
+    images_opt = neb.NEB(
+        inputs.groups(),
+        outputs,
+        calc,
+        autopara_info=AutoparaInfo(num_python_subprocesses=2,
+                                   num_inputs_per_python_subprocess=1),
+        logfile="-",
+        verbose=True,
+        allow_shared_calculator=True,
+        traj_subselect="last",
+    )
+
+    images_opt = list(images_opt)[-7:]
+
+#    assert atoms_opt.positions == approx(
+#        expected_relaxed_positions_constant_pressure, abs=3e-3
+#    )
+
+    assert np.all([at.info["config_type"] == "neb_last_converged" for at in images_opt])

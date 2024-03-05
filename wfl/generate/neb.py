@@ -3,6 +3,7 @@ import sys
 import numpy as np
 from ase.optimize import FIRE
 from ase.mep.dyneb import DyNEB
+from ase.atoms import Atoms
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.at_copy_save_results import at_copy_save_results
@@ -14,17 +15,16 @@ from .utils import config_type_append
 def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
            traj_step_interval=1, traj_subselect=None, skip_failures=True,
            results_prefix='neb_', verbose=False, logfile=None, update_config_type=True,
-           autopara_rng_seed=None, autopara_per_item_info=None,
            **neb_kwargs):
     """runs a structure optimization
 
     Parameters
     ----------
-    list_of_images: list(images)
-        input configs. images are list(Atoms)
+    list_of_images: list(iterable(Atoms))
+        input list of images, with each is an itereable of Atoms
         (i.e. [images1, images2, images3])
     calculator: Calculator / (initializer, args, kwargs)
-        ASE calculator or routine to call to create calculator
+        ASE calculator or initializer and arguments to call to create calculator
     fmax: float, default 5e-2
         force convergence tolerance
     steps: int, default 1000
@@ -43,9 +43,6 @@ def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
         append at.info['optimize_config_type'] at.info['config_type']
     neb_kwargs
         keyword arguments for DyNEB and FIRE 
-    autopara_rng_seed: int, default None
-        global seed used to initialize rng so that each operation uses a different but
-        deterministic local seed, use a random value if None
 
     Returns
     -------
@@ -61,78 +58,73 @@ def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
     all_trajs = []
 
     for images in list_of_images:
-        for at_i, at in enumerate(atoms_to_list(images)):
-            if autopara_per_item_info is not None:
-                np.random.seed(autopara_per_item_info[at_i]["rng_seed"])
-    
-            # original constraints
-            org_constraints = at.constraints
-    
+        assert all([isinstance(at, Atoms) for at in images]), "Got images that is not an iterable(Atoms)"
+
+        orig_constraints = [at.constraints for at in images]
+        for at_i, at in enumerate(images):
             at.calc = calculator
+            at.info['neb_image_i'] = at_i
 
-    neb = DyNEB(list(images), **neb_kwargs)
-    opt = FIRE(neb, logfile=logfile)
+        neb = DyNEB(list(images), **neb_kwargs)
+        opt = FIRE(neb, logfile=logfile)
 
-    traj = []
-    def process_step():
+        traj = []
+        def process_step():
 
-        subtraj = []
-        for at in images:
-            new_config = at_copy_save_results(at, results_prefix=results_prefix)
-            new_config.set_constraint(org_constraints)
-            subtraj.append(new_config)
+            cur_images = []
+            for at, constraints in zip(images, orig_constraints):
+                new_config = at_copy_save_results(at, results_prefix=results_prefix)
+                new_config.set_constraint(constraints)
+                new_config.info['neb_iter_i'] = opt.get_number_of_steps()
+                cur_images.append(new_config)
 
-        traj.append(subtraj)
+            traj.append(cur_images)
 
-    opt.attach(process_step, interval=traj_step_interval)
+        opt.attach(process_step, interval=traj_step_interval)
 
-    # preliminary value
-    final_status = 'unconverged'
+        # preliminary value
+        final_status = 'unconverged'
 
-    try:
-        opt.run(fmax=fmax, steps=steps)
-    except Exception as exc:
-        # label actual failed optimizations
-        # when this happens, the atomic config somehow ends up with a 6-vector stress, which can't be
-        # read by xyz reader.
-        # that should probably never happen
-        final_status = 'exception'
-        if skip_failures:
-            sys.stderr.write(f'Nudged elastic band calculation failed with exception \'{exc}\'\n')
-            sys.stderr.flush()
-        else:
-            raise
+        try:
+            opt.run(fmax=fmax, steps=steps)
+        except Exception as exc:
+            # label actual failed optimizations
+            # when this happens, the atomic config somehow ends up with a 6-vector stress, which can't be
+            # read by xyz reader.
+            # that should probably never happen
+            final_status = 'exception'
+            if skip_failures:
+                sys.stderr.write(f'Nudged elastic band calculation failed with exception \'{exc}\'\n')
+                sys.stderr.flush()
+            else:
+                raise
 
-    # set for first config, to be overwritten if it's also last config
+        # set for first config, to be overwritten if it's also last config
 
-    for at in traj[0]:
-        at.info['neb_config_type'] = 'neb_initial'
+        for at in traj[0]:
+            at.info['neb_config_type'] = 'neb_initial'
 
-    if opt.converged():
-        final_status = 'converged'
+        if opt.converged():
+            final_status = 'converged'
 
-    for subtraj in traj[1:-1]:
-        for at in subtraj:
-            at.info['neb_config_type'] = f'neb_intermediate'
+        for intermed_images in traj[1:-1]:
+            for at in intermed_images:
+                at.info['neb_config_type'] = 'neb_intermediate'
 
-    for at in traj[-1]:
-        at.info['neb_config_type'] = f'neb_last_{final_status}'
-        at.info['neb_n_steps'] = opt.get_number_of_steps()
+        for at in traj[-1]:
+            at.info['neb_config_type'] = f'neb_last_{final_status}'
+            at.info['neb_n_steps'] = opt.get_number_of_steps()
 
+        if update_config_type:
+            # save config_type
+            for all_images in traj:
+                for at in all_images:
+                    config_type_append(at, at.info['neb_config_type'])
 
-    if update_config_type:
-        # save config_type
-        for subtraj in traj:
-            for at0 in subtraj:
-                config_type_append(at0, at0.info['neb_config_type'])
+        traj = subselect_from_traj(traj, subselect=traj_subselect)
 
-    # Note that if resampling doesn't include original last config, later
-    # steps won't be able to identify those configs as the (perhaps unconverged) minima.
-    # Perhaps status should be set after resampling?
-    traj = subselect_from_traj(traj, subselect=traj_subselect)
+        all_trajs.append(traj)
 
-    all_trajs.append(traj)
-    
     return all_trajs
 
 
@@ -161,13 +153,9 @@ def subselect_from_traj(traj, subselect=None):
     if subselect is None:
         return traj
     elif subselect == "last":
-        return [at for subtraj in traj for at in subtraj if at.info["neb_config_type"] == "neb_last_unconverged"]
+        return traj[-1]
     elif subselect == "last_converged":
-        converged_configs = [at for subtraj in traj for at in subtraj if at.info["neb_config_type"] == "neb_last_converged"]
-        if len(converged_configs) == 0:
-            return None
-        else:
-            return converged_configs
+        return traj[-1] if traj[-1][0].info['neb_config_type'] == 'neb_last_converged' else None
 
     raise RuntimeError(f'Subselecting confgs from trajectory with rule '
                        f'"subselect={subselect}" is not yet implemented')
