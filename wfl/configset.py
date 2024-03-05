@@ -40,13 +40,23 @@ class ConfigSet:
 
     _loc_sep = " / "
 
-    def __init__(self, items, *, file_root=None, read_kwargs={}, _open_reader=None, _cur_at=None, _file_loc=None):
+    def __init__(self, items, *, file_root=None, read_kwargs={}, _open_reader=None, _cur_at=None, _file_loc=None, _enclosing_loc=""):
+        # internal use arguments:
+        #
+        # _open_reader: already open file reader, used to speed up reading of specific nested structure in files
+        # _cur_at: current atoms object, used to speed up reading of specific nested structure in files
+        # _file_loc: ConfigSet_loc used to restrict reading in an open file to a particular nesting level
+        # _enclosing_loc: ConfigSet_loc that contains this ConfigSet, used to preserve nesting structure when
+        #    ConfigSet.groups() returns a ConfigSet corresponding to a particular nesting level (used by
+        #    wfl.autopara.utils.items_inputs_generator)
+
         # deal with private arguments
         if sum([_open_reader is None, _cur_at is None, _file_loc is None]) not in (0, 3):
             raise ValueError(f"Need either both or neither of _open_reader {_open_reader} _file_loc {_file_loc}")
         self._open_reader = _open_reader
         self._cur_at = _cur_at if _cur_at is not None else [None]
         self._file_loc = _file_loc if _file_loc is not None else ""
+        self._enclosing_loc = _enclosing_loc
         file_root = Path(file_root) if file_root is not None else Path("")
 
         self.read_kwargs = {"index": ":", "parallel": False}
@@ -292,9 +302,10 @@ class ConfigSet:
                     # get location of deeper iterator from at_loc down to one deeper than requested at this level
                     new_file_loc = ConfigSet._loc_sep.join(at_loc.split(ConfigSet._loc_sep)[0:requested_depth + 1])
                     ## print("DEBUG making and yielding ConfigSet with new _file_loc", new_file_loc) ##DEBUG
-                    t = ConfigSet(self.items, _open_reader=self._open_reader, _cur_at=self._cur_at, _file_loc=new_file_loc)
-                    ## print("DEBUG yielding ConfigSet", t, "_open_reader", t._open_reader, "_cur_at", self._cur_at) ##DEBUG
-                    yield t
+                    cs_out = ConfigSet(self.items, _open_reader=self._open_reader, _cur_at=self._cur_at, _file_loc=new_file_loc,
+                                       _enclosing_loc=new_file_loc)
+                    ## print("DEBUG yielding ConfigSet", cs_out, "_open_reader", cs_out._open_reader, "_cur_at", self._cur_at) ##DEBUG
+                    yield cs_out
                     ## print("DEBUG after yield, got self._cur_at", self._cur_at[0].numbers if self._cur_at[0] is not None else None) ##DEBUG
                     if self._cur_at[0] is None:
                         ## print("DEBUG got EOF, returning") ##DEBUG
@@ -318,7 +329,7 @@ class ConfigSet:
 
         else:
             # self.items is list(Atoms) or list(...list(Atoms)) or list(Path)
-            for item in self.items:
+            for item_i, item in enumerate(self.items):
                 if isinstance(item, Atoms):
                     # yield each Atoms object
                     if "_ConfigSet_loc" in item.info:
@@ -326,7 +337,7 @@ class ConfigSet:
                     yield item
                 else:  # item must be sublist or Path
                     # yield a ConfigSet for each file or sublist
-                    yield ConfigSet(item)
+                    yield ConfigSet(item, _enclosing_loc=self._enclosing_loc + ConfigSet._loc_sep + str(item_i))
 
 
     def one_file(self):
@@ -537,7 +548,7 @@ class OutputSpec:
                 return
 
             # write to multiple files, using top level location as index to file
-            if len(input_CS_loc) == 0:
+            if input_CS_loc is None or len(input_CS_loc) == 0:
                 raise ValueError("For OutputSpec with multiple files, store() requires input_CS_loc")
             file_ind = int(input_CS_loc.split(ConfigSet._loc_sep)[1])
             self._open_file(file_ind)

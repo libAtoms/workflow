@@ -12,6 +12,7 @@ import numpy as np
 
 from ase.atoms import Atoms
 
+from ..configset import ConfigSet
 from .remoteinfo import RemoteInfo
 
 
@@ -124,9 +125,13 @@ def items_inputs_generator(iterable, num_inputs_per_group, rng):
     generator that returns a sequence of items, each a tuple (item, item_i, item's _ConfigSet_loc, unique rng)
         (NOTE: _ConfigSet_loc is None unless item is ase.atoms.Atoms, rng is None unless rng is provided)
     """
+    def _get_loc(item):
+        loc = (item.info.get("_ConfigSet_loc") if isinstance(item, Atoms) else
+              (item._enclosing_loc if isinstance(item, ConfigSet) else None))
+        return loc
+
     return grouper(num_inputs_per_group,
-                   ((item, item_i,
-                     item.info.get("_ConfigSet_loc") if isinstance(item, Atoms) else None,
+                   ((item, item_i, _get_loc(item),
                      rng.spawn(1)[0] if rng is not None else None) for item_i, item in enumerate(iterable)))
 
 
