@@ -36,6 +36,14 @@ wfl.generate.minimahopping module
    :undoc-members:
    :show-inheritance:
 
+wfl.generate.neb module
+-----------------------
+
+.. automodule:: wfl.generate.neb
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 wfl.generate.normal\_modes module
 ---------------------------------
 
