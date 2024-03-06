@@ -108,7 +108,7 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
                 kwargs_command["command"] = f"{calculator_exec} -in PREFIX.pwi > PREFIX.pwo"
 
             # command or env var must be set
-            assert "command" in kargs_command or "ASE_ESPRESSO_CALCULATOR" in os.environ
+            assert "command" in kwargs_command or "ASE_ESPRESSO_CALCULATOR" in os.environ
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
