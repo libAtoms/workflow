@@ -84,7 +84,7 @@ class ConfigSet:
                 raise ValueError(f"Got file_root but file {items} is an absolute path")
             # single item, could be a simple filename or a glob. Former needs to be stored as
             # Path, latter as list(Path)
-            items_expanded = [Path(f) for f in glob.glob(str(file_root / items), recursive=True)]
+            items_expanded = [Path(f) for f in sorted(glob.glob(str(file_root / items), recursive=True))]
             if len(items_expanded) == 1 and file_root / items == items_expanded[0]:
                 self.items = file_root / items
             else:
@@ -95,7 +95,7 @@ class ConfigSet:
                 assert isinstance(file_path, (str, Path))
                 if file_root != Path("") and Path(file_path).is_absolute():
                     raise ValueError(f"Got file_root but file {file_path} is an absolute path")
-                self.items.extend([Path(f) for f in glob.glob(str(file_root / file_path), recursive=True)])
+                self.items.extend([Path(f) for f in sorted(glob.glob(str(file_root / file_path), recursive=True))])
         elif isinstance(items[0], ConfigSet):
             self.items = []
             for item in items:

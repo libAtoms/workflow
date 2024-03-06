@@ -130,7 +130,7 @@ def test_mult_files_mult_Atoms_glob_dir(tmp_path, ats):
     (tmp_path / "dir_0").mkdir()
     (tmp_path / "dir_1").mkdir()
     ase.io.write(tmp_path / "dir_0" / "ats.xyz", ats[0:5])
-    ase.io.write(tmp_path / "dir_1" /"ats.xyz", ats[5:10])
+    ase.io.write(tmp_path / "dir_1" / "ats.xyz", ats[5:10])
     locs = [f" / {i0} / {i1}" for i0 in range(2) for i1 in range(5)]
 
     # glob for dir name, but same filename
