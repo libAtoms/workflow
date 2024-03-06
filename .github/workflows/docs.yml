@@ -16,49 +16,51 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ 3.8 ]
+        python-version: [ "3.9" ]
       max-parallel: 5
     env:
-      coverage-on-version: 3.8
+      coverage-on-version: "3.9"
       use-mpi: True
+    defaults:
+      run:
+        shell: bash -l {0}
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+
+      - name: Set up python ${{ matrix.python-version }} via conda
+        uses: conda-incubator/setup-miniconda@v3
         with:
+          auto-update-conda: true
           python-version: ${{ matrix.python-version }}
 
-      - name: Add conda to system path
+      - name: Check python version
         run: |
-          # $CONDA is an environment variable pointing to the root of the miniconda directory
-          echo $CONDA/bin >> $GITHUB_PATH
+          which python3
+          python3 --version
 
-      # - name: Install Dependencies from Conda
-        # run: conda env update --file=devtools/conda-envs/environment.yml --name=base
+      - name: Install dependencies from pip
+        run: python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib phonopy phono3py rdkit flake8 pytest pytest-cov nbsphinx ipython requests
 
-      - name: Install pip from Conda
-        run: conda install pip
-
-      - name: Install phono3py from Conda forge
-        run: conda install -c conda-forge phono3py h5py
-
-      - name: Install dependencies from pip (some will already be taken care of by conda's phonop3py and its dependencies)
-        run: pip install wheel setuptools ase numpy scipy click matplotlib pandas pyyaml spglib phonopy phono3py rdkit-pypi flake8 pytest pytest-cov nbsphinx ipython
+      - name: Install latest ASE from gitlab
+        run: |
+          python3 -m pip install git+https://gitlab.com/ase/ase.git
+          echo -n "ASE VERSION "
+          python3 -c "import ase; print(ase.__file__, ase.__version__)"
 
       - name: Install Quippy from PyPI
-        run: pip install quippy-ase
+        run: python3 -m pip install quippy-ase
 
       - name: Install wfl (expyre and universalSOAP are dependencies)
-        run: pip install .
+        run: python3 -m pip install .
 
       - name: Install pandoc
         run: sudo apt-get install pandoc
 
       - name: Build documentation
         run: |
-          pip install sphinx sphinx-book-theme docutils==0.16 sphinx-click myst-parser
-          pip install --upgrade jinja2
+          python3 -m pip install sphinx sphinx-book-theme docutils==0.16 sphinx-click myst-parser
+          python3 -m pip install --upgrade jinja2
           cd docs
           make html
       - name: Deploy documentation

@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up python via conda
+      - name: Set up python ${{ matrix.python-version }} via conda
         uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
@@ -39,11 +39,6 @@ jobs:
 
       - name: Install dependencies from pip
         run: python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit flake8 pytest pytest-cov requests
-
-      - name: Check numpy
-        run: |
-          python3 -m pip list | grep numpy
-          python3 -c "import numpy; print(numpy.__file__, numpy.__version__)"
 
       - name: Install latest ASE from gitlab
         run: |
