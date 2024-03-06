@@ -1,6 +1,7 @@
 import sys
 import re
 
+import glob
 from pathlib import Path
 
 
@@ -81,14 +82,20 @@ class ConfigSet:
         elif isinstance(items, (str, Path)):
             if file_root != Path("") and Path(items).is_absolute():
                 raise ValueError(f"Got file_root but file {items} is an absolute path")
-            self.items = file_root / items
+            # single item, could be a simple filename or a glob. Former needs to be stored as
+            # Path, latter as list(Path)
+            items_expanded = [Path(f) for f in sorted(glob.glob(str(file_root / items), recursive=True))]
+            if len(items_expanded) == 1 and file_root / items == items_expanded[0]:
+                self.items = file_root / items
+            else:
+                self.items = items_expanded
         elif isinstance(items[0], (str, Path)):
             self.items = []
             for file_path in items:
                 assert isinstance(file_path, (str, Path))
                 if file_root != Path("") and Path(file_path).is_absolute():
                     raise ValueError(f"Got file_root but file {file_path} is an absolute path")
-                self.items.append(file_root / file_path)
+                self.items.extend([Path(f) for f in sorted(glob.glob(str(file_root / file_path), recursive=True))])
         elif isinstance(items[0], ConfigSet):
             self.items = []
             for item in items:

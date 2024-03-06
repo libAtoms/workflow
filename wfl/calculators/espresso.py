@@ -2,6 +2,7 @@
 Quantum Espresso interface
 """
 
+import os
 import shlex
 
 from copy import deepcopy
@@ -46,7 +47,7 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
     calculator_exec: str
         command for QE, without any prefix or redirection set.
         for example: "mpirun -n 4 /path/to/pw.x"
-        mutually exclusive with "command"
+        mutually exclusive with "command" with "profile"
 
     **kwargs: arguments for ase.calculators.espresso.Espresso
     """
@@ -61,19 +62,24 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
                  calculator_exec=None, **kwargs):
 
         kwargs_command = deepcopy(kwargs)
-        if calculator_exec is not None:
-            if "command" in kwargs:
-                raise ValueError("Cannot specify both calculator_exec and command")
-            if EspressoProfile is None:
-                # older syntax
-                kwargs_command["command"] = f"{calculator_exec} -in PREFIX.pwi > PREFIX.pwo"
-            else:
+
+        # check for various Espresso versions
+        # NOTE: should we be doing this much massaging of inputs, or should we make the user keep up
+        # with their ASE Espresso version?
+        if EspressoProfile is not None:
+            # new version, command and ASE_ESPRESSO_COMMAND deprecated
+            if "command" in kwargs_command:
+                raise ValueError("Espresso calculator defines EspressoProfile, but deprecated 'command' arg was passed")
+
+            if calculator_exec is not None:
+                # check for conflicts, wrong format
+                if "profile" in kwargs_command:
+                    raise ValueError("Cannot specify both calculator_exec and profile")
                 if " -in " in calculator_exec:
                     raise ValueError("calculator_exec should not include espresso command line arguments such as ' -in PREFIX.pwi'")
+
                 # newer syntax, but pass binary without a keyword (which changed from "argv" to "exc"
                 # to "binary" over time), assuming it's first argument
-                if "pseudo_dir" not in kwargs_command:
-                    raise ValueError(f"calculator_exec kwargs also requires pseudo_dir to create EspressoProfile")
                 argv = shlex.split(calculator_exec)
                 try:
                     kwargs_command["profile"] = EspressoProfile(argv=argv)
@@ -81,8 +87,28 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
                     binary, parallel_info = parse_genericfileio_profile_argv(argv)
                     # argument names keep changing (e.g. pseudo_path -> pseudo_dir), just pass first two as positional
                     # and hope order doesn't change
+                    if "pseudo_dir" not in kwargs_command:
+                        raise ValueError(f"calculator_exec also requires pseudo_dir to create EspressoProfile")
                     kwargs_command["profile"] = EspressoProfile(binary, kwargs_command.pop("pseudo_dir"),
                                                                 parallel_info=parallel_info)
+            elif "profile" not in kwargs_command:
+                raise ValueError("EspressoProfile is defined but neither calculator_exec nor profile was specified")
+
+            # better be defined by now
+            assert "profile" in kwargs_command
+        else:
+            # old (pre EspressoProfile) version
+            if "profile" in kwargs_command:
+                raise ValueError("EspressoProfile is not defined (old version) but profile was passed")
+
+            if calculator_exec is not None:
+                if "command" in kwargs_command:
+                    raise ValueError("Cannot specify both command and calc_exec")
+
+                kwargs_command["command"] = f"{calculator_exec} -in PREFIX.pwi > PREFIX.pwo"
+
+            # command or env var must be set
+            assert "command" in kwargs_command or "ASE_ESPRESSO_CALCULATOR" in os.environ
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,

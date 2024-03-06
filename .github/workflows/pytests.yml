@@ -14,36 +14,40 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ 3.8 ]
+        python-version: [ "3.9" ]
       max-parallel: 5
     env:
-      coverage-on-version: 3.8
+      coverage-on-version: "3.9"
       use-mpi: True
+    defaults:
+      run:
+        shell: bash -l {0}
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+
+      - name: Set up python via conda
+        uses: conda-incubator/setup-miniconda@v3
         with:
+          auto-update-conda: true
           python-version: ${{ matrix.python-version }}
 
-      - name: Add conda to system path
+      - name: Check python version
         run: |
-          # $CONDA is an environment variable pointing to the root of the miniconda directory
-          echo $CONDA/bin >> $GITHUB_PATH
+          which python3
+          python3 --version
 
-      # - name: Install Dependencies from Conda
-        # run: conda env update --file=devtools/conda-envs/environment.yml --name=base
+      - name: Install dependencies from pip
+        run: python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit flake8 pytest pytest-cov requests
 
-      - name: Install pip from Conda
-        run: conda install pip
-
-      - name: Install dependencies from pip (some will already be taken care of by conda's phonop3py and its dependencies)
-        run: pip install wheel setuptools numpy scipy click matplotlib pandas pyyaml spglib rdkit-pypi flake8 pytest pytest-cov
+      - name: Check numpy
+        run: |
+          python3 -m pip list | grep numpy
+          python3 -c "import numpy; print(numpy.__file__, numpy.__version__)"
 
       - name: Install latest ASE from gitlab
         run: |
-          pip install git+https://gitlab.com/ase/ase.git
+          python3 -m pip install git+https://gitlab.com/ase/ase.git
           echo -n "ASE VERSION "
           python3 -c "import ase; print(ase.__file__, ase.__version__)"
 
@@ -87,12 +91,20 @@ jobs:
             cd ..
 
       - name: Install Quippy from PyPI
-        run: pip install quippy-ase
+        run: python3 -m pip install quippy-ase
+
+      - name: Install xTB (before things that need pandas like MACE and wfl, since it will break pandas-numpy compatibility by downgrading numpy)
+        run: |
+          conda install -c conda-forge xtb-python
+          python3 -m pip install typing-extensions
+          # install pandas now to encourage compatible numpy version after conda regressed it
+          python3 -m pip install pandas
 
       - name: MACE
         run: |
           echo "search for torch version"
-          torch_version=$( pip3 install torch== 2>&1 | fgrep 'from versions' | sed -e 's/.* //' -e 's/)//' )
+          set +o pipefail
+          torch_version=$( python3 -m pip install torch== 2>&1 | fgrep 'from versions' | sed -e 's/.* //' -e 's/)//' )
           echo "found torch version $torch_version, installing cpu-only variant"
           python3 -m pip install torch==${torch_version}+cpu -f https://download.pytorch.org/whl/torch_stable.html
           echo "installing mace"
@@ -101,7 +113,7 @@ jobs:
 
       - name: Julia and ace fit
         run: |
-          pip install pip install threadpoolctl
+          python3 -m pip install pip install threadpoolctl
           wget https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-1.8.1-linux-x86_64.tar.gz
           tar xzf julia-1.8.1-linux-x86_64.tar.gz
           # note that this hardwires a particular compatible ACE1pack version
@@ -109,7 +121,7 @@ jobs:
           ${PWD}/julia-1.8.1/bin/julia ace1pack_install.jl
 
       - name: Install wfl (expyre and universalSOAP are dependencies)
-        run: pip install .
+        run: python3 -m pip install .
 
       - name: Install Quantum Espresso
         run: |
@@ -138,17 +150,12 @@ jobs:
         run: |
           echo $HOME/bin >> $GITHUB_PATH
 
-      - name: Install xTB
-        run: |
-          conda install -c conda-forge xtb-python
-          pip install typing-extensions
-
       - name: Install MPI dependencies
         if: env.use-mpi
         run: |
           # this can eaily be turned off if needed
           conda install -c conda-forge mpi4py openmpi pytest-mpi
-          pip install mpipool
+          python3 -m pip install mpipool
 
       - name: Install and configure slurm and ExPyRe
         run: |
@@ -203,6 +210,10 @@ jobs:
       - name: Test with pytest - coverage
         if: env.coverage-on-version == matrix.python-version
         run: |
+          echo "BOB pre actual pytest"
+          which python3
+          python3 -m pip list | grep numpy
+          python3 -c "import numpy; print(numpy.__file__, numpy.__version__)"
           rm -rf $HOME/pytest_cov
           mkdir $HOME/pytest_cov
           #

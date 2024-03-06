@@ -8,8 +8,28 @@ The main functions of Workflow is to efficiently parallelise operations over a s
 
 For examples and more information see [documentation](https://libatoms.github.io/workflow/)
 
+NOTE: because of the very large time intervals between official ASE releases, `wfl` is typically
+set up for (and tested against) the latest ASE gitlab repo `master` branch.  Recent changes
+that require this support include variable cell minimization using `FrechetCellFilter` and
+`Espresso` calculator configuration. See documentation link above for installation instructions.
+
 
 # Recent changes
+
+v0.2.3:
+
+- Add wfl.generate.neb, with required improved support for passing ConfigSet.groups() to 
+  autoaparallelized functions
+
+- Improved handling of old and new style ase.calculators.espresso.Espresso initialization
+
+v0.2.2:
+
+- Improve checking of DFT calculator convergence
+
+v0.2.1:
+
+- Fix group iterator
 
 v0.2.0:
 

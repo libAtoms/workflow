@@ -107,6 +107,58 @@ def test_mult_files_mult_Atoms(tmp_path, ats):
     locs = [f" / {i0} / {i1}" for i0 in range(2) for i1 in range(5)]
     check_ConfigSet(cs, locs, gather_numbers([ats[0:5], ats[5:10]]))
 
+def test_mult_files_mult_Atoms_glob_file(tmp_path, ats):
+    print("CHECK mult file with mult Atoms using a glob for the filename")
+    ase.io.write(tmp_path / "ats_0.xyz", ats[0:5])
+    ase.io.write(tmp_path / "ats_1.xyz", ats[5:10])
+    locs = [f" / {i0} / {i1}" for i0 in range(2) for i1 in range(5)]
+
+    # file_root + glob in filename
+    cs = ConfigSet("ats_*.xyz", file_root=tmp_path)
+    check_ConfigSet(cs, locs, gather_numbers([ats[0:5], ats[5:10]]))
+
+    # glob in full pathname
+    cs = ConfigSet(tmp_path / "ats_*.xyz")
+    check_ConfigSet(cs, locs, gather_numbers([ats[0:5], ats[5:10]]))
+
+    # glob in absolute pathname
+    cs = ConfigSet(tmp_path.absolute() / "ats_*.xyz")
+    check_ConfigSet(cs, locs, gather_numbers([ats[0:5], ats[5:10]]))
+
+def test_mult_files_mult_Atoms_glob_dir(tmp_path, ats):
+    print("CHECK mult file with mult Atoms using a glob for directory that contains the files")
+    (tmp_path / "dir_0").mkdir()
+    (tmp_path / "dir_1").mkdir()
+    ase.io.write(tmp_path / "dir_0" / "ats.xyz", ats[0:5])
+    ase.io.write(tmp_path / "dir_1" / "ats.xyz", ats[5:10])
+    locs = [f" / {i0} / {i1}" for i0 in range(2) for i1 in range(5)]
+
+    # glob for dir name, but same filename
+    cs = ConfigSet(tmp_path / "dir_*" / "ats.xyz")
+    check_ConfigSet(cs, locs, gather_numbers([ats[0:5], ats[5:10]]))
+
+    # workdir with glob for dir name, but same filename
+    cs = ConfigSet("dir_*/ats.xyz", file_root=tmp_path)
+    check_ConfigSet(cs, locs, gather_numbers([ats[0:5], ats[5:10]]))
+
+def test_mult_files_mult_Atoms_mult_glob_dir(tmp_path, ats):
+    print("CHECK mult file with mult Atoms using multiple globs glob for directory that contains the files")
+    (tmp_path / "dir_0").mkdir()
+    (tmp_path / "dir_1").mkdir()
+    (tmp_path / "other_dir_0").mkdir()
+    ase.io.write(tmp_path / "dir_0" / "ats.xyz", ats[0:3])
+    ase.io.write(tmp_path / "dir_1" / "ats.xyz", ats[3:6])
+    ase.io.write(tmp_path / "other_dir_0" / "ats.xyz", ats[6:10])
+    locs = [f" / {i0} / {i1}" for i0, i1 in [(0, 0), (0, 1), (0,2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2), (2, 3)]]
+
+    # glob for dir name, but same filename
+    cs = ConfigSet([tmp_path / "dir_[01]" / "ats.xyz", tmp_path / "other_dir_*" / "ats.xyz"])
+    check_ConfigSet(cs, locs, gather_numbers([ats[0:3], ats[3:6], ats[6:10]]))
+
+    # workdir with glob for dir name, but same filename
+    cs = ConfigSet(["dir_[0-1]/ats.xyz", "other_dir_*/ats.xyz"], file_root=tmp_path)
+    check_ConfigSet(cs, locs, gather_numbers([ats[0:3], ats[3:6], ats[6:10]]))
+
 def test_single_file_tree_Atoms(tmp_path, ats):
     for i in range(0, 3):
         ats[i].info["_ConfigSet_loc"] = f" / 0 / {i}"
