@@ -16,6 +16,13 @@ that require this support include variable cell minimization using `FrechetCellF
 
 # Recent changes
 
+v0.2.3:
+
+- Add wfl.generate.neb, with required improved support for passing ConfigSet.groups() to 
+  autoaparallelized functions
+
+- Improved handling of old and new style ase.calculators.espresso.Espresso initialization
+
 v0.2.2:
 
 - Improve checking of DFT calculator convergence
