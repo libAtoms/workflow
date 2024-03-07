@@ -4,7 +4,8 @@
 
 name: Build docs
 
-# on all push actions AND can be triggered manually as well
+# on push to main, manual trigger, and pull request. 
+# See below for depdendent deploy job that only runs if event is push
 on:
   push:
     branches:
@@ -103,6 +104,17 @@ jobs:
           python3 -m pip install --upgrade jinja2
           cd docs
           make html
+
+# event type from https://stackoverflow.com/questions/61886993/in-github-actions-how-to-get-the-type-of-a-trigger-event-as-a-variable
+# conditional control ("if:") from https://docs.github.com/en/actions/using-jobs/using-conditions-to-control-job-execution
+# dependency from https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow
+
+  deploy-docs:
+    if: github.event.action == 'push'
+    needs: build-docs
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Deploy documentation
         uses: peaceiris/actions-gh-pages@v3
         with:
