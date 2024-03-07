@@ -198,7 +198,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="workflows.rss.html">GAP-RSS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line.automatic_docs.html">Command line interface</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Modules</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="wfl.html">wfl package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html">wfl.autoparallelize package</a></li>
@@ -396,8 +395,21 @@ document.write(`
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h2>
 <p>Quick start that installs all of the mandatory dependencies:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/libAtoms/workflow
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/libAtoms/workflow
 </pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><cite>wfl</cite> requires ASE, so <cite>ase</cite> is listed as a <cite>pip</cite> dependency,
+and if not already installed, <cite>pip install</cite> will install the latest
+<cite>pypi</cite> release.  However, because of the large delay in producing new
+releases, the latest <cite>pypi</cite> version is often quite old, and <cite>wfl</cite>
+has some functionality that requires a newer version.  To ensure
+a sufficiently up-to-date version is available, before installing
+<cite>wfl</cite> install the latest <cite>ase</cite> from gitlab, with a command such as</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://gitlab.com/ase/ase
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="repository">
@@ -458,14 +470,6 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="workflows.rss.html#rss-step">RSS step</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workflows.rss.html#md-step">MD step</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workflows.rss.html#job-script-and-runtime-settings">Job script and runtime settings</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="command_line.automatic_docs.html">Command line interface</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-descriptor">descriptor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-error">error</a></li>
-<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-eval">eval</a></li>
-<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-generate">generate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="command_line.automatic_docs.html#wfl-select">select</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a><ul>

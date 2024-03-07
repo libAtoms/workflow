@@ -197,7 +197,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="workflows.rss.html">GAP-RSS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line.automatic_docs.html">Command line interface</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">Modules</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="wfl.html">wfl package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html">wfl.autoparallelize package</a></li>
@@ -390,7 +389,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.minimahopping.minimahopping"><code class="docutils literal notranslate"><span class="pre">minimahopping()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl-generate-neb-module">wfl.generate.neb module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.neb">wfl.generate.neb module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.neb.NEB"><code class="docutils literal notranslate"><span class="pre">NEB()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.neb.subselect_from_traj"><code class="docutils literal notranslate"><span class="pre">subselect_from_traj()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.normal_modes">wfl.generate.normal_modes module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.normal_modes.NormalModes"><code class="docutils literal notranslate"><span class="pre">NormalModes</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.normal_modes.NormalModes.derive_normal_mode_info"><code class="docutils literal notranslate"><span class="pre">NormalModes.derive_normal_mode_info()</span></code></a></li>
@@ -409,7 +412,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.normal_modes.sample_normal_modes"><code class="docutils literal notranslate"><span class="pre">sample_normal_modes()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl-generate-optimize-module">wfl.generate.optimize module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.optimize">wfl.generate.optimize module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.optimize.optimize"><code class="docutils literal notranslate"><span class="pre">optimize()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.optimize.subselect_from_traj"><code class="docutils literal notranslate"><span class="pre">subselect_from_traj()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.phonopy">wfl.generate.phonopy module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.phonopy.phonopy"><code class="docutils literal notranslate"><span class="pre">phonopy()</span></code></a></li>
 </ul>
@@ -657,8 +664,60 @@ wfl.autoparallelize.autoparallelize() docs)</p></li>
 </dd></dl>
 
 </div>
-<div class="section" id="wfl-generate-neb-module">
-<h2>wfl.generate.neb module<a class="headerlink" href="#wfl-generate-neb-module" title="Permalink to this heading">#</a></h2>
+<div class="section" id="module-wfl.generate.neb">
+<span id="wfl-generate-neb-module"></span><h2>wfl.generate.neb module<a class="headerlink" href="#module-wfl.generate.neb" title="Permalink to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.neb.NEB">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.neb.</span></span><span class="sig-name descname"><span class="pre">NEB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.neb.NEB" title="Permalink to this definition">#</a></dt>
+<dd><p>runs a structure optimization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or initializer and arguments to call to create calculator</p></li>
+<li><p><strong>fmax</strong> (<em>float</em><em>, </em><em>default 5e-2</em>) – force convergence tolerance</p></li>
+<li><p><strong>steps</strong> (<em>int</em><em>, </em><em>default 1000</em>) – max number of steps</p></li>
+<li><p><strong>traj_step_interval</strong> (<em>int</em><em>, </em><em>default 1</em>) – if present, interval between trajectory snapshots</p></li>
+<li><p><strong>traj_subselect</strong> (<em>&quot;last_converged&quot;</em><em>, </em><em>default None</em>) – rule for sub-selecting configs from the full trajectory.
+Currently implemented: “last_converged”, which takes the last config, if converged.</p></li>
+<li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip optimizations that raise an exception</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output
+optimisation logs are not printed unless this is True</p></li>
+<li><p><strong>update_config_type</strong> (<em>bool</em><em>, </em><em>default True</em>) – append at.info[‘optimize_config_type’] at.info[‘config_type’]</p></li>
+<li><p><strong>neb_kwargs</strong> – keyword arguments for DyNEB and FIRE</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.neb.subselect_from_traj">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.neb.</span></span><span class="sig-name descname"><span class="pre">subselect_from_traj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">traj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subselect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.neb.subselect_from_traj" title="Permalink to this definition">#</a></dt>
+<dd><p>Sub-selects configurations from trajectory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>subselect</strong> (<em>int</em><em> or </em><em>string</em><em>, </em><em>default None</em>) – <ul class="simple">
+<li><p>None: full trajectory is returned</p></li>
+<li><p>int: (not implemented) how many samples to take from the trajectory.</p></li>
+<li><p>str: specific method</p>
+<ul>
+<li><p>”last_converged”: returns [last_config] if converged, or None if not.</p></li>
+</ul>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-wfl.generate.normal_modes">
 <span id="wfl-generate-normal-modes-module"></span><h2>wfl.generate.normal_modes module<a class="headerlink" href="#module-wfl.generate.normal_modes" title="Permalink to this heading">#</a></h2>
@@ -834,8 +893,68 @@ stored in atoms.info/arrays</p></li>
 </dd></dl>
 
 </div>
-<div class="section" id="wfl-generate-optimize-module">
-<h2>wfl.generate.optimize module<a class="headerlink" href="#wfl-generate-optimize-module" title="Permalink to this heading">#</a></h2>
+<div class="section" id="module-wfl.generate.optimize">
+<span id="wfl-generate-optimize-module"></span><h2>wfl.generate.optimize module<a class="headerlink" href="#module-wfl.generate.optimize" title="Permalink to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.optimize.optimize">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.optimize.</span></span><span class="sig-name descname"><span class="pre">optimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.optimize.optimize" title="Permalink to this definition">#</a></dt>
+<dd><p>runs a structure optimization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input quantities of type Atoms</p></li>
+<li><p><strong>outputs</strong> (<a class="reference internal" href="wfl.html#wfl.configset.OutputSpec" title="wfl.configset.OutputSpec"><em>OutputSpec</em></a><em> or </em><em>None</em>) – where to write output atomic configs, or None for no output (i.e. only side-effects)</p></li>
+<li><p><strong>calculator</strong> (<em>Calculator /</em><em> (</em><em>initializer</em><em>, </em><em>args</em><em>, </em><em>kwargs</em><em>)</em>) – ASE calculator or routine to call to create calculator</p></li>
+<li><p><strong>fmax</strong> (<em>float</em><em>, </em><em>default 1e-3</em>) – force convergence tolerance</p></li>
+<li><p><strong>smax</strong> (<em>float</em><em>, </em><em>default None</em>) – stress convergence tolerance, default from fmax</p></li>
+<li><p><strong>steps</strong> (<em>int</em><em>, </em><em>default 1000</em>) – max number of steps</p></li>
+<li><p><strong>pressure</strong> (<em>None / float / tuple</em>) – applied pressure distribution (GPa), as parsed by wfl.utils.pressure.sample_pressure()</p></li>
+<li><p><strong>stress_mask</strong> (<em>None / list</em><em>(</em><em>bool</em><em>)</em>) – mask for stress components to pass to variable-cell filter</p></li>
+<li><p><strong>keep_symmetry</strong> (<em>bool</em><em>, </em><em>default True</em>) – constrain symmetry to maintain initial</p></li>
+<li><p><strong>traj_step_interval</strong> (<em>int</em><em>, </em><em>default 1</em>) – if present, interval between trajectory snapshots</p></li>
+<li><p><strong>traj_subselect</strong> (<em>&quot;last_converged&quot;</em><em>, </em><em>default None</em>) – rule for sub-selecting configs from the full trajectory.
+Currently implemented: “last_converged”, which takes the last config, if converged.</p></li>
+<li><p><strong>skip_failures</strong> (<em>bool</em><em>, </em><em>default True</em>) – just skip optimizations that raise an exception</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default False</em>) – verbose output
+optimisation logs are not printed unless this is True</p></li>
+<li><p><strong>update_config_type</strong> (<em>bool</em><em>, </em><em>default True</em>) – append at.info[‘optimize_config_type’] at.info[‘config_type’]</p></li>
+<li><p><strong>opt_kwargs</strong> – keyword arguments for PreconLBFGS</p></li>
+<li><p><strong>rng</strong> (<em>numpy.random.Generator</em><em>, </em><em>default None</em>) – random number generator to use (needed for pressure sampling, initial temperature, or Langevin dynamics)</p></li>
+<li><p><strong>_autopara_per_item_info</strong> (<em>dict</em>) – INTERNALLY used by autoparallelization framework to make runs reproducible (see
+wfl.autoparallelize.autoparallelize() docs)</p></li>
+<li><p><strong>autopara_info</strong> (<em>AutoParaInfo / dict</em><em>, </em><em>optional</em>) – information for automatic parallelization</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>co</strong> – output configs</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="wfl.html#wfl.configset.ConfigSet" title="wfl.configset.ConfigSet">ConfigSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wfl.generate.optimize.subselect_from_traj">
+<span class="sig-prename descclassname"><span class="pre">wfl.generate.optimize.</span></span><span class="sig-name descname"><span class="pre">subselect_from_traj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">traj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subselect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.generate.optimize.subselect_from_traj" title="Permalink to this definition">#</a></dt>
+<dd><p>Sub-selects configurations from trajectory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>subselect</strong> (<em>int</em><em> or </em><em>string</em><em>, </em><em>default None</em>) – <ul class="simple">
+<li><p>None: full trajectory is returned</p></li>
+<li><p>int: (not implemented) how many samples to take from the trajectory.</p></li>
+<li><p>str: specific method</p>
+<ul>
+<li><p>”last”: returns [last_config]</p></li>
+<li><p>”last_converged”: returns [last_config] if converged, or None if not.</p></li>
+</ul>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-wfl.generate.phonopy">
 <span id="wfl-generate-phonopy-module"></span><h2>wfl.generate.phonopy module<a class="headerlink" href="#module-wfl.generate.phonopy" title="Permalink to this heading">#</a></h2>
@@ -1129,7 +1248,11 @@ atoms within this distance of initial vacancy.</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.minimahopping.minimahopping"><code class="docutils literal notranslate"><span class="pre">minimahopping()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl-generate-neb-module">wfl.generate.neb module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.neb">wfl.generate.neb module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.neb.NEB"><code class="docutils literal notranslate"><span class="pre">NEB()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.neb.subselect_from_traj"><code class="docutils literal notranslate"><span class="pre">subselect_from_traj()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.normal_modes">wfl.generate.normal_modes module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.normal_modes.NormalModes"><code class="docutils literal notranslate"><span class="pre">NormalModes</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.normal_modes.NormalModes.derive_normal_mode_info"><code class="docutils literal notranslate"><span class="pre">NormalModes.derive_normal_mode_info()</span></code></a></li>
@@ -1148,7 +1271,11 @@ atoms within this distance of initial vacancy.</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.normal_modes.sample_normal_modes"><code class="docutils literal notranslate"><span class="pre">sample_normal_modes()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl-generate-optimize-module">wfl.generate.optimize module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.optimize">wfl.generate.optimize module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.optimize.optimize"><code class="docutils literal notranslate"><span class="pre">optimize()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.optimize.subselect_from_traj"><code class="docutils literal notranslate"><span class="pre">subselect_from_traj()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.generate.phonopy">wfl.generate.phonopy module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.generate.phonopy.phonopy"><code class="docutils literal notranslate"><span class="pre">phonopy()</span></code></a></li>
 </ul>

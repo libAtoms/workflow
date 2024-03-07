@@ -197,7 +197,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="workflows.rss.html">GAP-RSS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line.automatic_docs.html">Command line interface</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">Modules</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="wfl.html">wfl package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html">wfl.autoparallelize package</a></li>
@@ -631,8 +630,9 @@ or FileIOCalculator.calculate() for the v3.22.1</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="wfl.calculators.castep.Castep.implemented_properties">
-<span class="sig-name descname"><span class="pre">implemented_properties</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['energy',</span> <span class="pre">'forces',</span> <span class="pre">'stress']</span></em><a class="headerlink" href="#wfl.calculators.castep.Castep.implemented_properties" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">implemented_properties</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['energy',</span> <span class="pre">'forces',</span> <span class="pre">'stress']</span></em><a class="headerlink" href="#wfl.calculators.castep.Castep.implemented_properties" title="Permalink to this definition">#</a></dt>
+<dd><p>Properties calculator can handle (energy, forces, …)</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wfl.calculators.castep.Castep.setup_calc_params">
@@ -707,7 +707,7 @@ index of the model in the committee of models</p></li>
 “keep_files”) if needed.  For example, directory on a local disk with fast file I/O.</p></li>
 <li><p><strong>calculator_exec</strong> (<em>str</em>) – command for QE, without any prefix or redirection set.
 for example: “mpirun -n 4 /path/to/pw.x”
-mutually exclusive with “command”</p></li>
+mutually exclusive with “command” with “profile”</p></li>
 <li><p><strong>**kwargs</strong> (<em>arguments for ase.calculators.espresso.Espresso</em>) – </p></li>
 </ul>
 </dd>

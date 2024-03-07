@@ -197,7 +197,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="workflows.rss.html">GAP-RSS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="command_line.automatic_docs.html">Command line interface</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">Modules</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="wfl.html">wfl package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="wfl.autoparallelize.html">wfl.autoparallelize package</a></li>
@@ -382,15 +381,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.ace.run_ace_fit"><code class="docutils literal notranslate"><span class="pre">run_ace_fit()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.fit.error">wfl.fit.error module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.error.calc"><code class="docutils literal notranslate"><span class="pre">calc()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.error.errors_dumps"><code class="docutils literal notranslate"><span class="pre">errors_dumps()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.error.errors_to_dataframe"><code class="docutils literal notranslate"><span class="pre">errors_to_dataframe()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.error.natural_sort"><code class="docutils literal notranslate"><span class="pre">natural_sort()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.error.select_units"><code class="docutils literal notranslate"><span class="pre">select_units()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.error.value_error_scatter"><code class="docutils literal notranslate"><span class="pre">value_error_scatter()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl-fit-error-module">wfl.fit.error module</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.fit.mace">wfl.fit.mace module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.mace.fit"><code class="docutils literal notranslate"><span class="pre">fit()</span></code></a></li>
 </ul>
@@ -616,131 +607,8 @@ remotely running job.</p></li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-wfl.fit.error">
-<span id="wfl-fit-error-module"></span><h2>wfl.fit.error module<a class="headerlink" href="#module-wfl.fit.error" title="Permalink to this heading">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.error.calc">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_property_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'config_type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_property</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.calc" title="Permalink to this definition">#</a></dt>
-<dd><p>calculate error for calculation results relative to stored reference values</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<em>iterable</em><em>(</em><em>Atoms</em><em>)</em>) – input configurations with reference and calculated values in Atoms.info/arrays</p></li>
-<li><p><strong>calc_property_prefix</strong> (<em>str</em>) – prefix to info/array keys for calculated properties</p></li>
-<li><p><strong>ref_property_prefix</strong> (<em>str</em>) – prefix to info/array keys for reference properties</p></li>
-<li><p><strong>config_properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>&quot;energy/atom&quot;</em><em>, </em><em>&quot;virial/atom/comp&quot;</em><em>]</em>) – list of <code class="docutils literal notranslate"><span class="pre">Atoms.info</span></code> calculated properties (to be prefixed by <code class="docutils literal notranslate"><span class="pre">ref_property_prefix</span></code>
-or <code class="docutils literal notranslate"><span class="pre">calc_property_prefix</span></code>) to compute error for.  <code class="docutils literal notranslate"><span class="pre">virial</span></code> will be reconstructed from <code class="docutils literal notranslate"><span class="pre">stress</span></code>.
-Properties can end with <code class="docutils literal notranslate"><span class="pre">/atom</span></code> or <code class="docutils literal notranslate"><span class="pre">/comp</span></code> for different components being counted separately.
-Default only used if neither <code class="docutils literal notranslate"><span class="pre">config_properties</span></code> nor <code class="docutils literal notranslate"><span class="pre">atom_properties</span></code> is present.</p></li>
-<li><p><strong>atom_properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default</em><em> [</em><em>&quot;forces&quot;</em><em>]</em>) – list of <cite>Atoms.arrays</cite> calculated properties (to be prefixed by <code class="docutils literal notranslate"><span class="pre">ref_property_prefix</span></code>
-or <code class="docutils literal notranslate"><span class="pre">calc_property_prefix</span></code>) to compute error For.  Properties can end with <code class="docutils literal notranslate"><span class="pre">/comp</span></code>
-for different components being computed separately, and <code class="docutils literal notranslate"><span class="pre">/Z</span></code> for different atomic numbers
-to be assigned to different categories.  Default only used if neither <code class="docutils literal notranslate"><span class="pre">config_properties</span></code>
-nor <code class="docutils literal notranslate"><span class="pre">atom_properties</span></code> is present.</p></li>
-<li><p><strong>category_keys</strong> (<em>str / list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default &quot;config_type&quot;</em>) – results will be averaged by category, defined by a string containing the values of these
-keys in Atoms.info, in addition to overall average _ALL_ category.</p></li>
-<li><p><strong>weight_property</strong> (<em>str</em><em>, </em><em>optional</em>) – if present, Atoms.info key for weights to apply to RMSE calculation</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>errors</strong> (<em>dict of RMSE and MAE for each category and property</em>)</p></li>
-<li><p><strong>diffs</strong> (<em>dict with list of differences for each category and property</em>)</p></li>
-<li><p><strong>parity</strong> (<em>dict with “ref” and “calc” keys, each containing list of property values for</em>) – each category and property, for parity plots</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.error.errors_dumps">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">errors_dumps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RMSE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.errors_dumps" title="Permalink to this definition">#</a></dt>
-<dd><p>converts errors dictionary to dataframe and prints nicely.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>errors</strong> (<em>dict</em>) – Dictionary returned by wfl.fit.error.calculate()</p></li>
-<li><p><strong>error_type</strong> (<em>str in</em><em> [</em><em>&quot;RMSE</em><em>, </em><em>&quot;MAE&quot;</em><em>]</em><em>, </em><em>default &quot;RMSE&quot;</em>) – root-mean-square or maximum-absolute error</p></li>
-<li><p><strong>precision</strong> (<em>int</em><em>, </em><em>default 2</em>) – Float precision when printing</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.error.errors_to_dataframe">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">errors_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RMSE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.errors_to_dataframe" title="Permalink to this definition">#</a></dt>
-<dd><p>converts errors dictionary to dataframe with properties as columns
-and categories as rows</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>errors</strong> (<em>dict</em>) – Dictionary returned by wfl.fit.error.calculate()</p></li>
-<li><p><strong>error_type</strong> (<em>str in</em><em> [</em><em>&quot;RMSE</em><em>, </em><em>&quot;MAE&quot;</em><em>]</em><em>, </em><em>default &quot;RMSE&quot;</em>) – root-mean-square or maximum-absolute error</p></li>
-<li><p><strong>units_dict</strong> (<em>dict</em><em>, </em><em>None</em>) – dictionary with units for non-default properties. Example:
-{“energy”: {“parity”: (“eV”, 1.0), “error”: (“meV”, 1.0e3)}},
-Where each tuple containes units lable and conversion factor from ASE-default units.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.error.natural_sort">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">natural_sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.natural_sort" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.error.select_units">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">select_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plt_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.select_units" title="Permalink to this definition">#</a></dt>
-<dd><p>select unit labels and conversion factors from ASE default for each property</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>prop</strong> (<em>str</em>) – name of property. By default upported “energy”, “atomization_energy”, “forces” and “virial”,
-in combination with “/atom”, “/comp”, “/Z” as appropriate.</p></li>
-<li><p><strong>plt_type</strong> (<em>str in</em><em> [</em><em>&quot;error&quot;</em><em>, </em><em>&quot;parity&quot;</em><em>]</em>) – type of plot</p></li>
-<li><p><strong>units_dict</strong> (<em>dict</em><em>, </em><em>default None</em>) – dictionary with units for non-default properties. Example:
-{“energy”: {“parity”: (“eV”, 1.0), “error”: (“meV”, 1.0e3)}},
-Where each tuple containes units lable and conversion factor from ASE-default units.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>property_label</strong> (<em>str</em>)</p></li>
-<li><p><strong>conversion_factor</strong> (<em>float to multiply raw quantity by</em>)</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wfl.fit.error.value_error_scatter">
-<span class="sig-prename descclassname"><span class="pre">wfl.fit.error.</span></span><span class="sig-name descname"><span class="pre">value_error_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_diffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_parity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'reference</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_property_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calculated</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RMSE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_parity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wfl.fit.error.value_error_scatter" title="Permalink to this definition">#</a></dt>
-<dd><p>generate parity plot (calculated values vs. reference values) and/or scatterplot of
-errors vs. values</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>all_errors</strong> (<em>dict</em>) – dict of errors returned by error.calc (first returned item)</p></li>
-<li><p><strong>all_diffs</strong> (<em>dict</em>) – dict of property differences returned by error.calc (second returned item)</p></li>
-<li><p><strong>all_parity</strong> (<em>dict</em>) – dict of property values for parity returned by error.calc (third returned item)</p></li>
-<li><p><strong>output</strong> (<em>str</em>) – output filename</p></li>
-<li><p><strong>properties</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>default None</em>) – properties to plot, if None plot all</p></li>
-<li><p><strong>ref_property_prefix</strong> (<em>str</em><em>, </em><em>default &quot;reference &quot;</em>) – prefix for reference property labels</p></li>
-<li><p><strong>calc_property_prefix</strong> (<em>str</em><em>, </em><em>default &quot;calculated &quot;</em>) – prefix for reference property labels</p></li>
-<li><p><strong>error_type</strong> (<em>str in</em><em> [</em><em>&quot;RMSE</em><em>, </em><em>&quot;MAE&quot;</em><em>]</em><em>, </em><em>default &quot;RMSE&quot;</em>) – root-mean-square or maximum-absolute error</p></li>
-<li><p><strong>cmap</strong> (<em>str</em><em>, </em><em>default None</em>) – colormap name to use. If None use default based on number of categories.</p></li>
-<li><p><strong>units_dict</strong> (<em>dict</em><em>, </em><em>default None</em>) – dictionary with units for non-default properties. Example:
-{“energy”: {“parity”: (“eV”, 1.0), “error”: (“meV”, 1.0e3)}},
-Where each tuple containes units lable and conversion factor from ASE-default units.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="wfl-fit-error-module">
+<h2>wfl.fit.error module<a class="headerlink" href="#wfl-fit-error-module" title="Permalink to this heading">#</a></h2>
 </div>
 <div class="section" id="module-wfl.fit.mace">
 <span id="wfl-fit-mace-module"></span><h2>wfl.fit.mace module<a class="headerlink" href="#module-wfl.fit.mace" title="Permalink to this heading">#</a></h2>
@@ -890,15 +758,7 @@ attached calculator (e.g. SinglePointCalculator)</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.ace.run_ace_fit"><code class="docutils literal notranslate"><span class="pre">run_ace_fit()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.fit.error">wfl.fit.error module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.error.calc"><code class="docutils literal notranslate"><span class="pre">calc()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.error.errors_dumps"><code class="docutils literal notranslate"><span class="pre">errors_dumps()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.error.errors_to_dataframe"><code class="docutils literal notranslate"><span class="pre">errors_to_dataframe()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.error.natural_sort"><code class="docutils literal notranslate"><span class="pre">natural_sort()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.error.select_units"><code class="docutils literal notranslate"><span class="pre">select_units()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.error.value_error_scatter"><code class="docutils literal notranslate"><span class="pre">value_error_scatter()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl-fit-error-module">wfl.fit.error module</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-wfl.fit.mace">wfl.fit.mace module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wfl.fit.mace.fit"><code class="docutils literal notranslate"><span class="pre">fit()</span></code></a></li>
 </ul>
