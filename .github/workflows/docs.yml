@@ -4,12 +4,14 @@
 
 name: Build docs
 
-# on all push actions AND can be triggered manually as well
+# on push to main, manual trigger, and pull request. 
+# See below for depdendent deploy job that only runs if event is push
 on:
   push:
     branches:
       - main
   workflow_dispatch:
+  pull_request:
 
 jobs:
   build-docs:
@@ -40,13 +42,52 @@ jobs:
           python3 --version
 
       - name: Install dependencies from pip
-        run: python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib phonopy phono3py rdkit flake8 pytest pytest-cov nbsphinx ipython requests
+        run: python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit flake8 pytest pytest-cov requests nbsphinx ipython 
 
       - name: Install latest ASE from gitlab
         run: |
           python3 -m pip install git+https://gitlab.com/ase/ase.git
           echo -n "ASE VERSION "
           python3 -c "import ase; print(ase.__file__, ase.__version__)"
+
+      - name: Install intel-oneapi-mkl for phono3py
+        run: |
+          # based on
+          #   https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl-download.html?operatingsystem=linux&distributions=aptpackagemanager
+          # download the key to system keyring
+          wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
+          # add signed entry to apt sources and configure the APT client to use Intel repository:
+          echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+          sudo apt update
+          sudo apt install intel-oneapi-mkl
+          sudo apt install intel-oneapi-mkl-devel
+
+      - name: Install phono3py from source
+        run: |
+            # find mklvars
+            for pkg in $( apt list --installed | fgrep "installed" | fgrep "mkl" | sed "s#/.*##" ); do
+                if dpkg -L $pkg | egrep -q 'vars.sh$'; then
+                    mklvars=$( dpkg -L $pkg | egrep 'vars.sh$' )
+                    break
+                fi
+            done
+            if [ -z $mklvars ]; then
+                echo 'Failed to find *vars.sh in any pkg named *mkl*'
+                exit 1
+            fi
+            source $mklvars intel64
+
+            git clone https://github.com/phonopy/phonopy
+            cd phonopy
+            python3 setup.py build
+            python3 -m pip install .
+            cd ..
+
+            git clone https://github.com/phonopy/phono3py
+            cd phono3py
+            python3 setup.py build
+            python3 setup.py install
+            cd ..
 
       - name: Install Quippy from PyPI
         run: python3 -m pip install quippy-ase
@@ -63,6 +104,17 @@ jobs:
           python3 -m pip install --upgrade jinja2
           cd docs
           make html
+
+# event type from https://stackoverflow.com/questions/61886993/in-github-actions-how-to-get-the-type-of-a-trigger-event-as-a-variable
+# conditional control ("if:") from https://docs.github.com/en/actions/using-jobs/using-conditions-to-control-job-execution
+# dependency from https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow
+
+  deploy-docs:
+    if: github.event.action == 'push'
+    needs: build-docs
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Deploy documentation
         uses: peaceiris/actions-gh-pages@v3
         with:
