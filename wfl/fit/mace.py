@@ -151,6 +151,9 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
 
     fitting_configs_scratch_filename = _prep_configs_file(fitting_configs, mace_fit_params, "train_file")
 
+    if mace_fit_params.get("foundation_model", None) is not None and Path(mace_fit_params["foundation_model"]).is_file():
+        mace_fit_params["foundation_model"] = str(Path(mace_fit_params["foundation_model"]).absolute())
+
     for key, val in mace_fit_params.items():
         if isinstance(val, int) or isinstance(val, float):
             mace_fit_cmd += f" --{key}={val}"
