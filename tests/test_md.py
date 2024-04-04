@@ -12,7 +12,7 @@ from wfl.autoparallelize import autoparainfo
 
 from wfl.generate import md
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.generate.md.abort import AbortOnCollision
+from wfl.generate.md.abort import AbortOnCollision, AbortOnLowEnergy
 
 
 def select_every_10_steps_for_tests_during(at):
@@ -191,16 +191,28 @@ def test_subselector_function_during(cu_slab):
 def test_md_abort_function(cu_slab):
 
     calc = EMT()
+    autopara_info = autoparainfo.AutoparaInfo(skip_failed=False)
 
+    # test bulk Cu slab for collision
     inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
-
     md_stopper = AbortOnCollision(collision_radius=2.25)
-    autopara_info = autoparainfo.AutoparaInfo(skip_failed=False)
 
     # why doesn't this throw an raise a RuntimeError even if md failed and `skip_failed` is False?
     atoms_traj = md.md(inputs, outputs, calculator=calc, steps=500, dt=10.0,
                        temperature=2000.0, abort_check=md_stopper, autopara_info=autopara_info,
+                       rng=np.random.default_rng(1))
+
+    assert len(list(atoms_traj)) < 501
+
+    # test surface Cu slab for low energy
+    cu_slab.set_cell(cu_slab.cell * (1, 1, 2), False)
+    inputs = ConfigSet(cu_slab)
+    outputs = OutputSpec()
+
+    md_stopper = AbortOnLowEnergy(0.0007)
+    atoms_traj = md.md(inputs, outputs, calculator=calc, steps=500, dt=10.0,
+                       temperature=5.0, abort_check=md_stopper, autopara_info=autopara_info,
                        rng=np.random.default_rng(1))
 
     assert len(list(atoms_traj)) < 501
