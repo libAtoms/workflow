@@ -66,7 +66,7 @@ def ace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_su
 @opt.param_fname
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
-def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess, dtype):
+def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
     """evaluates MACE"""
 
     from mace.calculators.mace import MACECalculator
