@@ -60,8 +60,6 @@ def ace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_su
 
 
 @click.command("mace")
-@click.option("--dtype", default="float64", type=click.Choice(["float64", "float32"]), show_default=True,
-              help="dtype MACE model was fitted with")
 @click.pass_context
 @opt.inputs
 @opt.outputs
@@ -73,7 +71,7 @@ def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_s
 
     from mace.calculators.mace import MACECalculator
 
-    calc = (MACECalculator, [], {"model_path": param_fname, "default_dtype": dtype, "device": 'cpu'})
+    calc = (MACECalculator, [], {"model_paths": param_fname, "device": 'cpu'})
 
     generic.calculate(
         inputs=inputs,
