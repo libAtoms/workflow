@@ -1,11 +1,14 @@
 import click
 
-from quippy.potential import Potential
-
 from wfl.autoparallelize import AutoparaInfo
 from wfl.cli import cli_options as opt
 from wfl.calculators import generic
 from wfl.utils import configs
+
+
+def pyjulip_ace(param_fname):
+    import pyjulip
+    return pyjulip.ACE1(param_fname)
 
 
 @click.command("gap")
@@ -18,6 +21,8 @@ from wfl.utils import configs
 def gap(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
     """evaluates GAP"""
 
+    from quippy.potential import Potential
+
     if prop_prefix is None:
         prop_prefix = "gap_"
 
@@ -29,11 +34,6 @@ def gap(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_su
         calculator=calc,
         output_prefix=prop_prefix,
         autopara_info=AutoparaInfo(num_inputs_per_python_subprocess=num_inputs_per_python_subprocess))
-
-
-def pyjulip_ace(param_fname):
-    import pyjulip
-    return pyjulip.ACE1(param_fname)
 
 
 @click.command("ace")
@@ -60,20 +60,21 @@ def ace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_su
 
 
 @click.command("mace")
-@click.option("--dtype", default="float64", type=click.Choice(["float64", "float32"]), show_default=True,
-              help="dtype MACE model was fitted with")
 @click.pass_context
 @opt.inputs
 @opt.outputs
 @opt.param_fname
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
-def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess, dtype):
+def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
     """evaluates MACE"""
 
-    from mace.calculators.mace import MACECalculator
+    from mace.calculators import MACECalculator
 
-    calc = (MACECalculator, [], {"model_path": param_fname, "default_dtype": dtype, "device": 'cpu'})
+    if prop_prefix is None:
+        prop_prefix = 'mace_'
+
+    calc = (MACECalculator, [], {"model_paths": param_fname, "device": "cpu"})
 
     generic.calculate(
         inputs=inputs,
