@@ -94,7 +94,7 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
     if keep_symmetry:
         # noinspection PyUnresolvedReferences,PyUnresolvedReferences
         try:
-            from ase.constraints.symmetrize import FixSymmetry
+            from ase.constraints import FixSymmetry
         except ImportError:
             # fall back to previous import location (pre MR 3288)
             from ase.spacegroup.symmetrize import FixSymmetry
