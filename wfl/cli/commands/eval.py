@@ -16,9 +16,10 @@ def pyjulip_ace(param_fname):
 @opt.inputs
 @opt.outputs
 @opt.param_fname
+@opt.kwargs
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
-def gap(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
+def gap(ctx, inputs, outputs, param_fname, kwargs, prop_prefix, num_inputs_per_python_subprocess):
     """evaluates GAP"""
 
     from quippy.potential import Potential
@@ -26,7 +27,9 @@ def gap(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_su
     if prop_prefix is None:
         prop_prefix = "gap_"
 
-    calc = (Potential, [], {"param_filename": param_fname})
+    kwargs_use = {"param_filename": param_fname}
+    kwargs_use.update(kwargs)
+    calc = (Potential, [], kwargs_use)
 
     generic.calculate(
         inputs=inputs,
@@ -41,15 +44,16 @@ def gap(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_su
 @opt.inputs
 @opt.outputs
 @opt.param_fname
+@opt.kwargs
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
-def ace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
+def ace(ctx, inputs, outputs, param_fname, kwargs, prop_prefix, num_inputs_per_python_subprocess):
     """evaluates ACE"""
 
     if prop_prefix is None:
         prop_prefix = 'ace_'
 
-    calc = (pyjulip_ace, [param_fname], {})
+    calc = (pyjulip_ace, [param_fname], kwargs)
 
     generic.calculate(
         inputs=inputs,
@@ -64,9 +68,10 @@ def ace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_su
 @opt.inputs
 @opt.outputs
 @opt.param_fname
+@opt.kwargs
 @opt.prop_prefix
 @opt.num_inputs_per_python_subprocess
-def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_subprocess):
+def mace(ctx, inputs, outputs, param_fname, kwargs, prop_prefix, num_inputs_per_python_subprocess):
     """evaluates MACE"""
 
     from mace.calculators import MACECalculator
@@ -74,7 +79,9 @@ def mace(ctx, inputs, outputs, param_fname, prop_prefix, num_inputs_per_python_s
     if prop_prefix is None:
         prop_prefix = 'mace_'
 
-    calc = (MACECalculator, [], {"model_paths": param_fname, "device": "cpu"})
+    kwargs_use = {"model_paths": param_fname, "device": "cpu"}
+    kwargs_use.update(kwargs)
+    calc = (MACECalculator, [], kwargs_use)
 
     generic.calculate(
         inputs=inputs,
