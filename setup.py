@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="wfl",
-    version="0.2.4",
+    version="0.2.5",
     packages=setuptools.find_packages(exclude=["tests"]),
     install_requires=["click>=7.0", "numpy", "ase>=3.22.1", "pyyaml", "spglib", "docstring_parser",
                       "expyre-wfl @ https://github.com/libAtoms/ExPyRe/tarball/main",
