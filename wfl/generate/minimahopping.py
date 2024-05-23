@@ -11,18 +11,17 @@ import ase.io
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.misc import atoms_to_list
-from wfl.generate.utils import config_type_append
+from .utils import save_config_type
 from wfl.utils.parallel import construct_calculator_picklesafe
 
 
-
-def _get_MD_trajectory(rundir):
+def _get_MD_trajectory(rundir, update_config_type):
 
     md_traj = []
     mdtrajfiles = sorted([file for file in Path(rundir).glob("md*.traj")])
     for mdtraj in mdtrajfiles:
         for at in ase.io.read(f"{mdtraj}", ":"):
-            config_type_append(at, 'traj')
+            save_config_type(at, update_config_type, 'minimahop_traj')
             md_traj.append(at)
 
     return md_traj
@@ -30,7 +29,8 @@ def _get_MD_trajectory(rundir):
 
 # perform MinimaHopping on one ASE.atoms object
 def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
-                     fmax, timestep, totalsteps, skip_failures, workdir=None, **opt_kwargs):
+                     fmax, timestep, totalsteps, skip_failures, update_config_type,
+                     workdir=None, **opt_kwargs):
     save_tmpdir = opt_kwargs.pop("save_tmpdir", False)
     return_all_traj = opt_kwargs.pop("return_all_traj", False)
     origdir = Path.cwd()
@@ -61,10 +61,10 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
     else:
         traj = []
         if return_all_traj:
-            traj += _get_MD_trajectory(rundir)
+            traj += _get_MD_trajectory(rundir, update_config_type)
 
         for hop_traj in Trajectory('minima.traj'):
-            config_type_append(hop_traj, 'minima')
+            save_config_type(hop_traj, update_config_type, 'minimahop_min')
             traj.append(hop_traj)
         if not save_tmpdir:
             os.chdir(workdir)
@@ -76,8 +76,8 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
 
 
 def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2,
-                           fmax=1, timestep=1, totalsteps=10, skip_failures=True, workdir=None,
-                           rng=None, _autopara_per_item_info=None,
+                           fmax=1, timestep=1, totalsteps=10, skip_failures=True, update_config_type="append",
+                           workdir=None, rng=None, _autopara_per_item_info=None,
                            **opt_kwargs):
     """runs a structure optimization
 
@@ -103,6 +103,8 @@ def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_thresho
         number of steps
     skip_failures: bool, default True
         just skip optimizations that raise an exception
+    update_config_type: ["append" | "overwrite" | False], default "append"
+        whether/how to add at.info['optimize_config_type'] to at.info['config_type']
     workdir: str/Path default None
         workdir for saving files
     opt_kwargs
@@ -129,7 +131,8 @@ def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_thresho
 
         traj = _atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold,
                                  mdmin=mdmin, fmax=fmax, timestep=timestep, totalsteps=totalsteps,
-                                 skip_failures=skip_failures, workdir=workdir, **opt_kwargs)
+                                 skip_failures=skip_failures, update_config_type=update_config_type,
+                                 workdir=workdir, **opt_kwargs)
         all_trajs.append(traj)
 
     return all_trajs
