@@ -14,7 +14,7 @@ from ase.calculators.calculator import all_changes
 from ase.calculators.vasp.vasp import Vasp as ASE_Vasp
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
-from .utils import save_results
+from wfl.utils.save_calc_results import save_calc_results
 from .kpts import universal_kspacing_n_k
 
 from ase.calculators.vasp.create_input import float_keys, exp_keys, string_keys, int_keys, bool_keys
@@ -255,10 +255,10 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
                     if self.debug: print("  multi_calculation restoring from prev val", k, prev_vals[k])
                     prev_dicts[k][k] = prev_vals[k]
             calculation_succeeded = True
-            # save results here (if possible) so that save_results() called by calculators.generic
+            # save results here (if possible) so that save_calc_results() called by calculators.generic
             # won't trigger additional calculations due to the ASE caching noticing the change in pbc
             if "__calculator_output_prefix" in atoms.info:
-                save_results(atoms, properties, atoms.info["__calculator_output_prefix"])
+                save_calc_results(atoms, prefix=atoms.info["__calculator_output_prefix"], properties=properties)
                 atoms.info["__calculator_results_saved"] = True
         except Exception as exc:
             atoms.info['DFT_FAILED_VASP'] = True

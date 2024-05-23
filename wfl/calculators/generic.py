@@ -7,7 +7,7 @@ from ase.calculators.calculator import all_changes
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
-from .utils import save_results
+from wfl.utils.save_calc_results import save_calc_results
 
 
 def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_auto_', verbose=False, raise_calc_exceptions=False):
@@ -132,7 +132,7 @@ def _run_autopara_wrappable(atoms, calculator, properties=None, output_prefix='_
 
         if calculation_succeeded:
             # this will skip saving if calculator already saved
-            save_results(at, properties_use, output_prefix)
+            save_calc_results(at, prefix=output_prefix, properties=properties_use)
         else:
             # avoid maintaining the reference to the calculator
             at.calc = None

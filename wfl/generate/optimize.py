@@ -7,11 +7,11 @@ from ase.filters import FrechetCellFilter
 from ase.optimize.precon import PreconLBFGS
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
-from wfl.utils.at_copy_save_results import at_copy_save_results
+from wfl.utils.save_calc_results import at_copy_save_calc_results
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
 from wfl.utils.pressure import sample_pressure
-from .utils import config_type_append
+from .utils import save_config_type
 
 orig_log = PreconLBFGS.log
 
@@ -33,10 +33,11 @@ PreconLBFGS.log = _new_log
 
 def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=1000, pressure=None,
            stress_mask=None, keep_symmetry=True, traj_step_interval=1, traj_subselect=None,
-           skip_failures=True, results_prefix='optimize_', verbose=False, update_config_type=True,
+           skip_failures=True, results_prefix='last_op__optimize_', verbose=False, update_config_type="append",
            rng=None, _autopara_per_item_info=None,
            **opt_kwargs):
-    """runs a structure optimization
+    """runs a structure optimization. By default calculator properties will be stored in keys
+    prefixed with "last_op__optimize_", which may be overwritten by next operation.
 
     Parameters
     ----------
@@ -63,11 +64,15 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
         Currently implemented: "last_converged", which takes the last config, if converged.
     skip_failures: bool, default True
         just skip optimizations that raise an exception
+    results_prefix: str, default "last_op__optimize_"
+        prefix to info/arrays keys where calculator properties will be stored.
+        Will overwrite any other properties that start with same "<str>__", so that by
+        default only last op's properties will be stored.
     verbose: bool, default False
         verbose output
         optimisation logs are not printed unless this is True
-    update_config_type: bool, default True
-        append at.info['optimize_config_type'] at.info['config_type']
+    update_config_type: ["append" | "overwrite" | False], default "append"
+        whether/how to add at.info['optimize_config_type'] to at.info['config_type']
     opt_kwargs
         keyword arguments for PreconLBFGS
     rng: numpy.random.Generator, default None
@@ -146,7 +151,7 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
                 # Do not store those duplicate configs.
                 return
 
-            new_config = at_copy_save_results(at, results_prefix=results_prefix)
+            new_config = at_copy_save_calc_results(at, prefix=results_prefix)
             new_config.set_constraint(org_constraints)
             traj.append(new_config)
 
@@ -170,7 +175,7 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
                 raise
 
         if len(traj) == 0 or traj[-1] != at:
-            new_config = at_copy_save_results(at, results_prefix=results_prefix)
+            new_config = at_copy_save_calc_results(at, prefix=results_prefix)
             new_config.set_constraint(org_constraints)
             traj.append(new_config)
 
@@ -195,10 +200,8 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
                     dataset['number'], dataset['international'], dataset['hall'], 0.01))
 
 
-        if update_config_type:
-            # save config_type
-            for at0 in traj:
-                config_type_append(at0, at0.info['optimize_config_type'])
+        for at in traj:
+            save_config_type(at, update_config_type, at.info["optimize_config_type"])
 
         # Note that if resampling doesn't include original last config, later
         # steps won't be able to identify those configs as the (perhaps unconverged) minima.
