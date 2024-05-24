@@ -629,7 +629,7 @@ def do_rss_step(ctx, cur_iter, verbose):
                        rng=ctx.obj['rng'], verbose=verbose)
 
     select_fitting_and_testing_for_groups(run_dir, cur_iter, groups, Params(params.get('rss_step'), cur_iter), Zs,
-                                          'optimize_energy', select_by_desc_method, descriptor_strs,
+                                          'last_op__optimize_energy', select_by_desc_method, descriptor_strs,
                                           params.get('global/config_selection_descriptor_local', default=False),
                                           rng=ctx.obj['rng'], verbose=verbose)
 
@@ -803,7 +803,7 @@ def do_MD_bulk_defect_step(ctx, cur_iter, minima_file, verbose):
 
     print_log('selecting by flat histogram + by-descriptor from MD trajectories')
     select_fitting_and_testing_for_groups(
-        run_dir, cur_iter, groups, Params(params.get('MD_bulk_defect_step'), cur_iter), Zs, 'md_energy', select_by_desc_method,
+        run_dir, cur_iter, groups, Params(params.get('MD_bulk_defect_step'), cur_iter), Zs, 'last_op__md_energy', select_by_desc_method,
         descriptor_strs, params.get('global/config_selection_descriptor_local', default=False), rng=ctx.obj['rng'], verbose=verbose)
 
     _ = evaluate_iter_and_fit_all(cur_iter, run_dir, params, Params(params.get('MD_bulk_defect_step'), cur_iter),
@@ -929,7 +929,7 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
             groups[grp_label]['convex_hull'] = wfl.select.convex_hull.select(
                 minima,
                 OutputSpec(f'minima_convex_hull.{grp_label}.xyz', file_root=run_dir),
-                info_field='optimize_energy')
+                info_field='last_op__optimize_energy')
         else:
             groups[grp_label]['convex_hull'] = None
 
@@ -938,7 +938,7 @@ def RSS_minima_diverse(run_dir, groups, step_params, Zs,
         grp_frac = groups[grp_label]['frac']
         minima_flat_histo_kT = step_params.get('minima_flat_histo_kT', step_params.get('flat_histo_kT'))
         minima_config_by_desc, _ = flat_histo_then_by_desc(
-            run_dir, minima, 'minima', grp_label, Zs, 'optimize_energy', minima_flat_histo_kT,
+            run_dir, minima, 'minima', grp_label, Zs, 'last_op__optimize_energy', minima_flat_histo_kT,
             int(step_params.get('minima_flat_histo_N') * grp_frac), select_by_desc_method,
             config_selection_descriptor_strs, config_selection_descriptor_local,
             int(step_params.get('minima_by_desc_select_N') * grp_frac), testing_N=0,

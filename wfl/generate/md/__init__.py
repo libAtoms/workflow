@@ -9,22 +9,23 @@ from ase.md.langevin import Langevin
 from ase.units import GPa, fs
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
-from wfl.utils.at_copy_save_results import at_copy_save_results
+from wfl.utils.save_calc_results import at_copy_save_calc_results
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
 from wfl.utils.pressure import sample_pressure
-from ..utils import config_type_append
+from ..utils import save_config_type
 
 bar = 1.0e-4 * GPa
 
 
 def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBerendsen", temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
-              traj_step_interval=1, skip_failures=True, results_prefix='md_', verbose=False, update_config_type=True,
+              traj_step_interval=1, skip_failures=True, results_prefix='last_op__md_', verbose=False, update_config_type="append",
               traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None, rng=None,
               _autopara_per_item_info=None):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for
-    sampling configs
+    sampling configs. By default calculator properties for each frame stored in
+    keys prefixed with "last_op__md_", which may be overwritten by next operation.
 
     Parameters
     ----------
@@ -58,11 +59,15 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         interval between trajectory snapshots
     skip_failures: bool, default True
         just skip minimizations that raise an exception
+    results_prefix: str, default "last_op__md_"
+        prefix to info/arrays keys where calculator properties will be stored
+        Will overwrite any other properties that start with same "<str>__", so that by
+        default only last op's properties will be stored.
     verbose: bool, default False
         verbose output
         MD logs are not printed unless this is True
-    update_config_type: bool, default True
-        append "MD" to at.info['config_type']
+    update_config_type: ["append" | "overwrite" | False], default "append"
+        whether/how to add 'MD' to at.info['config_type']
     traj_select_during_func: func(Atoms), default func(Atoms) -> bool=True
         Function to sub-select configs from the first trajectory.
         Used during MD loop with one config at a time, returning True/False
@@ -205,7 +210,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             if not first_step_of_later_stage and cur_step % interval == 0:
                 at.info['MD_time_fs'] = cur_step * dt
                 at.info['MD_step'] = cur_step
-                at_save = at_copy_save_results(at, results_prefix=results_prefix)
+                at_save = at_copy_save_calc_results(at, prefix=results_prefix)
 
                 if traj_select_during_func(at):
                     traj.append(at_save)
@@ -246,15 +251,13 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         if len(traj) == 0 or traj[-1] != at:
             if traj_select_during_func(at):
                 at.info['MD_time_fs'] = cur_step * dt
-                traj.append(at_copy_save_results(at, results_prefix=results_prefix))
+                traj.append(at_copy_save_calc_results(at, prefix=results_prefix))
 
         if traj_select_after_func is not None:
             traj = traj_select_after_func(traj)
 
-        if update_config_type:
-            # save config_type
-            for at in traj:
-                config_type_append(at, 'MD')
+        for at in traj:
+            save_config_type(at, update_config_type, 'MD')
 
         all_trajs.append(traj)
 

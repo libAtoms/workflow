@@ -6,9 +6,9 @@ Further operations (eg. mean, variance, etc.) with these are up to the user.
 """
 from ase import Atoms
 
-from .utils import per_atom_properties, per_config_properties
-from ..utils.misc import atoms_to_list
-from ..utils.parallel import construct_calculator_picklesafe
+from wfl.utils.save_calc_results import per_atom_properties, per_config_properties
+from wfl.utils.misc import atoms_to_list
+from wfl.utils.parallel import construct_calculator_picklesafe
 
 __default_properties = ['energy', 'forces', 'stress']
 

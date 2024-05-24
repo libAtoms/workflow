@@ -89,7 +89,7 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
                          workdir=workdir, scratchdir=scratchdir, **kwargs)
 
         self.extra_results = dict()
-        # to make use of wfl.calculators.utils.save_results()
+        # to make use of wfl.utils.save_calc_results.save_calc_results()
         self.extra_results["atoms"] = {}
         self.extra_results["config"] = {}
 

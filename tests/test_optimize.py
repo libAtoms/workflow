@@ -116,7 +116,7 @@ def test_relax(cu_slab):
         expected_relaxed_positions_constant_pressure, abs=3e-3
     )
 
-    assert atoms_opt.info["config_type"] == "cu_slab_optimize_last_converged"
+    assert atoms_opt.info["config_type"] == "cu_slab:optimize_last_converged"
 
 
 def test_relax_fixed_vol(cu_slab):
@@ -176,7 +176,7 @@ def test_relax_fixed_vol(cu_slab):
 
     assert atoms_opt.positions == approx(expected_positions, abs=3e-3)
 
-    assert atoms_opt.info["config_type"] == "cu_slab_optimize_last_converged"
+    assert atoms_opt.info["config_type"] == "cu_slab:optimize_last_converged"
 
 
 def test_subselect_from_traj(cu_slab):

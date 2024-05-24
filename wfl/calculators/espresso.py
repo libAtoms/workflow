@@ -17,7 +17,8 @@ except ImportError:
 from ase.io.espresso import kspacing_to_grid
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
-from .utils import save_results, parse_genericfileio_profile_argv
+from wfl.utils.save_calc_results import save_calc_results
+from .utils import parse_genericfileio_profile_argv
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["*.pwo"]
@@ -139,9 +140,9 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
             calculation_succeeded = True
             if 'DFT_FAILED_ESPRESSO' in atoms.info:
                 del atoms.info['DFT_FAILED_ESPRESSO']
-            if "_output_prefix" in atoms.info:
-                save_results(atoms, properties, atoms.info["_output_prefix"])
-                atoms.info["_results_saved"] = True
+            if "__calculator_output_prefix" in atoms.info:
+                save_calc_results(atoms, prefix=atoms.info["__calculator_output_prefix"], properties=properties)
+                atoms.info["__calculator_results_saved"] = True
         except Exception as exc:
             atoms.info['DFT_FAILED_ESPRESSO'] = True
             calculation_succeeded = False
