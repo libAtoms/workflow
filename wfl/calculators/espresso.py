@@ -142,7 +142,7 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
                 del atoms.info['DFT_FAILED_ESPRESSO']
             if "__calculator_output_prefix" in atoms.info:
                 save_calc_results(atoms, prefix=atoms.info["__calculator_output_prefix"], properties=properties)
-                atoms.info["_results_saved"] = True
+                atoms.info["__calculator_results_saved"] = True
         except Exception as exc:
             atoms.info['DFT_FAILED_ESPRESSO'] = True
             calculation_succeeded = False

@@ -103,7 +103,7 @@ jobs:
           echo "found torch version $torch_version, installing cpu-only variant"
           python3 -m pip install torch==${torch_version}+cpu -f https://download.pytorch.org/whl/torch_stable.html
           echo "installing mace"
-          python3 -m pip install git+https://github.com/ACEsuit/mace.git@develop
+          python3 -m pip install git+https://github.com/ACEsuit/mace.git@main
           python3 -c "import mace; print(mace.__file__)"
 
       - name: Julia and ace fit
