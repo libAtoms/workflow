@@ -8,8 +8,6 @@ import warnings
 from copy import deepcopy
 import numpy as np
 
-from packaging
-
 from ase.calculators.calculator import all_changes
 from ase.calculators.aims import Aims as ASE_Aims
 try:
@@ -161,6 +159,6 @@ def construct_aims_profile(calculator_exec, kwargs_command):
     if command is None and default_species_directory is None:
         return None
     else:
-        return AimsProfile(command=command, default_species_directory)
+        return AimsProfile(command=command, default_species_directory=default_species_directory)
 
 
