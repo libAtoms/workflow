@@ -70,9 +70,8 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
             # old syntax
             warnings.warn("Support for ASE 3.22-style calculator interfase will soon be depreciated")
             kwargs_command["aims_command"] = calculator_exec
-        else:
+        elif "profile" not in kwargs_command:
             kwargs_command["profile"] = construct_aims_profile(calculator_exec, kwargs_command)
-
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
