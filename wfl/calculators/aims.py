@@ -140,7 +140,7 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
 
 
 def construct_aims_profile(calculator_exec, kwargs_command):
-    if calculator_exec is not None and "command" in kwargs:
+    if calculator_exec is not None and "command" in kwargs_command:
         raise ValueError("Cannot specify both calculator_exec and command")
 
     # AimsProfile takes "command" and "defult_species_directory" 
