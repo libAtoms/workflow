@@ -3,9 +3,12 @@ FHI-Aims Calculator
 """
 
 import shlex
+import warnings
 
 from copy import deepcopy
 import numpy as np
+
+from packaging
 
 from ase.calculators.calculator import all_changes
 from ase.calculators.aims import Aims as ASE_Aims
@@ -15,7 +18,6 @@ except ImportError:
     AimsProfile = None
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
-from .utils import parse_genericfileio_profile_argv
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["control.in", "geometry.in", "aims.out"]
@@ -65,19 +67,14 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
                  scratchdir=None, calculator_exec=None, **kwargs):
 
         kwargs_command = deepcopy(kwargs)
-        if calculator_exec is not None:
-            if "command" in kwargs:
-                raise ValueError("Cannot specify both calculator_exec and command")
-            if AimsProfile is None:
-                # older syntax
-                kwargs_command["command"] = f"{calculator_exec} > aims.out"
-            else:
-                argv = shlex.split(calculator_exec)
-                try:
-                    kwargs_command["profile"] = AimsProfile(argv=argv)
-                except TypeError:
-                    binary, parallel_info = parse_genericfileio_profile_argv(argv)
-                    kwargs_command["profile"] = AimsProfile(binary=binary, parallel_info=parallel_info)
+
+        if AimsProfile is None:
+            # old syntax
+            warnings.warn("Support for ASE 3.22-style calculator interfase will soon be depreciated")
+            kwargs_command["aims_command"] = calculator_exec
+        else:
+            kwargs_command["profile"] = construct_aims_profile(calculator_exec, kwargs_command)
+
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
@@ -143,3 +140,27 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
                              or param_i in ['relax_unit_cell', 'external_pressure']]
             for param_i in rm_parameters:
                 self.parameters.pop(param_i)
+
+
+def construct_aims_profile(calculator_exec, kwargs_command):
+    if calculator_exec is not None and "command" in kwargs:
+        raise ValueError("Cannot specify both calculator_exec and command")
+
+    # AimsProfile takes "command" and "defult_species_directory" 
+    if calculator_exec is not None:
+        command = calculator_exec
+    else:
+        command = kwargs_command.pop("command", None)
+
+    if "default_species_directory" in kwargs_command and "species_dir" in kwargs_command:
+        raise ValueError("Cannot specify both default_species_directory and species_dir")
+    default_species_directory = kwargs_command.pop("default_species_directory", None)
+    if default_species_directory is None:
+        assert "species_dir" in kwargs_command
+
+    if command is None and default_species_directory is None:
+        return None
+    else:
+        return AimsProfile(command=command, default_species_directory)
+
+
