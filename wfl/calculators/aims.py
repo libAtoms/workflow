@@ -68,7 +68,7 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
 
         if AimsProfile is None:
             # old syntax
-            warnings.warn("Support for ASE 3.22-style calculator interfase will soon be depreciated")
+            warnings.warn("Support for ASE 3.22-style calculator interface will soon be deprecated")
             kwargs_command["aims_command"] = calculator_exec
         elif "profile" not in kwargs_command:
             kwargs_command["profile"] = construct_aims_profile(calculator_exec, kwargs_command)
