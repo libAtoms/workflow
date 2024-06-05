@@ -17,7 +17,8 @@ except ImportError:
 from ase.io.espresso import kspacing_to_grid
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
-from .utils import save_results, parse_genericfileio_profile_argv
+from wfl.utils.save_calc_results import save_calc_results
+from .utils import parse_genericfileio_profile_argv
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["*.pwo"]
@@ -77,20 +78,10 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
                     raise ValueError("Cannot specify both calculator_exec and profile")
                 if " -in " in calculator_exec:
                     raise ValueError("calculator_exec should not include espresso command line arguments such as ' -in PREFIX.pwi'")
+                if "pseudo_dir" not in kwargs_command:
+                    raise ValueError(f"calculator_exec also requires pseudo_dir to create EspressoProfile")
+                kwargs_command["profile"] = EspressoProfile(calculator_exec, kwargs_command.pop("pseudo_dir"))
 
-                # newer syntax, but pass binary without a keyword (which changed from "argv" to "exc"
-                # to "binary" over time), assuming it's first argument
-                argv = shlex.split(calculator_exec)
-                try:
-                    kwargs_command["profile"] = EspressoProfile(argv=argv)
-                except TypeError:
-                    binary, parallel_info = parse_genericfileio_profile_argv(argv)
-                    # argument names keep changing (e.g. pseudo_path -> pseudo_dir), just pass first two as positional
-                    # and hope order doesn't change
-                    if "pseudo_dir" not in kwargs_command:
-                        raise ValueError(f"calculator_exec also requires pseudo_dir to create EspressoProfile")
-                    kwargs_command["profile"] = EspressoProfile(binary, kwargs_command.pop("pseudo_dir"),
-                                                                parallel_info=parallel_info)
             elif "profile" not in kwargs_command:
                 raise ValueError("EspressoProfile is defined but neither calculator_exec nor profile was specified")
 
