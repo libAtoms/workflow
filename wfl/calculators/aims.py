@@ -47,10 +47,6 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
     scratchdir: str / Path, default None
         Temporary directory to execute calculations in and delete or copy back results (set by ```keep_files```)
         if needed.  For example, directory on a local disk with fast file I/O.
-    calculator_exec: str
-        command for Aims, without any prefix or redirection set.
-        For example: "srun -n 4 /path/to/aims.*.scalapack.mpi.x".
-        Mutually exclusive with ```command```.
 
     **kwargs: arguments for ase.calculators.aims.Aims
         See https://wiki.fysik.dtu.dk/ase/_modules/ase/calculators/aims.html.
@@ -65,13 +61,6 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
                  scratchdir=None, calculator_exec=None, **kwargs):
 
         kwargs_command = deepcopy(kwargs)
-
-        if AimsProfile is None:
-            # old syntax
-            warnings.warn("Support for ASE 3.22-style calculator interface will soon be deprecated")
-            kwargs_command["aims_command"] = calculator_exec
-        elif "profile" not in kwargs_command:
-            kwargs_command["profile"] = construct_aims_profile(calculator_exec, kwargs_command)
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
@@ -138,26 +127,5 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
             for param_i in rm_parameters:
                 self.parameters.pop(param_i)
 
-
-def construct_aims_profile(calculator_exec, kwargs_command):
-    if calculator_exec is not None and "command" in kwargs_command:
-        raise ValueError("Cannot specify both calculator_exec and command")
-
-    # AimsProfile takes "command" and "defult_species_directory" 
-    if calculator_exec is not None:
-        command = calculator_exec
-    else:
-        command = kwargs_command.pop("command", None)
-
-    if "default_species_directory" in kwargs_command and "species_dir" in kwargs_command:
-        raise ValueError("Cannot specify both default_species_directory and species_dir")
-    default_species_directory = kwargs_command.pop("default_species_directory", None)
-    if default_species_directory is None:
-        assert "species_dir" in kwargs_command
-
-    if command is None and default_species_directory is None:
-        return None
-    else:
-        return AimsProfile(command=command, default_species_directory=default_species_directory)
 
 

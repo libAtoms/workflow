@@ -1,5 +1,6 @@
 import os
 import pytest
+from pathlib import Path
 
 import numpy as np
 from ase import Atoms
@@ -150,3 +151,31 @@ def test_generic_aims_calculation(tmp_path, parameters_nonperiodic):
     assert si2.arrays["Aims_forces"][0, 0] == pytest.approx(expected=-0.29253217, abs=1e-3)
     assert si2.arrays["Aims_forces"][:, 1:] == pytest.approx(0.0)
     assert si2.arrays["Aims_forces"][0] == pytest.approx(-1 * si2.arrays["Aims_forces"][1])
+
+
+def test_aims_calculator_asev323(tmp_path, parameters_nonperiodic):
+
+    from ase.calculators.aims import AimsProfile
+
+    atoms = Atoms("Si", cell=(2, 2, 2), pbc=[True] * 3)
+    parameters = parameters_nonperiodic
+    parameters.update({'k_grid': '1 1 1', 'compute_analytical_stress': '.true.'})
+
+    aims_command = os.environ.get("aimsbin")
+    species_dir = Path(os.environ.get("spd")) / "light"
+
+    parameters["species_dir"] = species_dir
+    parameters["profile"] = AimsProfile(command=f"srun -n 72 {aims_command}")
+
+
+    calc = wfl.calculators.aims.Aims(
+        workdir=tmp_path,
+        **parameters)
+    atoms.calc = calc
+
+    atoms.get_potential_energy()
+    atoms.get_forces()
+    atoms.get_stress()
+
+
+
