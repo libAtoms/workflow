@@ -137,9 +137,9 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
     run_dir.mkdir(parents=True, exist_ok=True)
 
     if valid_configs is not None:
-        valid_configs_scratch_filename = _prep_configs_file(valid_configs, mace_fit_params, "valid_file")
+        valid_configs_scratch_filename = _prep_configs_file(valid_configs, mace_fit_params, "valid_file", workdir=run_dir)
     if test_configs is not None:
-        test_configs_scratch_filename = _prep_configs_file(test_configs, mace_fit_params, "test_file")
+        test_configs_scratch_filename = _prep_configs_file(test_configs, mace_fit_params, "test_file", workdir=run_dir)
 
     if mace_fit_cmd is None:
         if os.environ.get("WFL_MACE_FIT_COMMAND") is not None:
@@ -149,7 +149,10 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
         else:
             raise Exception("Path for run_train.py not found.")
 
-    fitting_configs_scratch_filename = _prep_configs_file(fitting_configs, mace_fit_params, "train_file")
+    fitting_configs_scratch_filename = _prep_configs_file(fitting_configs, mace_fit_params, "train_file", workdir=run_dir)
+
+    if mace_fit_params.get("foundation_model", None) is not None and Path(mace_fit_params["foundation_model"]).is_file():
+        mace_fit_params["foundation_model"] = str(Path(mace_fit_params["foundation_model"]).absolute())
 
     for key, val in mace_fit_params.items():
         if isinstance(val, int) or isinstance(val, float):
@@ -203,7 +206,7 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
         os.environ["OMP_NUM_THREADS"] = orig_omp_n
 
 
-def _prep_configs_file(configs, use_params, key):
+def _prep_configs_file(configs, use_params, key, workdir=Path()):
     """
     Writes configs to file and updates MACE fitting parameters.
     Configurations and filename handled by Workflow overwrite any filename
@@ -225,7 +228,7 @@ def _prep_configs_file(configs, use_params, key):
     configs_filename = configs.one_file()
 
     if not configs_filename:
-        fd_scratch, filename = tempfile.mkstemp(prefix=f"_MACE_{key}_configs.", suffix=".xyz", dir=".")
+        fd_scratch, filename = tempfile.mkstemp(prefix=str(workdir / f"_MACE_{key}_configs."), suffix=".xyz", dir=".")
         os.close(fd_scratch)
 
         if key in use_params.keys():
@@ -238,6 +241,8 @@ def _prep_configs_file(configs, use_params, key):
         return filename
 
     else:
-        use_params[key] = configs_filename
+        # make sure this isn't a relative pathname, because the chdir that surrounds actually
+        # running the fit will break it
+        use_params[key] = str(Path(configs_filename).absolute())
 
         return None

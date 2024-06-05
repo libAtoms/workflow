@@ -1,0 +1,18 @@
+[project]
+
+name = "wfl"
+version = "0.3.0"
+requires-python = ">=3.9"
+dependencies = [ "click>=7.0", "numpy", "ase>=3.22.1", "pyyaml", "spglib",
+                 "docstring_parser", "expyre-wfl", "universalSOAP" ]
+readme = "README.md"
+license = { file = "LICENSE" }
+
+[project.scripts]
+    wfl = "wfl.cli.cli:cli"
+    gap_rss_iter_fit = "wfl.cli.gap_rss_iter_fit:cli"
+    dft_convergence_test = "wfl.cli.dft_convergence_test:cli"
+    reactions_iter_fit = "wfl.cli.reactions_iter_fit:cli"
+
+[tool.setuptools.packages.find]
+    exclude = [ "test*" ]

@@ -6,17 +6,18 @@ from ase.mep.dyneb import DyNEB
 from ase.atoms import Atoms
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
-from wfl.utils.at_copy_save_results import at_copy_save_results
+from wfl.utils.save_calc_results import at_copy_save_calc_results
 from wfl.utils.misc import atoms_to_list
 from wfl.utils.parallel import construct_calculator_picklesafe
-from .utils import config_type_append
+from .utils import save_config_type
 
 
 def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
            traj_step_interval=1, traj_subselect=None, skip_failures=True,
-           results_prefix='neb_', verbose=False, logfile=None, update_config_type=True,
+           results_prefix='last_op__neb_', verbose=False, logfile=None, update_config_type="append",
            **neb_kwargs):
-    """runs a structure optimization
+    """runs a structure optimization. By default calculator properties will be stored
+    in keys prefixed with "last_op__neb_", which may be overwritten by next operation.
 
     Parameters
     ----------
@@ -36,11 +37,15 @@ def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
         Currently implemented: "last_converged", which takes the last config, if converged.
     skip_failures: bool, default True
         just skip optimizations that raise an exception
+    results_prefix: str, default "last_op__neb_"
+        prefix to info/arrays keys where calculator properties will be stored
+        Will overwrite any other properties that start with same "<str>__", so that by
+        default only last op's properties will be stored.
     verbose: bool, default False
         verbose output
         optimisation logs are not printed unless this is True
-    update_config_type: bool, default True
-        append at.info['optimize_config_type'] at.info['config_type']
+    update_config_type: ["append" | "overwrite" | False], default "append"
+        whether/how to add at.info['neb_config_type'] to at.info['config_type']
     neb_kwargs
         keyword arguments for DyNEB and FIRE 
 
@@ -73,7 +78,7 @@ def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
 
             cur_images = []
             for at, constraints in zip(images, orig_constraints):
-                new_config = at_copy_save_results(at, results_prefix=results_prefix)
+                new_config = at_copy_save_calc_results(at, prefix=results_prefix)
                 new_config.set_constraint(constraints)
                 new_config.info['neb_iter_i'] = opt.get_number_of_steps()
                 cur_images.append(new_config)
@@ -115,11 +120,9 @@ def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
             at.info['neb_config_type'] = f'neb_last_{final_status}'
             at.info['neb_n_steps'] = opt.get_number_of_steps()
 
-        if update_config_type:
-            # save config_type
-            for all_images in traj:
-                for at in all_images:
-                    config_type_append(at, at.info['neb_config_type'])
+        for all_images in traj:
+            for at in all_images:
+                save_config_type(at, update_config_type, at.info['neb_config_type'])
 
         traj = subselect_from_traj(traj, subselect=traj_subselect)
 

@@ -94,7 +94,7 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
         finally:
             # ASE castep calculator does not ever raise an exception when
             # it fails.  Instead, you get things like stress being None,
-            # which lead to TypeError when save_results calls get_stress().
+            # which lead to TypeError when save_calc_results calls get_stress().
             for property in properties:
                 result = self.get_property(property)
                 if result is None:

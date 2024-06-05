@@ -1,4 +1,5 @@
 import click
+import json
 from wfl.configset import ConfigSet, OutputSpec
 from ase.io.extxyz import key_val_str_to_dict
 
@@ -36,6 +37,16 @@ def extra_info(f):
 
 def param_fname(f):
     f = click.option("--param-fname", "-pf", type=click.Path(), help="Path to the potential parameter file")(f)
+    return f
+
+def _parse_kwargs(ctx, param, value):
+    if value is not None:
+        return json.loads(value)
+    else:
+        return {}
+
+def kwargs(f):
+    f = click.option("--kwargs", "-kw", callback=_parse_kwargs, help="JSON text with additional Calculator constructor kwargs")(f)
     return f
 
 def prop_prefix(f):

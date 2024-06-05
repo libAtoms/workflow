@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 from matplotlib.figure import Figure
-from matplotlib.cm import get_cmap
+from matplotlib.pyplot import get_cmap
 
 
 def calc(inputs, calc_property_prefix, ref_property_prefix,
