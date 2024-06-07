@@ -5,13 +5,15 @@ try:
     from rdkit import Chem
     from rdkit.Chem import AllChem
 except ModuleNotFoundError:
-    pass
+    Chem = None
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 
 
 def smi_to_atoms(smi, useBasicKnowledge=True, useExpTorsionAnglePrefs=True, randomSeed=-1):
     """Converts smiles to 3D Atoms object"""
+    if Chem is None:
+        raise RuntimeError("rdkit must be installed for SMILES support")
 
     mol = Chem.MolFromSmiles(smi)
     mol = Chem.AddHs(mol)
@@ -72,5 +74,7 @@ def _run_autopara_wrappable(smiles, useBasicKnowledge=True, useExpTorsionAnglePr
 
 
 def smiles(*args, **kwargs):
+    if Chem is None:
+        raise RuntimeError("rdkit must be installed for SMILES support")
     return autoparallelize(_run_autopara_wrappable, *args, **kwargs)
 autoparallelize_docstring(smiles, _run_autopara_wrappable, "SMILES string")
