@@ -15,3 +15,4 @@ Workflow has interface to (multistage) GAP and ACE fitting that integrates with 
 
    operations.gap_fitting.md
    operations.multistage_gap_fitting.rst 
+   operations.ace_fitting.md
