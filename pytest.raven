@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# Aims
-export ASE_AIMS_COMMAND=$aimsbin
-export AIMS_SPECIES_DIR=$spd/light
-
-pytest /raven/u/egg/programs/workflow/tests/calculators/test_aims.py::test_aims_calculator_asev323
-

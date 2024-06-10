@@ -58,7 +58,7 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
     wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
     def __init__(self, keep_files="default", rundir_prefix="run_Aims_", workdir=None,
-                 scratchdir=None, calculator_exec=None, **kwargs):
+                 scratchdir=None, **kwargs):
 
         kwargs_command = deepcopy(kwargs)
 
