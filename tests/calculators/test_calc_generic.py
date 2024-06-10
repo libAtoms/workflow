@@ -1,6 +1,7 @@
 import sys
 from os.path import join
 from io import StringIO
+import pytest
 
 import numpy as np
 from ase import Atoms

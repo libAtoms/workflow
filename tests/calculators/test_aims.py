@@ -21,8 +21,11 @@ else:
     from ase.config import cfg as ase_cfg
     from ase.calculators.aims import AimsProfile
 
-    profile = AimsProfile.from_config(ase_cfg, "aims")
-    species_dir = vars(profile).get("default_species_directory", None)
+    if "aims" in ase_cfg.parser:
+        profile = AimsProfile.from_config(ase_cfg, "aims")
+        species_dir = vars(profile).get("default_species_directory", None)
+    else:
+        species_dir = None
 
     aims_prerequisites = pytest.mark.skipif(
         condition = 'aims' not in ase_cfg.parser or species_dir is None
