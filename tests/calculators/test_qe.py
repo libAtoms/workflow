@@ -57,7 +57,6 @@ def qe_cmd_and_pseudo(tmp_path_factory):
 
     return cmd, pspot_file
 
-
 def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
 
     qe_cmd, pspot = qe_cmd_and_pseudo
