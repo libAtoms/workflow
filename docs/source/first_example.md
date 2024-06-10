@@ -82,7 +82,7 @@ from ase.calculators.emt import EMT
 from wfl.calculators import generic
 from wfl.autoparallelize import AutoparaInfo
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.autoparallelize.remote info import RemoteInfo()
+from wfl.autoparallelize.remote.info import RemoteInfo()
 from expyre.resources import Resources
 
 atoms = []
@@ -145,12 +145,13 @@ remote_info = RemoteInfo(
 The available clusters are listed in `config.json` file, by default at `~/.expyre/config.json`:
 
 ```
-"local": { "host": null,
-        "scheduler": "sge",
-        "commands": ["conda activate myenv"],
-        "header": ["#$ -pe smp {num_cores}"],
-        "partitions": {"standard" : {"num_cores": 16, "max_time": "168h", "max_mem": "200GB"}}
-             }
+{"systems":
+    {"local": { "host": null,
+            "scheduler": "sge",
+            "commands": ["conda activate myenv"],
+            "header": ["#$ -pe smp {num_cores}"],
+            "partitions": {"standard" : {"num_cores": 16, "max_time": "168h", "max_mem": "200GB"}}
+                 }
 }}
 ```
 
