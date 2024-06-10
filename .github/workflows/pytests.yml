@@ -45,6 +45,11 @@ jobs:
           python3 -m pip install ase 
           echo -n "ASE VERSION "
           python3 -c "import ase; print(ase.__file__, ase.__version__)"
+          # set up a mock configuration, so file-based calculator tests
+          # that don't call the executable still work 
+          # (e.g. test_aims.py::test_setup_calc_params)
+          echo "[aims]\ncommand=_DUMMY_" > ${HOME}/ase_config.ini
+          export ASE_CONFIG_PATH=${HOME}/ase_config.ini
 
       - name: Install intel-oneapi-mkl for phono3py
         run: |
