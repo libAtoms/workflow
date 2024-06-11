@@ -42,7 +42,7 @@ jobs:
 
       - name: Install latest ASE from gitlab
         run: |
-          python3 -m pip install ase 
+          python3 -m pip install ase==3.23.0 
           echo -n "ASE VERSION "
           python3 -c "import ase; print(ase.__file__, ase.__version__)"
           # set up a mock configuration, so file-based calculator tests
