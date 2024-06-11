@@ -42,7 +42,7 @@ jobs:
 
       - name: Install latest ASE from gitlab
         run: |
-          python3 -m pip install git+https://gitlab.com/ase/ase.git
+          python3 -m pip install ase==3.23.0 
           echo -n "ASE VERSION "
           python3 -c "import ase; print(ase.__file__, ase.__version__)"
 
