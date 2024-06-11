@@ -82,7 +82,7 @@ from ase.calculators.emt import EMT
 from wfl.calculators import generic
 from wfl.autoparallelize import AutoparaInfo
 from wfl.configset import ConfigSet, OutputSpec
-from wfl.autoparallelize.remote.info import RemoteInfo()
+from wfl.autoparallelize import RemoteInfo
 from expyre.resources import Resources
 
 atoms = []
@@ -124,7 +124,7 @@ python evaluate_emt.py
 Workflow also allows to submit (remotely) queued jobs automatically, by interfacing with ExPyRe ([docummentation](https://libatoms.github.io/ExPyRe/), [repository](https://github.com/libAtoms/ExPyRe/tree/main/expyre)). In this example, instead of calling the above python script in a queue submission script, the modified python script is called from the head node and the parallelisation mechanism behind `generic.calculate()` sets up and submits the job and returns the results like the script normally would. To enable remote submission, `RemoteInfo` must be added to `AutoparaInfo`. 
 
 ```
-from wfl.autoparallelize import RemoteInfo()
+from wfl.autoparallelize import RemoteInfo
 from expyre.resources import Resources
 
 remote_info = RemoteInfo(
