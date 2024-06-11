@@ -59,7 +59,7 @@ def parameters_nonperiodic():
     }
     return parameters
 
-
+@aims_prerequisites
 def test_setup_calc_params(parameters_nonperiodic):
 
     parameters = parameters_nonperiodic
@@ -75,7 +75,7 @@ def test_setup_calc_params(parameters_nonperiodic):
     parameters.update(parameters_periodic)
 
     # needed so new ASE versions don't complain about a lack of configuration
-    parameters["calculator_exec"] = "_DUMMY_"
+    parameters["profile"] = AimsProfile("_DUMMY_")
 
     # PBC is FFF
     atoms = Atoms("H")
