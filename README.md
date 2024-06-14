@@ -8,11 +8,11 @@ The main functions of Workflow is to efficiently parallelise operations over a s
 
 For examples and more information see [documentation](https://libatoms.github.io/workflow/)
 
-NOTE: because of the very large time intervals between official ASE releases, `wfl` is typically
-set up for (and tested against) the latest ASE gitlab repo `master` branch.  Recent changes
-that require this support include variable cell minimization using `FrechetCellFilter` and
-`Espresso` calculator configuration. See documentation link above for installation instructions.
+`wfl` and its dependendensies may be installed via `pip install wfl`. 
 
+NOTE: (as of 14 June 2024) `wfl` is only tested against the latest ASE pip release, currently v3.23.0. 
+For the time being, v3.22.1 is the mininum version listed as a (pip) prerequisite of `wfl`, because
+it at least mostly works, but it may not be fully compatible and is not actively tested.
 
 # Recent changes
 

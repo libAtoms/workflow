@@ -15,7 +15,6 @@ except ImportError:
     AimsProfile = None
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
-from .utils import parse_genericfileio_profile_argv
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["control.in", "geometry.in", "aims.out"]
@@ -47,10 +46,6 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
     scratchdir: str / Path, default None
         Temporary directory to execute calculations in and delete or copy back results (set by ```keep_files```)
         if needed.  For example, directory on a local disk with fast file I/O.
-    calculator_exec: str
-        command for Aims, without any prefix or redirection set.
-        For example: "srun -n 4 /path/to/aims.*.scalapack.mpi.x".
-        Mutually exclusive with ```command```.
 
     **kwargs: arguments for ase.calculators.aims.Aims
         See https://wiki.fysik.dtu.dk/ase/_modules/ase/calculators/aims.html.
@@ -62,22 +57,9 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
     wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
     def __init__(self, keep_files="default", rundir_prefix="run_Aims_", workdir=None,
-                 scratchdir=None, calculator_exec=None, **kwargs):
+                 scratchdir=None, **kwargs):
 
         kwargs_command = deepcopy(kwargs)
-        if calculator_exec is not None:
-            if "command" in kwargs:
-                raise ValueError("Cannot specify both calculator_exec and command")
-            if AimsProfile is None:
-                # older syntax
-                kwargs_command["command"] = f"{calculator_exec} > aims.out"
-            else:
-                argv = shlex.split(calculator_exec)
-                try:
-                    kwargs_command["profile"] = AimsProfile(argv=argv)
-                except TypeError:
-                    binary, parallel_info = parse_genericfileio_profile_argv(argv)
-                    kwargs_command["profile"] = AimsProfile(binary=binary, parallel_info=parallel_info)
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
@@ -143,3 +125,6 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
                              or param_i in ['relax_unit_cell', 'external_pressure']]
             for param_i in rm_parameters:
                 self.parameters.pop(param_i)
+
+
+
