@@ -8,7 +8,7 @@ The main functions of Workflow is to efficiently parallelise operations over a s
 
 For examples and more information see [documentation](https://libatoms.github.io/workflow/)
 
-`wfl` its dependendensies may be installed vi `pip install wfl`. 
+`wfl` and its dependendensies may be installed via `pip install wfl`. 
 
 NOTE: (as of 14 June 2024) `wfl` is only tested against the latest ASE pip release, currently v3.23.0. 
 For the time being, v3.22.1 is the mininum version listed as a (pip) prerequisite of `wfl`, because
