@@ -31,21 +31,20 @@ def test_vasp_gamma(tmp_path, monkeypatch):
         output_prefix='TEST_',
     )
 
-    run_dir = list(tmp_path.glob('run_VASP_*'))
-    nfiles = len(list(os.scandir(run_dir[0])))
+    for run_dir in tmp_path.glob('run_VASP_*'):
+        nfiles = len(list(os.scandir(run_dir)))
 
-    assert nfiles == 18
+        assert nfiles == 18
 
-    ats = list(configs_eval)
-    assert 'TEST_energy' in ats[0].info
-    assert 'TEST_forces' in ats[0].arrays
-    # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
-    with open(Path(run_dir[0]) / "OUTCAR") as fin:
-        l = fin.readline()
-        assert "gamma-only" in l
+        ats = list(configs_eval)
+        assert 'TEST_energy' in ats[0].info
+        assert 'TEST_forces' in ats[0].arrays
+        # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
+        with open(Path(run_dir) / "OUTCAR") as fin:
+            l = fin.readline()
+            assert "gamma-only" in l
 
     # try with command_gamma
-
     command_gamma = os.environ["ASE_VASP_COMMAND_GAMMA"]
     for cmd in Vasp.env_commands:
         monkeypatch.delenv(cmd + "_GAMMA", raising=False)
@@ -57,18 +56,72 @@ def test_vasp_gamma(tmp_path, monkeypatch):
         output_prefix='TEST_',
     )
 
-    run_dir = list(tmp_path.glob('run_VASP_*'))
-    nfiles = len(list(os.scandir(run_dir[0])))
+    for run_dir in tmp_path.glob('run_VASP_*'):
+        nfiles = len(list(os.scandir(run_dir)))
 
-    assert nfiles == 18
+        assert nfiles == 18
 
-    ats = list(configs_eval)
-    assert 'TEST_energy' in ats[0].info
-    assert 'TEST_forces' in ats[0].arrays
-    # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
-    with open(Path(run_dir[0]) / "OUTCAR") as fin:
-        l = fin.readline()
-        assert "gamma-only" in l
+        ats = list(configs_eval)
+        assert 'TEST_energy' in ats[0].info
+        assert 'TEST_forces' in ats[0].arrays
+        # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
+        with open(Path(run_dir) / "OUTCAR") as fin:
+            l = fin.readline()
+            assert "gamma-only" in l
+
+
+def test_vasp_gamma_auto(tmp_path):
+    ase.io.write(tmp_path / 'vasp_in.xyz', Atoms('Si', cell=(6, 2, 2), pbc=[True] * 3), format='extxyz')
+
+    # try with not large enough kspacing
+    configs_eval = generic.calculate(
+        inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
+        outputs=OutputSpec('vasp_out.auto_gamma_no.xyz', file_root=tmp_path),
+        calculator=Vasp(workdir=tmp_path, encut=200, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
+                        keep_files=True, kspacing=2),
+        output_prefix='TEST_',
+    )
+
+    for run_dir in tmp_path.glob('run_VASP_*'):
+        nfiles = len(list(os.scandir(run_dir)))
+
+        assert nfiles == 18
+
+        for at in configs_eval:
+            assert 'TEST_energy' in at.info
+            assert 'TEST_forces' in at.arrays
+        # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
+        with open(Path(run_dir) / "OUTCAR") as fin:
+            l = fin.readline()
+            assert "gamma-only" not in l
+
+        print("BOB clean non-gamma", run_dir)
+        shutil.rmtree(run_dir)
+
+    # try with large enough kspacing
+    configs_eval = generic.calculate(
+        inputs=ConfigSet(tmp_path / 'vasp_in.xyz'),
+        outputs=OutputSpec('vasp_out.auto_gamma_yes.xyz', file_root=tmp_path),
+        calculator=Vasp(workdir=tmp_path, encut=200, pp=os.environ['PYTEST_VASP_POTCAR_DIR'],
+                        keep_files=True, kspacing=4),
+        output_prefix='TEST_',
+    )
+
+    for run_dir in tmp_path.glob('run_VASP_*'):
+        nfiles = len(list(os.scandir(run_dir)))
+
+        assert nfiles == 18
+
+        for at in configs_eval:
+            assert 'TEST_energy' in at.info
+            assert 'TEST_forces' in at.arrays
+        # ase.io.write(sys.stdout, list(configs_eval), format='extxyz')
+        with open(Path(run_dir) / "OUTCAR") as fin:
+            l = fin.readline()
+            assert "gamma-only" in l
+
+        print("BOB clean gamma", run_dir)
+        shutil.rmtree(run_dir)
 
 
 def test_vasp(tmp_path):
