@@ -10,11 +10,9 @@ For examples and more information see [documentation](https://libatoms.github.io
 
 `wfl` its dependendensies may be installed vi `pip install wfl`. 
 
-NOTE: `wfl` is only tested against the latest ASE pip release, currently v3.23. 
-For the time being, ASEv3.22 is allowed with the most recent branch of `wfl`, hoewever,
-not fully supported (e.g. the correct file-based calculator keywords must be specified
-by the user). 
-
+NOTE: (as of 14 June 2024) `wfl` is only tested against the latest ASE pip release, currently v3.23.0. 
+For the time being, v3.22.1 is the mininum version listed as a (pip) prerequisite of `wfl`, because
+it at least mostly works, but it may not be fully compatible and is not actively tested.
 
 # Recent changes
 
