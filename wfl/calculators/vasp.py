@@ -31,7 +31,10 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
     Notes
     -----
     "directory" argument cannot be present. Use rundir_prefix and workdir instead.
-    "command_gamma" is used when non-periodic cells or large enough kspacing are detected
+
+    "command_gamma" (or ASE_VASP_COMMAND_GAMMA) is used when non-periodic cells or large
+    enough kspacing are detected
+
     "pp" defaults to ".", so VASP_PP_PATH env var is absolute path to "<elem name>/POTCAR" files
 
     Parameters
