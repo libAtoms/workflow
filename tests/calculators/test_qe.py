@@ -5,6 +5,7 @@ import os
 from shutil import which, copy as shutil_copy
 from pathlib import Path
 import pytest
+from packaging.version import Version
 
 import ase.io
 import numpy as np
@@ -19,6 +20,28 @@ import wfl.calculators.espresso
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize import AutoparaInfo
+
+if Version(ase.__version__) < Version("3.23"):
+    espresso_prerequisites = pytest.mark.skip(reason="Quantum espresso tests are only supported for ASE v3.23, please update.")
+
+else:
+
+    from ase.config import cfg as ase_cfg
+    from ase.calculators.espresso import EspressoProfile
+
+    if "espresso" in ase_cfg.parser:
+        profile = EspressoProfile.from_config(ase_cfg, "espresso")
+        pseudo_dir = vars(profile).get("pseudo_dir", None)
+    else:
+        pseudo_dir = None
+
+    espresso_prerequisites = pytest.mark.skipif(
+        condition = 'espresso' not in ase_cfg.parser or pseudo_dir is None
+                    or 'OMP_NUM_THREADS' not in os.environ or os.environ['OMP_NUM_THREADS'] != "1",
+        reason='Missing "espresso" in ase\'s configuration file or "pseudo_path" ' +
+                    'in "espresso" configuration or ' +
+                    'or missing "OMP_NUM_THREADS" or "OMP_NUM_THREADS" ' +
+                    'is not set to 1.')
 
 
 @fixture(scope="session")
@@ -39,10 +62,6 @@ def qe_cmd_and_pseudo(tmp_path_factory):
         Si pseudo potential file
     """
 
-    cmd = os.environ.get("PYTEST_WFL_ASE_ESPRESSO_COMMAND")
-    if cmd is None:
-        skip("no PYTEST_WFL_ASE_ESPRESSO_COMMAND to specify executable")
-
     # originally downloaded from here, but broken due to need for account/license click
     # url = "https://www.quantum-espresso.org/upf_files/Si.pbe-n-kjpaw_psl.1.0.0.UPF"
     # replaced with this
@@ -56,22 +75,20 @@ def qe_cmd_and_pseudo(tmp_path_factory):
     pspot_file = tmp_path_factory.getbasetemp() / "Si.UPF"
     shutil_copy(Path(__file__).parent / ".." / "assets" / "QE" / "Si.pz-vbc.UPF", pspot_file)
 
-    return cmd, pspot_file
+    return pspot_file
 
 def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
 
-    qe_cmd, pspot = qe_cmd_and_pseudo
+    pspot = qe_cmd_and_pseudo
 
-    print("hi : ", qe_cmd, os.path.dirname(pspot))
     kw = dict(
         pseudopotentials=dict(Si=os.path.basename(pspot)),
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 3, 4),
         conv_thr=0.0001,
-#        calculator_exec=qe_cmd,
-        pseudo_dir=os.path.dirname(pspot),
+        pseudo_dir= os.path.dirname(pspot),
         workdir=tmp_path,
-		profile=EspressoProfile(qe_cmd, os.path.dirname(pspot))
+		profile=profile
     ) 
 
     # PBC = TTT
@@ -160,7 +177,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
 
 def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
     # command and pspot
-    qe_cmd, pspot = qe_cmd_and_pseudo
+    pspot = qe_cmd_and_pseudo
 
     # atoms
     at = bulk("Si")
@@ -172,10 +189,9 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-#        calculator_exec=qe_cmd,
         pseudo_dir=os.path.dirname(pspot),
         workdir=tmp_path,
-        profile=EspressoProfile(qe_cmd, os.path.dirname(pspot))
+        profile=profile
     ) 
 
     calc = (wfl.calculators.espresso.Espresso, [], kw)
@@ -221,7 +237,7 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
 
 def test_wfl_Espresso_calc(tmp_path, qe_cmd_and_pseudo):
     # command and pspot
-    qe_cmd, pspot = qe_cmd_and_pseudo
+    pspot = qe_cmd_and_pseudo
 
     atoms = Atoms("Si", cell=(2, 2, 2), pbc=[True] * 3)
     kw = dict(
@@ -229,9 +245,8 @@ def test_wfl_Espresso_calc(tmp_path, qe_cmd_and_pseudo):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-#        calculator_exec=qe_cmd,
         pseudo_dir=os.path.dirname(pspot),
-		profile=EspressoProfile(qe_cmd, os.path.dirname(pspot))
+		profile=profile
     ) 
 
     calc = wfl.calculators.espresso.Espresso(
@@ -246,7 +261,7 @@ def test_wfl_Espresso_calc(tmp_path, qe_cmd_and_pseudo):
 
 def test_wfl_Espresso_calc_via_generic(tmp_path, qe_cmd_and_pseudo):
 
-    qe_cmd, pspot = qe_cmd_and_pseudo
+    pspot = qe_cmd_and_pseudo
 
     atoms = Atoms("Si", cell=(2, 2, 2), pbc=[True] * 3)
     kw = dict(
@@ -254,10 +269,9 @@ def test_wfl_Espresso_calc_via_generic(tmp_path, qe_cmd_and_pseudo):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-#        calculator_exec=qe_cmd,
         pseudo_dir=os.path.dirname(pspot),
         workdir=tmp_path,
-		profile=EspressoProfile(qe_cmd, os.path.dirname(pspot))
+		profile=profile
     ) 
 
     calc = (wfl.calculators.espresso.Espresso, [], kw)
