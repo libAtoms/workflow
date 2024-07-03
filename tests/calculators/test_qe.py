@@ -68,7 +68,6 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 3, 4),
         conv_thr=0.0001,
-#        calculator_exec=qe_cmd,
         pseudo_dir=os.path.dirname(pspot),
         workdir=tmp_path,
 		profile=EspressoProfile(qe_cmd, os.path.dirname(pspot))
@@ -172,7 +171,6 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-#        calculator_exec=qe_cmd,
         pseudo_dir=os.path.dirname(pspot),
         workdir=tmp_path,
         profile=EspressoProfile(qe_cmd, os.path.dirname(pspot))
@@ -229,7 +227,6 @@ def test_wfl_Espresso_calc(tmp_path, qe_cmd_and_pseudo):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-#        calculator_exec=qe_cmd,
         pseudo_dir=os.path.dirname(pspot),
 		profile=EspressoProfile(qe_cmd, os.path.dirname(pspot))
     ) 
@@ -254,7 +251,6 @@ def test_wfl_Espresso_calc_via_generic(tmp_path, qe_cmd_and_pseudo):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-#        calculator_exec=qe_cmd,
         pseudo_dir=os.path.dirname(pspot),
         workdir=tmp_path,
 		profile=EspressoProfile(qe_cmd, os.path.dirname(pspot))
