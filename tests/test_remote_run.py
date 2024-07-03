@@ -190,9 +190,10 @@ def do_generic_calc_qe(tmp_path, sys_name, monkeypatch, remoteinfo_env):
           'resources': {'max_time': '1h', 'num_nodes': 1},
           'num_inputs_per_queued_job': -36, 'check_interval': 10}
 
-    qe_cmd = os.environ.get("PYTEST_WFL_ASE_ESPRESSO_COMMAND")
-    if qe_cmd is None:
-        pytest.skip("no PYTEST_WFL_ASE_ESPRESSO_COMMAND to specify executable")
+    from ase.config import cfg as ase_cfg
+    from ase.calculators.espresso import EspressoProfile
+    profile = EspressoProfile.from_config(ase_cfg, "espresso")
+
     pspot = tmp_path / "Si.UPF"
     shutil.copy(Path(__file__).parent / "assets" / "QE" / "Si.pz-vbc.UPF", pspot)
 
@@ -208,8 +209,8 @@ def do_generic_calc_qe(tmp_path, sys_name, monkeypatch, remoteinfo_env):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-        calculator_exec=qe_cmd,
-        pseudo_dir=str(pspot.parent)
+        pseudo_dir=str(pspot.parent),
+        profile=profile
     )
 
     calc = (Espresso, [], kw)
