@@ -86,7 +86,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 3, 4),
         conv_thr=0.0001,
-        pseudo_dir= os.path.dirname(pspot),
+        pseudo_dir=os.path.dirname(pspot),
         workdir=tmp_path,
 		profile=profile
     ) 
