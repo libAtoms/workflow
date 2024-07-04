@@ -31,6 +31,10 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
     Notes
     -----
     "directory" argument cannot be present. Use rundir_prefix and workdir instead.
+
+    "command_gamma" (or ASE_VASP_COMMAND_GAMMA) is used when non-periodic cells or large
+    enough kspacing are detected
+
     "pp" defaults to ".", so VASP_PP_PATH env var is absolute path to "<elem name>/POTCAR" files
 
     Parameters
@@ -48,11 +52,8 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
     scratchdir: str / Path, default None
         temporary directory to execute calculations in and delete or copy back results (set by
         "keep_files") if needed.  For example, directory on a local disk with fast file I/O.
-    calculator_exec: str
-        executable to run (without ASE-specific command line arguments). Mutually exclusive with ASE-built-in "command"
-    calculator_exec_gamma: str
-        executable to run for nonperiodic systems (overrides ASE_VASP_COMMAND_GAMMA, VASP_COMMAND_GAMMA, VASP_SCRIPT_GAMMA).
-        Mutually exclusive with ASE-built-in "command" and "command_gamma"
+    command_gamma: str, default None
+        command to use when gamma-only calculations are detected (e.g. large kspacing, or pbc=False)
     **kwargs: arguments for ase.calculators.vasp.vasp.Vasp
         remaining arguments to ASE's Vasp calculator constructor
     """
@@ -70,8 +71,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
     })
 
     def __init__(self, keep_files="default", rundir_prefix="run_VASP_",
-                 workdir=None, scratchdir=None,
-                 calculator_exec=None, calculator_exec_gamma=None,
+                 workdir=None, scratchdir=None, command_gamma=None,
                  **kwargs):
 
         # get initialparams from env var
@@ -91,16 +91,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
         if "pp" not in kwargs_use:
             kwargs_use["pp"] = "."
 
-        if calculator_exec is not None:
-            if "command" in kwargs_use or "command_gamma" in kwargs_use:
-                raise ValueError("Cannot specify both calculator_exec and command or command_gamma")
-            self.command = calculator_exec
-        if calculator_exec_gamma is not None:
-            if "command" in kwargs_use or "command_gamma" in kwargs_use:
-                raise ValueError("Cannot specify both calculator_exec_gamma and command or command_gamma")
-            self._command_gamma = calculator_exec_gamma
-        else:
-            self._command_gamma = kwargs_use.pop("command_gamma", None)
+        self._command_gamma = command_gamma
 
         self.universal_kspacing = kwargs_use.pop("universal_kspacing", None)
 
@@ -132,11 +123,22 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
         self._orig_command = self.command
         self._orig_kspacing = self.float_params["kspacing"]
         self._orig_kgamma = self.bool_params["kgamma"]
-        if np.all(~self._orig_pbc):
+        use_gamma_exec = np.all(~self._orig_pbc)
+        # gamma centered if kgamma is undefined (default) or True
+        if self._orig_kgamma is None or self._orig_kgamma:
+            try:
+                n_k = np.maximum(1, np.ceil(np.linalg.norm(atoms.cell.reciprocal(), axis=1) * 2.0 * np.pi / self._orig_kspacing))
+                use_gamma_exec |= np.all(n_k == 1)
+            except TypeError:
+                pass
+
+        if use_gamma_exec:
             # set command
             if self._command_gamma is not None:
+                # from constructor argument that was saved
                 command_gamma = self._command_gamma
             else:
+                # from env var
                 command_gamma = None
                 for env_var in self.env_commands:
                     if env_var + "_GAMMA" in os.environ:
@@ -145,7 +147,7 @@ class Vasp(WFLFileIOCalculator, ASE_Vasp):
             if command_gamma is not None:
                 self.command = command_gamma
 
-            # set k-points for nonperiodic systems
+            # explicitly set k-points for nonperiodic systems
             self.float_params["kspacing"] = 1.0e8
             self.bool_params["kgamma"] = True
 

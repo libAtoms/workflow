@@ -1,7 +1,11 @@
 import os
 import pytest
+from pathlib import Path
+
+from packaging.version import Version
 
 import numpy as np
+import ase
 from ase import Atoms
 from ase.build import bulk
 
@@ -9,15 +13,29 @@ import wfl.calculators.aims
 from wfl.calculators import generic
 from wfl.configset import OutputSpec
 
+if Version(ase.__version__) < Version("3.23"):
+    aims_prerequisites = pytest.mark.skip(reason="Aims tests are only supported for ASE v3.23, please update.")
 
-aims_prerequisites = pytest.mark.skipif(
-        condition='ASE_AIMS_COMMAND' not in os.environ or 'AIMS_SPECIES_DIR' not in os.environ
-                   or not os.environ['AIMS_SPECIES_DIR'].endswith('light')
-                   or 'OMP_NUM_THREADS' not in os.environ or os.environ['OMP_NUM_THREADS'] != "1",
-        reason='Missing env var ASE_AIMS_COMMAND or ASE_SPECIES_DIR or ' +
-               'ASE_SPECIES_DIR does not refer to light-settings or ' +
-               'OMP_NUM_THREADS or OMP_NUM_THREADS has not correctly been set to 1'
-        )
+else:
+
+    from ase.config import cfg as ase_cfg
+    from ase.calculators.aims import AimsProfile
+
+    if "aims" in ase_cfg.parser:
+        profile = AimsProfile.from_config(ase_cfg, "aims")
+        species_dir = vars(profile).get("default_species_directory", None)
+    else:
+        species_dir = None
+
+    aims_prerequisites = pytest.mark.skipif(
+        condition = 'aims' not in ase_cfg.parser or species_dir is None
+                    or Path(species_dir).name != "light"
+                    or 'OMP_NUM_THREADS' not in os.environ or os.environ['OMP_NUM_THREADS'] != "1",
+        reason='Missing "aims" in ase\'s configuration file or "default_species_directory" ' +
+                    'in "aims" configuration or "default_species_directory"" does not refer' +
+                    'to "light" settings or missing "OMP_NUM_THREADS" or "OMP_NUM_THREADS" ' +
+                    'is not set to 1.'
+    )
 
 
 @pytest.fixture
@@ -41,7 +59,7 @@ def parameters_nonperiodic():
     }
     return parameters
 
-
+@aims_prerequisites
 def test_setup_calc_params(parameters_nonperiodic):
 
     parameters = parameters_nonperiodic
@@ -57,7 +75,7 @@ def test_setup_calc_params(parameters_nonperiodic):
     parameters.update(parameters_periodic)
 
     # needed so new ASE versions don't complain about a lack of configuration
-    parameters["calculator_exec"] = "_DUMMY_"
+    parameters["profile"] = AimsProfile("_DUMMY_")
 
     # PBC is FFF
     atoms = Atoms("H")
@@ -150,3 +168,6 @@ def test_generic_aims_calculation(tmp_path, parameters_nonperiodic):
     assert si2.arrays["Aims_forces"][0, 0] == pytest.approx(expected=-0.29253217, abs=1e-3)
     assert si2.arrays["Aims_forces"][:, 1:] == pytest.approx(0.0)
     assert si2.arrays["Aims_forces"][0] == pytest.approx(-1 * si2.arrays["Aims_forces"][1])
+
+
+

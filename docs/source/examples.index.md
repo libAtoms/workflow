@@ -7,7 +7,6 @@ Examples often show examples of more than one thing. Below is a list of common o
 ## Evaluate structures with a calculator
  
 - ORCA: [ORCA via python script](examples.orca_python.md)
-- MACE: [Parallelize MACE calculator](examples.mace.md)
 - EMT: 
     - [First example](first_example.md)
     - [Iterative GAP fitting ](examples.mlip_fitting.md)

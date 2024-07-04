@@ -70,7 +70,7 @@ cat<<EOF > remoteinfo.json
      "resources": { "num_nodes" : 1, "max_time": "24h" },
      "num_inputs_per_queued_job" : 1,
      "input_files": ["POTCARs"],
-     "env_vars": ["VASP_COMMAND=${vasp_path}", "VASP_PP_PATH=POTCARs",
+     "env_vars": ["ASE_VASP_COMMAND=${vasp_path}", "VASP_PP_PATH=POTCARs",
                   "WFL_NUM_PYTHON_SUBPROCESSES=\${EXPYRE_NCORES_PER_NODE}",
                   "WFL_VASP_KWARGS='{ \"ncore\": '\${EXPYRE_NCORES_PER_NODE}'}'" ]
    }
