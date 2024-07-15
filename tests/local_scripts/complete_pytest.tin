@@ -58,6 +58,16 @@ if [ -d $pytest_dir ]; then
     echo "Refusing to run after failing to delete $pytest_dir" 1>&2
     exit 1
 fi
+
+# set up config file for various (so far just espresso) tests
+mkdir -p $pytest_dir
+export ASE_CONFIG_PATH=$PWD/pytest_wfl_config.ini
+cat << EOF > $ASE_CONFIG_PATH
+[espresso]
+command = $PYTEST_WFL_ASE_ESPRESSO_COMMAND
+pseudo_dir = $pytest_dir
+EOF
+
 pytest -v -s --basetemp $pytest_dir ${runremote} --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
 
 l=`egrep '^=.*(passed|failed|skipped|xfailed)' complete_pytest.tin.out`

@@ -22,30 +22,23 @@ from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize import AutoparaInfo
 
 if Version(ase.__version__) < Version("3.23"):
-    espresso_prerequisites = pytest.mark.skip(reason="Quantum espresso tests are only supported for ASE v3.23, please update.")
+     pytest.skip(reason="Quantum espresso tests are only supported for ASE v3.23, please update.")
 
-else:
 
-    from ase.config import cfg as ase_cfg
-    from ase.calculators.espresso import EspressoProfile
+from ase.config import cfg as ase_cfg
+from ase.calculators.espresso import EspressoProfile
 
-    if "espresso" in ase_cfg.parser:
-        profile = EspressoProfile.from_config(ase_cfg, "espresso")
-        pseudo_dir = vars(profile).get("pseudo_dir", None)
-    else:
-        pseudo_dir = None
+pytest_command = os.environ.get("PYTEST_WFL_ASE_ESPRESSO_COMMAND")
+if pytest_command is None and "espresso" in ase_cfg.parser:
+    pytest_command = EspressoProfile.from_config(ase_cfg, "espresso").command
 
-    espresso_prerequisites = pytest.mark.skipif(
-        condition = 'espresso' not in ase_cfg.parser or pseudo_dir is None
-                    or 'OMP_NUM_THREADS' not in os.environ or os.environ['OMP_NUM_THREADS'] != "1",
-        reason='Missing "espresso" in ase\'s configuration file or "pseudo_path" ' +
-                    'in "espresso" configuration or ' +
-                    'or missing "OMP_NUM_THREADS" or "OMP_NUM_THREADS" ' +
-                    'is not set to 1.')
+if (pytest_command is None or os.environ.get('OMP_NUM_THREADS') != "1"):
+    pytest.skip('No command in PYTEST_WFL_ASE_ESPRESSO_COMMAND or "espresso" configuration '
+                'or "OMP_NUM_THREADS" is not set to 1.')
 
 
 @fixture(scope="session")
-def qe_cmd_and_pseudo(tmp_path_factory):
+def qe_profile_and_pseudo(tmp_path_factory):
     """Quantum Espresso fixture
 
     - checks if pw.x exists (skip otherwise)
@@ -56,10 +49,10 @@ def qe_cmd_and_pseudo(tmp_path_factory):
 
     Returns
     -------
-    cmd: str
-        command for pw.x
+    profile: str
+        EspressoProfile with correct command and pseudo dir for pytest
     pspot_file: str
-        Si pseudo potential file
+        Si pseudo potential file name
     """
 
     # originally downloaded from here, but broken due to need for account/license click
@@ -75,14 +68,15 @@ def qe_cmd_and_pseudo(tmp_path_factory):
     pspot_file = tmp_path_factory.getbasetemp() / "Si.UPF"
     shutil_copy(Path(__file__).parent / ".." / "assets" / "QE" / "Si.pz-vbc.UPF", pspot_file)
 
-    return pspot_file
+    return EspressoProfile(command=pytest_command, pseudo_dir=pspot_file.parent), pspot_file.name
 
-def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
 
-    pspot = qe_cmd_and_pseudo
+def test_qe_kpoints(tmp_path, qe_profile_and_pseudo):
+
+    profile, pspot = qe_profile_and_pseudo
 
     kw = dict(
-        pseudopotentials=dict(Si=os.path.basename(pspot)),
+        pseudopotentials=dict(Si=pspot),
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 3, 4),
         conv_thr=0.0001,
@@ -103,7 +97,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
 
     # PBC = FFF
     atoms = Atoms("H", cell=[1, 1, 1], pbc=False)
-    properties = ["energy", "stress", "forces"] 
+    properties = ["energy", "stress", "forces"]
     ## removing stress here to duplicate what calculators.generic would do
     properties.remove("stress")
     ##
@@ -124,7 +118,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
 
     # PBC mixed -- kpts
     atoms = Atoms("H", cell=[1, 1, 1], pbc=[True, False, False])
-    properties = ["energy", "stress", "forces"] 
+    properties = ["energy", "stress", "forces"]
     kw["koffset"] = True
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
@@ -145,8 +139,8 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
 
     # koffset in mixed PBC
     atoms = Atoms("H", cell=[1, 1, 1], pbc=[True, False, False])
-    properties = ["energy", "forces"] 
-    kw["koffset"] = False 
+    properties = ["energy", "forces"]
+    kw["koffset"] = False
     calc = wfl.calculators.espresso.Espresso(**kw)
     calc.atoms = atoms.copy()
     calc.setup_calc_params(properties)
@@ -156,7 +150,7 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
 
     # PBC mixed -- kspacing
     atoms = Atoms("H", cell=[1, 1, 1], pbc=[True, False, False])
-    properties = ["energy", "stress", "forces"] 
+    properties = ["energy", "stress", "forces"]
     kw["kspacing"] = 0.1
     kw["koffset"] = (0, 1, 0)
     calc = wfl.calculators.espresso.Espresso(**kw)
@@ -175,9 +169,9 @@ def test_qe_kpoints(tmp_path, qe_cmd_and_pseudo):
     assert calc.parameters["koffset"] == (0, 0, 0)
 
 
-def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
-    # command and pspot
-    pspot = qe_cmd_and_pseudo
+def test_qe_calculation(tmp_path, qe_profile_and_pseudo):
+
+    profile, pspot = qe_profile_and_pseudo
 
     # atoms
     at = bulk("Si")
@@ -185,14 +179,13 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
     at0 = Atoms("Si", cell=[6.0, 6.0, 6.0], positions=[[3.0, 3.0, 3.0]], pbc=False)
 
     kw = dict(
-        pseudopotentials=dict(Si=os.path.basename(pspot)),
+        pseudopotentials=dict(Si=pspot),
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-        pseudo_dir=os.path.dirname(pspot),
         workdir=tmp_path,
         profile=profile
-    ) 
+    )
 
     calc = (wfl.calculators.espresso.Espresso, [], kw)
 
@@ -201,8 +194,8 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
 
     results = generic.calculate(
         inputs=[at0, at],
-        outputs=c_out, 
-        calculator=calc, 
+        outputs=c_out,
+        calculator=calc,
         output_prefix='QE_',
     )
 
@@ -235,13 +228,13 @@ def test_qe_calculation(tmp_path, qe_cmd_and_pseudo):
     assert si2.arrays["QE_forces"][0] == approx(-1 * si2.arrays["QE_forces"][1])
 
 
-def test_wfl_Espresso_calc(tmp_path, qe_cmd_and_pseudo):
-    # command and pspot
-    pspot = qe_cmd_and_pseudo
+def test_wfl_Espresso_calc(tmp_path, qe_profile_and_pseudo):
+
+    profile, pspot = qe_profile_and_pseudo
 
     atoms = Atoms("Si", cell=(2, 2, 2), pbc=[True] * 3)
     kw = dict(
-        pseudopotentials=dict(Si=os.path.basename(pspot)),
+        pseudopotentials=dict(Si=pspot),
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 2, 2),
         conv_thr=0.0001,
@@ -259,13 +252,13 @@ def test_wfl_Espresso_calc(tmp_path, qe_cmd_and_pseudo):
     atoms.get_stress()
 
 
-def test_wfl_Espresso_calc_via_generic(tmp_path, qe_cmd_and_pseudo):
+def test_wfl_Espresso_calc_via_generic(tmp_path, qe_profile_and_pseudo):
 
-    pspot = qe_cmd_and_pseudo
+    profile, pspot = qe_profile_and_pseudo
 
     atoms = Atoms("Si", cell=(2, 2, 2), pbc=[True] * 3)
     kw = dict(
-        pseudopotentials=dict(Si=os.path.basename(pspot)),
+        pseudopotentials=dict(Si=pspot),
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 2, 2),
         conv_thr=0.0001,
@@ -285,8 +278,8 @@ def test_wfl_Espresso_calc_via_generic(tmp_path, qe_cmd_and_pseudo):
 
     ci = generic.calculate(
         inputs=ci,
-        outputs=co, 
-        calculator=calc, 
+        outputs=co,
+        calculator=calc,
         output_prefix='qe_',
         autopara_info=autoparainfo
     )
@@ -296,3 +289,38 @@ def test_wfl_Espresso_calc_via_generic(tmp_path, qe_cmd_and_pseudo):
     assert "qe_calculation_failed" in list(ci)[-1].info
 
 
+def test_wfl_Espresso_no_explicit_profile(tmp_path, qe_profile_and_pseudo, monkeypatch):
+    _, pspot = qe_profile_and_pseudo
+
+    import ase.config
+    ase.config.cfg = ase.config.Config.read()
+
+    atoms = Atoms("Si", cell=(2, 2, 2), pbc=[True] * 3)
+    kw = dict(
+        pseudopotentials=dict(Si=pspot),
+        input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
+        kpts=(2, 2, 2),
+        conv_thr=0.0001,
+        workdir=tmp_path
+    )
+
+    calc = (wfl.calculators.espresso.Espresso, [], kw)
+
+    cfgs = [atoms]*3 + [Atoms("Cu", cell=(2, 2, 2), pbc=[True]*3)]
+    ci = ConfigSet(cfgs)
+    co = OutputSpec()
+    autoparainfo = AutoparaInfo(
+        num_python_subprocesses=0
+    )
+
+    ci = generic.calculate(
+        inputs=ci,
+        outputs=co,
+        calculator=calc,
+        output_prefix='qe_',
+        autopara_info=autoparainfo
+    )
+
+    ats = list(ci)
+    assert not any("qe_calculation_failed" in at.info for at in ats[:-1])
+    assert "qe_calculation_failed" in list(ci)[-1].info

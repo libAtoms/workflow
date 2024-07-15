@@ -182,6 +182,18 @@ jobs:
           ls -l /usr/bin/pw.x
           export PYTEST_WFL_ASE_ESPRESSO_COMMAND=pw.x
 
+      - name: set up ASE config file
+        run: |
+          export config_file_plain=${HOME}/pytest_plain_config.ini
+          echo "[espresso]" > ${config_file_plain}
+          echo "command = ${PYTEST_WFL_ASE_ESPRESSO_COMMAND}" >> ${config_file_plain}
+          echo "pseudo_dir = ${HOME}/pytest_plain" >> ${config_file_plain}
+
+          export config_file_cov=${HOME}/pytest_cov_config.ini
+          echo "[espresso]" > ${config_file_cov}
+          echo "command = ${PYTEST_WFL_ASE_ESPRESSO_COMMAND}" >> ${config_file_cov}
+          echo "pseudo_dir = ${HOME}/pytest_cov" >> ${config_file_cov}
+
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
@@ -200,6 +212,7 @@ jobs:
           export WFL_NUM_PYTHON_SUBPROCESSES=2
           export OMP_NUM_THREADS=1
           export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
+          export ASE_CONFIG_PATH=${config_file_plain}
           pytest --runremote --basetemp $HOME/pytest_plain -rxXs
 
       - name: Test with pytest - coverage
@@ -217,6 +230,7 @@ jobs:
           export WFL_NUM_PYTHON_SUBPROCESSES=2
           export OMP_NUM_THREADS=1
           export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
+          export ASE_CONFIG_PATH=${config_file_cov}
           pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs
 
       # # DEBUGGING
