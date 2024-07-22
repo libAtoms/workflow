@@ -182,17 +182,15 @@ jobs:
           ls -l /usr/bin/pw.x
           espresso_command=pw.x
 
-      - name: set up ASE config files (same content but in multiple pytest run directories)
+      - name: set up ASE config files
         run: |
-          export config_file_plain=${HOME}/pytest_plain_config.ini
-          echo "[espresso]" > ${config_file_plain}
-          echo "command = ${espresso_command}" >> ${config_file_plain}
-          echo "pseudo_dir = ${HOME}/pytest_plain" >> ${config_file_plain}
-
-          export config_file_cov=${HOME}/pytest_cov_config.ini
-          echo "[espresso]" > ${config_file_cov}
-          echo "command = ${espresso_command}" >> ${config_file_cov}
-          echo "pseudo_dir = ${HOME}/pytest_cov" >> ${config_file_cov}
+          export config_file=${HOME}/pytest_plain_config.ini
+          echo "[espresso]" > ${config_file}
+          echo "command = ${espresso_command}" >> ${config_file}
+          echo "pseudo_dir = ${HOME}/dummy" >> ${config_file}
+          export ASE_CONFIG_PATH=${config_file}
+          echo ASE_CONFIG_PATH $ASE_CONFIG_PATH
+          cat $ASE_CONFIG_PATH
 
       - name: Lint with flake8
         run: |
@@ -212,7 +210,6 @@ jobs:
           export WFL_NUM_PYTHON_SUBPROCESSES=2
           export OMP_NUM_THREADS=1
           export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
-          export ASE_CONFIG_PATH=${config_file_plain}
           pytest --runremote --basetemp $HOME/pytest_plain -rxXs
 
       - name: Test with pytest - coverage
@@ -230,7 +227,6 @@ jobs:
           export WFL_NUM_PYTHON_SUBPROCESSES=2
           export OMP_NUM_THREADS=1
           export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
-          export ASE_CONFIG_PATH=${config_file_cov}
           pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs
 
       # # DEBUGGING
