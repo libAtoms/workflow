@@ -110,7 +110,7 @@ jobs:
 # dependency from https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow
 
   deploy-docs:
-    if: github.event.action == 'push'
+    if: github.event.pull_request.merged == true 
     needs: build-docs
     runs-on: ubuntu-latest
 

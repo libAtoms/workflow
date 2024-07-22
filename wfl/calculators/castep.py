@@ -105,7 +105,7 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
             self.clean_rundir(_default_keep_files, calculation_succeeded)
 
             # reset pbc because Castep overwrites it to True
-            self.atoms.pbc = orig_pbc(False)
+            self.atoms.pbc = orig_pbc
 
 
     def setup_calc_params(self, properties):
