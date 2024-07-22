@@ -55,8 +55,6 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
 
         kwargs_command = deepcopy(kwargs)
 
-        assert "profile" in kwargs_command
-
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
                          workdir=workdir, scratchdir=scratchdir, **kwargs_command)
@@ -86,9 +84,6 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
             calculation_succeeded = True
             if 'DFT_FAILED_ESPRESSO' in atoms.info:
                 del atoms.info['DFT_FAILED_ESPRESSO']
-            if "__calculator_output_prefix" in atoms.info:
-                save_calc_results(atoms, prefix=atoms.info["__calculator_output_prefix"], properties=properties)
-                atoms.info["__calculator_results_saved"] = True
         except Exception as exc:
             atoms.info['DFT_FAILED_ESPRESSO'] = True
             calculation_succeeded = False
