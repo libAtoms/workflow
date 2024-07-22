@@ -106,7 +106,7 @@ jobs:
 
       - name: Julia and ace fit
         run: |
-          python3 -m pip install pip install threadpoolctl
+          python3 -m pip install threadpoolctl
           wget https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-1.8.1-linux-x86_64.tar.gz
           tar xzf julia-1.8.1-linux-x86_64.tar.gz
           # note that this hardwires a particular compatible ACE1pack version
