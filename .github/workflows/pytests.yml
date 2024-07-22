@@ -19,6 +19,7 @@ jobs:
     env:
       coverage-on-version: "3.9"
       use-mpi: True
+      PIP_CONSTRAINT: pip_constraint.txt
     defaults:
       run:
         shell: bash -l {0}
@@ -38,10 +39,13 @@ jobs:
           python3 --version
 
       - name: Install dependencies from pip
-        run: python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit flake8 pytest pytest-cov requests
-
-      - name: Install latest ASE from gitlab
         run: |
+          echo "numpy<2" >> $PIP_CONSTRAINT
+          python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit flake8 pytest pytest-cov requests
+
+      - name: Install latest ASE from pypi
+        run: |
+          echo PIP_CONSTRAINT $PIP_CONSTRAINT
           python3 -m pip install ase 
           echo -n "ASE VERSION "
           python3 -c "import ase; print(ase.__file__, ase.__version__)"
@@ -62,19 +66,22 @@ jobs:
         run: |
             # find mklvars
             for pkg in $( apt list --installed | fgrep "installed" | fgrep "mkl" | sed "s#/.*##" ); do
-                if dpkg -L $pkg | egrep -q 'vars.sh$'; then
-                    mklvars=$( dpkg -L $pkg | egrep 'vars.sh$' )
+                if dpkg -L $pkg | egrep -q 'env/vars.sh$'; then
+                    mklvars=$( dpkg -L $pkg | egrep 'env/vars.sh$' )
                     break
                 fi
             done
-            if [ -z $mklvars ]; then
-                echo 'Failed to find *vars.sh in any pkg named *mkl*'
+            if [ $( echo $mklvars | wc -w ) != 1 ]; then
+                echo "wrong number of  mkl setvars.sh '$mklvars'" 1>&2
                 exit 1
             fi
             source $mklvars intel64
 
+            export PIP_CONSTRAINT=$PWD/$PIP_CONSTRAINT
+
             git clone https://github.com/phonopy/phonopy
             cd phonopy
+            echo python3 -m pip install -e . -vvv
             python3 -m pip install -e . -vvv
             cd ..
 
@@ -203,10 +210,6 @@ jobs:
       - name: Test with pytest - coverage
         if: env.coverage-on-version == matrix.python-version
         run: |
-          echo "BOB pre actual pytest"
-          which python3
-          python3 -m pip list | grep numpy
-          python3 -c "import numpy; print(numpy.__file__, numpy.__version__)"
           rm -rf $HOME/pytest_cov
           mkdir $HOME/pytest_cov
           #
