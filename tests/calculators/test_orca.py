@@ -23,9 +23,6 @@ from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize import AutoparaInfo
 
-pytestmark = pytest.mark.xfail(reason="calculator needs to be updated to work with latest gitlab version of ase")
-
-
 ref_parameters = dict(charge=0,
                       mult=1,
                       orca_command="dummy_no_orca_exec",
@@ -72,7 +69,7 @@ def test_orca_is_converged():
     assert orca.is_converged() is None
 
 
-@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
+#@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
 def test_full_orca(tmp_path):
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
 
@@ -107,9 +104,9 @@ def test_full_orca(tmp_path):
     atoms.get_potential_energy()
 
 
-@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
+#@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
 def test_orca_with_generic(tmp_path):
-    
+
     home_dir = tmp_path / "home_dir"
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
@@ -127,9 +124,10 @@ def test_orca_with_generic(tmp_path):
     for at in outputs.to_ConfigSet():
         assert "orca_energy" in at.info or "orca_calculation_failed" in at.info
 
-@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
+
+#@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
 def test_orca_geometry_optimisation(tmp_path):
-    
+
     home_dir = tmp_path / "home_dir"
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
@@ -152,7 +150,7 @@ def test_orca_geometry_optimisation(tmp_path):
 
 @pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
 def test_post_processing(tmp_path):
-       
+
     home_dir = tmp_path / "home_dir"
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
@@ -173,7 +171,7 @@ def test_parse_npa_output():
     assert np.all([v1==v2 for v1, v2 in zip(elements, ["O", "H", "H"])])
     assert np.all([pytest.approx(v1)==v2 for v1, v2 in zip(populations, ref_populations)])
     assert np.all([pytest.approx(v1)==v2 for v1, v2 in zip(charges,ref_charges)]) 
-    
+ 
 
 def simplest_orca_post(orca_calc):
 

@@ -44,16 +44,13 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
     scratchdir: str / Path, default None
         temporary directory to execute calculations in and delete or copy back results (set by
         "keep_files") if needed.  For example, directory on a local disk with fast file I/O.
-    calculator_exec: str, default "orca"
-        command for ORCA, without any prefix or redirection set.
-        for example: "/path/to/orca"
-        mutually exclusive with "command"
     post_process: function that takes the current instance of the calculator and is to be
         executed after reading back results from file, but before all the files are deleted.
         For example, a localisation scheme that uses the wavefunction files and saves local
         charges to `ORCA.extra_results`.
 
-    **kwargs: arguments for ase.calculators.espresso.Espresso
+    **kwargs: arguments for ase.calculators.orca.ORCA
+        see https://wiki.fysik.dtu.dk/ase/ase/calculators/orca.html#module-ase.calculators.orca
     """
 
     implemented_properties = ["energy", "forces", "dipole"]
@@ -72,18 +69,6 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
     def __init__(self, keep_files="default", rundir_prefix="ORCA_", scratchdir=None,
                  workdir=None, calculator_exec=None, post_process=None,
                  **kwargs):
-
-        if calculator_exec is not None:
-            if "command" in kwargs:
-                raise ValueError("Cannot specify both calculator_exec and command")
-            if " PREFIX " in calculator_exec:
-                raise ValueError("calculator_exec should not include orca command line arguments such as ' PREFIX.inp > PREFIX.out'")
-            self.command = f'{calculator_exec} PREFIX.inp > ' \
-                           f'PREFIX.out'
-        elif calculator_exec is None and "command" not in kwargs:
-            self.command = os.environ.get("ASE_ORCA_COMMAND", "orca PREFIX.inp > PREFIX.out")
-        else:
-            self.command = kwargs["command"]
 
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
                          workdir=workdir, scratchdir=scratchdir, **kwargs)
@@ -112,7 +97,10 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
             if self.post_process is not None:
                 self.post_process(self)
             calculation_succeeded = True
+            if 'DFT_FAILED_ORCA' in atoms.info:
+                del atoms.info["DFT_FAILED_ORCA"]
         except Exception as e:
+            atoms.info["DFT_FAILED_ORCA"] = TRUE
             calculation_succeeded = False
             raise e
         finally:
@@ -121,16 +109,6 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
             # from WFLFileIOCalculator
             self.clean_rundir(_default_keep_files, calculation_succeeded)
 
-
-
-    def cleanup(self):
-        """Clean all (empty) directories that could not have been removed
-        immediately after the calculation, for example, because other parallel
-        process might be using them."""
-        if any(self.workdir_root.iterdir()):
-            print(f'{self.workdir_root.name} is not empty, not removing')
-        else:
-            self.workdir_root.rmdir()
 
 
     def write_input(self, atoms, properties=None, system_changes=None):
