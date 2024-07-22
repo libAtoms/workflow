@@ -29,20 +29,18 @@ from ase.config import cfg as ase_cfg
 from ase.calculators.espresso import EspressoProfile
 
 pytest_command = os.environ.get("PYTEST_WFL_ASE_ESPRESSO_COMMAND")
-if pytest_command is None and "espresso" in ase_cfg.parser:
+if "espresso" in ase_cfg.parser and os.environ.get('OMP_NUM_THREADS') == "1":
     pytest_command = EspressoProfile.from_config(ase_cfg, "espresso").command
-
-if (pytest_command is None or os.environ.get('OMP_NUM_THREADS') != "1"):
-    pytest.skip('No command in PYTEST_WFL_ASE_ESPRESSO_COMMAND or "espresso" configuration '
-                'or "OMP_NUM_THREADS" is not set to 1.')
+else:
+    pytest.skip('No command in "espresso" configuration or "OMP_NUM_THREADS" is not set to 1.')
 
 
 @fixture(scope="session")
 def qe_profile_and_pseudo(tmp_path_factory):
     """Quantum Espresso fixture
 
-    - checks if pw.x exists (skip otherwise)
-    - downloads a pseudo-potential for Si
+    - create profile with command from user's profile and pseudo_dir for pytest PPs
+    - copies a pseudo-potential for Si
 
     implementation based on:
     https://stackoverflow.com/questions/63417661/pytest-downloading-a-test-file-once-and-using-it-for-multiple-tests
@@ -66,7 +64,7 @@ def qe_profile_and_pseudo(tmp_path_factory):
 
     # write to a temporary file
     pspot_file = tmp_path_factory.getbasetemp() / "Si.UPF"
-    shutil_copy(Path(__file__).parent / ".." / "assets" / "QE" / "Si.pz-vbc.UPF", pspot_file)
+    shutil_copy(Path(__file__).parent.parent / "assets" / "QE" / "Si.pz-vbc.UPF", pspot_file)
 
     return EspressoProfile(command=pytest_command, pseudo_dir=pspot_file.parent), pspot_file.name
 
@@ -80,9 +78,8 @@ def test_qe_kpoints(tmp_path, qe_profile_and_pseudo):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 3, 4),
         conv_thr=0.0001,
-        pseudo_dir=os.path.dirname(pspot),
         workdir=tmp_path,
-		profile=profile
+        profile=profile
     ) 
 
     # PBC = TTT
@@ -238,12 +235,12 @@ def test_wfl_Espresso_calc(tmp_path, qe_profile_and_pseudo):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-        pseudo_dir=os.path.dirname(pspot),
-		profile=profile
+        profile=profile
     ) 
 
     calc = wfl.calculators.espresso.Espresso(
         workdir=tmp_path,
+        keep_files=True,
         **kw)
     atoms.calc = calc
 
@@ -262,9 +259,8 @@ def test_wfl_Espresso_calc_via_generic(tmp_path, qe_profile_and_pseudo):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-        pseudo_dir=os.path.dirname(pspot),
         workdir=tmp_path,
-		profile=profile
+        profile=profile
     ) 
 
     calc = (wfl.calculators.espresso.Espresso, [], kw)

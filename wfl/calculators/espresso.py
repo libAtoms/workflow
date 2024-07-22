@@ -55,8 +55,6 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
 
         kwargs_command = deepcopy(kwargs)
 
-        assert "profile" in kwargs_command
-
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
                          workdir=workdir, scratchdir=scratchdir, **kwargs_command)

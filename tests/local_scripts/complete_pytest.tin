@@ -32,7 +32,7 @@ export ASE_VASP_COMMAND_GAMMA=vasp.gamma.serial
 export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
 # QE
 module load dft/pwscf
-export PYTEST_WFL_ASE_ESPRESSO_COMMAND="env MPIRUN_EXTRA_ARGS='-np 1' pw.x"
+espresso_command="env MPIRUN_EXTRA_ARGS='-np 1' pw.x"
 # no ORCA
 
 export OPENBLAS_NUM_THREADS=1
@@ -61,10 +61,11 @@ fi
 
 # set up config file for various (so far just espresso) tests
 mkdir -p $pytest_dir
-export ASE_CONFIG_PATH=$PWD/pytest_wfl_config.ini
+export ASE_CONFIG_PATH=$pytest_dir/pytest_wfl_config.ini
+echo "Creating ASE_CONFIG_PATH $ASE_CONFIG_PATH"
 cat << EOF > $ASE_CONFIG_PATH
 [espresso]
-command = $PYTEST_WFL_ASE_ESPRESSO_COMMAND
+command = $espresso_command
 pseudo_dir = $pytest_dir
 EOF
 
