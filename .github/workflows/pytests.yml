@@ -126,9 +126,7 @@ jobs:
         run: |
           wget http://openmopac.net/mopac-22.1.1-linux.tar.gz
           tar -xzvf mopac-22.1.1-linux.tar.gz
-
-      - name: add mopac to path
-        run: echo $GITHUB_WORKSPACE/mopac-22.1.1-linux/bin >> $GITHUB_PATH
+          echo $GITHUB_WORKSPACE/mopac-22.1.1-linux/bin >> $GITHUB_PATH
 
       - name: Install buildcell
         run: |
