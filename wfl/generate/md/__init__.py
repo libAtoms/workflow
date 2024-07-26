@@ -19,7 +19,7 @@ bar = 1.0e-4 * GPa
 
 
 def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBerendsen", temperature=None, temperature_tau=None,
-              pressure=None, pressure_tau=None, compressibility_fd_displ=0.01,
+              pressure=None, pressure_tau=None, compressibility_fd_displ=0.01, logger=None, logfile=None,
               traj_step_interval=1, skip_failures=True, results_prefix='last_op__md_', verbose=False, update_config_type="append",
               traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None, rng=None,
               _autopara_per_item_info=None):
@@ -55,6 +55,10 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         ignored if pressure is None, defaults to 3*temperature_tau
     compressibility_fd_displ: float, default 0.01
         finite difference in strain to use when computing compressibility for NPTBerendsen
+    logger: default None
+        ase.md.MDLogger - derived class that records user customized properties over MD simulation
+    logfile: default None
+        name of logfile used by the logger 
     traj_step_interval: int, default 1
         interval between trajectory snapshots
     skip_failures: bool, default True
@@ -93,7 +97,9 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
 
     all_trajs = []
 
-    if verbose:
+    if logger is not None:
+        assert logfile is not None, "logfile should be provided."
+    elif verbose:
         logfile = '-'
     else:
         logfile = None
@@ -128,6 +134,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         rng = _autopara_per_item_info[at_i].get("rng")
 
         at.calc = calculator
+#        if logger is not None:
+#            logger = logger(at, logfile, mode="w") 
         compressibility = None
         if pressure is not None:
             pressure = sample_pressure(pressure, at, rng=rng)
@@ -150,8 +158,11 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             assert rng is not None
             MaxwellBoltzmannDistribution(at, temperature_K=temperature[0]['T_i'], force_temp=True, communicator=None, rng=rng)
             Stationary(at, preserve_temperature=True)
-
-        stage_kwargs = {'timestep': dt * fs, 'logfile': logfile}
+        
+        if logger is not None:
+            stage_kwargs = {'timestep': dt * fs, 'logfile': None}
+        else:
+            stage_kwargs = {'timestep': dt * fs, "logfile": logfile}
 
         if temperature_tau is None:
             # NVE
@@ -210,6 +221,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             if not first_step_of_later_stage and cur_step % interval == 0:
                 at.info['MD_time_fs'] = cur_step * dt
                 at.info['MD_step'] = cur_step
+                at.info["MD_current_temperature"] = at.get_temperature()
                 at_save = at_copy_save_calc_results(at, prefix=results_prefix)
 
                 if traj_select_during_func(at):
@@ -234,6 +246,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
 
             md = md_constructor(at, **stage_kwargs)
             md.attach(process_step, 1, traj_step_interval)
+            if logger is not None:
+                md.attach(logger(md, at, logfile, mode="w"))
 
             if stage_i > 0:
                 first_step_of_later_stage = True
