@@ -19,7 +19,7 @@ bar = 1.0e-4 * GPa
 
 
 def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBerendsen", temperature=None, temperature_tau=None,
-              pressure=None, pressure_tau=None, compressibility_fd_displ=0.01, logger=None, logfile=None,
+              pressure=None, pressure_tau=None, compressibility_au=None, compressibility_fd_displ=0.01, logger=None, logfile=None,
               traj_step_interval=1, skip_failures=True, results_prefix='last_op__md_', verbose=False, update_config_type="append",
               traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None, rng=None,
               _autopara_per_item_info=None):
@@ -53,6 +53,8 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
     pressure_tau: float, default None
         time scale for Berendsen constant P volume rescaling (fs)
         ignored if pressure is None, defaults to 3*temperature_tau
+    compressibility_au: float, default None
+        compressibility, if available, for NPTBerendsen
     compressibility_fd_displ: float, default 0.01
         finite difference in strain to use when computing compressibility for NPTBerendsen
     logger: default None
@@ -134,10 +136,9 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         rng = _autopara_per_item_info[at_i].get("rng")
 
         at.calc = calculator
-#        if logger is not None:
-#            logger = logger(at, logfile, mode="w") 
-        compressibility = None
-        if pressure is not None:
+
+        if pressure is not None and compressibility_au is None:
+
             pressure = sample_pressure(pressure, at, rng=rng)
             at.info['MD_pressure_GPa'] = pressure
             # convert to ASE internal units
@@ -151,7 +152,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             Em = at.get_potential_energy()
             at.set_cell(c0, scale_atoms=True)
             d2E_dF2 = (Ep + Em - 2.0 * E0) / (compressibility_fd_displ ** 2)
-            compressibility = at.get_volume() / d2E_dF2
+            compressibility_au = at.get_volume() / d2E_dF2
 
         if temperature is not None:
             # set initial temperature
@@ -181,7 +182,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             if pressure is not None:
                 md_constructor = NPTBerendsen
                 stage_kwargs['pressure_au'] = pressure
-                stage_kwargs['compressibility_au'] = compressibility
+                stage_kwargs['compressibility_au'] = compressibility_au
                 stage_kwargs['taut'] = temperature_tau * fs
                 stage_kwargs['taup'] = pressure_tau * fs if pressure_tau is not None else temperature_tau * fs * 3
             else:

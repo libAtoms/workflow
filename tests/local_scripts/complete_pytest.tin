@@ -65,7 +65,7 @@ l=`egrep '^=.*(passed|failed|skipped|xfailed)' complete_pytest.tin.out`
 echo "summary line $l"
 lp=$( echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' )
 
-declare -A expected_n=( ["passed"]="175" ["skipped"]="21" ["warnings"]=823 ["xfailed"]=2 ["xpassed"]=1 )
+declare -A expected_n=( ["passed"]="176" ["skipped"]="21" ["warnings"]=823 ["xfailed"]=2 ["xpassed"]=1 )
 IFS=$'\n'
 for out in $lp; do
     out_n=$(echo $out | sed -e 's/^=* //' -e 's/ .*//' -e 's/,//')
