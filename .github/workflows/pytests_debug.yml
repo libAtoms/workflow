@@ -1,0 +1,274 @@
+# This is testing the python versions *other than* the
+#   one in the QUIP Docker, which is 3.7.10 at the time
+#   of writing this. Coverage is disabled.
+
+name: Python Package and tests
+
+# on all push actions AND can be triggered manually as well
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ "3.9" ]
+      max-parallel: 5
+    env:
+      coverage-on-version: "3.9"
+      use-mpi: True
+      PIP_CONSTRAINT: pip_constraint.txt
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up python ${{ matrix.python-version }} via conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+
+      - name: Check python version
+        run: |
+          which python3
+          python3 --version
+
+      - name: Install dependencies from pip
+        run: |
+          echo "numpy<2" >> $PIP_CONSTRAINT
+          python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit flake8 pytest pytest-cov requests
+
+      - name: Install latest ASE from pypi
+        run: |
+          echo PIP_CONSTRAINT $PIP_CONSTRAINT
+          python3 -m pip install ase 
+          echo -n "ASE VERSION "
+          python3 -c "import ase; print(ase.__file__, ase.__version__)"
+
+      - name: Install intel-oneapi-mkl for phono3py
+        run: |
+          # based on
+          #   https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl-download.html?operatingsystem=linux&distributions=aptpackagemanager
+          # download the key to system keyring
+          wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
+          # add signed entry to apt sources and configure the APT client to use Intel repository:
+          echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+          sudo apt update
+          sudo apt install intel-oneapi-mkl
+          sudo apt install intel-oneapi-mkl-devel
+
+      - name: Install phono3py from source
+        run: |
+            # find mklvars
+            for pkg in $( apt list --installed | fgrep "installed" | fgrep "mkl" | sed "s#/.*##" ); do
+                if dpkg -L $pkg | egrep -q 'env/vars.sh$'; then
+                    mklvars=$( dpkg -L $pkg | egrep 'env/vars.sh$' )
+                    break
+                fi
+            done
+            if [ $( echo $mklvars | wc -w ) != 1 ]; then
+                echo "wrong number of  mkl setvars.sh '$mklvars'" 1>&2
+                exit 1
+            fi
+            source $mklvars intel64
+
+            export PIP_CONSTRAINT=$PWD/$PIP_CONSTRAINT
+
+            git clone https://github.com/phonopy/phonopy
+            cd phonopy
+            echo python3 -m pip install -e . -vvv
+            python3 -m pip install -e . -vvv
+            cd ..
+
+            git clone https://github.com/phonopy/phono3py
+            cd phono3py
+            python3 -m pip install -e . -vvv
+            cd ..
+
+      - name: Install Quippy from PyPI
+        run: python3 -m pip install quippy-ase
+
+      - name: Install xTB (before things that need pandas like MACE and wfl, since it will break pandas-numpy compatibility by downgrading numpy)
+        run: |
+          conda install -c conda-forge xtb-python
+          python3 -m pip install typing-extensions
+          # install pandas now to encourage compatible numpy version after conda regressed it
+          python3 -m pip install pandas
+
+      - name: MACE
+        run: |
+          echo "search for torch version"
+          set +o pipefail
+          # search for available torch version with +cpu support
+          for torch_version_test in $( python3 -m pip install torch== 2>&1 | fgrep 'from versions' | 
+                                       sed -e 's/.*from versions: //' -e 's/)//' -e 's/,[ ]*/\n/g' | tac ); do
+              set +e
+              python3 -m pip install --dry-run torch==${torch_version_test}+cpu \
+                                     -f https://download.pytorch.org/whl/torch_stable.html > /dev/null 2>&1
+              search_stat=$?
+              set -e
+              if [ $search_stat == 0 ]; then
+                  torch_version=${torch_version_test}
+                  break
+              fi
+          done
+          if [ -z $torch_version ]; then
+              echo "Failed to find any pytorch version with +cpu variant" 1>&2
+              exit 1
+          fi
+          echo "found torch version ${torch_version}+cpu, installing"
+          python3 -m pip install torch==${torch_version}+cpu -f https://download.pytorch.org/whl/torch_stable.html
+          echo "installing mace"
+          python3 -m pip install git+https://github.com/ACEsuit/mace.git@main
+          python3 -c "import mace; print(mace.__file__)"
+
+          ##DEBUG - name: Julia and ace fit
+        ##DEBUG run: |
+            ##DEBUG python3 -m pip install threadpoolctl
+            ##DEBUG wget https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-1.8.1-linux-x86_64.tar.gz
+            ##DEBUG tar xzf julia-1.8.1-linux-x86_64.tar.gz
+            ##DEBUG # note that this hardwires a particular compatible ACE1pack version
+            ##DEBUG echo 'using Pkg; pkg"registry add https://github.com/JuliaRegistries/General"; pkg"registry add https://github.com/JuliaMolSim/MolSim.git"; pkg"add ACE1pack@0.0, ACE1, JuLIP, IPFitting, ASE"' > ace1pack_install.jl
+            ##DEBUG ${PWD}/julia-1.8.1/bin/julia ace1pack_install.jl
+
+      - name: Install wfl (expyre and universalSOAP are dependencies)
+        run: python3 -m pip install .
+
+      - name: Install Quantum Espresso
+        run: |
+          sudo apt-get install --no-install-recommends quantum-espresso
+
+      - name: Install MOPAC
+        run: |
+          wget https://github.com/openmopac/mopac/releases/download/v22.0.6/mopac-22.0.6-linux.tar.gz
+          tar -xzvf mopac-22.0.6-linux.tar.gz
+
+      - name: add mopac to path
+        run: echo $GITHUB_WORKSPACE/mopac-22.0.6-linux/bin >> $GITHUB_PATH
+
+      - name: Install buildcell
+        run: |
+          sudo apt-get install gfortran
+          wget https://www.mtg.msm.cam.ac.uk/system/files/documents/airss-0.9.1.tgz
+          tar xzf airss-0.9.1.tgz
+          cd airss-0.9.1
+          make buildcell
+          mkdir -p $HOME/bin
+          cp src/buildcell/src/buildcell $HOME/bin/
+          cd ..
+
+      - name: Add buildcell to system path
+        run: |
+          echo $HOME/bin >> $GITHUB_PATH
+
+      - name: Install MPI dependencies
+        if: env.use-mpi
+        run: |
+          # this can eaily be turned off if needed
+          conda install -c conda-forge mpi4py openmpi pytest-mpi
+          python3 -m pip install mpipool
+
+      - name: Install and configure slurm and ExPyRe
+        run: |
+          sudo apt-get install -u slurm-wlm mailutils
+          echo "SLURM apt-get done, doing local configuration"
+          host_s=$( hostname -s )
+          if [ -f /etc/slurm/slurm.conf ]; then sudo mv /etc/slurm/slurm.conf /etc/slurm/slurm.conf.orig; fi
+          sudo bash -c 'gzip -cd /usr/share/doc/slurmd/examples/slurm.conf.simple.gz > /etc/slurm/slurm.conf'
+          # sudo sed -E -i -e "s/^\s*ClusterName\s*=.*/ClusterName=github_expyre_test/" /etc/slurm/slurm.conf
+          sudo bash -c 'sed -E -i -e "s/^\s*SlurmctldHost\s*=.*/SlurmctldHost=_HOST_/" /etc/slurm/slurm.conf'
+          # sudo sed -E -i -e "s/^\s*DefaultStorageHost\s*=.*/DefaultStorageHost=none" /etc/slurm/slurm.conf
+          sudo bash -c 'echo "NodeName=_HOST_ CPUs=2 Weight=1 Sockets=1 CoresPerSocket=2 ThreadsPerCore=1 RealMemory=1000" >> /etc/slurm/slurm.conf'
+          sudo bash -c 'echo "PartitionName=standard Default=YES AllocNodes=_HOST_ Nodes=ALL State=UP" >> /etc/slurm/slurm.conf'
+          sudo sed -i -e "s/_HOST_/$host_s/g" /etc/slurm/slurm.conf
+          sudo mkdir -p /var/log/slurm
+          sudo mkdir -p /var/spool/slurmd
+          sudo service slurmd start
+          sudo service slurmctld start
+          sleep 5
+          echo "sinfo -s --long"
+          sinfo -s --long
+          mkdir $HOME/.expyre
+          cp .github/workflows_assets/config.json $HOME/.expyre
+
+      - name: Set up pw.x for running in wfl
+        run: |
+          echo "which pw.x"
+          which pw.x
+          ls -l /usr/bin/pw.x
+          export PYTEST_WFL_ASE_ESPRESSO_COMMAND=pw.x
+
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 wfl/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings.
+          flake8 wfl/ --count --exit-zero --max-complexity=20 --max-line-length=140 --ignore=E127,E128 --statistics
+
+      - name: Test with pytest - plain
+        if: env.coverage-on-version != matrix.python-version
+        run: |
+          rm -rf $HOME/pytest_plain
+          mkdir $HOME/pytest_plain
+          #
+          export EXPYRE_PYTEST_SYSTEMS=github
+          export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
+          export WFL_NUM_PYTHON_SUBPROCESSES=2
+          export OMP_NUM_THREADS=1
+          export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
+          ##DEBUG pytest --runremote --basetemp $HOME/pytest_plain -rxXs
+          pytest --runremote --basetemp $HOME/pytest_plain -rxXs tests/test_doc_examples.py
+          ##DEBUG
+
+      - name: Test with pytest - coverage
+        if: env.coverage-on-version == matrix.python-version
+        run: |
+          rm -rf $HOME/pytest_cov
+          mkdir $HOME/pytest_cov
+          #
+          export EXPYRE_PYTEST_SYSTEMS=github
+          export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
+          export WFL_NUM_PYTHON_SUBPROCESSES=2
+          export OMP_NUM_THREADS=1
+          export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
+          ##DEBUG pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs
+          pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxX stests/test_doc_examples.py
+          ##DEBUG
+
+      # # DEBUGGING
+        # if: failure()
+      - name: Setup tmate session
+          uses: mxschmitt/action-tmate@v3
+          timeout-minutes: 15
+
+      - name: MPI tests -- plain
+        if: ${{ env.use-mpi && env.coverage-on-version != matrix.python-version}}
+        run: |
+          # envvar and test run - No coverage
+          export WFL_MPIPOOL=2
+          export WFL_NUM_PYTHON_SUBPROCESSES=2
+          export OMP_NUM_THREADS=1
+          mpirun -n 2 pytest --with-mpi -k mpi
+
+      - name: MPI tests -- coverage
+        if: ${{ env.use-mpi && env.coverage-on-version == matrix.python-version}}
+        run: |
+          # envvar and coverage Appended to the previous
+          export WFL_MPIPOOL=2
+          export WFL_NUM_PYTHON_SUBPROCESSES=2
+          export OMP_NUM_THREADS=1
+          export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
+          mpirun -n 2 pytest --cov=wfl --cov-report term --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --with-mpi -k mpi --cov-append
+
+      - name: 'Upload Coverage Data'
+        uses: actions/upload-artifact@v2
+        if: env.coverage-on-version == matrix.python-version
+        with:
+          name: coverage-html-${{ matrix.python-version }}
+          path: coverage-html/
+          retention-days: 7
