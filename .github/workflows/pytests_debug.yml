@@ -243,8 +243,8 @@ jobs:
       # # DEBUGGING
       # if: failure()
       - name: Setup tmate session
-          uses: mxschmitt/action-tmate@v3
-          timeout-minutes: 15
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 15
 
       - name: MPI tests -- plain
         if: ${{ env.use-mpi && env.coverage-on-version != matrix.python-version}}
