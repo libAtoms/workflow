@@ -237,7 +237,7 @@ jobs:
           export OMP_NUM_THREADS=1
           export WFL_JULIA_COMMAND=${PWD}/julia-1.8.1/bin/julia
           ##DEBUG pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxXs
-          pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxX stests/test_doc_examples.py
+          pytest -v --cov=wfl --cov-report term --cov-report html --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --runremote --basetemp $HOME/pytest_cov -rxX tests/test_doc_examples.py
           ##DEBUG
 
       # # DEBUGGING
