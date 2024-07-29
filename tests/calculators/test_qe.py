@@ -36,7 +36,7 @@ if not ("espresso" in ase_cfg.parser and os.environ.get('OMP_NUM_THREADS') == "1
 
 
 @fixture(scope="session")
-def qe_profile_and_pseudo(tmp_path_factory):
+def qe_pseudo(tmp_path_factory):
     """Quantum Espresso fixture
 
     - copies a pseudo-potential for Si
@@ -66,9 +66,9 @@ def qe_profile_and_pseudo(tmp_path_factory):
     return pspot_file
 
 
-def test_qe_kpoints(tmp_path, qe_profile_and_pseudo):
+def test_qe_kpoints(tmp_path, qe_pseudo):
 
-    pspot = qe_profile_and_pseudo
+    pspot = qe_pseudo
 
     kw = dict(
         pseudopotentials=dict(Si=pspot.name),
@@ -163,9 +163,9 @@ def test_qe_kpoints(tmp_path, qe_profile_and_pseudo):
     assert calc.parameters["koffset"] == (0, 0, 0)
 
 
-def test_qe_calculation(tmp_path, qe_profile_and_pseudo):
+def test_qe_calculation(tmp_path, qe_pseudo):
 
-    pspot = qe_profile_and_pseudo
+    pspot = qe_pseudo
 
     # atoms
     at = bulk("Si")
@@ -222,9 +222,9 @@ def test_qe_calculation(tmp_path, qe_profile_and_pseudo):
     assert si2.arrays["QE_forces"][0] == approx(-1 * si2.arrays["QE_forces"][1])
 
 
-def test_wfl_Espresso_calc(tmp_path, qe_profile_and_pseudo):
+def test_wfl_Espresso_calc(tmp_path, qe_pseudo):
 
-    pspot = qe_profile_and_pseudo
+    pspot = qe_pseudo
 
     atoms = Atoms("Si", cell=(2, 2, 2), pbc=[True] * 3)
     kw = dict(
@@ -246,9 +246,9 @@ def test_wfl_Espresso_calc(tmp_path, qe_profile_and_pseudo):
     atoms.get_stress()
 
 
-def test_wfl_Espresso_calc_via_generic(tmp_path, qe_profile_and_pseudo):
+def test_wfl_Espresso_calc_via_generic(tmp_path, qe_pseudo):
 
-    pspot = qe_profile_and_pseudo
+    pspot = qe_pseudo
 
     atoms = Atoms("Si", cell=(2, 2, 2), pbc=[True] * 3)
     kw = dict(
