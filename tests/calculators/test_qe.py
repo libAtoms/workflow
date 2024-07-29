@@ -22,8 +22,9 @@ from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize import AutoparaInfo
 
 if Version(ase.__version__) < Version("3.23"):
-     pytest.skip(reason="Quantum espresso tests are only supported for ASE v3.23, please update.")
-
+    pytest.skip(reason="Quantum espresso tests are only supported for ASE v3.23, "
+                       f"please update from {ase.__version__}.",
+                allow_module_level=True)
 
 from ase.config import cfg as ase_cfg
 from ase.calculators.espresso import EspressoProfile
@@ -32,7 +33,9 @@ from ase.calculators.espresso import EspressoProfile
 # pseudo_dir will be overridden whenever calculator is constructed to ensure that
 # pytest-specific PPs are used
 if not ("espresso" in ase_cfg.parser and os.environ.get('OMP_NUM_THREADS') == "1"):
-    pytest.skip('No "espresso" configuration or "OMP_NUM_THREADS" is not set to 1.')
+    pytest.skip('No "espresso" ASE configuration or '
+                f'"OMP_NUM_THREADS={os.environ.get("OMP_NUM_THREADS")}" is not set to 1.',
+                allow_module_level=True)
 
 
 @fixture(scope="session")
