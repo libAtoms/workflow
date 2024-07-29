@@ -77,6 +77,7 @@ jobs:
             fi
             source $mklvars intel64
 
+            # pip constraint needs to be an absolute filename
             export PIP_CONSTRAINT=$PWD/$PIP_CONSTRAINT
 
             git clone https://github.com/phonopy/phonopy
@@ -205,13 +206,13 @@ jobs:
 
       - name: set up ASE config files
         run: |
-          export config_file=${HOME}/pytest_plain_config.ini
-          echo "[espresso]" > ${config_file}
-          echo "command = ${espresso_command}" >> ${config_file}
-          echo "pseudo_dir = ${HOME}/dummy" >> ${config_file}
-          export ASE_CONFIG_PATH=${config_file}
-          echo ASE_CONFIG_PATH $ASE_CONFIG_PATH
-          cat $ASE_CONFIG_PATH
+          mkdir -p ${HOME}/.config/ase/
+          echo "[espresso]" > ${HOME}/.config/ase/config.ini
+          echo "command = ${espresso_command}" >> ${HOME}/.config/ase/config.ini
+          echo "pseudo_dir = ${HOME}/dummy" >> ${HOME}/.config/ase/config.ini
+
+          echo '$HOME/.config/ase/config.ini'
+          cat $HOME/.config/ase/config.ini'
 
       - name: Lint with flake8
         run: |
