@@ -104,8 +104,24 @@ jobs:
         run: |
           echo "search for torch version"
           set +o pipefail
-          torch_version=$( python3 -m pip install torch== 2>&1 | fgrep 'from versions' | sed -e 's/.* //' -e 's/)//' )
-          echo "found torch version $torch_version, installing cpu-only variant"
+          # search for available torch version with +cpu support
+          for torch_version_test in $( python3 -m pip install torch== 2>&1 | fgrep 'from versions' | 
+                                       sed -e 's/.*from versions: //' -e 's/)//' -e 's/,[ ]*/\n/g' | tac ); do
+              set +e
+              python3 -m pip install --dry-run torch==${torch_version_test}+cpu \
+                                     -f https://download.pytorch.org/whl/torch_stable.html > /dev/null 2>&1
+              search_stat=$?
+              set -e
+              if [ $search_stat == 0 ]; then
+                  torch_version=${torch_version_test}
+                  break
+              fi
+          done
+          if [ -z $torch_version ]; then
+              echo "Failed to find any pytorch version with +cpu variant" 1>&2
+              exit 1
+          fi
+          echo "found torch version ${torch_version}+cpu, installing"
           python3 -m pip install torch==${torch_version}+cpu -f https://download.pytorch.org/whl/torch_stable.html
           echo "installing mace"
           python3 -m pip install git+https://github.com/ACEsuit/mace.git@main
