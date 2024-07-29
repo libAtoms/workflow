@@ -3,7 +3,7 @@
 name = "wfl"
 version = "0.3.0"
 requires-python = ">=3.9"
-dependencies = [ "click>=7.0", "numpy", "ase>=3.22.1", "pyyaml", "spglib",
+dependencies = [ "click>=7.0", "numpy<2", "ase>=3.22.1", "pyyaml", "spglib",
                  "docstring_parser", "expyre-wfl", "universalSOAP" ]
 readme = "README.md"
 license = { file = "LICENSE" }
