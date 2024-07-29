@@ -2,7 +2,7 @@
 #   one in the QUIP Docker, which is 3.7.10 at the time
 #   of writing this. Coverage is disabled.
 
-name: Python Package and tests
+name: Python Package and tests (debug)
 
 # on all push actions AND can be triggered manually as well
 on:
