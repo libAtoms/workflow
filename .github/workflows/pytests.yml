@@ -212,7 +212,7 @@ jobs:
           echo "pseudo_dir = ${HOME}/dummy" >> ${HOME}/.config/ase/config.ini
 
           echo '$HOME/.config/ase/config.ini'
-          cat $HOME/.config/ase/config.ini'
+          cat $HOME/.config/ase/config.ini
 
       - name: Lint with flake8
         run: |
