@@ -204,14 +204,12 @@ jobs:
           ls -l /usr/bin/pw.x
           espresso_command=pw.x
 
-      - name: set up ASE config files
-        run: |
           mkdir -p ${HOME}/.config/ase/
-          echo "[espresso]" > ${HOME}/.config/ase/config.ini
+          echo "[espresso]" >> ${HOME}/.config/ase/config.ini
           echo "command = ${espresso_command}" >> ${HOME}/.config/ase/config.ini
           echo "pseudo_dir = ${HOME}/dummy" >> ${HOME}/.config/ase/config.ini
 
-          echo '$HOME/.config/ase/config.ini'
+          echo 'post-espresso $HOME/.config/ase/config.ini'
           cat $HOME/.config/ase/config.ini
 
       - name: Lint with flake8

@@ -21,10 +21,9 @@ from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize import AutoparaInfo
 
-if Version(ase.__version__) < Version("3.23"):
-    pytest.skip(reason="Quantum espresso tests are only supported for ASE v3.23, "
-                       f"please update from {ase.__version__}.",
-                allow_module_level=True)
+ase_version = pytest.mark.skipif(Version(ase.__version__) < Version("3.23"),
+              reason="Quantum espresso tests are only supported for ASE v3.23, "
+                     f"please update from {ase.__version__}.")
 
 from ase.config import cfg as ase_cfg
 from ase.calculators.espresso import EspressoProfile
@@ -32,10 +31,9 @@ from ase.calculators.espresso import EspressoProfile
 # do all tests using user's default config file
 # pseudo_dir will be overridden whenever calculator is constructed to ensure that
 # pytest-specific PPs are used
-if not ("espresso" in ase_cfg.parser and os.environ.get('OMP_NUM_THREADS') == "1"):
-    pytest.skip('No "espresso" ASE configuration or '
-                f'"OMP_NUM_THREADS={os.environ.get("OMP_NUM_THREADS")}" is not set to 1.',
-                allow_module_level=True)
+espresso_avail = pytest.mark.skipif(not ("espresso" in ase_cfg.parser and os.environ.get('OMP_NUM_THREADS') == "1"),
+                 reason='No "espresso" ASE configuration or '
+                        f'"OMP_NUM_THREADS={os.environ.get("OMP_NUM_THREADS")}" is not set to 1.')
 
 
 @fixture(scope="session")
@@ -69,6 +67,8 @@ def qe_pseudo(tmp_path_factory):
     return pspot_file
 
 
+@ase_version
+@espresso_avail
 def test_qe_kpoints(tmp_path, qe_pseudo):
 
     pspot = qe_pseudo
@@ -166,6 +166,8 @@ def test_qe_kpoints(tmp_path, qe_pseudo):
     assert calc.parameters["koffset"] == (0, 0, 0)
 
 
+@ase_version
+@espresso_avail
 def test_qe_calculation(tmp_path, qe_pseudo):
 
     pspot = qe_pseudo
@@ -225,6 +227,8 @@ def test_qe_calculation(tmp_path, qe_pseudo):
     assert si2.arrays["QE_forces"][0] == approx(-1 * si2.arrays["QE_forces"][1])
 
 
+@ase_version
+@espresso_avail
 def test_wfl_Espresso_calc(tmp_path, qe_pseudo):
 
     pspot = qe_pseudo
@@ -249,6 +253,8 @@ def test_wfl_Espresso_calc(tmp_path, qe_pseudo):
     atoms.get_stress()
 
 
+@ase_version
+@espresso_avail
 def test_wfl_Espresso_calc_via_generic(tmp_path, qe_pseudo):
 
     pspot = qe_pseudo

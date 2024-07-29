@@ -14,7 +14,6 @@ from ase.io.espresso import kspacing_to_grid
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
 from wfl.utils.save_calc_results import save_calc_results
-from .utils import parse_genericfileio_profile_argv
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["*.pwo"]
