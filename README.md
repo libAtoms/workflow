@@ -8,10 +8,10 @@ The main functions of Workflow is to efficiently parallelise operations over a s
 
 For examples and more information see [documentation](https://libatoms.github.io/workflow/)
 
-`wfl` and its dependendensies may be installed via `pip install wfl`. 
+`wfl` and its dependencies may be installed via `pip install wfl`. 
 
 NOTE: (as of 14 June 2024) `wfl` is only tested against the latest ASE pip release, currently v3.23.0. 
-For the time being, v3.22.1 is the mininum version listed as a (pip) prerequisite of `wfl`, because
+For the time being, v3.22.1 is the minimum version listed as a (pip) prerequisite of `wfl`, because
 it at least mostly works, but it may not be fully compatible and is not actively tested.
 
 # Recent changes
@@ -41,7 +41,7 @@ v0.2.0:
 
 v0.1.0:
 
-- make it possible to fire off several remote autoparallellized ops without waiting for their jobs to finish
-- multi-pass calclation in `Vasp`, to allow for things like GGA followed by HSE
+- make it possible to fire off several remote autoparallelized ops without waiting for their jobs to finish
+- multi-pass calculation in `Vasp`, to allow for things like GGA followed by HSE
 - MACE fitting, including remote jobs
 - various bug fixes

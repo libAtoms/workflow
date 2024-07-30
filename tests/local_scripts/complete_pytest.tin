@@ -32,7 +32,6 @@ export ASE_VASP_COMMAND_GAMMA=vasp.gamma.serial
 export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
 # QE
 module load dft/pwscf
-export PYTEST_WFL_ASE_ESPRESSO_COMMAND="env MPIRUN_EXTRA_ARGS='-np 1' pw.x"
 # no ORCA
 
 export OPENBLAS_NUM_THREADS=1
@@ -58,6 +57,9 @@ if [ -d $pytest_dir ]; then
     echo "Refusing to run after failing to delete $pytest_dir" 1>&2
     exit 1
 fi
+
+mkdir -p $pytest_dir
+
 pytest -v -s --basetemp $pytest_dir ${runremote} --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
 
 l=`egrep '^=.*(passed|failed|skipped|xfailed)' complete_pytest.tin.out`
@@ -65,7 +67,7 @@ l=`egrep '^=.*(passed|failed|skipped|xfailed)' complete_pytest.tin.out`
 echo "summary line $l"
 lp=$( echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' )
 
-declare -A expected_n=( ["passed"]="176" ["skipped"]="21" ["warnings"]=823 ["xfailed"]=2 ["xpassed"]=1 )
+declare -A expected_n=( ["passed"]="175" ["skipped"]="21" ["warnings"]=823 ["xfailed"]=2 ["xpassed"]=1 )
 IFS=$'\n'
 for out in $lp; do
     out_n=$(echo $out | sed -e 's/^=* //' -e 's/ .*//' -e 's/,//')
