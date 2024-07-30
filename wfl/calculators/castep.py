@@ -61,6 +61,8 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
             # make sure we are looking for pspot if path given
             kwargs["find_pspots"] = True
 
+        #import pdb; pdb.set_trace()
+
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
                          workdir=workdir, scratchdir=scratchdir, **kwargs)
@@ -83,7 +85,7 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
 
         orig_pbc = self.atoms.pbc.copy()
         try:
-            super().calculate(atoms=atoms)
+            super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
             calculation_succeeded = True
             if 'DFT_FAILED_CASTEP' in atoms.info:
                 del atoms.info['DFT_FAILED_CASTEP']
@@ -95,8 +97,8 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
             # ASE castep calculator does not ever raise an exception when
             # it fails.  Instead, you get things like stress being None,
             # which lead to TypeError when save_calc_results calls get_stress().
-            for property in properties:
-                result = self.get_property(property)
+            for prop in properties:
+                result = self.get_property(prop, allow_calculation=False)
                 if result is None:
                     calculation_succeeded = False
                     atoms.info["DFT_FAILED_CASTEP"] = True
