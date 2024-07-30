@@ -6,6 +6,7 @@ from ase.md.nvtberendsen import NVTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
 from ase.md.verlet import VelocityVerlet
 from ase.md.langevin import Langevin
+from ase.md.logger import MDLogger
 from ase.units import GPa, fs
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
@@ -21,8 +22,8 @@ bar = 1.0e-4 * GPa
 def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBerendsen", temperature=None, temperature_tau=None,
               pressure=None, pressure_tau=None, compressibility_au=None, compressibility_fd_displ=0.01,
               traj_step_interval=1, skip_failures=True, results_prefix='last_op__md_', verbose=False, update_config_type="append",
-              traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None, rng=None,
-              _autopara_per_item_info=None):
+              traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None,
+              logger_kwargs=None, logger_interval=None, rng=None, _autopara_per_item_info=None):
     """runs an MD trajectory with aggresive, not necessarily physical, integrators for
     sampling configs. By default calculator properties for each frame stored in
     keys prefixed with "last_op__md_", which may be overwritten by next operation.
@@ -81,6 +82,11 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         checks the MD snapshots and aborts the simulation on some condition.
     rng: numpy.random.Generator, default None
         random number generator to use (needed for pressure sampling, initial temperature, or Langevin dynamics)
+    logger_kwargs: dict, default None
+        kwargs to MDLogger to attach to each MD run, including "logfile" as string to which
+        config number will be appended. User defined ase.md.MDLogger derived class can be provided with "logger" as key. 
+    logger_interval: int, default None
+        interval for logger
     _autopara_per_item_info: dict
         INTERNALLY used by autoparallelization framework to make runs reproducible (see
         wfl.autoparallelize.autoparallelize() docs)
@@ -99,6 +105,10 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         logfile = '-'
     else:
         logfile = None
+
+    if logger_kwargs is not None:
+        logger_constructor = logger_kwargs.pop("logger", MDLogger)
+        logger_logfile = logger_kwargs["logfile"]
 
     if temperature_tau is None and (temperature is not None and not isinstance(temperature, (float, int))):
         raise RuntimeError(f'NVE (temperature_tau is None) can only accept temperature=float for initial T, got {type(temperature)}')
@@ -128,6 +138,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         # get rng from autopara_per_item info if available ("rng" arg that was passed in was
         # already used by autoparallelization framework to set "rng" key in per-item dict)
         rng = _autopara_per_item_info[at_i].get("rng")
+        item_i = _autopara_per_item_info[at_i].get("item_i")
 
         at.calc = calculator
         if pressure is not None and compressibility_au is None:
@@ -211,6 +222,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             if not first_step_of_later_stage and cur_step % interval == 0:
                 at.info['MD_time_fs'] = cur_step * dt
                 at.info['MD_step'] = cur_step
+                at.info["MD_current_temperature"] = at.get_temperature()
                 at_save = at_copy_save_calc_results(at, prefix=results_prefix)
 
                 if traj_select_during_func(at):
@@ -234,7 +246,14 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
                 at.info['MD_temperature_K'] = stage_kwargs['temperature_K']
 
             md = md_constructor(at, **stage_kwargs)
+
             md.attach(process_step, 1, traj_step_interval)
+            if logger_kwargs is not None:
+                logger_kwargs["logfile"] = f"{logger_logfile}.item_{item_i}"
+                logger_kwargs["dyn"] = md
+                logger_kwargs["atoms"] = at
+                logger = logger_constructor(**logger_kwargs)
+                md.attach(logger, logger_interval)
 
             if stage_i > 0:
                 first_step_of_later_stage = True

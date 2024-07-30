@@ -2,12 +2,15 @@ from pytest import approx
 import pytest
 
 import numpy as np
+import os
+from pathlib import Path
 
 from ase import Atoms
 import ase.io
 from ase.build import bulk
 from ase.calculators.emt import EMT
 from ase.units import fs
+from ase.md.logger import MDLogger
 from wfl.autoparallelize import autoparainfo
 
 from wfl.generate import md
@@ -216,3 +219,30 @@ def test_md_abort_function(cu_slab):
                        rng=np.random.default_rng(1))
 
     assert len(list(atoms_traj)) < 501
+
+
+def test_md_attach_logger(cu_slab):
+
+    calc = EMT()
+    autopara_info = autoparainfo.AutoparaInfo(num_python_subprocesses=2, num_inputs_per_python_subprocess=1, skip_failed=False)
+
+    inputs = ConfigSet([cu_slab, cu_slab])
+    outputs = OutputSpec()
+    
+    logger_kwargs = {
+        "logger" : MDLogger,
+        "logfile" : "test_log",
+    }
+
+    atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Langevin", steps=300, dt=1.0,
+                           temperature=500.0, temperature_tau=100/fs, logger_kwargs=logger_kwargs, logger_interval=1,
+                           rng=np.random.default_rng(1), autopara_info=autopara_info,)
+
+    atoms_traj = list(atoms_traj)
+    atoms_final = atoms_traj[-1]
+
+    workdir = Path(os.getcwd())
+
+    assert len(atoms_traj) == 602
+    assert all([Path(workdir / "test_log.item_0").is_file(), Path(workdir / "test_log.item_1").is_file()])
+ 
