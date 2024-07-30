@@ -31,8 +31,8 @@ def test_return_md_traj(cu_slab, tmp_path):
     atoms_opt = minimahopping.minimahopping(inputs, outputs, calc, fmax=1, totalsteps=5, save_tmpdir=True, return_all_traj=True,
                                             rng=np.random.default_rng(1), workdir=tmp_path)
 
-    assert any(["minima" in at.info["config_type"] for at in atoms_opt])
-    assert any(["traj" in at.info["config_type"] for at in atoms_opt])
+    assert any(["minhop_min" in at.info["config_type"] for at in atoms_opt])
+    assert any(["minhop_traj" in at.info["config_type"] for at in atoms_opt])
 
 
 def test_mult_files(cu_slab, tmp_path):
@@ -82,8 +82,8 @@ def test_relax(cu_slab, tmp_path):
         assert 1 <= len(list(ats)) <= totalsteps
 
     atoms_opt = list(atoms_opt)
-    assert all(['minima' in at.info['config_type'] for at in atoms_opt])
+    assert all(['minhop_min' in at.info['config_type'] for at in atoms_opt])
 
     for at in atoms_opt:
-        force_norms = np.linalg.norm(at.get_forces(), axis=1)
+        force_norms = np.linalg.norm(at.arrays["last_op__minhop_forces"], axis=1)
         assert all(force_norms <= fmax)

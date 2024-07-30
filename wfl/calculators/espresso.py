@@ -10,15 +10,10 @@ import numpy as np
 
 from ase.calculators.calculator import all_changes
 from ase.calculators.espresso import Espresso as ASE_Espresso
-try:
-    from ase.calculators.espresso import EspressoProfile
-except ImportError:
-    EspressoProfile = None
 from ase.io.espresso import kspacing_to_grid
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
 from wfl.utils.save_calc_results import save_calc_results
-from .utils import parse_genericfileio_profile_argv
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["*.pwo"]
@@ -45,10 +40,6 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
     scratchdir: str / Path, default None
         temporary directory to execute calculations in and delete or copy back results (set by
         "keep_files") if needed.  For example, directory on a local disk with fast file I/O.
-    calculator_exec: str
-        command for QE, without any prefix or redirection set.
-        for example: "mpirun -n 4 /path/to/pw.x"
-        mutually exclusive with "command" with "profile"
 
     **kwargs: arguments for ase.calculators.espresso.Espresso
     """
@@ -59,57 +50,9 @@ class Espresso(WFLFileIOCalculator, ASE_Espresso):
     wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
     def __init__(self, keep_files="default", rundir_prefix="run_QE_",
-                 workdir=None, scratchdir=None,
-                 calculator_exec=None, **kwargs):
+                 workdir=None, scratchdir=None, **kwargs):
 
         kwargs_command = deepcopy(kwargs)
-
-        # check for various Espresso versions
-        # NOTE: should we be doing this much massaging of inputs, or should we make the user keep up
-        # with their ASE Espresso version?
-        if EspressoProfile is not None:
-            # new version, command and ASE_ESPRESSO_COMMAND deprecated
-            if "command" in kwargs_command:
-                raise ValueError("Espresso calculator defines EspressoProfile, but deprecated 'command' arg was passed")
-
-            if calculator_exec is not None:
-                # check for conflicts, wrong format
-                if "profile" in kwargs_command:
-                    raise ValueError("Cannot specify both calculator_exec and profile")
-                if " -in " in calculator_exec:
-                    raise ValueError("calculator_exec should not include espresso command line arguments such as ' -in PREFIX.pwi'")
-
-                # newer syntax, but pass binary without a keyword (which changed from "argv" to "exc"
-                # to "binary" over time), assuming it's first argument
-                argv = shlex.split(calculator_exec)
-                try:
-                    kwargs_command["profile"] = EspressoProfile(argv=argv)
-                except TypeError:
-                    binary, parallel_info = parse_genericfileio_profile_argv(argv)
-                    # argument names keep changing (e.g. pseudo_path -> pseudo_dir), just pass first two as positional
-                    # and hope order doesn't change
-                    if "pseudo_dir" not in kwargs_command:
-                        raise ValueError(f"calculator_exec also requires pseudo_dir to create EspressoProfile")
-                    kwargs_command["profile"] = EspressoProfile(binary, kwargs_command.pop("pseudo_dir"),
-                                                                parallel_info=parallel_info)
-            elif "profile" not in kwargs_command:
-                raise ValueError("EspressoProfile is defined but neither calculator_exec nor profile was specified")
-
-            # better be defined by now
-            assert "profile" in kwargs_command
-        else:
-            # old (pre EspressoProfile) version
-            if "profile" in kwargs_command:
-                raise ValueError("EspressoProfile is not defined (old version) but profile was passed")
-
-            if calculator_exec is not None:
-                if "command" in kwargs_command:
-                    raise ValueError("Cannot specify both command and calc_exec")
-
-                kwargs_command["command"] = f"{calculator_exec} -in PREFIX.pwi > PREFIX.pwo"
-
-            # command or env var must be set
-            assert "command" in kwargs_command or "ASE_ESPRESSO_CALCULATOR" in os.environ
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
