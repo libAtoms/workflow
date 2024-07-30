@@ -84,7 +84,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         random number generator to use (needed for pressure sampling, initial temperature, or Langevin dynamics)
     logger_kwargs: dict, default None
         kwargs to MDLogger to attach to each MD run, including "logfile" as string to which
-        config number will be appended
+        config number will be appended. User defined ase.md.MDLogger derived class can be provided with "logger" as key. 
     logger_interval: int, default None
         interval for logger
     _autopara_per_item_info: dict
