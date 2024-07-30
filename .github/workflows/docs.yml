@@ -79,14 +79,12 @@ jobs:
 
             git clone https://github.com/phonopy/phonopy
             cd phonopy
-            python3 setup.py build
-            python3 -m pip install .
+            python3 -m pip install -e .
             cd ..
 
             git clone https://github.com/phonopy/phono3py
             cd phono3py
-            python3 setup.py build
-            python3 setup.py install
+            python3 -m pip install -e .
             cd ..
 
       - name: Install Quippy from PyPI
