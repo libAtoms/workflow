@@ -19,6 +19,7 @@ jobs:
     env:
       coverage-on-version: "3.9"
       use-mpi: True
+      PIP_CONSTRAINT: pip_constraint.txt
     defaults:
       run:
         shell: bash -l {0}
@@ -38,10 +39,13 @@ jobs:
           python3 --version
 
       - name: Install dependencies from pip
-        run: python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit flake8 pytest pytest-cov requests
-
-      - name: Install latest ASE from gitlab
         run: |
+          echo "numpy<2" >> $PIP_CONSTRAINT
+          python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit flake8 pytest pytest-cov requests
+
+      - name: Install latest ASE from pypi
+        run: |
+          echo PIP_CONSTRAINT $PIP_CONSTRAINT
           python3 -m pip install ase 
           echo -n "ASE VERSION "
           python3 -c "import ase; print(ase.__file__, ase.__version__)"
@@ -62,27 +66,29 @@ jobs:
         run: |
             # find mklvars
             for pkg in $( apt list --installed | fgrep "installed" | fgrep "mkl" | sed "s#/.*##" ); do
-                if dpkg -L $pkg | egrep -q 'vars.sh$'; then
-                    mklvars=$( dpkg -L $pkg | egrep 'vars.sh$' )
+                if dpkg -L $pkg | egrep -q 'env/vars.sh$'; then
+                    mklvars=$( dpkg -L $pkg | egrep 'env/vars.sh$' )
                     break
                 fi
             done
-            if [ -z $mklvars ]; then
-                echo 'Failed to find *vars.sh in any pkg named *mkl*'
+            if [ $( echo $mklvars | wc -w ) != 1 ]; then
+                echo "wrong number of  mkl setvars.sh '$mklvars'" 1>&2
                 exit 1
             fi
             source $mklvars intel64
 
+            # pip constraint needs to be an absolute filename
+            export PIP_CONSTRAINT=$PWD/$PIP_CONSTRAINT
+
             git clone https://github.com/phonopy/phonopy
             cd phonopy
-            python3 setup.py build
-            python3 -m pip install .
+            echo python3 -m pip install -e . -vvv
+            python3 -m pip install -e . -vvv
             cd ..
 
             git clone https://github.com/phonopy/phono3py
             cd phono3py
-            python3 setup.py build
-            python3 setup.py install
+            python3 -m pip install -e . -vvv
             cd ..
 
       - name: Install Quippy from PyPI
@@ -99,8 +105,24 @@ jobs:
         run: |
           echo "search for torch version"
           set +o pipefail
-          torch_version=$( python3 -m pip install torch== 2>&1 | fgrep 'from versions' | sed -e 's/.* //' -e 's/)//' )
-          echo "found torch version $torch_version, installing cpu-only variant"
+          # search for available torch version with +cpu support
+          for torch_version_test in $( python3 -m pip install torch== 2>&1 | fgrep 'from versions' | 
+                                       sed -e 's/.*from versions: //' -e 's/)//' -e 's/,[ ]*/\n/g' | tac ); do
+              set +e
+              python3 -m pip install --dry-run torch==${torch_version_test}+cpu \
+                                     -f https://download.pytorch.org/whl/torch_stable.html > /dev/null 2>&1
+              search_stat=$?
+              set -e
+              if [ $search_stat == 0 ]; then
+                  torch_version=${torch_version_test}
+                  break
+              fi
+          done
+          if [ -z $torch_version ]; then
+              echo "Failed to find any pytorch version with +cpu variant" 1>&2
+              exit 1
+          fi
+          echo "found torch version ${torch_version}+cpu, installing"
           python3 -m pip install torch==${torch_version}+cpu -f https://download.pytorch.org/whl/torch_stable.html
           echo "installing mace"
           python3 -m pip install git+https://github.com/ACEsuit/mace.git@main
@@ -108,7 +130,7 @@ jobs:
 
       - name: Julia and ace fit
         run: |
-          python3 -m pip install pip install threadpoolctl
+          python3 -m pip install threadpoolctl
           wget https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-1.8.1-linux-x86_64.tar.gz
           tar xzf julia-1.8.1-linux-x86_64.tar.gz
           # note that this hardwires a particular compatible ACE1pack version
@@ -124,11 +146,9 @@ jobs:
 
       - name: Install MOPAC
         run: |
-          wget https://github.com/openmopac/mopac/releases/download/v22.0.6/mopac-22.0.6-linux.tar.gz
-          tar -xzvf mopac-22.0.6-linux.tar.gz
-
-      - name: add mopac to path
-        run: echo $GITHUB_WORKSPACE/mopac-22.0.6-linux/bin >> $GITHUB_PATH
+          wget http://openmopac.net/mopac-22.1.1-linux.tar.gz
+          tar -xzvf mopac-22.1.1-linux.tar.gz
+          echo $GITHUB_WORKSPACE/mopac-22.1.1-linux/bin >> $GITHUB_PATH
 
       - name: Install buildcell
         run: |
@@ -180,7 +200,15 @@ jobs:
           echo "which pw.x"
           which pw.x
           ls -l /usr/bin/pw.x
-          export PYTEST_WFL_ASE_ESPRESSO_COMMAND=pw.x
+          espresso_command=pw.x
+
+          mkdir -p ${HOME}/.config/ase/
+          echo "[espresso]" >> ${HOME}/.config/ase/config.ini
+          echo "command = ${espresso_command}" >> ${HOME}/.config/ase/config.ini
+          echo "pseudo_dir = ${HOME}/dummy" >> ${HOME}/.config/ase/config.ini
+
+          echo 'post-espresso $HOME/.config/ase/config.ini'
+          cat $HOME/.config/ase/config.ini
 
       - name: Lint with flake8
         run: |
@@ -205,10 +233,6 @@ jobs:
       - name: Test with pytest - coverage
         if: env.coverage-on-version == matrix.python-version
         run: |
-          echo "BOB pre actual pytest"
-          which python3
-          python3 -m pip list | grep numpy
-          python3 -c "import numpy; print(numpy.__file__, numpy.__version__)"
           rm -rf $HOME/pytest_cov
           mkdir $HOME/pytest_cov
           #

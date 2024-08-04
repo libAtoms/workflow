@@ -10,26 +10,28 @@ from ase.io.trajectory import Trajectory
 import ase.io
 
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
+from wfl.utils.save_calc_results import at_copy_save_calc_results
 from wfl.utils.misc import atoms_to_list
 from .utils import save_config_type
 from wfl.utils.parallel import construct_calculator_picklesafe
 
 
-def _get_MD_trajectory(rundir, update_config_type):
+def _get_MD_trajectory(rundir, update_config_type, prefix):
 
     md_traj = []
     mdtrajfiles = sorted([file for file in Path(rundir).glob("md*.traj")])
     for mdtraj in mdtrajfiles:
         for at in ase.io.read(f"{mdtraj}", ":"):
-            save_config_type(at, update_config_type, 'minimahop_traj')
-            md_traj.append(at)
+            new_config = at_copy_save_calc_results(at, prefix=prefix)
+            save_config_type(new_config, update_config_type, 'minhop_traj')
+            md_traj.append(new_config)
 
     return md_traj
 
 
 # perform MinimaHopping on one ASE.atoms object
 def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
-                     fmax, timestep, totalsteps, skip_failures, update_config_type,
+                     fmax, timestep, totalsteps, skip_failures, update_config_type, results_prefix,
                      workdir=None, **opt_kwargs):
     save_tmpdir = opt_kwargs.pop("save_tmpdir", False)
     return_all_traj = opt_kwargs.pop("return_all_traj", False)
@@ -61,11 +63,12 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
     else:
         traj = []
         if return_all_traj:
-            traj += _get_MD_trajectory(rundir, update_config_type)
+            traj += _get_MD_trajectory(rundir, update_config_type, prefix=results_prefix)
 
         for hop_traj in Trajectory('minima.traj'):
-            save_config_type(hop_traj, update_config_type, 'minimahop_min')
-            traj.append(hop_traj)
+            new_config = at_copy_save_calc_results(hop_traj, prefix=results_prefix)
+            save_config_type(new_config, update_config_type, 'minhop_min')
+            traj.append(new_config)
         if not save_tmpdir:
             os.chdir(workdir)
             shutil.rmtree(rundir)
@@ -77,7 +80,7 @@ def _atom_opt_hopping(atom, calculator, Ediff0, T0, minima_threshold, mdmin,
 
 def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_threshold=0.5, mdmin=2,
                            fmax=1, timestep=1, totalsteps=10, skip_failures=True, update_config_type="append",
-                           workdir=None, rng=None, _autopara_per_item_info=None,
+                           results_prefix='last_op__minhop_', workdir=None, rng=None, _autopara_per_item_info=None,
                            **opt_kwargs):
     """runs a structure optimization
 
@@ -131,7 +134,7 @@ def _run_autopara_wrappable(atoms, calculator, Ediff0=1, T0=1000, minima_thresho
 
         traj = _atom_opt_hopping(atom=at, calculator=calculator, Ediff0=Ediff0, T0=T0, minima_threshold=minima_threshold,
                                  mdmin=mdmin, fmax=fmax, timestep=timestep, totalsteps=totalsteps,
-                                 skip_failures=skip_failures, update_config_type=update_config_type,
+                                 skip_failures=skip_failures, update_config_type=update_config_type, results_prefix=results_prefix,
                                  workdir=workdir, **opt_kwargs)
         all_trajs.append(traj)
 

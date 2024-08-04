@@ -2,8 +2,6 @@
 FHI-Aims Calculator
 """
 
-import shlex
-
 from copy import deepcopy
 import numpy as np
 
