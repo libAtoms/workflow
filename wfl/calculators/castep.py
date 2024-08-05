@@ -4,6 +4,9 @@ Quantum Castep interface
 
 from copy import deepcopy
 
+from packaging.version import Version
+
+import ase
 from ase.calculators.calculator import all_changes
 from ase.calculators.castep import Castep as ASE_Castep
 
@@ -50,6 +53,10 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
     def __init__(self, keep_files="default", rundir_prefix="run_CASTEP_",
                  workdir=None, scratchdir=None,
                  calculator_exec=None, **kwargs):
+
+        if Version(ase.__version__) < Version("3.23"):
+            raise ImportError(f"The wfl CASTEP calculator is only compatible with ASE v3.23 and higher, "
+                              f"but your ASE version is v{ase.__version__}. Please upgrade")
 
         kwargs = deepcopy(kwargs)
         if calculator_exec is not None:
