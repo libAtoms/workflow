@@ -61,11 +61,9 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
             # make sure we are looking for pspot if path given
             kwargs["find_pspots"] = True
 
-
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
                          workdir=workdir, scratchdir=scratchdir, **kwargs)
-
 
 
     def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
