@@ -4,6 +4,9 @@ Quantum Castep interface
 
 from copy import deepcopy
 
+from packaging.version import Version
+
+import ase
 from ase.calculators.calculator import all_changes
 from ase.calculators.castep import Castep as ASE_Castep
 
@@ -51,6 +54,10 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
                  workdir=None, scratchdir=None,
                  calculator_exec=None, **kwargs):
 
+        if Version(ase.__version__) < Version("3.23"):
+            raise ImportError(f"The wfl CASTEP calculator is only compatible with ASE v3.23 and higher, "
+                              f"but your ASE version is v{ase.__version__}. Please upgrade")
+
         kwargs = deepcopy(kwargs)
         if calculator_exec is not None:
             if "castep_command" in kwargs:
@@ -83,7 +90,7 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
 
         orig_pbc = self.atoms.pbc.copy()
         try:
-            super().calculate(atoms=atoms)
+            super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
             calculation_succeeded = True
             if 'DFT_FAILED_CASTEP' in atoms.info:
                 del atoms.info['DFT_FAILED_CASTEP']
@@ -95,17 +102,18 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
             # ASE castep calculator does not ever raise an exception when
             # it fails.  Instead, you get things like stress being None,
             # which lead to TypeError when save_calc_results calls get_stress().
-            for property in properties:
-                result = self.get_property(property)
+            for prop in properties:
+                result = self.get_property(prop, allow_calculation=False)
                 if result is None:
                     calculation_succeeded = False
                     atoms.info["DFT_FAILED_CASTEP"] = True
+                    break
 
             # from WFLFileIOCalculator
             self.clean_rundir(_default_keep_files, calculation_succeeded)
 
             # reset pbc because Castep overwrites it to True
-            self.atoms.pbc = orig_pbc(False)
+            self.atoms.pbc = orig_pbc
 
 
     def setup_calc_params(self, properties):
