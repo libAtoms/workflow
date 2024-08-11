@@ -7,5 +7,5 @@ export ASE_MOPAC_COMMAND="${HOME}/programs/mopac-22.1.1-linux/bin/mopac PREFIX.m
 
 # Aims
 #pytest -v -s -rxXs  ../calculators/test_aims.py
-pytest ../calculators/test_orca.py
+pytest -v -s -rxXs --basetemp tmpdir ../calculators/test_orca.py::test_full_orca
 

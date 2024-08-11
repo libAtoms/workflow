@@ -7,10 +7,14 @@ the assets/ workdir contains the orca files and this test depends on them
 import os
 import shutil
 from functools import partial
+import subprocess
+
+from packaging.version import Version
 
 import pytest
 
 import numpy as np
+import ase
 from ase.build import molecule
 from pytest import approx
 from pathlib import Path
@@ -22,6 +26,20 @@ from wfl.calculators.orca import ORCA, parse_npa_output, natural_population_anal
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize import AutoparaInfo
+
+if Version(ase.__version__) < Version("3.23"):
+    aims_prerequisites = pytest.mark.skip(reason="ORCA tests are only supported for ASE v3.23, please update.")
+
+else:
+
+    from ase.config import cfg as ase_cfg
+
+    aims_prerequisites = pytest.mark.skipif(
+        condition = 'orca' not in ase_cfg.parser ,
+        reason='Missing "orca" in ase\'s configuration file.' 
+    )
+
+
 
 ref_parameters = dict(charge=0,
                       mult=1,
@@ -69,7 +87,6 @@ def test_orca_is_converged():
     assert orca.is_converged() is None
 
 
-#@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
 def test_full_orca(tmp_path):
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
 
@@ -79,21 +96,23 @@ def test_full_orca(tmp_path):
 
     # this should raise error and copy over default files
     calc = ORCA(workdir=home_dir, 
-                scratchdir=scratchdir, 
-                keep_files = False, 
-                mult=2)
-
+              scratchdir=scratchdir, 
+              keep_files = False, 
+              mult=2)
+ 
     atoms.calc = calc
     try:
         atoms.get_potential_energy()
-    except CalculationFailed:
+    except subprocess.CalledProcessError:
         pass
     assert list(scratchdir.iterdir()) == []
     assert home_dir.exists()
     calc_dir = [d for d in home_dir.iterdir()][0]
-    for ext in [".ase", ".inp", ".out"]:
-        assert (calc_dir / ("orca" + ext)).exists()
-
+    for ext in [".inp", ".out"]:
+        fn = calc_dir / ("orca" + ext)
+        print(fn)
+        assert fn.exists()
+ 
     # just check this executes without error
     calc = ORCA(workdir=home_dir, 
                 scratchdir=scratchdir, 
@@ -101,7 +120,16 @@ def test_full_orca(tmp_path):
                 mult=1)
 
     atoms.calc = calc
-    atoms.get_potential_energy()
+
+    energy = atoms.get_potential_energy()
+    forces = atoms.get_forces()
+
+    ref_energy = -31.595527990679514
+    ref_forces = np.array([[ 4.11376537e-10,  4.11376537e-10,  3.55578429e+00],
+                           [-2.57110335e-10, -4.11376537e-10, -3.55578431e+00]])
+
+    assert energy == approx(ref_energy)
+    assert forces == approx(ref_forces)
 
 
 #@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")

@@ -14,9 +14,13 @@ from ase.calculators.orca import ORCA as ASE_ORCA
 from ..wfl_fileio_calculator import WFLFileIOCalculator
 from wfl.utils.misc import chunks
 
+# To Do
+## - insert engrad if it's not there
+## add default parameters as in write input
 
-_default_keep_files = ["*.inp", "*.out", "*.ase", "*.engrad", "*.xyz",
+_default_keep_files = ["*.inp", "*.out",  "*.engrad", "*.xyz",
                         "*_trj.xyz"]
+_default_properties = ["energy", "forces"]
 
 
 class ORCA(WFLFileIOCalculator, ASE_ORCA):
@@ -59,48 +63,80 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
     # to override that function's built-in default of 10
     wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
-    # same as parent class, only multiplicity changed to trigger default
-    default_parameters = dict(
-        charge=0, mult=None,
-        task='engrad',
-        orcasimpleinput='tightscf PBE def2-SVP',
-        orcablocks='%scf maxiter 200 end')
+    # EG where should it be?
+    default_params = dict(charge=0, orcasimpleinput='engrad B3LYP def2-TZVP',
+                  orcablocks='%pal nprocs 1 end')
+
 
     def __init__(self, keep_files="default", rundir_prefix="ORCA_", scratchdir=None,
-                 workdir=None, calculator_exec=None, post_process=None,
-                 **kwargs):
+                 workdir=None, post_process=None, **kwargs):
 
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
                          workdir=workdir, scratchdir=scratchdir, **kwargs)
 
-        self.extra_results = dict()
         # to make use of wfl.utils.save_calc_results.save_calc_results()
+        self.extra_results = dict()
         self.extra_results["atoms"] = {}
         self.extra_results["config"] = {}
 
         self.post_process = post_process
 
 
-    def calculate(self, atoms=None, properties=["energy", "forces"], system_changes=all_changes):
+#     def calculate(self, atoms=None, properties=["energy", "forces"], system_changes=all_changes):
+#         """Does the calculation. Handles the working directories in addition to regular
+#         ASE calculation operations (writing input, executing, reading_results) """
+# 
+#         Calculator.calculate(self, atoms, properties, system_changes)
+# 
+#         # from WFLFileIOCalculator
+#         self.setup_rundir()
+# 
+#         try:
+#             self.write_input(self.atoms, properties, system_changes)
+#             self.execute()
+#             self.read_results()
+#             if self.post_process is not None:
+#                 self.post_process(self)
+#             calculation_succeeded = True
+#             if 'DFT_FAILED_ORCA' in atoms.info:
+#                 del atoms.info["DFT_FAILED_ORCA"]
+#         except Exception as e:
+#             atoms.info["DFT_FAILED_ORCA"] = TRUE
+#             calculation_succeeded = False
+#             raiseke e
+#         finally:
+#             # when exception is raised, `calculation_succeeded` is set to False,
+#             # the following code is executed and exception is re-raised.
+#             # from WFLFileIOCalculator
+#             self.clean_rundir(_default_keep_files, calculation_succeeded)
+
+
+
+    def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
         """Does the calculation. Handles the working directories in addition to regular
         ASE calculation operations (writing input, executing, reading_results) """
-
-        Calculator.calculate(self, atoms, properties, system_changes)
 
         # from WFLFileIOCalculator
         self.setup_rundir()
 
+        # how should default parameters be treated?
+        # currently 
+        # - ase.ORCA.calculate() -> 
+        # - ase.genericfileio.GenericFileIOCalculator.calculate() -> 
+        # - ase.genericfileio.GenericFileIOCalculator.write_inputfiles() -> 
+        # - calls ase.calculators.orca.OrcaTemplate.write_input and
+        #   gives it self.parameters which update the hard-coded defaults
+
+        self.fill_in_default_params()
+        self.enforce_force_calculation()
+
         try:
-            self.write_input(self.atoms, properties, system_changes)
-            self.execute()
-            self.read_results()
-            if self.post_process is not None:
-                self.post_process(self)
+            super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
             calculation_succeeded = True
             if 'DFT_FAILED_ORCA' in atoms.info:
                 del atoms.info["DFT_FAILED_ORCA"]
         except Exception as e:
-            atoms.info["DFT_FAILED_ORCA"] = TRUE
+            atoms.info["DFT_FAILED_ORCA"] = True
             calculation_succeeded = False
             raise e
         finally:
@@ -109,7 +145,12 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
             # from WFLFileIOCalculator
             self.clean_rundir(_default_keep_files, calculation_succeeded)
 
+    def fill_in_default_params(self):
 
+        parameters = self.default_params
+        parameters.update(self.parameters)
+        self.parameters = parameters
+        
 
     def write_input(self, atoms, properties=None, system_changes=None):
         """Writes orca.inp, based on the wfl ORCA calculator parameters"""
@@ -150,15 +191,21 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
                         str(atom.position[2]) + '\n')
             f.write('*\n')
 
-    def pick_task(self):
-        # energy and force calculation is enforced
-        task = self.parameters["task"]
-        if task is None:
-            task = "engrad"
-        elif "engrad" not in task and "opt" not in task and "copt" not in task:
-            task += " engrad"
-        return task
+    def enforce_force_calculation(self):
+        
+        orcasimpleinput = self.parameters["orcasimpleinput"]
+        if "engrad" not in orcasimpleinput and "opt" not in orcasimpleinput:
+            self.parameters["orcasimpleinput"] = "engrad " + orcasimpleinput
 
+#     def pick_task(self):
+#         # energy and force calculation is enforced
+#         task = self.parameters["task"]
+#         if task is None:
+#             task = "engrad"
+#         elif "engrad" not in task and "opt" not in task and "copt" not in task:
+#             task += " engrad"
+#         return task
+ 
     def is_converged(self):
         """checks for warnings about SCF/wavefunction not converging.
 
