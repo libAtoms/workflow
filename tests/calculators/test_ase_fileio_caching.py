@@ -24,6 +24,29 @@ def test_vasp_cache_timing(tmp_path, monkeypatch):
         monkeypatch.setenv("VASP_PP_PATH", ".")
     cache_timing(config, Vasp_ase, kwargs_ase, Vasp_wrap, kwargs_wrapper, tmp_path, monkeypatch)
 
+########################
+# test quantum espresso calculator
+from tests.calculators.test_qe import espresso_avail, qe_pseudo
+@pytest.mark.skipif(not espresso_avail, reason='qe testing env vars missing')
+def test_qe_cache_timing(tmp_path, monkeypatch, qe_pseudo):
+    from ase.calculators.espresso import Espresso as Espresso_ASE
+    from wfl.calculators.espresso import Espresso as Espresso_wrap
+
+    config = Atoms('Si', positions=[[0, 0, 9]], cell=[2, 2, 2], pbc=[True, True, True])
+
+    pspot = qe_pseudo
+    kwargs_ase =  dict(
+        pseudopotentials=dict(Si=pspot.name),
+        pseudo_dir=pspot.parent,
+        input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
+        kpts=(2, 3, 4),
+        conv_thr=0.0001,
+        workdir=tmp_path
+    )
+
+    kwargs_wrapper = {}
+    cache_timing(config, Espresso_ASE, kwargs_ase, Espresso_wrap, kwargs_wrapper, tmp_path, monkeypatch)
+
 
 ########################
 # generic code used by all calculators
