@@ -106,11 +106,11 @@ jobs:
           echo "search for torch version"
           set +o pipefail
 
-          echo "torch versions"
-          python3 -m pip install torch==
-          echo "torch versions to search"
-          python3 -m pip install torch== 2>&1 | fgrep 'from versions' |
-                               sed -e 's/.*from versions: //' -e 's/)//' -e 's/,[ ]*/\n/g' | tac
+          # echo "torch versions"
+          # python3 -m pip install torch==
+          # echo "torch versions to search"
+          # python3 -m pip install torch== 2>&1 | fgrep 'from versions' |
+          #                      sed -e 's/.*from versions: //' -e 's/)//' -e 's/,[ ]*/\n/g' | tac
 
           # search for available torch version with +cpu support
           # for torch_version_test in $( python3 -m pip install torch== 2>&1 | fgrep 'from versions' |
