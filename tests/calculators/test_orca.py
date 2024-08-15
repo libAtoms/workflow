@@ -28,33 +28,12 @@ from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize import AutoparaInfo
 
-if Version(ase.__version__) < Version("3.23"):
-    aims_prerequisites = pytest.mark.skip(reason="ORCA tests are only supported for ASE v3.23, please update.")
+from ase.config import cfg as ase_cfg
 
-else:
-
-    from ase.config import cfg as ase_cfg
-
-    aims_prerequisites = pytest.mark.skipif(
-        condition = 'orca' not in ase_cfg.parser ,
-        reason='Missing "orca" in ase\'s configuration file.' 
-    )
-
-
-
-ref_parameters = dict(charge=0,
-                      mult=1,
-                      #orca_command="dummy_no_orca_exec",
-                      orcablocks='%scf Convergence Tight \nSmearTemp 5000.0 \nmaxiter 500 \n  Rotate \n  {  1,   7,      28.37, 0, 0} \n  {  6,   9,      54.55, 0, 0} \n  {  2,  10,      27.42, 0, 0} \n  {  0,  14,      8.014, 1, 1} \n  {  3,  15,       35.3, 1, 1} \n  {  5,  13,      51.31, 1, 1} \n  {  2,  10,      17.84, 1, 1} \n  {  1,  11,      59.83, 1, 1} \nend \n \nend \n',
-                      orcasimpleinput='UHF revPBE def2-TZVP def2/J D3BJ slowconv',
-                      #task='gradient')
-                      )
-
-ref_output = dict(energy=-2933.086022884649,
-                  forces=np.array([[-1.00418967e+03, -3.42059590e-07, 1.02844648e-05],
-                                   [1.00418967e+03, 3.42059590e-07, -1.02844648e-05]]),
-                  dipole=np.array([1.44071, -0.0, -0.0])
-                  )
+aims_prerequisites = pytest.mark.skipif(
+    condition = 'orca' not in ase_cfg.parser ,
+    reason='Missing "orca" in ase\'s configuration file.' 
+)
 
 
 def test_orca_is_converged(tmp_path):

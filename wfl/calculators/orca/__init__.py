@@ -1,16 +1,12 @@
-import os
 import re
 from pathlib import Path
 import subprocess
-
-from typing import Optional
 
 import ase.io
 from ase.io.orca import read_geom_orcainp
 import numpy as np
 from ase import units
-from ase.calculators.calculator import CalculationFailed, Calculator, \
-    FileIOCalculator, all_changes
+from ase.calculators.calculator import CalculationFailed, all_changes 
 from ase.calculators.orca import ORCA as ASE_ORCA
 
 from ..wfl_fileio_calculator import WFLFileIOCalculator

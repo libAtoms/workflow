@@ -8,6 +8,6 @@ export ASE_MOPAC_COMMAND="${HOME}/programs/mopac-22.1.1-linux/bin/mopac PREFIX.m
 export JANPA_HOME_DIR="${HOME}/programs/janpa"
 
 # Aims
-#pytest -v -s -rxXs  ../calculators/test_aims.py
-pytest -v -s -rxXs --basetemp tmpdir ../calculators/test_orca.py
+pytest -v -s -rxXs  ../calculators/test_aims.py
+pytest -v -s -rxXs ../calculators/test_orca.py
 
