@@ -58,7 +58,6 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
     # to override that function's built-in default of 10
     wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
-    # EG where should this be?
     default_params = dict(charge=0, orcasimpleinput='engrad B3LYP def2-TZVP',
                   orcablocks='%pal nprocs 1 end')
 

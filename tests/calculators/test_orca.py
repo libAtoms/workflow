@@ -30,12 +30,12 @@ from wfl.autoparallelize import AutoparaInfo
 
 from ase.config import cfg as ase_cfg
 
-aims_prerequisites = pytest.mark.skipif(
+orca_prerequisites = pytest.mark.skipif(
     condition = 'orca' not in ase_cfg.parser ,
     reason='Missing "orca" in ase\'s configuration file.' 
 )
 
-
+@orca_prerequisites
 def test_orca_is_converged(tmp_path):
     """function to check convergence from orca's output."""
 
@@ -63,7 +63,7 @@ def test_orca_is_converged(tmp_path):
     with pytest.raises(CalculationFailed):
         at.get_potential_energy()
 
-
+@orca_prerequisites
 def test_full_orca(tmp_path):
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
 
@@ -115,7 +115,7 @@ def test_full_orca(tmp_path):
     ref_dipole = np.array([ 0., 0., -0.43402056])
     assert dipole == approx(ref_dipole)
 
-
+@orca_prerequisites
 def test_orca_with_generic(tmp_path):
 
     home_dir = tmp_path / "home_dir"
@@ -136,6 +136,7 @@ def test_orca_with_generic(tmp_path):
         assert "orca_energy" in at.info or "orca_calculation_failed" in at.info
 
 
+@orca_prerequisites
 def test_orca_geometry_optimisation(tmp_path):
 
     home_dir = tmp_path / "home_dir"
@@ -159,6 +160,7 @@ def test_orca_geometry_optimisation(tmp_path):
     assert pytest.approx(out.get_distance(0, 1), abs=0.03) == 0.76812058465248
 
 
+@orca_prerequisites
 def test_post_processing(tmp_path):
 
     home_dir = tmp_path / "home_dir"
@@ -195,7 +197,7 @@ def simplest_orca_post(orca_calc):
         with open(post_fn, "w") as f:
             f.write("Dummy file generated after ORCA execution\n")
 
-
+@orca_prerequisites
 @pytest.mark.skipif("JANPA_HOME_DIR" not in os.environ, reason="JANPA_HOME_DIR is not set")
 def test_run_npa(tmp_path):
 
@@ -263,6 +265,7 @@ ref_freq = {'normal_mode_eigenvalues': np.array([0., 0., 0., 0., 0., 0., -0.6007
                   [-5.59691e-01, 1.79000e-02, -0.0], [-5.63437e-01, 1.75500e-02, -0.0]]])}
 
 
+@orca_prerequisites
 @pytest.mark.skip(reason="Normal mode (eigenvector) reading implemented incorrectly.")
 def test_read_frequencies():
     mol = molecule("CH4")
