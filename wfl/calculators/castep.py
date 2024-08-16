@@ -4,9 +4,6 @@ Quantum Castep interface
 
 from copy import deepcopy
 
-from packaging.version import Version
-
-import ase
 from ase.calculators.calculator import all_changes
 from ase.calculators.castep import Castep as ASE_Castep
 
@@ -44,19 +41,22 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
 
     **kwargs: arguments for ase.calculators.Castep.Castep
     """
+
     implemented_properties = ["energy", "forces", "stress"]
 
     # new default value of num_inputs_per_python_subprocess for calculators.generic,
     # to override that function's built-in default of 10
     wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
-    def __init__(self, keep_files="default", rundir_prefix="run_CASTEP_",
-                 workdir=None, scratchdir=None,
-                 calculator_exec=None, **kwargs):
-
-        if Version(ase.__version__) < Version("3.23"):
-            raise ImportError(f"The wfl CASTEP calculator is only compatible with ASE v3.23 and higher, "
-                              f"but your ASE version is v{ase.__version__}. Please upgrade")
+    def __init__(
+        self,
+        keep_files="default",
+        rundir_prefix="run_CASTEP_",
+        workdir=None,
+        scratchdir=None,
+        calculator_exec=None,
+        **kwargs,
+    ):
 
         kwargs = deepcopy(kwargs)
         if calculator_exec is not None:
@@ -69,11 +69,17 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
             kwargs["find_pspots"] = True
 
         # WFLFileIOCalculator is a mixin, will call remaining superclass constructors for us
-        super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
-                         workdir=workdir, scratchdir=scratchdir, **kwargs)
+        super().__init__(
+            keep_files=keep_files,
+            rundir_prefix=rundir_prefix,
+            workdir=workdir,
+            scratchdir=scratchdir,
+            **kwargs,
+        )
 
-
-    def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
+    def calculate(
+        self, atoms=None, properties=_default_properties, system_changes=all_changes
+    ):
         """Do the calculation. Handles the working directories in addition to regular
         ASE calculation operations (writing input, executing, reading_results)
         Reimplements & extends GenericFileIOCalculator.calculate() for the development version of ASE
@@ -90,12 +96,14 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
 
         orig_pbc = self.atoms.pbc.copy()
         try:
-            super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
+            super().calculate(
+                atoms=atoms, properties=properties, system_changes=system_changes
+            )
             calculation_succeeded = True
-            if 'DFT_FAILED_CASTEP' in atoms.info:
-                del atoms.info['DFT_FAILED_CASTEP']
+            if "DFT_FAILED_CASTEP" in atoms.info:
+                del atoms.info["DFT_FAILED_CASTEP"]
         except Exception as exc:
-            atoms.info['DFT_FAILED_CASTEP'] = True
+            atoms.info["DFT_FAILED_CASTEP"] = True
             calculation_succeeded = False
             raise exc
         finally:
@@ -114,7 +122,6 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
 
             # reset pbc because Castep overwrites it to True
             self.atoms.pbc = orig_pbc
-
 
     def setup_calc_params(self, properties):
         # calculate stress if requested
