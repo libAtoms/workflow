@@ -10,11 +10,18 @@ For examples and more information see [documentation](https://libatoms.github.io
 
 `wfl` and its dependencies may be installed via `pip install wfl`. 
 
-NOTE: (as of 14 June 2024) `wfl` is only tested against the latest ASE pip release, currently v3.23.0. 
-For the time being, v3.22.1 is the minimum version listed as a (pip) prerequisite of `wfl`, because
-it at least mostly works, but it may not be fully compatible and is not actively tested.
 
 # Recent changes
+
+v0.3.0:
+
+- Update the file-based calculators (Orca, FHI-Aims, Vasp, Quantum Espresso, Castep) to work 
+  with with ASE v3.23. This update breaks backwards-compatibility. For compatibility with with 
+  the ASE v3.22 see use wfl v0.2.7 or earlier. 
+
+v0.2.7:
+
+- Latest version compatible with ASE v3.22.x. To install, use `pip install wfl==0.2.7`. 
 
 v0.2.3:
 
