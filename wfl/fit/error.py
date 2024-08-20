@@ -41,7 +41,8 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
     Returns
     -------
         errors: dict of RMSE and MAE for each category and property
-        diffs: dict with list of differences for each category and property
+        diffs: dict with list of differences for each category and property (signed for scalar
+            properties, norms for vectors)
         parity: dict with "ref" and "calc" keys, each containing list of property values for
             each category and property, for parity plots
     """
@@ -188,12 +189,12 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
 
                 if len(diff.shape) != 2:
                     raise RuntimeError(f"Should never have diff.shape={diff.shape} with dim != 2 (prop {prop + atom_split_index_label})")
-                # compute norm along vector components
-                diff = np.linalg.norm(diff, axis=1)
-                if not per_component:
+                if diff.shape[1] > 1:
+                    # compute norm along vector components
+                    diff = np.linalg.norm(diff, axis=1)
+                if not per_component and selected_ref_quant.shape[1] > 1:
                     selected_ref_quant = np.linalg.norm(selected_ref_quant, axis=1)
                     selected_calc_quant = np.linalg.norm(selected_calc_quant, axis=1)
-
 
                 _dict_add([all_diffs, all_weights,            all_parity["ref"],  all_parity["calc"]],
                           [diff,      _promote(weight, diff), selected_ref_quant, selected_calc_quant],
