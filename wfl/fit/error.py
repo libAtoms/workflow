@@ -381,16 +381,15 @@ def select_units(prop, plt_type, units_dict=None):
         "energy/atom": {"parity": ("eV/at", 1.0), "error": ("meV/at", 1.0e3)},
         "forces": {"parity": ("eV/Å", 1.0), "error": ("meV/Å", 1.0e3)},
         "virial": {"parity": ("eV", 1.0), "error": ("meV", 1.0e3)},
-        "virial/atom": {"parity": ("eV/at", 1.0), "error": ("meV/at", 1.0e3)}
+        "virial/atom": {"parity": ("eV/at", 1.0), "error": ("meV/at", 1.0e3)},
+        "stress": {"parity": ("GPa", 1.0), "error": ("MPa", 1.0e3)},
     }
     if units_dict is None:
         units_dict = {}
     use_units_dict.update(units_dict)
 
-    if "virial" in prop:
-        prop = re.sub(r"/comp\b", "", prop)
+    prop = re.sub(r"/comp\b", "", prop)
     if "forces" in prop:
-        prop = re.sub(r"/comp\b", "", prop)
         prop = re.sub(r"/Z_\d+\b", "", prop)
 
     if "energy" in prop:
