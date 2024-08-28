@@ -41,7 +41,7 @@ jobs:
       - name: Install dependencies from pip
         run: |
           echo "numpy<2" >> $PIP_CONSTRAINT
-          python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit flake8 pytest pytest-cov requests
+          python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit==2024.3.3 flake8 pytest pytest-cov requests
 
       - name: Install latest ASE from pypi
         run: |
