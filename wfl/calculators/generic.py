@@ -150,6 +150,20 @@ def calculate(*args, **kwargs):
     if calculator is None:
         calculator = args[2]
 
+    #check if calculator should be wrapped
+    if type(calculator) == tuple:
+        from ase.calculators.espresso import Espresso as ASE_Espresso
+        from ase.calculators.vasp.vasp import Vasp as ASE_Vasp
+        from ase.calculators.aims import Aims as ASE_Aims
+        from ase.calculators.castep import Castep as ASE_Castep
+        from ase.calculators.mopac import MOPAC as ASE_MOPAC
+        from ase.calculators.orca import ORCA as ASE_ORCA
+        wrapped_types = [ASE_Espresso, ASE_Vasp, ASE_Aims, ASE_Castep, ASE_MOPAC, ASE_ORCA]
+
+        calc = calculator[0]
+        if calc in wrapped_types:
+            warnings.warn(f"{calc} should be imported from wfl.calculators rather than ase. Using {calc} directly can lead to duplicated singlepoints", RuntimeWarning)
+
     default_autopara_info = getattr(calculator, "wfl_generic_default_autopara_info", {"num_inputs_per_python_subprocess": 10})
 
     return autoparallelize(_run_autopara_wrappable, *args, default_autopara_info=default_autopara_info, **kwargs)
