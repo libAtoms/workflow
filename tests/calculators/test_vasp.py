@@ -13,10 +13,11 @@ from wfl.calculators.vasp import Vasp
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 
-pytestmark = pytest.mark.skipif('ASE_VASP_COMMAND' not in os.environ or
-                                'ASE_VASP_COMMAND_GAMMA' not in os.environ or
-                                'PYTEST_VASP_POTCAR_DIR' not in os.environ,
-                                reason='missing env var ASE_VASP_COMMAND or ASE_VASP_COMMAND_GAMMA or PYTEST_VASP_POTCAR_DIR')
+test_vasp_mark = ('ASE_VASP_COMMAND' not in os.environ or
+                  'ASE_VASP_COMMAND_GAMMA' not in os.environ or
+                  'PYTEST_VASP_POTCAR_DIR' not in os.environ)
+pytestmark = pytest.mark.skipif(test_vasp_mark, reason='missing env var ASE_VASP_COMMAND or ASE_VASP_COMMAND_GAMMA '
+                                                       'or PYTEST_VASP_POTCAR_DIR')
 
 
 def test_vasp_gamma(tmp_path, monkeypatch):
