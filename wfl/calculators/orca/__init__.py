@@ -1,4 +1,3 @@
-import os
 import re
 from pathlib import Path
 import subprocess
@@ -7,16 +6,16 @@ import ase.io
 from ase.io.orca import read_geom_orcainp
 import numpy as np
 from ase import units
-from ase.calculators.calculator import CalculationFailed, Calculator, \
-    FileIOCalculator, all_changes
+from ase.calculators.calculator import CalculationFailed, all_changes 
 from ase.calculators.orca import ORCA as ASE_ORCA
 
 from ..wfl_fileio_calculator import WFLFileIOCalculator
 from wfl.utils.misc import chunks
 
 
-_default_keep_files = ["*.inp", "*.out", "*.ase", "*.engrad", "*.xyz",
+_default_keep_files = ["*.inp", "*.out",  "*.engrad", "*.xyz",
                         "*_trj.xyz"]
+_default_properties = ["energy", "forces"]
 
 
 class ORCA(WFLFileIOCalculator, ASE_ORCA):
@@ -44,16 +43,13 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
     scratchdir: str / Path, default None
         temporary directory to execute calculations in and delete or copy back results (set by
         "keep_files") if needed.  For example, directory on a local disk with fast file I/O.
-    calculator_exec: str, default "orca"
-        command for ORCA, without any prefix or redirection set.
-        for example: "/path/to/orca"
-        mutually exclusive with "command"
     post_process: function that takes the current instance of the calculator and is to be
         executed after reading back results from file, but before all the files are deleted.
         For example, a localisation scheme that uses the wavefunction files and saves local
         charges to `ORCA.extra_results`.
 
-    **kwargs: arguments for ase.calculators.espresso.Espresso
+    **kwargs: arguments for ase.calculators.orca.ORCA
+        see https://wiki.fysik.dtu.dk/ase/ase/calculators/orca.html#module-ase.calculators.orca
     """
 
     implemented_properties = ["energy", "forces", "dipole"]
@@ -62,126 +58,106 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
     # to override that function's built-in default of 10
     wfl_generic_default_autopara_info = {"num_inputs_per_python_subprocess": 1}
 
-    # same as parent class, only multiplicity changed to trigger default
-    default_parameters = dict(
-        charge=0, mult=None,
-        task='engrad',
-        orcasimpleinput='tightscf PBE def2-SVP',
-        orcablocks='%scf maxiter 200 end')
+    default_params = dict(charge=0, orcasimpleinput='engrad B3LYP def2-TZVP',
+                  orcablocks='%pal nprocs 1 end')
+
 
     def __init__(self, keep_files="default", rundir_prefix="ORCA_", scratchdir=None,
-                 workdir=None, calculator_exec=None, post_process=None,
-                 **kwargs):
-
-        if calculator_exec is not None:
-            if "command" in kwargs:
-                raise ValueError("Cannot specify both calculator_exec and command")
-            if " PREFIX " in calculator_exec:
-                raise ValueError("calculator_exec should not include orca command line arguments such as ' PREFIX.inp > PREFIX.out'")
-            self.command = f'{calculator_exec} PREFIX.inp > ' \
-                           f'PREFIX.out'
-        elif calculator_exec is None and "command" not in kwargs:
-            self.command = os.environ.get("ASE_ORCA_COMMAND", "orca PREFIX.inp > PREFIX.out")
-        else:
-            self.command = kwargs["command"]
+                 workdir=None, post_process=None, **kwargs):
 
         super().__init__(keep_files=keep_files, rundir_prefix=rundir_prefix,
                          workdir=workdir, scratchdir=scratchdir, **kwargs)
 
-        self.extra_results = dict()
         # to make use of wfl.utils.save_calc_results.save_calc_results()
+        self.extra_results = dict()
         self.extra_results["atoms"] = {}
         self.extra_results["config"] = {}
 
         self.post_process = post_process
 
 
-    def calculate(self, atoms=None, properties=["energy", "forces"], system_changes=all_changes):
+    def calculate(self, atoms=None, properties=_default_properties, system_changes=all_changes):
         """Does the calculation. Handles the working directories in addition to regular
         ASE calculation operations (writing input, executing, reading_results) """
 
-        Calculator.calculate(self, atoms, properties, system_changes)
+        # should be fixed by ASE's PR #3442
+        if self.atoms is None:
+            self.atoms = atoms
 
         # from WFLFileIOCalculator
         self.setup_rundir()
 
+        self.fill_in_default_params()
+
+        self.enforce_force_calculation()
+
+        if self.parameters.get("mult", None) is None:
+            charge = self.parameters.get("charge", 0)
+            self.parameters["mult"] = self.get_default_multiplicity(atoms, charge)
+
         try:
-            self.write_input(self.atoms, properties, system_changes)
-            self.execute()
-            self.read_results()
-            if self.post_process is not None:
-                self.post_process(self)
+            super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
+
+            self.wfl_calc_post_process()
+
             calculation_succeeded = True
+            if 'DFT_FAILED_ORCA' in atoms.info:
+                del atoms.info["DFT_FAILED_ORCA"]
         except Exception as e:
+            atoms.info["DFT_FAILED_ORCA"] = True
             calculation_succeeded = False
             raise e
         finally:
-            # when exception is raised, `calculation_succeeded` is set to False,
-            # the following code is executed and exception is re-raised.
-            # from WFLFileIOCalculator
             self.clean_rundir(_default_keep_files, calculation_succeeded)
 
+    def wfl_calc_post_process(self): 
+        """
+        Extends ASE's calculator's reading capabilities. 
+        - Checks the calculation has converged and raises an exception if not
+        - energy, force and dipole are read by ASE
+        - reads optimised aptoms and optimisation trjectory, if appropriate. 
+        - (to be updated) reads frequencies, and eigenmodes, if appropriate. 
+        - performs post-procesing with any external functions
+        """
+
+        output_file_path = self.directory / self.template.outputname
+
+        if not self.is_converged(output_file_path):
+            raise CalculationFailed("Wavefunction not fully converged")
+
+        orcasimpleinput = self.parameters["orcasimpleinput"]
+
+        if 'opt' in orcasimpleinput or "copt" in orcasimpleinput:
+            self.read_opt_atoms(str(output_file_path).replace(".out", ".xyz"))
+            self.read_trajectory(str(output_file_path).replace(".out", "_trj.xyz"))
+
+        # to be updated
+        #if 'freq' in orcasimpleinput:
+        #    self.read_frequencies()
+        
+        if self.post_process is not None:
+            self.post_process(self)
+
+    def fill_in_default_params(self):
+
+        parameters = self.default_params.copy()
+        parameters.update(self.parameters)
+        self.parameters = parameters
 
 
-    def cleanup(self):
-        """Clean all (empty) directories that could not have been removed
-        immediately after the calculation, for example, because other parallel
-        process might be using them."""
-        if any(self.workdir_root.iterdir()):
-            print(f'{self.workdir_root.name} is not empty, not removing')
-        else:
-            self.workdir_root.rmdir()
+    def enforce_force_calculation(self):
+        
+        orcasimpleinput = self.parameters["orcasimpleinput"]
+
+        # does "freq" produce engrad too?
+        force_producing_keys = ["engrad", "opt", "copt"]
+        expect_engrad = np.sum([key in orcasimpleinput for key in force_producing_keys])
+
+        if not expect_engrad:
+            self.parameters["orcasimpleinput"] = "engrad " + orcasimpleinput
 
 
-    def write_input(self, atoms, properties=None, system_changes=None):
-        """Writes orca.inp, based on the wfl ORCA calculator parameters"""
-
-        if self.parameters.get("mult", None) is None:
-            self.set(mult=self.get_default_multiplicity(atoms,
-                                                        self.parameters.get(
-                                                            "charge", 0)))
-
-        # copy of ASE's method, just using the patched write_orca() from here
-        FileIOCalculator.write_input(self, atoms, properties, system_changes)
-        self.parameters.write(self.label + '.ase')
-
-        # this is modified in place here
-        orcablocks = self.parameters['orcablocks']
-
-        if self.pcpot:
-            pcstring = f'% pointcharges \"{self.label}.pc\"\n\n'
-            orcablocks += pcstring
-            self.pcpot.write_mmcharges(self.label)
-
-        with open(self.label + '.inp', 'w') as f:
-
-            f.write(f"! {self.pick_task()} {self.parameters['orcasimpleinput']} \n")
-            f.write(f"{orcablocks} \n")
-
-            f.write('*xyz')
-            f.write(f" {self.parameters['charge']:d}")
-            f.write(f" {self.parameters['mult']:d} \n")
-            for atom in atoms:
-                if atom.tag == 71:  # 71 is ascii G (Ghost)
-                    symbol = atom.symbol + ' : '
-                else:
-                    symbol = atom.symbol + '   '
-                f.write(symbol +
-                        str(atom.position[0]) + ' ' +
-                        str(atom.position[1]) + ' ' +
-                        str(atom.position[2]) + '\n')
-            f.write('*\n')
-
-    def pick_task(self):
-        # energy and force calculation is enforced
-        task = self.parameters["task"]
-        if task is None:
-            task = "engrad"
-        elif "engrad" not in task and "opt" not in task and "copt" not in task:
-            task += " engrad"
-        return task
-
-    def is_converged(self):
+    def is_converged(self, output_file_path):
         """checks for warnings about SCF/wavefunction not converging.
 
         Returns
@@ -192,7 +168,8 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
         Based on ase.calculators.orca.read_energy().
 
         """
-        with open(self.label + '.out', mode='r', encoding='utf-8') as fd:
+
+        with open(output_file_path, mode='r', encoding='utf-8') as fd:
             text = fd.read()
 
         re_energy = re.compile(r"FINAL SINGLE POINT ENERGY.*\n")
@@ -204,30 +181,14 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
 
         return not re_not_converged.search(found_line.group(0))
 
-    def read_results(self):
-        """Reads all results"""
 
-        if not self.is_converged():
-            raise CalculationFailed("Wavefunction not fully converged")
-
-        self.read_energy()
-        self.read_forces()
-
-        self.read_dipole()
-
-        if 'opt' in self.parameters.task or "copt" in self.parameters.task:
-            self.read_opt_atoms()
-            self.read_trajectory()
-
-        if 'freq' in self.parameters.task:
-            self.read_frequencies()
-
-    def read_opt_atoms(self):
+    def read_opt_atoms(self, out_xyz_fn):
         """Reads the result of the geometry optimisation"""
-        opt_atoms = ase.io.read(f'{self.label}.xyz')
+        opt_atoms = ase.io.read(out_xyz_fn)
         self.extra_results["relaxed_positions"] = opt_atoms.positions.copy()
 
-    def read_trajectory(self):
+
+    def read_trajectory(self, traj_fn):
         """Reads the trajectory of the geometry optimisation
 
         Notes
@@ -236,7 +197,7 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
         E -154.812399026326";
         # TODO parse out forces as well
         """
-        opt_trj = ase.io.read(f'{self.label}_trj.xyz', ':')
+        opt_trj = ase.io.read(traj_fn, ":")
         for at in opt_trj:
             energy = None
             for key in at.info.keys():
@@ -250,6 +211,7 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
                 at.info['energy'] = energy
 
         self.extra_results["opt_trajectory"] = opt_trj
+
 
     # EG: The eigenvector reading is implemented incorrectly
     def read_frequencies(self):
@@ -327,37 +289,6 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
                 "Frequency calculation has failed in ORCA: eigenvectors not "
                 "found")
 
-    def read_dipole(self):
-        """
-        Note
-        ----
-
-        Dipole is calculated by default, though only written up to 0.00001
-        so the rest of  the digits are not meaningful in the output.
-        """
-        with open(self.label + '.out', mode='r', encoding='utf-8') as fd:
-            text = fd.read()
-
-        # recognise the whole block and pick up the three numbers we need
-        pattern_dipole_block = re.compile(
-            r"(?:DIPOLE MOMENT\n"
-            r"[-]+\n"
-            r"[\sXYZ]*\n"
-            r"Electronic contribution:[\s\.0-9-]*\n"
-            r"Nuclear contribution   :[\s\.0-9-]*\n"
-            r"[-\s]+\n"
-            r"Total Dipole Moment    :\s+([-0-9\.]*)\s+([-0-9\.]*)\s+([-0-9\.]*))"
-            # this reads the X, Y, Z parts
-        )
-
-        # three numbers, total dipole in a.u.
-        match = pattern_dipole_block.search(text)
-
-        if match:
-            dipole = np.array(
-                [float(x) for x in match.groups()]) / units.Debye * units.Bohr
-            self.results["dipole"] = dipole
-
     @staticmethod
     def get_default_multiplicity(atoms, charge=0):
         """ Gets the multiplicity of the atoms object.
@@ -382,19 +313,20 @@ def natural_population_analysis(janpa_home_dir, orca_calc):
 
     janpa_home_dir = Path(janpa_home_dir)
 
-    label = orca_calc.label
+    orca_input_fn = orca_calc.directory / orca_calc.template.inputname
+    label = orca_input_fn.parent / orca_input_fn.stem
 
     # just to get the elements
     if orca_calc.atoms is not None:
         ref_elements = list(orca_calc.atoms.symbols)
     else:
-        atoms = read_geom_orcainp(label + '.inp')
+        atoms = read_geom_orcainp(orca_input_fn)
         ref_elements = list(atoms.symbols)
 
 
     # 1. Convert from orca output to incomplete molden
-    calculator_exec = orca_calc.command.split(' ')[0]
-    command = f"{calculator_exec}_2mkl {label} -molden > {label}.orca_2mkl.out"
+    orca_command = orca_calc.profile.command
+    command = f"{orca_command}_2mkl {label} -molden > {label}.orca_2mkl.out"
     subprocess.run(command, shell=True)     # think about how to handle errors, etc
 
     # 2. Clean up molden format
