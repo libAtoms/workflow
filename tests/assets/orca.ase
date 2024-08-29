@@ -1,6 +1,0 @@
-dict(charge=0,
-     mult=1,
-     orca_command='dummy_no_orca_exec',
-     orcablocks='%scf Convergence Tight \nSmearTemp 5000.0 \nmaxiter 500 \n  Rotate \n  {  1,   7,      28.37, 0, 0} \n  {  6,   9,      54.55, 0, 0} \n  {  2,  10,      27.42, 0, 0} \n  {  0,  14,      8.014, 1, 1} \n  {  3,  15,       35.3, 1, 1} \n  {  5,  13,      51.31, 1, 1} \n  {  2,  10,      17.84, 1, 1} \n  {  1,  11,      59.83, 1, 1} \nend \n \nend \n',
-     orcasimpleinput='UHF revPBE def2-TZVP def2/J D3BJ slowconv',
-     task='gradient')

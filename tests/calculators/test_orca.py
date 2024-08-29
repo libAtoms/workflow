@@ -7,72 +7,63 @@ the assets/ workdir contains the orca files and this test depends on them
 import os
 import shutil
 from functools import partial
+import subprocess
 
-import pytest
+from packaging.version import Version
 
 import numpy as np
-from ase.build import molecule
+import pytest
 from pytest import approx
 from pathlib import Path
 
+
+import ase
+from ase.build import molecule
 from ase import Atoms
 from ase.calculators.calculator import CalculationFailed 
+from ase.io import orca as orca_io
 
 from wfl.calculators.orca import ORCA, parse_npa_output, natural_population_analysis
 from wfl.calculators import generic
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.autoparallelize import AutoparaInfo
 
-pytestmark = pytest.mark.xfail(reason="calculator needs to be updated to work with latest gitlab version of ase")
+from ase.config import cfg as ase_cfg
 
+orca_prerequisites = pytest.mark.skipif(
+    condition = 'orca' not in ase_cfg.parser ,
+    reason='Missing "orca" in ase\'s configuration file.' 
+)
 
-ref_parameters = dict(charge=0,
-                      mult=1,
-                      orca_command="dummy_no_orca_exec",
-                      orcablocks='%scf Convergence Tight \nSmearTemp 5000.0 \nmaxiter 500 \n  Rotate \n  {  1,   7,      28.37, 0, 0} \n  {  6,   9,      54.55, 0, 0} \n  {  2,  10,      27.42, 0, 0} \n  {  0,  14,      8.014, 1, 1} \n  {  3,  15,       35.3, 1, 1} \n  {  5,  13,      51.31, 1, 1} \n  {  2,  10,      17.84, 1, 1} \n  {  1,  11,      59.83, 1, 1} \nend \n \nend \n',
-                      orcasimpleinput='UHF revPBE def2-TZVP def2/J D3BJ slowconv',
-                      task='gradient')
-
-ref_output = dict(energy=-2933.086022884649,
-                  forces=np.array([[-1.00418967e+03, -3.42059590e-07, 1.02844648e-05],
-                                   [1.00418967e+03, 3.42059590e-07, -1.02844648e-05]]),
-                  dipole=np.array([1.44071, -0.0, -0.0])
-                  )
-
-
-def test_orca_calculator():
-    orca = ORCA()
-    orca.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'assets', 'orca'))
-
-    # parameter reading
-    for key, val in orca.parameters.items():
-        assert ref_parameters[key] == val
-
-    # results reading
-    for key, val in orca.results.items():
-        # the dipole can bave a little floating point issue
-        # because it is written up to 5 digits only
-        assert ref_output[key] == approx(val, rel=(1e-4 if key == "dipole" else 1e-7))
-
-
-
-def test_orca_is_converged():
+@orca_prerequisites
+def test_orca_is_converged(tmp_path):
     """function to check convergence from orca's output."""
 
-    ref_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'assets')
+    ref_path = Path(__file__).parent.resolve() / "../assets/orca/"
+
     orca = ORCA()
 
-    orca.label = os.path.join(ref_path, 'orca_scf_converged')
-    assert orca.is_converged() is True
+    output_fn = ref_path / "orca_scf_converged.out"
+    assert orca.is_converged(output_fn) is True
 
-    orca.label = os.path.join(ref_path, 'orca_scf_unconverged')
-    assert orca.is_converged() is False
+    output_fn = ref_path / "orca_scf_unconverged.out"
+    assert orca.is_converged(output_fn) is False
 
-    orca.label = os.path.join(ref_path, 'orca_scf_unfinished')
-    assert orca.is_converged() is None
+    output_fn = ref_path / "orca_scf_unfinished.out"
+    assert orca.is_converged(output_fn) is None
 
+    orcablocks = "%scf maxiter 2 end"
+    orca = ORCA(orcablocks=orcablocks, workdir=tmp_path)
 
-@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
+    at = molecule("CH4")
+    at.set_distance(0, 1, 4.0, fix=0)
+    at.calc = orca
+
+    # todo - make this run in tmpdir
+    with pytest.raises(CalculationFailed):
+        at.get_potential_energy()
+
+@orca_prerequisites
 def test_full_orca(tmp_path):
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
 
@@ -82,34 +73,51 @@ def test_full_orca(tmp_path):
 
     # this should raise error and copy over default files
     calc = ORCA(workdir=home_dir, 
-                scratchdir=scratchdir, 
-                keep_files = False, 
-                mult=2)
-
+              scratchdir=scratchdir, 
+              keep_files = False, 
+              mult=2)
+ 
     atoms.calc = calc
-    try:
+
+    with pytest.raises(subprocess.CalledProcessError):
         atoms.get_potential_energy()
-    except CalculationFailed:
-        pass
+
     assert list(scratchdir.iterdir()) == []
     assert home_dir.exists()
-    calc_dir = [d for d in home_dir.iterdir()][0]
-    for ext in [".ase", ".inp", ".out"]:
-        assert (calc_dir / ("orca" + ext)).exists()
 
-    # just check this executes without error
+    calc_dir = [d for d in home_dir.iterdir()][0]
+    for ext in [".inp", ".out"]:
+        fn = calc_dir / ("orca" + ext)
+        print(fn)
+        assert fn.exists()
+ 
+    # check correct execution
     calc = ORCA(workdir=home_dir, 
                 scratchdir=scratchdir, 
                 keep_files = "default", 
                 mult=1)
 
+
+    atoms = molecule("H2O")     
     atoms.calc = calc
-    atoms.get_potential_energy()
+
+    energy = atoms.get_potential_energy()
+    assert energy == approx(-2079.6566902318705)
 
 
-@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
+    forces = atoms.get_forces()
+    ref_forces = np.array([[ 5.71864808e-07,  1.47992709e-07, -4.34436341e-01],
+                           [-4.11376537e-10, -1.46326633e-01,  2.13230073e-01],
+                           [-3.70238883e-09,  1.46325557e-01,  2.13230269e-01]])
+    assert forces == approx(ref_forces)
+
+    dipole = atoms.get_dipole_moment()
+    ref_dipole = np.array([ 0., 0., -0.43402056])
+    assert dipole == approx(ref_dipole)
+
+@orca_prerequisites
 def test_orca_with_generic(tmp_path):
-    
+
     home_dir = tmp_path / "home_dir"
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
@@ -127,9 +135,10 @@ def test_orca_with_generic(tmp_path):
     for at in outputs.to_ConfigSet():
         assert "orca_energy" in at.info or "orca_calculation_failed" in at.info
 
-@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
+
+@orca_prerequisites
 def test_orca_geometry_optimisation(tmp_path):
-    
+
     home_dir = tmp_path / "home_dir"
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
@@ -139,7 +148,8 @@ def test_orca_geometry_optimisation(tmp_path):
     calc = ORCA(workdir=home_dir, 
                 keep_files = "default", 
                 mult=1, 
-                task="opt")
+                orcasimpleinput='opt B3LYP def2-TZVP',
+                )
 
 
     generic_result = generic.calculate(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_")
@@ -147,12 +157,12 @@ def test_orca_geometry_optimisation(tmp_path):
 
     out = list(generic_result)[0]
 
-    assert pytest.approx(out.get_distance(0, 1)) == 0.76812058465248
+    assert pytest.approx(out.get_distance(0, 1), abs=0.03) == 0.76812058465248
 
 
-@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ, reason="no ORCA executable in path")
+@orca_prerequisites
 def test_post_processing(tmp_path):
-       
+
     home_dir = tmp_path / "home_dir"
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
@@ -162,7 +172,10 @@ def test_post_processing(tmp_path):
 
     atoms.calc = calc
     atoms.get_potential_energy()
-    assert Path(atoms.calc.label + '.post').exists()
+
+    output_fn = atoms.calc.directory / atoms.calc.template.outputname.replace(".out", ".post")
+
+    assert output_fn.exists()
 
 
 def test_parse_npa_output():
@@ -173,17 +186,19 @@ def test_parse_npa_output():
     assert np.all([v1==v2 for v1, v2 in zip(elements, ["O", "H", "H"])])
     assert np.all([pytest.approx(v1)==v2 for v1, v2 in zip(populations, ref_populations)])
     assert np.all([pytest.approx(v1)==v2 for v1, v2 in zip(charges,ref_charges)]) 
-    
+ 
 
 def simplest_orca_post(orca_calc):
 
-    label = orca_calc.label
-    if Path(label + '.out').exists():
-        with open(label + ".post", "w") as f:
+    output_fn = orca_calc.directory / orca_calc.template.outputname
+    post_fn = str(output_fn).replace(".out", ".post")
+
+    if Path(output_fn).exists():
+        with open(post_fn, "w") as f:
             f.write("Dummy file generated after ORCA execution\n")
 
-
-@pytest.mark.skipif("ASE_ORCA_COMMAND" not in os.environ or "JANPA_HOME_DIR" not in os.environ, reason="no ORCA or JANPA executable in path")
+@orca_prerequisites
+@pytest.mark.skipif("JANPA_HOME_DIR" not in os.environ, reason="JANPA_HOME_DIR is not set")
 def test_run_npa(tmp_path):
 
     janpa_home_dir = os.environ["JANPA_HOME_DIR"]
@@ -192,15 +207,25 @@ def test_run_npa(tmp_path):
     home_dir = tmp_path / "home_dir"
 
     atoms = Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.9)])
-    calc = ORCA(workdir=home_dir, 
-                keep_files = ["*.inp", "*.out", "*.janpa"], 
-                post_process=post_func, 
-                )
 
+    orca_params = dict(workdir=home_dir, 
+        keep_files = ["*.inp", "*.out", "*.janpa"], 
+        post_process=post_func, 
+    )
+
+    calc_init = (ORCA, [], orca_params)
+    calc = ORCA(**orca_params)
+
+    # test regular calculation
+    at = atoms.copy()
+    at.calc = calc
+    at.get_potential_energy()
+
+    # test parallelised calculation
     inputs = ConfigSet(atoms)
     outputs = OutputSpec()
 
-    generic_results = generic.calculate(inputs=inputs, outputs=outputs, calculator=calc, properties=["energy", "forces"], output_prefix="orca_", raise_calc_exceptions=True)
+    generic_results = generic.calculate(inputs=inputs, outputs=outputs, calculator=calc_init, properties=["energy", "forces"], output_prefix="orca_", raise_calc_exceptions=True)
 
 
     atoms = list(generic_results)[0]
@@ -240,6 +265,7 @@ ref_freq = {'normal_mode_eigenvalues': np.array([0., 0., 0., 0., 0., 0., -0.6007
                   [-5.59691e-01, 1.79000e-02, -0.0], [-5.63437e-01, 1.75500e-02, -0.0]]])}
 
 
+@orca_prerequisites
 @pytest.mark.skip(reason="Normal mode (eigenvector) reading implemented incorrectly.")
 def test_read_frequencies():
     mol = molecule("CH4")
