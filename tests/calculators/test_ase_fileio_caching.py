@@ -8,8 +8,8 @@ from ase.atoms import Atoms
 ########################
 # test Vasp calculator
 
-from tests.calculators.test_vasp import test_vasp_mark
-@pytest.mark.skipif(test_vasp_mark, reason='Vasp testing env vars missing')
+from tests.calculators.test_vasp import pytestmark as vasp_pytestmark
+@vasp_pytestmark
 def test_vasp_cache_timing(tmp_path, monkeypatch):
     from ase.calculators.vasp import Vasp as Vasp_ase
     from wfl.calculators.vasp import Vasp as Vasp_wrap
@@ -27,7 +27,7 @@ def test_vasp_cache_timing(tmp_path, monkeypatch):
 ########################
 # test quantum espresso calculator
 from tests.calculators.test_qe import espresso_avail, qe_pseudo
-@pytest.mark.skipif(not espresso_avail, reason='qe testing env vars missing')
+@espresso_avail
 def test_qe_cache_timing(tmp_path, monkeypatch, qe_pseudo):
     from ase.calculators.espresso import Espresso as Espresso_ASE
     from wfl.calculators.espresso import Espresso as Espresso_wrap

@@ -23,20 +23,73 @@ Quick start that installs all of the mandatory dependencies:
 
 	python3 -m pip install wfl
 
-.. note::
-
-    (as of 14 June 2024) `wfl` is only tested against the latest
-    ASE pip release, currently v3.23.0.  For the time being, v3.22.1 is
-    the mininum version listed as a (pip) prerequisite of `wfl`, because
-    it at least mostly works, but it may not be fully compatible and is
-    not actively tested.
-
 
 ***************************************
 Repository
 ***************************************
 
 Please find the code, raise issues and cotribute at https://github.com/libAtoms/workflow.  
+
+
+***************************************
+Development
+***************************************
+
+To install all dependencies needed for running unit tests:
+
+.. code-block:: sh
+
+	python3 -m pip install /path/to/workflow[test] 
+
+
+Some of the `wfl` functions rely on the `quippy-ase` package, which currently (2 September 2024) supports no higher Python versions than v3.9.
+
+The file-based calculator tests need ASE calculator configiguration file to be present; `see the ASE documentation <https://wiki.fysik.dtu.dk/ase/ase/calculators/calculators.html#calculator-configuration>`. 
+
+
+***************************************
+Recent Changes
+***************************************
+
+v0.3.0:
+
+- Update the file-based calculators (Orca, FHI-Aims, Vasp, Quantum Espresso, Castep) to work 
+  with with ASE v3.23. This update breaks backwards-compatibility. For compatibility with with 
+  the ASE v3.22 see use wfl v0.2.7 or earlier. 
+
+v0.2.7:
+
+- Latest version compatible with ASE v3.22.x. To install, use `pip install wfl==0.2.7`. 
+
+v0.2.3:
+
+- Add wfl.generate.neb, with required improved support for passing ConfigSet.groups() to 
+  autoaparallelized functions
+
+- Improved handling of old and new style ase.calculators.espresso.Espresso initialization
+
+v0.2.2:
+
+- Improve checking of DFT calculator convergence
+
+v0.2.1:
+
+- Fix group iterator
+
+v0.2.0:
+
+- Change all wfl operations to use explicit random number generator [pull 285](https://github.com/libAtoms/workflow/pull/285), to improve reproducibility of scripts and reduce the chances that on script rerun, cached jobs will not be recognized due to uncontrolled change in random seed (as in [issue 283](https://github.com/libAtoms/workflow/issues/283) and [issue 284](https://github.com/libAtoms/workflow/issues/284)).  Note that this change breaks backward compatibility because many functions now _require_ an `rng` argument, for example
+  ```python
+  rng = np.random.default_rng(1)
+  md_configs = md.md(..., rng=rng, ...)
+  ```
+
+v0.1.0:
+
+- make it possible to fire off several remote autoparallelized ops without waiting for their jobs to finish
+- multi-pass calculation in `Vasp`, to allow for things like GGA followed by HSE
+- MACE fitting, including remote jobs
+- various bug fixes
 
 
 ***************************************

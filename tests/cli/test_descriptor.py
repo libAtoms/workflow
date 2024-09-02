@@ -43,8 +43,12 @@ def test_descriptor_quippy(tmp_path):
         f'--key soap'
     ]
 
+
+    import pdb; pdb.set_trace()
+
     runner = CliRunner()
     result = runner.invoke(cli, ' '.join(params))
+
 
     target = Descriptor(
         descriptor_str).calc(ats[0])['data'][0]
