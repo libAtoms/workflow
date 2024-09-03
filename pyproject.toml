@@ -1,9 +1,9 @@
 [project]
 
 name = "wfl"
-version = "0.2.7"
+version = "0.2.8"
 requires-python = ">=3.9"
-dependencies = [ "click>=7.0", "numpy", "ase>=3.22.1", "pyyaml", "spglib",
+dependencies = [ "click>=7.0", "numpy", "ase<=3.22.1", "pyyaml", "spglib",
                  "docstring_parser", "expyre-wfl", "universalSOAP" ]
 readme = "README.md"
 license = { file = "LICENSE" }
