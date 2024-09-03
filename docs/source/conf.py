@@ -12,6 +12,8 @@
 #
 import os
 import sys
+from wfl import __version__
+
 sys.path.insert(0, os.path.abspath('../../wfl'))
 
 
@@ -20,6 +22,8 @@ sys.path.insert(0, os.path.abspath('../../wfl'))
 project = 'workflow'
 #copyright = '2021, N. Bernstein, T. K. Stenczel, E. Gelzinyte'
 author = 'N. Bernstein, T. K. Stenczel, E. Gelzinyte'
+
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------

@@ -6,7 +6,7 @@ from wfl.calculators import generic
 ########################
 # test a RuntimeWarning is raised when using the Espresso Calculator directly from ase
 from tests.calculators.test_qe import espresso_avail, qe_pseudo
-@pytest.mark.skipif(not espresso_avail, reason='qe testing env vars missing')
+@espresso_avail
 def test_wrapped_qe(tmp_path, qe_pseudo):
     from ase.calculators.espresso import Espresso as Espresso_ASE
     from wfl.calculators.espresso import Espresso as Espresso_wrap
