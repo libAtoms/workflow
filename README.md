@@ -22,11 +22,11 @@ v0.3.0:
 
 - Update the file-based calculators (Orca, FHI-Aims, Vasp, Quantum Espresso, Castep) to work 
   with with ASE v3.23. This update breaks backwards-compatibility. For compatibility with with 
-  the ASE v3.22 see use wfl v0.2.7 or earlier. 
+  the ASE v3.22 see use wfl v0.2.8 or earlier. 
 
-v0.2.7:
+v0.2.8:
 
-- Latest version compatible with ASE v3.22.x. To install, use `pip install wfl==0.2.7`. 
+- Latest version compatible with ASE v3.22.x. To install, use `pip install wfl==0.2.8`. 
 
 For older changes see [documentation](https://libatoms.github.io/workflow).
 
