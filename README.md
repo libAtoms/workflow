@@ -13,6 +13,11 @@ For examples and more information see [documentation](https://libatoms.github.io
 
 # Recent changes
 
+v0.3.1:
+
+- additional updates to file-based calculators for ASE v3.23.
+- fixes to parity plots
+
 v0.3.0:
 
 - Update the file-based calculators (Orca, FHI-Aims, Vasp, Quantum Espresso, Castep) to work 
