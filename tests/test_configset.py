@@ -263,6 +263,9 @@ def test_from_mult_ConfigSets(tmp_path, ats):
     locs = [f" / {i0} / {i1}" for i0 in range(3) for i1 in range(3)]
     check_ConfigSet(ConfigSet([cs_01, cs_2]), locs, gather_numbers([ats_i_0, ats_i_1, ats_i_2]))
 
+    # same check for overloaded + operator
+    check_ConfigSet(cs_01 + cs_2, locs, gather_numbers([ats_i_0, ats_i_1, ats_i_2]))
+
 def test_from_ConfigSets_mixed_0(tmp_path, ats):
     ats_i_0 = ats[0:3]
     ats_i_1 = ats[3:6]
