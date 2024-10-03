@@ -281,7 +281,7 @@ jobs:
           mpirun -n 2 pytest --cov=wfl --cov-report term --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --with-mpi -k mpi --cov-append
 
       - name: 'Upload Coverage Data'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: env.coverage-on-version == matrix.python-version
         with:
           name: coverage-html-${{ matrix.python-version }}
