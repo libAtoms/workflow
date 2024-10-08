@@ -62,29 +62,37 @@ mkdir -p $pytest_dir
 
 pytest -v -s --basetemp $pytest_dir ${runremote} --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
 
-l=`egrep '^=.*(passed|failed|skipped|xfailed)' complete_pytest.tin.out`
+l=`egrep '^=.*(passed|failed|skipped|xfailed|error).* in ' complete_pytest.tin.out`
 
 echo "summary line $l"
 lp=$( echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' )
 
 declare -A expected_n=( ["passed"]="175" ["skipped"]="21" ["warnings"]=823 ["xfailed"]=2 ["xpassed"]=1 )
 IFS=$'\n'
+t_stat=0
 for out in $lp; do
     out_n=$(echo $out | sed -e 's/^=* //' -e 's/ .*//' -e 's/,//')
     out_cat=$(echo $out | sed -e 's/.* //' -e 's/,//')
     if [[ -z ${expected_n[$out_cat]} ]]; then
         echo "Unexpected result '$out_cat' num $out_n"
-        exit 1
+        t_stat=1
+        break
     else
         if [[ ${expected_n[$out_cat]} != $out_n ]]; then
             echo "Unexpected number $out_n for result '$out_cat', expected ${expected_n[$out_cat]}"
-            exit 1
+            t_stat=1
+            break
         fi
     fi
     if [[ $out_cat == "failed" ]]; then
         echo "FAILURE"
-        exit 2
+        t_stat=2
+        break
     fi
 done
 
-echo "SUCCESSS"
+if [ $t_stat == 0 ]; then
+    echo "SUCCESSS"
+else
+    exit 1
+fi

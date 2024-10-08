@@ -15,6 +15,8 @@ from wfl.configset import ConfigSet, OutputSpec
 from wfl.calculators.espresso import Espresso
 from wfl.autoparallelize import AutoparaInfo
 
+from tests.calculators.test_qe import espresso_avail
+
 ref_lj_energy = -4.52573996914352
 ref_morse_energy = -3.4187397762024867
 
@@ -139,7 +141,7 @@ def test_generic_autopara_defaults():
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=3" in l_stderr.getvalue()
 
-@pytest.mark.xfail(reason="Waiting for update to work with ASE3.23")
+@espresso_avail
 def test_generic_DFT_autopara_defaults(tmp_path, monkeypatch):
     ats = [Atoms('Al2', positions=[[0,0,0], [1,1,1]], cell=[10]*3, pbc=[True]*3) for _ in range(50)]
 
@@ -151,6 +153,6 @@ def test_generic_DFT_autopara_defaults(tmp_path, monkeypatch):
     # try with a calculator that overrides an autopara default, namely a DFT calculator
     # that sets num_inputs_per_python_subprocess=1
     sys.stderr = l_stderr
-    at_proc = generic.calculate(ci, os, Espresso(calculator_exec="_DUMMY_EXEC_", pseudo_dir="_DUMMY_DIR_", workdir=tmp_path))
+    at_proc = generic.calculate(ci, os, Espresso(workdir=tmp_path))
     sys.stderr = sys.__stderr__
     assert "num_inputs_per_python_subprocess=1" in l_stderr.getvalue()

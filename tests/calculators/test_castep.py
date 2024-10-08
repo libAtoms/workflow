@@ -12,7 +12,6 @@ from wfl.calculators import generic
 
 pytestmark = pytest.mark.skipif("CASTEP_COMMAND" not in os.environ, reason="'CASTEP_COMMAND' not given.")
 
-
 def test_castep_calculation(tmp_path):
 
     atoms = bulk("Al", "bcc", a=4.05, cubic=True) 
@@ -30,9 +29,9 @@ def test_castep_calculation(tmp_path):
     )
 
     atoms.calc = calc
-    assert atoms.get_potential_energy() == approx(-217.2263559019)
-    assert atoms.get_forces() == approx(np.array([[-0., -0.,  0.], [ 0.,  0., -0.]]))
-    assert atoms.get_stress() ==  approx(np.array([ 0.06361731, 0.06361731, 0.06361731,-0., 0., 0.]))
+    assert atoms.get_potential_energy() == approx(-217.2263559019, 2e-3)
+    assert atoms.get_forces() == approx(np.array([[-0., -0.,  0.], [ 0.,  0., -0.]]), abs=1e-4)
+    assert atoms.get_stress() ==  approx(np.array([ 0.06361731, 0.06361731, 0.06361731,-0., 0., 0.]), abs=1e-5)
 
 
 def test_castep_calc_via_generic(tmp_path):

@@ -10,38 +10,23 @@ For examples and more information see [documentation](https://libatoms.github.io
 
 `wfl` and its dependencies may be installed via `pip install wfl`. 
 
-NOTE: (as of 14 June 2024) `wfl` is only tested against the latest ASE pip release, currently v3.23.0. 
-For the time being, v3.22.1 is the minimum version listed as a (pip) prerequisite of `wfl`, because
-it at least mostly works, but it may not be fully compatible and is not actively tested.
 
 # Recent changes
 
-v0.2.3:
+v0.3.1:
 
-- Add wfl.generate.neb, with required improved support for passing ConfigSet.groups() to 
-  autoaparallelized functions
+- additional updates to file-based calculators for ASE v3.23.
+- fixes to parity plots
 
-- Improved handling of old and new style ase.calculators.espresso.Espresso initialization
+v0.3.0:
 
-v0.2.2:
+- Update the file-based calculators (Orca, FHI-Aims, Vasp, Quantum Espresso, Castep) to work 
+  with with ASE v3.23. This update breaks backwards-compatibility. For compatibility with with 
+  the ASE v3.22 see use wfl v0.2.8 or earlier. 
 
-- Improve checking of DFT calculator convergence
+v0.2.8:
 
-v0.2.1:
+- Latest version compatible with ASE v3.22.x. To install, use `pip install wfl==0.2.8`. 
 
-- Fix group iterator
+For older changes see [documentation](https://libatoms.github.io/workflow).
 
-v0.2.0:
-
-- Change all wfl operations to use explicit random number generator [pull 285](https://github.com/libAtoms/workflow/pull/285), to improve reproducibility of scripts and reduce the chances that on script rerun, cached jobs will not be recognized due to uncontrolled change in random seed (as in [issue 283](https://github.com/libAtoms/workflow/issues/283) and [issue 284](https://github.com/libAtoms/workflow/issues/284)).  Note that this change breaks backward compatibility because many functions now _require_ an `rng` argument, for example
-  ```python
-  rng = np.random.default_rng(1)
-  md_configs = md.md(..., rng=rng, ...)
-  ```
-
-v0.1.0:
-
-- make it possible to fire off several remote autoparallelized ops without waiting for their jobs to finish
-- multi-pass calculation in `Vasp`, to allow for things like GGA followed by HSE
-- MACE fitting, including remote jobs
-- various bug fixes

@@ -1,12 +1,12 @@
 [project]
 
 name = "wfl"
-version = "0.3.0"
 requires-python = ">=3.9"
 dependencies = [ "click>=7.0", "numpy<2", "ase>=3.22.1", "pyyaml", "spglib",
-                 "docstring_parser", "expyre-wfl", "universalSOAP" ]
+                 "docstring_parser", "expyre-wfl", "universalSOAP", "pandas" ]
 readme = "README.md"
 license = { file = "LICENSE" }
+dynamic = ["version"]
 
 [project.scripts]
     wfl = "wfl.cli.cli:cli"
@@ -16,3 +16,24 @@ license = { file = "LICENSE" }
 
 [tool.setuptools.packages.find]
     exclude = [ "test*" ]
+
+[tool.setuptools.dynamic]
+version = {attr  = "wfl.__version__"}
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "mace-torch",
+    "quippy-ase",
+    "requests",
+    "rdkit==2024.3.3",
+]
+doc = [
+    "sphinx",
+    "sphinx_click",
+    "nbsphinx",
+    "myst_parser",
+    "sphinx_book_theme",
+]
+all = ["wfl[test,doc]"]
+    

@@ -103,12 +103,9 @@ jobs:
           cd docs
           make html
 
-# event type from https://stackoverflow.com/questions/61886993/in-github-actions-how-to-get-the-type-of-a-trigger-event-as-a-variable
-# conditional control ("if:") from https://docs.github.com/en/actions/using-jobs/using-conditions-to-control-job-execution
-# dependency from https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow
-
   deploy-docs:
-    if: github.event.action == 'push'
+    name: Publish documentation
+    if: startsWith(github.ref, "refs/tags/") 
     needs: build-docs
     runs-on: ubuntu-latest
 

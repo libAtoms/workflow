@@ -41,12 +41,12 @@ jobs:
       - name: Install dependencies from pip
         run: |
           echo "numpy<2" >> $PIP_CONSTRAINT
-          python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit flake8 pytest pytest-cov requests
+          python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit==2024.3.3 flake8 pytest pytest-cov requests
 
       - name: Install latest ASE from pypi
         run: |
           echo PIP_CONSTRAINT $PIP_CONSTRAINT
-          python3 -m pip install ase 
+          python3 -m pip install ase
           echo -n "ASE VERSION "
           python3 -c "import ase; print(ase.__file__, ase.__version__)"
 
@@ -105,15 +105,27 @@ jobs:
         run: |
           echo "search for torch version"
           set +o pipefail
+
+          # echo "torch versions"
+          # python3 -m pip install torch==
+          # echo "torch versions to search"
+          # python3 -m pip install torch== 2>&1 | fgrep 'from versions' |
+          #                      sed -e 's/.*from versions: //' -e 's/)//' -e 's/,[ ]*/\n/g' | tac
+
           # search for available torch version with +cpu support
-          for torch_version_test in $( python3 -m pip install torch== 2>&1 | fgrep 'from versions' | 
-                                       sed -e 's/.*from versions: //' -e 's/)//' -e 's/,[ ]*/\n/g' | tac ); do
+          # for torch_version_test in $( python3 -m pip install torch== 2>&1 | fgrep 'from versions' |
+          #                              sed -e 's/.*from versions: //' -e 's/)//' -e 's/,[ ]*/\n/g' | tac ); do
+          wget https://pypi.org/pypi/torch/json -O torch_versions
+          for torch_version_test in $( python3 -c "import json; print(' '.join(json.load(open('torch_versions'))['releases'].keys()))" | sed 's/ /\n/g' | tac ); do
+              echo "check torch_version_test $torch_version_test"
               set +e
               python3 -m pip install --dry-run torch==${torch_version_test}+cpu \
-                                     -f https://download.pytorch.org/whl/torch_stable.html > /dev/null 2>&1
+                                     -f https://download.pytorch.org/whl/torch_stable.html 2>&1
               search_stat=$?
+              echo "got search_stat $search_stat"
               set -e
               if [ $search_stat == 0 ]; then
+                  echo "got valid +cpu version, exiting"
                   torch_version=${torch_version_test}
                   break
               fi
@@ -269,7 +281,7 @@ jobs:
           mpirun -n 2 pytest --cov=wfl --cov-report term --cov-config=tests/.coveragerc --cov-report term-missing --cov-report term:skip-covered --with-mpi -k mpi --cov-append
 
       - name: 'Upload Coverage Data'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: env.coverage-on-version == matrix.python-version
         with:
           name: coverage-html-${{ matrix.python-version }}

@@ -388,6 +388,12 @@ class ConfigSet:
                     yield at
 
 
+    def __add__(self, other):
+        if not isinstance(other, ConfigSet):
+            raise TypeError(f"unsupported operand type(s) for +: 'ConfigSet' and '{type(other)}'")
+        return ConfigSet([self, other])
+
+
 class OutputSpec:
     """Abstraction for writing to a ConfigSet, preserving tree structure.
 
