@@ -164,9 +164,11 @@ def autoparallelize(func, *args, default_autopara_info={}, **kwargs):
             # outputs is also positional, remote it from func args as well
             outputs = args.pop(0)
 
-    # create autopara_info from explicitly passed AutoparaInfo object, otherwise an empty object
-    autopara_info = kwargs.pop("autopara_info", AutoparaInfo())
-    if isinstance(autopara_info, dict):
+    # create autopara_info from explicitly passed AutoparaInfo object or dict, otherwise an empty object
+    autopara_info = kwargs.pop("autopara_info", None)
+    if autopara_info is None:
+        autopara_info = AutoparaInfo()
+    elif isinstance(autopara_info, dict):
         autopara_info = AutoparaInfo(**autopara_info)
     # update values, if any are not set, with defaults that were set by decorating code
     autopara_info.update_defaults(default_autopara_info)
