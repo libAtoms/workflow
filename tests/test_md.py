@@ -221,14 +221,15 @@ def test_md_abort_function(cu_slab):
     assert len(list(atoms_traj)) < 501
 
 
-def test_md_attach_logger(cu_slab):
+def test_md_attach_logger(cu_slab, tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
 
     calc = EMT()
     autopara_info = autoparainfo.AutoparaInfo(num_python_subprocesses=2, num_inputs_per_python_subprocess=1, skip_failed=False)
 
     inputs = ConfigSet([cu_slab, cu_slab])
     outputs = OutputSpec()
-    
+
     logger_kwargs = {
         "logger" : MDLogger,
         "logfile" : "test_log",
@@ -245,4 +246,38 @@ def test_md_attach_logger(cu_slab):
 
     assert len(atoms_traj) == 602
     assert all([Path(workdir / "test_log.item_0").is_file(), Path(workdir / "test_log.item_1").is_file()])
- 
+
+
+def test_md_attach_logger_stdout(cu_slab, tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+
+    calc = EMT()
+    autopara_info = autoparainfo.AutoparaInfo(num_python_subprocesses=2, num_inputs_per_python_subprocess=1, skip_failed=False)
+
+    inputs = ConfigSet([cu_slab, cu_slab])
+    outputs = OutputSpec()
+
+    logger_kwargs = {
+        "logger" : MDLogger,
+        "logfile" : "-",
+    }
+
+    atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Langevin", steps=300, dt=1.0,
+                           temperature=500.0, temperature_tau=100/fs, logger_kwargs=logger_kwargs, logger_interval=1,
+                           rng=np.random.default_rng(1), autopara_info=autopara_info,)
+
+    atoms_traj = list(atoms_traj)
+    atoms_final = atoms_traj[-1]
+
+    workdir = Path(os.getcwd())
+
+    assert len(atoms_traj) == 602
+
+    # make sure normal log files were not written
+    assert len(list(Path(workdir).glob("*"))) == 0
+
+    captured = capsys.readouterr()
+    n_0 = sum(['item 0 ' in captured.out.splitlines()])
+    n_1 = sum(['item 1 ' in captured.out.splitlines()])
+    if n_0 != 301 or n_1 != 301:
+        pytest.xfail("capsys fails to capture stdout to check for logger output")

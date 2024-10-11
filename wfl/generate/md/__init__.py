@@ -84,9 +84,10 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         random number generator to use (needed for pressure sampling, initial temperature, or Langevin dynamics)
     logger_kwargs: dict, default None
         kwargs to MDLogger to attach to each MD run, including "logfile" as string to which
-        config number will be appended. User defined ase.md.MDLogger derived class can be provided with "logger" as key. 
+        config number will be appended. If logfile is "-", stdout will be used, and config number
+        will be prepended to each outout line. User defined ase.md.MDLogger derived class can be provided with "logger" as key. 
     logger_interval: int, default None
-        interval for logger
+        Enable logging at this interval
     _autopara_per_item_info: dict
         INTERNALLY used by autoparallelization framework to make runs reproducible (see
         wfl.autoparallelize.autoparallelize() docs)
@@ -106,9 +107,11 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
     else:
         logfile = None
 
-    if logger_kwargs is not None:
+    if logger_interval is not None and logger_interval > 0:
+        if logger_kwargs is None:
+            logger_kwargs = {}
         logger_constructor = logger_kwargs.pop("logger", MDLogger)
-        logger_logfile = logger_kwargs["logfile"]
+        logger_logfile = logger_kwargs.get("logfile", "-")
 
     if temperature_tau is None and (temperature is not None and not isinstance(temperature, (float, int))):
         raise RuntimeError(f'NVE (temperature_tau is None) can only accept temperature=float for initial T, got {type(temperature)}')
@@ -248,11 +251,17 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             md = md_constructor(at, **stage_kwargs)
 
             md.attach(process_step, 1, traj_step_interval)
-            if logger_kwargs is not None:
-                logger_kwargs["logfile"] = f"{logger_logfile}.item_{item_i}"
+            if logger_interval is not None and logger_interval > 0:
+                if logger_logfile == "-":
+                    logger_kwargs["logfile"] = "-"
+                else:
+                    logger_kwargs["logfile"] = f"{logger_logfile}.item_{item_i}"
                 logger_kwargs["dyn"] = md
                 logger_kwargs["atoms"] = at
                 logger = logger_constructor(**logger_kwargs)
+                if logger_logfile == "-":
+                    # add prefix to each line
+                    logger.fmt = f"item {item_i} " + logger.fmt
                 md.attach(logger, logger_interval)
 
             if stage_i > 0:
