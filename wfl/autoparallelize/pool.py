@@ -41,7 +41,7 @@ def _wrapped_autopara_wrappable(op, iterable_arg, inherited_per_item_info, args,
         kwargs: dict
             dict of keyword args
         item_inputs: iterable(4-tuples)
-            One or more 4-tuples. (item_i, item, label, item_rng). item is passed to function in iterable_arg,
+            One or more 4-tuples. (item, item_i, label, item_rng). item is passed to function in iterable_arg,
             item_i is its number in the overall list, label is a quantity to be passed back with the
             output, and rng is a numpy.random.Generator to use for that item
 
