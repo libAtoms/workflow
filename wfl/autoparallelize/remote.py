@@ -61,6 +61,11 @@ def do_remotely(autopara_info, iterable=None, outputspec=None, op=None, rng=None
                 # special things to do when item is Atoms
                 if 'EXPYRE_REMOTE_JOB_FAILED' in item.info:
                     del item.info['EXPYRE_REMOTE_JOB_FAILED']
+                # remote ConfigSet_loc info from things that are not ConfigSets,
+                # e.g. lists that were extracted from a ConfigSet iterator
+                if not isinstance(iterable, ConfigSet):
+                    if item.info.pop("_ConfigSet_loc", None) is not None:
+                        warnings.warn("Removed _ConfigSet_loc info field from Atoms because input is not a ConfigSet")
 
             item_list.append(item)
             item_i_list.append(item_i)
