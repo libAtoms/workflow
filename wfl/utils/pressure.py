@@ -31,7 +31,7 @@ def sample_pressure(pressure, at=None, rng=None):
 
     """
     try:
-        if isinstance(pressure, float):
+        if isinstance(pressure, (float, int)):
             p = pressure
         elif pressure[0] == 'info':
             if len(pressure) != 2:
