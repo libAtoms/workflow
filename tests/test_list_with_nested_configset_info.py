@@ -47,13 +47,11 @@ def do_test_list_with_nested_configset_info(tmp_path, sys_name, remoteinfo_env):
     configs = ConfigSet(traj_final_configs)
 
     os = OutputSpec("t2.extxyz", file_root=tmp_path)
-    _ = md(configs, os, (EMT, [], {}), steps=10, dt=1.0, autopara_info={'remote_info': {'num_inputs_per_queued_job': 1,
-        'sys_name': 'tin', 'job_name': 'wif_test', 'resources': {'num_cores': 16, 'max_time': '1h', 'partitions': 'n2013,n2016'}}})
+    _ = md(configs, os, (EMT, [], {}), steps=10, dt=1.0, autopara_info={'remote_info': ri})
 
     # list originally failed, as in https://github.com/libAtoms/workflow/issues/344
     print("trying t3")
     configs = traj_final_configs
 
     os = OutputSpec("t3.extxyz", file_root=tmp_path)
-    _ = md(configs, os, (EMT, [], {}), steps=10, dt=1.0, autopara_info={'remote_info': {'num_inputs_per_queued_job': 1,
-        'sys_name': 'tin', 'job_name': 'wif_test', 'resources': {'num_cores': 16, 'max_time': '1h', 'partitions': 'n2013,n2016'}}})
+    _ = md(configs, os, (EMT, [], {}), steps=10, dt=1.0, autopara_info={'remote_info': ri})
