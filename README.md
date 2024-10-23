@@ -13,6 +13,12 @@ For examples and more information see [documentation](https://libatoms.github.io
 
 # Recent changes
 
+v0.3.2:
+
+- Add `+` operator for combining `ConfigSet` objects
+- Improved `wfl.generate.md` logging
+- Little bug fixes / error message improvements
+
 v0.3.1:
 
 - additional updates to file-based calculators for ASE v3.23.
