@@ -125,9 +125,14 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             raise RuntimeError(f'NVE (temperature_tau is None) can only accept temperature=float for initial T, got {type(temperature_use)}')
 
         if temperature_use is not None:
-            if isinstance(temperature_use, (float, int)):
-                # float into a list
-                temperature_use = [temperature_use]
+            # assume that dicts are already in temperature profile format
+            if not isinstance(temperature_use, dict):
+                try:
+                    # check if it's a list, tuple, etc
+                    len(temperature_use)
+                except:
+                    # number into a list
+                    temperature_use = [temperature_use]
             if not isinstance(temperature_use[0], dict):
                 # create a stage dict from a constant or ramp
                 t_stage_data = temperature_use
