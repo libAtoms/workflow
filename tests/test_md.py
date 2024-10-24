@@ -91,6 +91,29 @@ def test_NVT_Langevin_const_T(cu_slab):
     assert all([at.info['MD_temperature_K'] == 500.0 for at in atoms_traj])
 
 
+def test_NVT_Langevin_const_T_per_config(cu_slab):
+
+    calc = EMT()
+
+    inputs = ConfigSet([cu_slab.copy(), cu_slab.copy()])
+    outputs = OutputSpec()
+
+    for at_i, at in enumerate(inputs):
+        at.info["WFL_MD_TEMPERATURE"] = 500 + at_i * 100
+
+    n_steps = 30
+
+    atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Langevin", steps=n_steps, dt=1.0,
+                       temperature=200.0, temperature_tau=100/fs, rng=np.random.default_rng(1))
+
+    atoms_traj = list(atoms_traj)
+    atoms_final = atoms_traj[-1]
+
+    assert len(atoms_traj) == (n_steps + 1) * 2
+    assert all([at.info['MD_temperature_K'] == 500.0 for at in list(atoms_traj)[:n_steps + 1]])
+    assert all([at.info['MD_temperature_K'] == 600.0 for at in list(atoms_traj)[n_steps + 1:]])
+
+
 def test_NVT_const_T_mult_configs_distinct_seeds(cu_slab):
 
     calc = EMT()
