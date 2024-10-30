@@ -164,7 +164,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         at.calc = calculator
         if pressure_use is not None and compressibility_au is None:
             pressure_use = sample_pressure(pressure_use, at, rng=rng)
-            at.info['MD_pressure_GPa'] = pressure
+            at.info['MD_pressure_GPa'] = pressure_use
             # convert to ASE internal units
             pressure_use *= GPa
 
