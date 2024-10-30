@@ -202,7 +202,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
 
             if pressure_use is not None:
                 md_constructor = NPTBerendsen
-                stage_kwargs['pressure_au'] = pressure
+                stage_kwargs['pressure_au'] = pressure_use
                 stage_kwargs['compressibility_au'] = compressibility_au
                 stage_kwargs['taut'] = temperature_tau * fs
                 stage_kwargs['taup'] = pressure_tau * fs if pressure_tau is not None else temperature_tau * fs * 3
