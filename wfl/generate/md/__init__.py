@@ -87,7 +87,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
     logger_kwargs: dict, default None
         kwargs to MDLogger to attach to each MD run, including "logfile" as string to which
         config number will be appended. If logfile is "-", stdout will be used, and config number
-        will be prepended to each outout line. User defined ase.md.MDLogger derived class can be provided with "logger" as key. 
+        will be prepended to each outout line. User defined ase.md.MDLogger derived class can be provided with "logger" as key.
     logger_interval: int, default None
         Enable logging at this interval
     _autopara_per_item_info: dict
@@ -162,21 +162,23 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         pressure_use = _get_pressure(at)
 
         at.calc = calculator
-        if pressure_use is not None and compressibility_au is None:
+        if pressure_use is not None:
             pressure_use = sample_pressure(pressure_use, at, rng=rng)
             at.info['MD_pressure_GPa'] = pressure_use
             # convert to ASE internal units
             pressure_use *= GPa
-
-            E0 = at.get_potential_energy()
-            c0 = at.get_cell()
-            at.set_cell(c0 * (1.0 + compressibility_fd_displ), scale_atoms=True)
-            Ep = at.get_potential_energy()
-            at.set_cell(c0 * (1.0 - compressibility_fd_displ), scale_atoms=True)
-            Em = at.get_potential_energy()
-            at.set_cell(c0, scale_atoms=True)
-            d2E_dF2 = (Ep + Em - 2.0 * E0) / (compressibility_fd_displ ** 2)
-            compressibility_au = at.get_volume() / d2E_dF2
+            if compressibility_au is None:
+                E0 = at.get_potential_energy()
+                c0 = at.get_cell()
+                at.set_cell(c0 * (1.0 + compressibility_fd_displ), scale_atoms=True)
+                Ep = at.get_potential_energy()
+                at.set_cell(c0 * (1.0 - compressibility_fd_displ), scale_atoms=True)
+                Em = at.get_potential_energy()
+                at.set_cell(c0, scale_atoms=True)
+                d2E_dF2 = (Ep + Em - 2.0 * E0) / (compressibility_fd_displ ** 2)
+                compressibility_au_use = at.get_volume() / d2E_dF2
+            else:
+                compressibility_au_use = compressibility_au
 
         if temperature_use is not None:
             # set initial temperature
@@ -203,7 +205,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
             if pressure_use is not None:
                 md_constructor = NPTBerendsen
                 stage_kwargs['pressure_au'] = pressure_use
-                stage_kwargs['compressibility_au'] = compressibility_au
+                stage_kwargs['compressibility_au'] = compressibility_au_use
                 stage_kwargs['taut'] = temperature_tau * fs
                 stage_kwargs['taup'] = pressure_tau * fs if pressure_tau is not None else temperature_tau * fs * 3
             else:
