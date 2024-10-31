@@ -121,7 +121,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
     def _get_temperature(atoms):
         temperature_use = atoms.info.get("WFL_MD_TEMPERATURE", temperature)
 
-        if temperature_tau is None and (temperature_use is not None and not isinstance(temperature_use, (float, int))):
+        if temperature_tau is None and (temperature_use is not None and not isinstance(temperature_use, (float, int, np.floating, np.integer))):
             raise RuntimeError(f'NVE (temperature_tau is None) can only accept temperature=float for initial T, got {type(temperature_use)}')
 
         if temperature_use is not None:
@@ -191,7 +191,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         if temperature_tau is None:
             # NVE
             if pressure_use is not None:
-                raise RuntimeError('Cannot do NPH dynamics')
+                raise RuntimeError(f'Got pressure {pressure_use} but no active thermostat temperature_tau={temperature_tau}. Can only do NPT, not NPH, dynamics')
             md_constructor = VelocityVerlet
             # one stage, simple
             all_stage_kwargs = [stage_kwargs.copy()]
