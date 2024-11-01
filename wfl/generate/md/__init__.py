@@ -275,13 +275,14 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
                 if logger_logfile == "-":
                     logger_kwargs["logfile"] = "-"
                 else:
-                    logger_kwargs["logfile"] = f"{logger_logfile}.item_{item_i}"
+                    logger_kwargs["logfile"] = f"{logger_logfile}.config_{item_i}"
                 logger_kwargs["dyn"] = md
                 logger_kwargs["atoms"] = at
                 logger = logger_constructor(**logger_kwargs)
                 if logger_logfile == "-":
                     # add prefix to each line
-                    logger.fmt = f"item {item_i} " + logger.fmt
+                    logger.hdr = f"config {item_i} " + logger.hdr
+                    logger.fmt = f"config {item_i} " + logger.fmt
                 md.attach(logger, logger_interval)
 
             if stage_i > 0:
