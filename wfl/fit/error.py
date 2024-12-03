@@ -154,9 +154,9 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                     raise ValueError("/atom only possible in config_properties")
                 data = at.arrays
 
-            # grab data, make a copy so normalization doesn't affect original
-            ref_quant = np.asarray(data.get(ref_property_prefix + prop_use)).copy()
-            calc_quant = np.asarray(data.get(calc_property_prefix + prop_use)).copy()
+            # grab data
+            ref_quant = data.get(ref_property_prefix + prop_use)
+            calc_quant = data.get(calc_property_prefix + prop_use)
             if ref_quant is None or calc_quant is None:
                 # warn if data is missing by reporting summary at the very end
                 if prop not in missed_prop_counter:
@@ -164,6 +164,10 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                 missed_prop_counter[prop] += 1
 
                 continue
+
+            # make a copy so normalization doesn't affect original
+            ref_quant = np.asarray(ref_quant).copy()
+            calc_quant = np.asarray(calc_quant).copy()
 
             if virial_from_stress:
                 # ref quant was actually stress, automatically convert
