@@ -158,7 +158,7 @@ jobs:
 
       - name: Install MOPAC
         run: |
-          wget http://openmopac.net/mopac-22.1.1-linux.tar.gz
+          wget https://github.com/openmopac/mopac/releases/download/v22.1.1/mopac-22.1.1-linux.tar.gz
           tar -xzvf mopac-22.1.1-linux.tar.gz
           echo $GITHUB_WORKSPACE/mopac-22.1.1-linux/bin >> $GITHUB_PATH
 
