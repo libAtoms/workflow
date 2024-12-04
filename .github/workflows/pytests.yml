@@ -42,6 +42,7 @@ jobs:
         run: |
           echo "numpy<2" >> $PIP_CONSTRAINT
           python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit==2024.3.3 flake8 pytest pytest-cov requests
+          python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Install latest ASE from pypi
         run: |
@@ -49,6 +50,7 @@ jobs:
           python3 -m pip install ase
           echo -n "ASE VERSION "
           python3 -c "import ase; print(ase.__file__, ase.__version__)"
+          python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Install intel-oneapi-mkl for phono3py
         run: |
@@ -61,6 +63,7 @@ jobs:
           sudo apt update
           sudo apt install intel-oneapi-mkl
           sudo apt install intel-oneapi-mkl-devel
+          python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Install phono3py from source
         run: |
@@ -90,9 +93,12 @@ jobs:
             cd phono3py
             python3 -m pip install -e . -vvv
             cd ..
+            python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Install Quippy from PyPI
-        run: python3 -m pip install quippy-ase
+        run: |
+            python3 -m pip install quippy-ase
+            python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Install xTB (before things that need pandas like MACE and wfl, since it will break pandas-numpy compatibility by downgrading numpy)
         run: |
@@ -100,6 +106,7 @@ jobs:
           python3 -m pip install typing-extensions
           # install pandas now to encourage compatible numpy version after conda regressed it
           python3 -m pip install pandas
+          python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: MACE
         run: |
@@ -136,9 +143,11 @@ jobs:
           fi
           echo "found torch version ${torch_version}+cpu, installing"
           python3 -m pip install torch==${torch_version}+cpu -f https://download.pytorch.org/whl/torch_stable.html
+          python3 -c "import numpy; print('numpy version', numpy.__version__)"
           echo "installing mace"
           python3 -m pip install git+https://github.com/ACEsuit/mace.git@main
-          python3 -c "import mace; print(mace.__file__)"
+          python3 -c "import mace; print('mace file', mace.__file__)"
+          python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Julia and ace fit
         run: |
@@ -148,19 +157,24 @@ jobs:
           # note that this hardwires a particular compatible ACE1pack version
           echo 'using Pkg; pkg"registry add https://github.com/JuliaRegistries/General"; pkg"registry add https://github.com/JuliaMolSim/MolSim.git"; pkg"add ACE1pack@0.0, ACE1, JuLIP, IPFitting, ASE"' > ace1pack_install.jl
           ${PWD}/julia-1.8.1/bin/julia ace1pack_install.jl
+          python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Install wfl (expyre and universalSOAP are dependencies)
-        run: python3 -m pip install .
+        run: |
+            python3 -m pip install .
+            python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Install Quantum Espresso
         run: |
           sudo apt-get install --no-install-recommends quantum-espresso
+          python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Install MOPAC
         run: |
           wget https://github.com/openmopac/mopac/releases/download/v22.1.1/mopac-22.1.1-linux.tar.gz
           tar -xzvf mopac-22.1.1-linux.tar.gz
           echo $GITHUB_WORKSPACE/mopac-22.1.1-linux/bin >> $GITHUB_PATH
+          python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Install buildcell
         run: |
@@ -172,6 +186,7 @@ jobs:
           mkdir -p $HOME/bin
           cp src/buildcell/src/buildcell $HOME/bin/
           cd ..
+          python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Add buildcell to system path
         run: |
@@ -183,6 +198,7 @@ jobs:
           # this can eaily be turned off if needed
           conda install -c conda-forge mpi4py openmpi pytest-mpi
           python3 -m pip install mpipool
+          python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Install and configure slurm and ExPyRe
         run: |
@@ -206,6 +222,7 @@ jobs:
           sinfo -s --long
           mkdir $HOME/.expyre
           cp .github/workflows_assets/config.json $HOME/.expyre
+          python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Set up pw.x for running in wfl
         run: |
@@ -221,6 +238,7 @@ jobs:
 
           echo 'post-espresso $HOME/.config/ase/config.ini'
           cat $HOME/.config/ase/config.ini
+          python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Lint with flake8
         run: |
