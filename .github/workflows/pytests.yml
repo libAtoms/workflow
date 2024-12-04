@@ -102,6 +102,8 @@ jobs:
 
       - name: Install xTB (before things that need pandas like MACE and wfl, since it will break pandas-numpy compatibility by downgrading numpy)
         run: |
+          # force compatible numpy version
+          conda install 'numpy<2'
           conda install -c conda-forge xtb-python
           python3 -m pip install typing-extensions
           # install pandas now to encourage compatible numpy version after conda regressed it
