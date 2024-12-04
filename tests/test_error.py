@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 from ase.atoms import Atoms
 from ase.calculators.lj import LennardJones
+from ase.stress import voigt_6_to_full_3x3_stress
 from pytest import approx
 
 from pprint import pprint
@@ -101,6 +102,17 @@ def test_err_from_calc(ref_atoms):
     assert ref_err_dict['energy/atom']['_ALL_']["count"] == 10
     assert ref_err_dict['forces']['_ALL_']["count"] == 10 * 4
     assert ref_err_dict['virial/atom/comp']['_ALL_']["count"] == 10 * 6
+
+
+def test_err_stress_shape(ref_atoms):
+    ref_atoms_calc = generic_calc(ref_atoms, OutputSpec(), LennardJones(sigma=0.75), output_prefix='calc_')
+    ref_err_dict, _, _ = ref_err_calc(ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_')
+
+    for at in ref_atoms_calc:
+        at.info["REF_stress"] = voigt_6_to_full_3x3_stress(at.info["REF_stress"])
+    ref_err_dict_shape, _, _ = ref_err_calc(ref_atoms_calc, ref_property_prefix='REF_', calc_property_prefix='calc_')
+
+    assert ref_err_dict == ref_err_dict_shape
 
 
 def test_error_properties(ref_atoms):

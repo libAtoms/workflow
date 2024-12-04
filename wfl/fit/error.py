@@ -7,6 +7,8 @@ import numpy as np
 from matplotlib.figure import Figure
 from matplotlib.pyplot import get_cmap
 
+from ase.stress import full_3x3_to_voigt_6_stress
+
 
 def calc(inputs, calc_property_prefix, ref_property_prefix,
          config_properties=None, atom_properties=None, category_keys="config_type",
@@ -83,8 +85,21 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
         quant: 2-d array containing reshaped quantity, with leading dimension 1 for per-config
             or len(atoms) for per-atom
         """
-        # convert scalars or lists into arrays
-        quant = np.asarray(quant)
+
+        # fix shape of stress/virial
+        if prop.startswith("stress") or prop.startswith("virial"):
+            if prop.split("/")[0] in ["stress", "virial"]:
+                if quant.shape != (6,):
+                    if quant.shape not in [(9,), (3,3)]:
+                        raise ValueError(f"Prop '{prop}' has unknown shape of quant {quant.shape}")
+                    quant = full_3x3_to_voigt_6_stress(quant.reshape((3, 3)))
+            elif prop.split("/")[0] in ["stresses", "virials"]:
+                eff_quant_shape = quant.shape[1:]
+                if eff_quant_shape != (6,):
+                    if eff_quant_shape not in [(9,), (3,3)]:
+                        raise ValueError(f"Prop '{prop}' has unknown shape of quant {quant.shape}")
+                    quant = [full_3x3_to_voigt_6_stress(q.reshape((3, 3))) for q in quant]
+                    quant = np.asarray(quant)
 
         # Reshape to 2-d, with leading dimension 1 for per-config, and len(atoms) for per-atom.
         # This is the right shape to work with later flattening for per-property and norm calculation
@@ -149,6 +164,10 @@ def calc(inputs, calc_property_prefix, ref_property_prefix,
                 missed_prop_counter[prop] += 1
 
                 continue
+
+            # make a copy so normalization doesn't affect original
+            ref_quant = np.asarray(ref_quant).copy()
+            calc_quant = np.asarray(calc_quant).copy()
 
             if virial_from_stress:
                 # ref quant was actually stress, automatically convert

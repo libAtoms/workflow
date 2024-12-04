@@ -268,7 +268,7 @@ def test_md_attach_logger(cu_slab, tmp_path, monkeypatch):
     workdir = Path(os.getcwd())
 
     assert len(atoms_traj) == 602
-    assert all([Path(workdir / "test_log.item_0").is_file(), Path(workdir / "test_log.item_1").is_file()])
+    assert all([Path(workdir / "test_log.config_0").is_file(), Path(workdir / "test_log.config_1").is_file()])
 
 
 def test_md_attach_logger_stdout(cu_slab, tmp_path, monkeypatch, capsys):

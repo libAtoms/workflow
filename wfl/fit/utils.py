@@ -5,7 +5,7 @@ from pathlib import Path
 import shlex
 import warnings
 
-from ase.constraints import voigt_6_to_full_3x3_stress
+from ase.stress import voigt_6_to_full_3x3_stress
 
 from wfl.utils.julia import julia_exec_path
 
