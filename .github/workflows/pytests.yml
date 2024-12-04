@@ -254,6 +254,8 @@ jobs:
         run: |
           rm -rf $HOME/pytest_plain
           mkdir $HOME/pytest_plain
+          # attempt to work around mkl/numpy issue
+          export MKL_THREADING_LAYER=GNU
           #
           export EXPYRE_PYTEST_SYSTEMS=github
           export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
@@ -267,6 +269,8 @@ jobs:
         run: |
           rm -rf $HOME/pytest_cov
           mkdir $HOME/pytest_cov
+          # attempt to work around mkl/numpy issue
+          export MKL_THREADING_LAYER=GNU
           #
           export EXPYRE_PYTEST_SYSTEMS=github
           export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
