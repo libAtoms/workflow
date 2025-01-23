@@ -1,7 +1,8 @@
 #!/bin/bash
 
 module purge
-module load compiler/gnu python/system python_extras/quippy lapack/mkl
+# module load compiler/gnu python/system python_extras/quippy lapack/mkl
+module load compiler/gnu python/conda python_extras/quippy/_2024-10-21 lapack/mkl
 module load python_extras/torch/cpu
 
 if [ -z "$WFL_PYTEST_EXPYRE_INFO" ]; then
@@ -67,7 +68,7 @@ l=`egrep '^=.*(passed|failed|skipped|xfailed|error).* in ' complete_pytest.tin.o
 echo "summary line $l"
 lp=$( echo $l | sed -E -e 's/ in .*//' -e 's/\s*,\s*/\n/g' )
 
-declare -A expected_n=( ["passed"]="176" ["skipped"]="21" ["warnings"]=823 ["xfailed"]=2 ["xpassed"]=1 )
+declare -A expected_n=( ["passed"]="177" ["skipped"]="21" ["warnings"]=823 ["xfailed"]=2 ["xpassed"]=1 )
 IFS=$'\n'
 t_stat=0
 for out in $lp; do
