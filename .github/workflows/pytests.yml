@@ -208,7 +208,12 @@ jobs:
           echo "SLURM apt-get done, doing local configuration"
           host_s=$( hostname -s )
           if [ -f /etc/slurm/slurm.conf ]; then sudo mv /etc/slurm/slurm.conf /etc/slurm/slurm.conf.orig; fi
-          sudo bash -c 'gzip -cd /usr/share/doc/slurmd/examples/slurm.conf.simple.gz > /etc/slurm/slurm.conf'
+          # /usr/share/doc/slurm-client/examples/slurm.conf.simple
+          # /usr/share/doc/slurmd/examples/slurm.conf.simple
+          # /usr/share/doc/slurmctld/examples/slurm.conf.simple
+          ## sudo bash -c 'gzip -cd /usr/share/doc/slurmd/examples/slurm.conf.simple.gz > /etc/slurm/slurm.conf'
+          sudo bash -c 'cp       /usr/share/doc/slurmd/examples/slurm.conf.simple /etc/slurm/slurm.conf'
+          ##
           # sudo sed -E -i -e "s/^\s*ClusterName\s*=.*/ClusterName=github_expyre_test/" /etc/slurm/slurm.conf
           sudo bash -c 'sed -E -i -e "s/^\s*SlurmctldHost\s*=.*/SlurmctldHost=_HOST_/" /etc/slurm/slurm.conf'
           # sudo sed -E -i -e "s/^\s*DefaultStorageHost\s*=.*/DefaultStorageHost=none" /etc/slurm/slurm.conf
