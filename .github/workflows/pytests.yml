@@ -247,6 +247,13 @@ jobs:
           cat $HOME/.config/ase/config.ini
           python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
+          patch_file=${PWD}/tests/assets/genericfileio.py.diff
+          ase_top=$( python3 -c "import ase; print(ase.__file__)" )
+          ase_top=$( dirname ${ase_top} )
+          pushd ${ase_top}/calculators
+          patch < ${patch_file}
+          popd
+
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
