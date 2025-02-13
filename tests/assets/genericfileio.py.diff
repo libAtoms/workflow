@@ -1,35 +1,47 @@
-88c88
-<         from subprocess import check_call
----
->         from subprocess import check_call, CalledProcessError
-101,107c101,122
-<             check_call(
-<                 argv_command,
-<                 cwd=directory,
-<                 stdout=fd_out,
-<                 stderr=fd_err,
-<                 env=os.environ,
-<             )
----
->             try:
->                 check_call(
->                     argv_command,
->                     cwd=directory,
->                     stdout=fd_out,
->                     stderr=fd_err,
->                     env=os.environ,
->                 )
->             except CalledProcessError as exc:
->                 print("CalledProcessError stdout")
->                 if fd_out is not None:
->                     with open(output_path) as fin:
->                         print(''.join(fin.readlines()))
->                 else:
->                     print("fd_out None")
->                 print("CalledProcessError stderr")
->                 if fd_err is not None:
->                     with open(error_path) as fin:
->                         print(''.join(fin.readlines()))
->                 else:
->                     print("fd_err None")
->                 raise
+--- genericfileio.py.orig	2025-02-13 13:41:09.523396827 -0500
++++ genericfileio.py	2025-02-13 13:44:12.363487148 -0500
+@@ -85,7 +85,7 @@
+         """
+ 
+         import os
+-        from subprocess import check_call
++        from subprocess import check_call, CalledProcessError
+ 
+         argv_command = self.get_command(inputfile)
+         mode = 'wb' if not append else 'ab'
+@@ -98,13 +98,28 @@
+                 fd_err = stack.enter_context(open(error_path, mode))
+             else:
+                 fd_err = None
+-            check_call(
+-                argv_command,
+-                cwd=directory,
+-                stdout=fd_out,
+-                stderr=fd_err,
+-                env=os.environ,
+-            )
++            try:
++                check_call(
++                    argv_command,
++                    cwd=directory,
++                    stdout=fd_out,
++                    stderr=fd_err,
++                    env=os.environ,
++                )
++            except CalledProcessError as exc:
++                print("CalledProcessError stdout")
++                if fd_out is not None:
++                    with open(output_path) as fin:
++                        print(''.join(fin.readlines()))
++                else:
++                    print("fd_out None")
++                print("CalledProcessError stderr")
++                if fd_err is not None:
++                    with open(error_path) as fin:
++                        print(''.join(fin.readlines()))
++                else:
++                    print("fd_err None")
++                raise
+ 
+     @abstractmethod
+     def version(self):
