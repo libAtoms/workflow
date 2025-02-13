@@ -2,7 +2,7 @@
 
 module purge
 # module load compiler/gnu python/system python_extras/quippy lapack/mkl
-module load compiler/gnu python/conda python_extras/quippy/_2024-10-21 lapack/mkl
+module load compiler/gnu python python_extras/quippy lapack/mkl
 module load python_extras/torch/cpu
 
 if [ -z "$WFL_PYTEST_EXPYRE_INFO" ]; then
