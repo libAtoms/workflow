@@ -84,6 +84,15 @@ def do_remotely(autopara_info, iterable=None, outputspec=None, op=None, rng=None
         if isinstance(iterable, ConfigSet):
             job_iterable = ConfigSet(item_list)
         else:
+            # for a subtle reason, passing an object with a loc to the remote function
+            # leads the remote do_in_pool to return a ConfigSet with empty containers
+            # for all earlier ConfigSet_loc, which confuses the code that processes the remote
+            # job results. If isinstance(item, Atoms), this info is remove automatically
+            # when item_list is turned into a ConfigSet (just above).  However, if item is a ConfigSet
+            # we must do this manually here
+            for item in item_list:
+                if isinstance(item, ConfigSet):
+                    item._enclosing_loc = ''
             job_iterable = item_list
         co = OutputSpec()
 
