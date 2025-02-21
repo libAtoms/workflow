@@ -114,7 +114,9 @@ def do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env):
 
 
 def do_generic_calc(tmp_path, sys_name, monkeypatch, remoteinfo_env):
-    ri = {'sys_name': sys_name, 'job_name': 'pytest_'+sys_name,
+    # use a job_name with a regexp-special character to test
+    # bug in https://github.com/libAtoms/workflow/issues/353
+    ri = {'sys_name': sys_name, 'job_name': 'pytest_' + sys_name + '+1',
           'resources': {'max_time': '1h', 'num_nodes': 1},
           'num_inputs_per_queued_job': -36, 'check_interval': 10}
 

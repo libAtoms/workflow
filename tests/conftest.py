@@ -22,15 +22,16 @@ def do_init_mpipool():
     wfl.autoparallelize.mpipool_support.init()
 
 
-@pytest.mark.skipif(
-    "WFL_MPIPOOL" not in os.environ, reason="only init mpipool if WFL_MPIPOOL is in env"
-)
-@pytest.mark.mpi(minsize=2)
+# marks on fixtures deprecated, let's hope that no one sets WFL_MPIPOOL
+# when not using --with-mpi @pytest.mark.mpi(minsize=2)
 @pytest.fixture(scope="session", autouse=True)
 def init_mpipool(request):
     """initialize mpipool, only if running with mpirun
     """
-    do_init_mpipool()
+    if "WFL_MPIPOOL" in os.environ:
+        do_init_mpipool()
+    else:
+        sys.stderr.write("Skipping init_mpipool since WFL_MPIPOOL env var not defined")
 
     # request.addfinalizer(finalizer_function)
 
