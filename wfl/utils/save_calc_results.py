@@ -1,10 +1,11 @@
 import re
+import warnings
 
 from ase.calculators.singlepoint import SinglePointCalculator
 from ase.calculators.calculator import all_properties, PropertyNotImplementedError
 
 per_atom_properties = ['forces', 'stresses', 'charges', 'magmoms', 'energies']
-per_config_properties = ['energy', 'stress', 'dipole', 'magmom', 'free_energy']
+per_config_properties = ['energy', 'stress', 'dipole', 'magmom']
 
 
 def save_calc_results(atoms, *, prefix, properties):
@@ -82,6 +83,22 @@ def save_calc_results(atoms, *, prefix, properties):
     if 'energies' in properties:
         atoms_results['energies'] = atoms.get_potential_energies()
 
+
+    # Additional properties asked for in calculation and present in 
+    # .results, but without a specific getter function  
+    remaining_properties = [prop for prop in properties 
+                            if prop not in per_atom_properties 
+                            and prop not in per_config_properties]
+
+    for prop_name in remaining_properties:
+        prop = atoms.calc.get_property(prop_name, allow_calculation=False)
+
+        per_atom = is_per_atom(prop, num_atoms=len(atoms))
+        if per_atom:
+            atoms_results[prop_name] = prop
+        else:
+            config_results[prop_name] = prop
+        
     if "extra_results" in dir(atoms.calc):
         if prefix is None and (len(atoms.calc.extra_results.get("config", {})) > 0 or
                                        len(atoms.calc.extra_results.get("atoms", {})) > 0):
@@ -99,6 +116,7 @@ def save_calc_results(atoms, *, prefix, properties):
         if "relaxed_positions" in atoms.calc.extra_results:
             atoms.set_positions(atoms.calc.extra_results["relaxed_positions"])
 
+
     # write to Atoms
     if prefix is None:
         # Filter out nonstandard properties that will cause SinglePointCalculator to fail
@@ -111,6 +129,34 @@ def save_calc_results(atoms, *, prefix, properties):
             atoms.info[prefix + p] = v
         for p, v in atoms_results.items():
             atoms.new_array(prefix + p, v)
+
+
+def is_per_atom(prop, num_atoms):
+    """Tries to guess whether a property is per-atom.
+
+    Parameters
+    ----------
+    prop: int/float/np.ndarray
+        Property to check
+    num_atoms:
+        Number of atoms in the structure
+
+    Returns 
+    -------
+    True if shape of the property matches number of atoms 
+    """
+
+    if isinstance(prop, (int, float)):
+        return False
+
+    if num_atoms in [1, 3]:
+        warnings.warn("Number of atoms matches a common non-per-atom "
+                      f"property shape {num_atoms}, assigning the "
+                      "property as not per-atom.")
+        return False
+
+    if prop.shape[0] == num_atoms:
+        return True
 
 
 def at_copy_save_calc_results(at, prefix, properties=None):
