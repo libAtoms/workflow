@@ -220,6 +220,9 @@ jobs:
           conda install -c conda-forge mpi4py openmpi pytest-mpi
           python3 -m pip install mpipool
           python3 -c "import numpy; print('numpy version', numpy.__version__)"
+          echo "PATH $PATH"
+          echo "which mpirun"
+          which mpirun
 
       - name: Install and configure slurm and ExPyRe
         run: |
