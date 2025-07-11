@@ -188,6 +188,7 @@ jobs:
           cd q-e-qe-7.4.1
           ./configure
           make pw
+          find . -name "pw.x" -print
 
       - name: Install MOPAC
         run: |
@@ -251,8 +252,8 @@ jobs:
 
       - name: Set up pw.x for running in wfl
         run: |
-          ls -l $HOME/q-e-qe-7.4.1/pw.x
-          espresso_command=$HOME/q-e-qe-7.4.1/pw.x
+          find $HOME/q-e-qe-7.4.1 -name pw.x -print
+          espresso_command=$( find $HOME/q-e-qe-7.4.1 -name pw.x -print | head -1 )
 
           mkdir -p ${HOME}/.config/ase/
           echo "[espresso]" >> ${HOME}/.config/ase/config.ini
