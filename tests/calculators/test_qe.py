@@ -183,7 +183,8 @@ def test_qe_calculation(tmp_path, qe_pseudo):
         input_data={"SYSTEM": {"ecutwfc": 40, "input_dft": "LDA",}},
         kpts=(2, 2, 2),
         conv_thr=0.0001,
-        workdir=tmp_path
+        workdir=tmp_path,
+        keep_files=True ##DEBUG
     )
 
     calc = (wfl.calculators.espresso.Espresso, [], kw)
