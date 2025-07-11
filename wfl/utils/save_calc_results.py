@@ -4,8 +4,8 @@ import warnings
 from ase.calculators.singlepoint import SinglePointCalculator
 from ase.calculators.calculator import all_properties, PropertyNotImplementedError
 
-per_atom_properties = ['forces', 'stresses', 'charges', 'magmoms', 'energies']
-per_config_properties = ['energy', 'stress', 'dipole', 'magmom']
+per_atom_properties = ['forces', 'stresses', 'charges', 'magmoms', 'energies', 'charges']
+per_config_properties = ['energy', 'stress', 'dipole', 'magmom', 'free_energy', 'polarization', 'fermi']
 
 
 def save_calc_results(atoms, *, prefix, properties):
@@ -50,54 +50,25 @@ def save_calc_results(atoms, *, prefix, properties):
     # copy per-config and per-atom results
     config_results = {}
     atoms_results = {}
-    # use Atoms.get_<prop> methods
-    if 'energy' in properties:
-        try:
-            config_results['energy'] = atoms.get_potential_energy(force_consistent=True)
-        except PropertyNotImplementedError:
-            config_results['energy'] = atoms.get_potential_energy()
-    if 'stress' in properties:
-        # OLD COMMENT:  Quantum Espresso doesn't calculate stress, even if asked for, if pbc=False.
-        # hopefully this is taken care of by generic calculator cleaning up handling of
-        # nonperiodic cells
-        config_results['stress'] = atoms.get_stress()
-    if 'dipole' in properties:
-        config_results['dipole'] = atoms.get_dipole_moment()
-    if 'magmom' in properties:
-        config_results['magmom'] = atoms.get_magnetic_moment()
+    for prop_name in properties:
+        if prop_name == 'energy':
+            try:
+                config_results['energy'] = atoms.get_potential_energy(force_consistent=True)
+            except PropertyNotImplementedError:
+                config_results['energy'] = atoms.get_potential_energy()
+            continue
+
+        if prop_name in per_config_properties:
+            config_results[prop_name] = atoms.calc.get_property(prop_name, allow_calculation=False)
+        if prop_name in per_atom_properties:
+            atoms_results[prop_name] = atoms.calc.get_property(prop_name, allow_calculation=False)
+
     try:
         if prefix is not None:
             config_results['converged'] = atoms.calc.converged
     except AttributeError as exc:
         pass
 
-    # copy per-atom results
-    if 'forces' in properties:
-        atoms_results['forces'] = atoms.get_forces()
-    if 'stresses' in properties:
-        atoms_results['stresses'] = atoms.get_stresses()
-    if 'charges' in properties:
-        atoms_results['charges'] = atoms.get_charges()
-    if 'magmoms' in properties:
-        atoms_results['magmoms'] = atoms.get_magnetic_moments()
-    if 'energies' in properties:
-        atoms_results['energies'] = atoms.get_potential_energies()
-
-
-    # Additional properties asked for in calculation and present in 
-    # .results, but without a specific getter function  
-    remaining_properties = [prop for prop in properties 
-                            if prop not in per_atom_properties 
-                            and prop not in per_config_properties]
-
-    for prop_name in remaining_properties:
-        prop = atoms.calc.get_property(prop_name, allow_calculation=False)
-
-        per_atom = is_per_atom(prop, num_atoms=len(atoms))
-        if per_atom:
-            atoms_results[prop_name] = prop
-        else:
-            config_results[prop_name] = prop
         
     if "extra_results" in dir(atoms.calc):
         if prefix is None and (len(atoms.calc.extra_results.get("config", {})) > 0 or
@@ -129,34 +100,6 @@ def save_calc_results(atoms, *, prefix, properties):
             atoms.info[prefix + p] = v
         for p, v in atoms_results.items():
             atoms.new_array(prefix + p, v)
-
-
-def is_per_atom(prop, num_atoms):
-    """Tries to guess whether a property is per-atom.
-
-    Parameters
-    ----------
-    prop: int/float/np.ndarray
-        Property to check
-    num_atoms:
-        Number of atoms in the structure
-
-    Returns 
-    -------
-    True if shape of the property matches number of atoms 
-    """
-
-    if isinstance(prop, (int, float)):
-        return False
-
-    if num_atoms in [1, 3]:
-        warnings.warn("Number of atoms matches a common non-per-atom "
-                      f"property shape {num_atoms}, assigning the "
-                      "property as not per-atom.")
-        return False
-
-    if prop.shape[0] == num_atoms:
-        return True
 
 
 def at_copy_save_calc_results(at, prefix, properties=None):
