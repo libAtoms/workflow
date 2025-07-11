@@ -1,8 +1,10 @@
 #!/bin/bash
 
+rm -f complete_pytest.tin.out
+
 module purge
 # module load compiler/gnu python/system python_extras/quippy lapack/mkl
-module load compiler/gnu python python_extras/quippy lapack/mkl
+module load compiler/gnu python python_extras/quippy lapack/mkl python_extras/wif
 module load python_extras/torch/cpu
 
 if [ -z "$WFL_PYTEST_EXPYRE_INFO" ]; then
@@ -21,7 +23,7 @@ if [ -z $EXPYRE_PYTEST_SYSTEMS ]; then
     export EXPYRE_PYTEST_SYSTEMS='tin'
 fi
 
-echo  "GIT VERSION " $( git describe --always --tags --dirty ) > complete_pytest.tin.out 
+echo  "GIT VERSION " $( git describe --always --tags --dirty ) >> complete_pytest.tin.out
 echo "" >> complete_pytest.tin.out 
 
 # buildcell
@@ -61,7 +63,7 @@ fi
 
 mkdir -p $pytest_dir
 
-pytest -v -s --basetemp $pytest_dir ${runremote} --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
+python3 -m pytest -v -s --basetemp $pytest_dir ${runremote} --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
 
 l=`egrep '^=.*(passed|failed|skipped|xfailed|error).* in ' complete_pytest.tin.out`
 
