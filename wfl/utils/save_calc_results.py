@@ -62,13 +62,11 @@ def save_calc_results(atoms, *, prefix, properties):
             config_results[prop_name] = atoms.calc.get_property(prop_name, allow_calculation=False)
         if prop_name in per_atom_properties:
             atoms_results[prop_name] = atoms.calc.get_property(prop_name, allow_calculation=False)
-
     try:
         if prefix is not None:
             config_results['converged'] = atoms.calc.converged
     except AttributeError as exc:
         pass
-
         
     if "extra_results" in dir(atoms.calc):
         if prefix is None and (len(atoms.calc.extra_results.get("config", {})) > 0 or
@@ -86,7 +84,6 @@ def save_calc_results(atoms, *, prefix, properties):
         # Update atoms' positions if geometry was optimised
         if "relaxed_positions" in atoms.calc.extra_results:
             atoms.set_positions(atoms.calc.extra_results["relaxed_positions"])
-
 
     # write to Atoms
     if prefix is None:
