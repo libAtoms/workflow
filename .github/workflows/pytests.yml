@@ -166,10 +166,35 @@ jobs:
             python3 -m pip install .
             python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
-      - name: Install Quantum Espresso
+      - name: Install MPI 
+        # based on what "apt-get install quantum-espresso" used to do
+        # that was runtime only, add libopenmpi-dev for parallel compilation
         run: |
-          sudo apt-get install --no-install-recommends quantum-espresso
-          python3 -c "import numpy; print('numpy version', numpy.__version__)"
+          # sudo apt-get install --no-install-recommends quantum-espresso
+          sudo apt-get install --no-install-recommends mpi-default-bin openmpi-bin openmpi-common libopenmpi-dev
+
+      - name: Install Quantum Espresso from source
+        run: |
+          # from
+          sudo apt install --no-install-recommends \
+              autoconf \
+              build-essential \
+              ca-certificates \
+              gfortran \
+              libblas3 \
+              libc6 \
+              libfftw3-dev \
+              libgcc-s1 \
+              liblapack-dev \
+              wget
+
+          cd $HOME
+          wget https://gitlab.com/QEF/q-e/-/archive/qe-7.4.1/q-e-qe-7.4.1.tar.gz
+          tar -zxvf q-e-qe-7.4.1.tar.gz
+          cd q-e-qe-7.4.1
+          ./configure
+          make pw
+          find . -name "pw.x" -print
 
       - name: Install MOPAC
         run: |
@@ -233,10 +258,7 @@ jobs:
 
       - name: Set up pw.x for running in wfl
         run: |
-          echo "which pw.x"
-          which pw.x
-          ls -l /usr/bin/pw.x
-          espresso_command=pw.x
+          espresso_command=$HOME/q-e-qe-7.4.1/bin/pw.x
 
           mkdir -p ${HOME}/.config/ase/
           echo "[espresso]" >> ${HOME}/.config/ase/config.ini
