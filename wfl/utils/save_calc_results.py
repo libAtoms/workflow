@@ -1,11 +1,24 @@
 import re
 import warnings
 
+from ase.outputs import ArrayProperty, all_outputs
 from ase.calculators.singlepoint import SinglePointCalculator
 from ase.calculators.calculator import all_properties, PropertyNotImplementedError
 
-per_atom_properties = ['forces', 'stresses', 'charges', 'magmoms', 'energies', 'charges']
-per_config_properties = ['energy', 'stress', 'dipole', 'magmom', 'free_energy', 'polarization', 'fermi']
+
+# Following ase.io.extxyz
+# Determine 'per-atom' and 'per-config' based on all_outputs shape,
+# but filter for things in all_properties because that's what
+# SinglePointCalculator accepts
+per_atom_properties = []
+per_config_properties = []
+for key, val in all_outputs.items():
+    if key not in all_properties:
+        continue
+    if isinstance(val, ArrayProperty) and val.shapespec[0] == 'natoms':
+        per_atom_properties.append(key)
+    else:
+        per_config_properties.append(key)
 
 
 def save_calc_results(atoms, *, prefix, properties):
@@ -57,7 +70,6 @@ def save_calc_results(atoms, *, prefix, properties):
             except PropertyNotImplementedError:
                 config_results['energy'] = atoms.get_potential_energy()
             continue
-
         if prop_name in per_config_properties:
             config_results[prop_name] = atoms.calc.get_property(prop_name, allow_calculation=False)
         if prop_name in per_atom_properties:
