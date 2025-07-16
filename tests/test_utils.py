@@ -79,8 +79,8 @@ def test_save_results_no_old_props():
                 if k.startswith("stored_prop_"):
                     found_n += 1
                     assert "_md_" in k
-    # each config should have energy, stress, forces, energies
-    assert found_n == 4 * len(list(ci_md_1))
+    # each config should have energy, stress, forces, energies and free_energy
+    assert found_n == 5 * len(list(ci_md_1))
 
     ci_md_2 = md(ci_md_1, OutputSpec(), calc, steps=2, dt=1.0, temperature=300, temperature_tau=10.0, rng=rng)
     found_n = 0
@@ -90,7 +90,7 @@ def test_save_results_no_old_props():
                 if k.startswith("last_op__"):
                     assert "_md_" in k
                     found_n += 1
-    assert found_n == 4 * len(list(ci_md_2))
+    assert found_n == 5 * len(list(ci_md_2))
 
     ci_opt = optimize(ci_md_2, OutputSpec(), calc, steps=2)
     found_n = 0
@@ -102,7 +102,7 @@ def test_save_results_no_old_props():
                     found_n += 1
         import sys, ase.io #DEBUG
         ase.io.write(sys.stdout, at, format="extxyz") #DEBUG
-    assert found_n == 4 * len(list(ci_opt))
+    assert found_n == 5 * len(list(ci_opt))
 
 
 def test_config_type_update():

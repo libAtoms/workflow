@@ -1,10 +1,24 @@
 import re
+import warnings
 
+from ase.outputs import ArrayProperty, all_outputs
 from ase.calculators.singlepoint import SinglePointCalculator
 from ase.calculators.calculator import all_properties, PropertyNotImplementedError
 
-per_atom_properties = ['forces', 'stresses', 'charges', 'magmoms', 'energies']
-per_config_properties = ['energy', 'stress', 'dipole', 'magmom', 'free_energy']
+
+# Following ase.io.extxyz
+# Determine 'per-atom' and 'per-config' based on all_outputs shape,
+# but filter for things in all_properties because that's what
+# SinglePointCalculator accepts
+per_atom_properties = []
+per_config_properties = []
+for key, val in all_outputs.items():
+    if key not in all_properties:
+        continue
+    if isinstance(val, ArrayProperty) and val.shapespec[0] == 'natoms':
+        per_atom_properties.append(key)
+    else:
+        per_config_properties.append(key)
 
 
 def save_calc_results(atoms, *, prefix, properties):
@@ -46,42 +60,35 @@ def save_calc_results(atoms, *, prefix, properties):
             if prefix + p in atoms.arrays:
                 del atoms.arrays[prefix + p]
 
+    # Make note of implemented properties, if applicable 
+    if isinstance(atoms.calc, SinglePointCalculator):
+        calc_implemented_properties=None
+    else:
+        calc_implemented_properties=atoms.calc.implemented_properties
+
     # copy per-config and per-atom results
     config_results = {}
     atoms_results = {}
-    # use Atoms.get_<prop> methods
-    if 'energy' in properties:
-        try:
-            config_results['energy'] = atoms.get_potential_energy(force_consistent=True)
-        except PropertyNotImplementedError:
-            config_results['energy'] = atoms.get_potential_energy()
-    if 'stress' in properties:
-        # OLD COMMENT:  Quantum Espresso doesn't calculate stress, even if asked for, if pbc=False.
-        # hopefully this is taken care of by generic calculator cleaning up handling of
-        # nonperiodic cells
-        config_results['stress'] = atoms.get_stress()
-    if 'dipole' in properties:
-        config_results['dipole'] = atoms.get_dipole_moment()
-    if 'magmom' in properties:
-        config_results['magmom'] = atoms.get_magnetic_moment()
+    for prop_name in properties:
+        # Sometimes a property is in `calc.results`, but not in `calc.implemented_properties`
+        # and `calc.get_property` fails later. Skip those.  
+        if calc_implemented_properties is not None and prop_name not in calc_implemented_properties:
+            continue
+        if prop_name == 'energy':
+            try:
+                config_results['energy'] = atoms.get_potential_energy(force_consistent=True)
+            except PropertyNotImplementedError:
+                config_results['energy'] = atoms.get_potential_energy()
+            continue
+        if prop_name in per_config_properties:
+            config_results[prop_name] = atoms.calc.get_property(prop_name, allow_calculation=False)
+        if prop_name in per_atom_properties:
+            atoms_results[prop_name] = atoms.calc.get_property(prop_name, allow_calculation=False)
     try:
         if prefix is not None:
             config_results['converged'] = atoms.calc.converged
     except AttributeError as exc:
         pass
-
-    # copy per-atom results
-    if 'forces' in properties:
-        atoms_results['forces'] = atoms.get_forces()
-    if 'stresses' in properties:
-        atoms_results['stresses'] = atoms.get_stresses()
-    if 'charges' in properties:
-        atoms_results['charges'] = atoms.get_charges()
-    if 'magmoms' in properties:
-        atoms_results['magmoms'] = atoms.get_magnetic_moments()
-    if 'energies' in properties:
-        atoms_results['energies'] = atoms.get_potential_energies()
-
     if "extra_results" in dir(atoms.calc):
         if prefix is None and (len(atoms.calc.extra_results.get("config", {})) > 0 or
                                        len(atoms.calc.extra_results.get("atoms", {})) > 0):

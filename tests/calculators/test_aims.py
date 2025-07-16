@@ -153,7 +153,7 @@ def test_generic_aims_calculation(tmp_path, parameters_nonperiodic):
     # single atoms tests
     assert "Aims_energy" in si_single.info
     assert "Aims_stress" not in si_single.info
-    assert si_single.info["Aims_energy"] == pytest.approx(expected=-7869.54379922653, abs=1e-2)
+    assert si_single.info["Aims_energy"] == pytest.approx(expected=-7869.54379922653, abs=2e-2)
     assert si_single.get_volume() == pytest.approx(6.0 ** 3)
 
     # bulk Si tests

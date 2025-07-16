@@ -22,6 +22,7 @@ from ase.build import molecule
 from ase import Atoms
 from ase.calculators.calculator import CalculationFailed 
 from ase.io import orca as orca_io
+from ase.io import ParseError
 
 from wfl.calculators.orca import ORCA, parse_npa_output, natural_population_analysis
 from wfl.calculators import generic
@@ -60,7 +61,7 @@ def test_orca_is_converged(tmp_path):
     at.calc = orca
 
     # todo - make this run in tmpdir
-    with pytest.raises(CalculationFailed):
+    with pytest.raises(ParseError):
         at.get_potential_energy()
 
 @orca_prerequisites
