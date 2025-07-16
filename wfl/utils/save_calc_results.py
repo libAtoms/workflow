@@ -89,7 +89,6 @@ def save_calc_results(atoms, *, prefix, properties):
             config_results['converged'] = atoms.calc.converged
     except AttributeError as exc:
         pass
-        
     if "extra_results" in dir(atoms.calc):
         if prefix is None and (len(atoms.calc.extra_results.get("config", {})) > 0 or
                                        len(atoms.calc.extra_results.get("atoms", {})) > 0):
