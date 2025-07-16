@@ -60,20 +60,14 @@ def save_calc_results(atoms, *, prefix, properties):
             if prefix + p in atoms.arrays:
                 del atoms.arrays[prefix + p]
 
-    # Make note of implemented properties, if applicable 
-    if isinstance(atoms.calc, SinglePointCalculator):
-        calc_implemented_properties=None
-    else:
-        calc_implemented_properties=atoms.calc.implemented_properties
-
     # copy per-config and per-atom results
     config_results = {}
     atoms_results = {}
     for prop_name in properties:
-        # Sometimes a property is in `calc.results`, but not in `calc.implemented_properties`
-        # and `calc.get_property` fails later. Skip those.  
-        if calc_implemented_properties is not None and prop_name not in calc_implemented_properties:
-            continue
+        if prop_name not in atoms.calc.results:
+            from ase.calculators.calculator import PropertyNotPresent
+            raise PropertyNotPresent(f"{prop_name} is one of the calculated properties "
+                                     f"({atoms.calc.results.keys()}).")
         if prop_name == 'energy':
             try:
                 config_results['energy'] = atoms.get_potential_energy(force_consistent=True)
@@ -81,9 +75,9 @@ def save_calc_results(atoms, *, prefix, properties):
                 config_results['energy'] = atoms.get_potential_energy()
             continue
         if prop_name in per_config_properties:
-            config_results[prop_name] = atoms.calc.get_property(prop_name, allow_calculation=False)
+            config_results[prop_name] = atoms.calc.results.get(prop_name)
         if prop_name in per_atom_properties:
-            atoms_results[prop_name] = atoms.calc.get_property(prop_name, allow_calculation=False)
+            atoms_results[prop_name] = atoms.calc.results.get(prop_name)
     try:
         if prefix is not None:
             config_results['converged'] = atoms.calc.converged
