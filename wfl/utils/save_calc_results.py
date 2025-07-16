@@ -60,10 +60,20 @@ def save_calc_results(atoms, *, prefix, properties):
             if prefix + p in atoms.arrays:
                 del atoms.arrays[prefix + p]
 
+    # Make note of implemented properties, if applicable 
+    if isinstance(atoms.calc, SinglePointCalculator):
+        calc_implemented_properties=None
+    else:
+        calc_implemented_properties=atoms.calc.implemented_properties
+
     # copy per-config and per-atom results
     config_results = {}
     atoms_results = {}
     for prop_name in properties:
+        # Sometimes a property is in `calc.results`, but not in `calc.implemented_properties`
+        # and `calc.get_property` fails later. Skip those.  
+        if calc_implemented_properties is not None and prop_name not in calc_implemented_properties:
+            continue
         if prop_name == 'energy':
             try:
                 config_results['energy'] = atoms.get_potential_energy(force_consistent=True)
