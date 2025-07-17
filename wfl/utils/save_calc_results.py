@@ -66,7 +66,7 @@ def save_calc_results(atoms, *, prefix, properties):
     for prop_name in properties:
         if prop_name not in atoms.calc.results:
             from ase.calculators.calculator import PropertyNotPresent
-            raise PropertyNotPresent(f"{prop_name} is one of the calculated properties "
+            raise PropertyNotPresent(f"{prop_name} is not one of the calculated properties "
                                      f"({atoms.calc.results.keys()}).")
         if prop_name == 'energy':
             try:
