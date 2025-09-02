@@ -17,6 +17,10 @@ from wfl.generate import md
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate.md.abort import AbortOnCollision, AbortOnLowEnergy
 
+try:
+    from wif.Langevin_BAOAB import Langevin_BAOAB
+except ImportError:
+    Langevin_BAOAB = None
 
 def select_every_10_steps_for_tests_during(at):
     return at.info.get("MD_step", 1) % 10 == 0
@@ -147,6 +151,7 @@ def test_NPT_Berendsen(cu_slab):
     assert np.allclose(atoms_traj[0].cell, atoms_traj[-1].cell * cell_f)
 
 
+@pytest.skipif(Langevin_BAOAB is None, reason="No Langevin_BAOAB available")
 def test_NPT_Langevin_BAOAB(cu_slab):
     calc = EMT()
 
@@ -169,6 +174,7 @@ def test_NPT_Langevin_BAOAB(cu_slab):
     assert np.allclose(atoms_traj[0].cell, atoms_traj[-1].cell * cell_f)
 
 
+@pytest.skipif(Langevin_BAOAB is None, reason="No Langevin_BAOAB available")
 def test_NPT_Langevin_BAOAB_hydro_F(cu_slab):
     calc = EMT()
 

@@ -47,9 +47,8 @@ jobs:
       - name: Install latest ASE from pypi
         run: |
           echo PIP_CONSTRAINT $PIP_CONSTRAINT
-          # python3 -m pip install ase
           # until extxyz writing is un-broken in pypi version https://gitlab.com/ase/ase/-/merge_requests/3795
-          python3 -m pip install git+https://gitlab.com/ase/ase.git
+          python3 -m pip install 'ase<3.25'
           #
           echo -n "ASE VERSION "
           python3 -c "import ase; print(ase.__file__, ase.__version__)"
