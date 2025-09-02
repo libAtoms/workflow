@@ -9,6 +9,11 @@ from ase.md.langevin import Langevin
 from ase.md.logger import MDLogger
 from ase.units import GPa, fs
 
+try:
+    from wif.Langevin_BAOAB import Langevin_BAOAB
+except ImportError:
+    LangevinBAOAB = None
+
 from wfl.autoparallelize import autoparallelize, autoparallelize_docstring
 from wfl.utils.save_calc_results import at_copy_save_calc_results
 from wfl.utils.misc import atoms_to_list
@@ -16,11 +21,9 @@ from wfl.utils.parallel import construct_calculator_picklesafe
 from wfl.utils.pressure import sample_pressure
 from ..utils import save_config_type
 
-bar = 1.0e-4 * GPa
 
-
-def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBerendsen", temperature=None, temperature_tau=None,
-              pressure=None, pressure_tau=None, compressibility_au=None, compressibility_fd_displ=0.01,
+def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="Berendsen", temperature=None, temperature_tau=None,
+              pressure=None, hydrostatic=True, pressure_tau=None, pressure_mass_factor=1, compressibility_au=None, compressibility_fd_displ=0.01,
               traj_step_interval=1, skip_failures=True, results_prefix='last_op__md_', verbose=False, update_config_type="append",
               traj_select_during_func=lambda at: True, traj_select_after_func=None, abort_check=None,
               logger_kwargs=None, logger_interval=None, rng=None, _autopara_per_item_info=None):
@@ -36,8 +39,9 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         ASE calculator or routine to call to create calculator
     dt: float
         time step (fs)
-    integrator: str, default "NVTBerendsen"
-        Select integrator. Default is Berendsen but also langevin can be used
+    integrator: "Berendsen" or "Langevin" or "Langevin_BAOAB", default "Berendsen"
+        MD time integrator. Berendsen and Langevin fall back to VelocityVerlet (NVE) if temperature_tau is None,
+        while Langevin_BAOAB will do NPH in that case
     steps: int
         number of steps
     temperature: float or (float, float, [int]]), or list of dicts  default None
@@ -53,9 +57,13 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
         Applied pressure distribution (GPa) as parsed by wfl.utils.pressure.sample_pressure().
         Enables Berendsen constant P volume rescaling.
         Overridden by `atoms.info["WFL_MD_PRESSURE"]`
+    hydrostatic: bool, default True
+        Allow only hydrostatic strain for variable cell (pressure not None)
     pressure_tau: float, default None
         time scale for Berendsen constant P volume rescaling (fs)
         ignored if pressure is None, defaults to 3*temperature_tau
+    pressure_mass_factor: float, default 1
+        factor to multiply by default pressure mass heuristic
     compressibility_au: float, default None
         compressibility, if available, for NPTBerendsen
     compressibility_fd_displ: float, default 0.01
@@ -98,7 +106,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
     -------
         list(Atoms) trajectories
     """
-    assert integrator in ["NVTBerendsen", "Langevin"]
+    assert integrator in ["Berendsen", "Langevin", "Langevin_BAOAB"]
 
     calculator = construct_calculator_picklesafe(calculator)
 
@@ -130,7 +138,7 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
                 try:
                     # check if it's a list, tuple, etc
                     len(temperature_use)
-                except:
+                except TypeError:
                     # number into a list
                     temperature_use = [temperature_use]
             if not isinstance(temperature_use[0], dict):
@@ -188,36 +196,63 @@ def _sample_autopara_wrappable(atoms, calculator, steps, dt, integrator="NVTBere
 
         stage_kwargs = {'timestep': dt * fs, 'logfile': logfile}
 
-        if temperature_tau is None:
-            # NVE
-            if pressure_use is not None:
-                raise RuntimeError(f'Got pressure {pressure_use} but no active thermostat temperature_tau={temperature_tau}. Can only do NPT, not NPH, dynamics')
-            md_constructor = VelocityVerlet
-            # one stage, simple
-            all_stage_kwargs = [stage_kwargs.copy()]
-            all_run_kwargs = [{'steps': steps}]
-
+        if integrator == "Langevin_BAOAB":
+            md_constructor = Langevin_BAOAB
         else:
-            # NVT or NPT
-            all_stage_kwargs = []
-            all_run_kwargs = []
+            if temperature_tau is None:
+                md_constructor = VelocityVerlet
+            else:
+                if integrator == 'Langevin':
+                    md_constructor = Langevin
+                elif integrator == 'Berendsen':
+                    if pressure_use is None:
+                        md_constructor = NVTBerendsen
+                    else:
+                        md_constructor = NPTBerendsen
+                else:
+                    raise ValueError(f'Unkown integrator {integrator}')
 
-            if pressure_use is not None:
-                md_constructor = NPTBerendsen
+        # pressure arguments, relatively simple because there are no stages
+        if pressure_use is not None:
+            if integrator == 'Langevin_BAOAB':
+                stage_kwargs['externalstress'] = pressure_use
+                stage_kwargs['P_tau'] = pressure_tau * fs if pressure_tau is not None else temperature_tau * fs * 3
+                stage_kwargs['P_mass_factor'] = pressure_mass_factor
+                stage_kwargs['hydrostatic'] = hydrostatic
+            elif integrator == 'Berendsen':
+                if temperature_tau is None:
+                    raise ValueError('integrator Berendsen got pressure but no temperature')
+                if not hydrostatic:
+                    raise ValueError('integrator Berendsen got hydrostatic False')
                 stage_kwargs['pressure_au'] = pressure_use
                 stage_kwargs['compressibility_au'] = compressibility_au_use
-                stage_kwargs['taut'] = temperature_tau * fs
                 stage_kwargs['taup'] = pressure_tau * fs if pressure_tau is not None else temperature_tau * fs * 3
             else:
-                if integrator == "NVTBerendsen":
-                    md_constructor = NVTBerendsen
-                    stage_kwargs['taut'] = temperature_tau * fs
+                raise ValueError(f'Only Langevin_BAOAB and Berendsen integrator support pressure, got {integrator}')
 
-                elif integrator == "Langevin":
-                    md_constructor = Langevin
-                    stage_kwargs["friction"] = 1 / (temperature_tau * fs)
-                    assert rng is not None
-                    stage_kwargs["rng"] = rng
+        # temperature args except actual temperature, which is set below with stages
+        if temperature_tau is not None:
+            if integrator == 'Langevin_BAOAB':
+                stage_kwargs['T_tau'] = temperature_tau * fs
+                assert rng is not None
+                stage_kwargs["rng"] = rng
+            elif integrator == 'Berendsen':
+                stage_kwargs['taut'] = temperature_tau * fs
+            elif integrator == 'Langevin':
+                stage_kwargs["friction"] = 1 / (temperature_tau * fs)
+                assert rng is not None
+                stage_kwargs["rng"] = rng
+            else:
+                assert False, f'Unknown integrator {integrator}'
+
+        if temperature_tau is None:
+            # relatively simple, one stage
+            all_stage_kwargs = [stage_kwargs.copy()]
+            all_run_kwargs = [{'steps': steps}]
+        else:
+            # set up temperature stages
+            all_stage_kwargs = []
+            all_run_kwargs = []
 
             for t_stage_i, t_stage in enumerate(temperature_use):
                 stage_steps = t_stage['traj_frac'] * steps
