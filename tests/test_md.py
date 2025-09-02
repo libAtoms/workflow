@@ -52,7 +52,6 @@ def test_NVE(cu_slab):
                        temperature=500.0, rng=np.random.default_rng(1))
 
     atoms_traj = list(atoms_traj)
-    atoms_final = atoms_traj[-1]
 
     assert len(atoms_traj) == 301
 
@@ -68,27 +67,129 @@ def test_NVT_const_T(cu_slab):
                        temperature=500.0, temperature_tau=30.0, rng=np.random.default_rng(1))
 
     atoms_traj = list(atoms_traj)
-    atoms_final = atoms_traj[-1]
 
     assert len(atoms_traj) == 301
     assert all([at.info['MD_temperature_K'] == 500.0 for at in atoms_traj])
+    assert np.all(atoms_traj[0].cell == atoms_traj[-1].cell)
 
 
 def test_NVT_Langevin_const_T(cu_slab):
-
     calc = EMT()
 
     inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
     atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Langevin", steps=300, dt=1.0,
-                           temperature=500.0, temperature_tau=100/fs, rng=np.random.default_rng(1))
+                       temperature=500.0, temperature_tau=100/fs, rng=np.random.default_rng(1))
 
     atoms_traj = list(atoms_traj)
-    atoms_final = atoms_traj[-1]
 
     assert len(atoms_traj) == 301
     assert all([at.info['MD_temperature_K'] == 500.0 for at in atoms_traj])
+    assert np.all(atoms_traj[0].cell == atoms_traj[-1].cell)
+
+
+def test_NPT_Langevin_fail(cu_slab):
+    calc = EMT()
+
+    inputs = ConfigSet(cu_slab)
+    outputs = OutputSpec()
+
+    with pytest.raises(ValueError):
+        atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Langevin", steps=300, dt=1.0,
+                           temperature=500.0, temperature_tau=100/fs, pressure=0.0,
+                           rng=np.random.default_rng(1))
+
+
+def test_NPT_Berendsen_hydro_F_fail(cu_slab):
+    calc = EMT()
+
+    inputs = ConfigSet(cu_slab)
+    outputs = OutputSpec()
+
+    with pytest.raises(ValueError):
+        atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Berendsen", steps=300, dt=1.0,
+                           temperature=500.0, temperature_tau=100/fs, pressure=0.0, hydrostatic=False,
+                           rng=np.random.default_rng(1))
+
+
+def test_NPT_Berendsen_NPH_fail(cu_slab):
+    calc = EMT()
+
+    inputs = ConfigSet(cu_slab)
+    outputs = OutputSpec()
+
+    with pytest.raises(ValueError):
+        atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Berendsen", steps=300, dt=1.0,
+                           pressure=0.0,
+                           rng=np.random.default_rng(1))
+
+
+def test_NPT_Berendsen(cu_slab):
+    calc = EMT()
+
+    inputs = ConfigSet(cu_slab)
+    outputs = OutputSpec()
+
+    atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Berendsen", steps=300, dt=1.0,
+                       temperature=500.0, temperature_tau=100/fs, pressure=0.0,
+                       rng=np.random.default_rng(1))
+
+    atoms_traj = list(atoms_traj)
+    print("I cell", atoms_traj[0].cell)
+    print("F cell", atoms_traj[1].cell)
+
+    assert len(atoms_traj) == 301
+    assert all([at.info['MD_temperature_K'] == 500.0 for at in atoms_traj])
+    assert np.any(atoms_traj[0].cell != atoms_traj[-1].cell)
+
+    cell_f = atoms_traj[0].cell[0, 0] / atoms_traj[-1].cell[0, 0]
+    assert np.allclose(atoms_traj[0].cell, atoms_traj[-1].cell * cell_f)
+
+
+def test_NPT_Langevin_BAOAB(cu_slab):
+    calc = EMT()
+
+    inputs = ConfigSet(cu_slab)
+    outputs = OutputSpec()
+
+    atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Langevin_BAOAB", steps=300, dt=1.0,
+                       temperature=500.0, temperature_tau=100/fs, pressure=0.0,
+                       rng=np.random.default_rng(1))
+
+    atoms_traj = list(atoms_traj)
+    print("I cell", atoms_traj[0].cell)
+    print("F cell", atoms_traj[1].cell)
+
+    assert len(atoms_traj) == 301
+    assert all([at.info['MD_temperature_K'] == 500.0 for at in atoms_traj])
+    assert np.any(atoms_traj[0].cell != atoms_traj[-1].cell)
+
+    cell_f = atoms_traj[0].cell[0, 0] / atoms_traj[-1].cell[0, 0]
+    assert np.allclose(atoms_traj[0].cell, atoms_traj[-1].cell * cell_f)
+
+
+def test_NPT_Langevin_BAOAB_hydro_F(cu_slab):
+    calc = EMT()
+
+    inputs = ConfigSet(cu_slab)
+    outputs = OutputSpec()
+
+    atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Langevin_BAOAB", steps=300, dt=1.0,
+                       temperature=500.0, temperature_tau=100/fs, pressure=0.0, hydrostatic=False,
+                       rng=np.random.default_rng(1))
+
+    atoms_traj = list(atoms_traj)
+    print("I cell", atoms_traj[0].cell)
+    print("F cell", atoms_traj[1].cell)
+
+    assert len(atoms_traj) == 301
+    assert all([at.info['MD_temperature_K'] == 500.0 for at in atoms_traj])
+    assert np.any(atoms_traj[0].cell != atoms_traj[-1].cell)
+
+    cell_f = atoms_traj[0].cell[0, 0] / atoms_traj[-1].cell[0, 0]
+    assert not np.allclose(atoms_traj[0].cell, atoms_traj[-1].cell * cell_f)
+
 
 
 def test_NVT_Langevin_const_T_per_config(cu_slab):
