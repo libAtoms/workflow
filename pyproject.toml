@@ -15,7 +15,7 @@ dynamic = ["version"]
     reactions_iter_fit = "wfl.cli.reactions_iter_fit:cli"
 
 [tool.setuptools.packages.find]
-    exclude = [ "test*" ]
+    include = [ "wfl*" ]
 
 [tool.setuptools.dynamic]
 version = {attr  = "wfl.__version__"}

@@ -3,6 +3,8 @@
 module purge
 # module load compiler/gnu python/system python_extras/quippy lapack/mkl
 module load compiler/gnu python python_extras/quippy lapack/mkl
+# for wfl dependencies
+module load python_extras/wif
 module load python_extras/torch/cpu
 
 if [ -z "$WFL_PYTEST_EXPYRE_INFO" ]; then
@@ -61,7 +63,7 @@ fi
 
 mkdir -p $pytest_dir
 
-pytest -v -s --basetemp $pytest_dir ${runremote} --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
+python3 -m pytest -v -s --basetemp $pytest_dir ${runremote} --runslow --runperf -rxXs "$@" >> complete_pytest.tin.out 2>&1
 
 l=`egrep '^=.*(passed|failed|skipped|xfailed|error).* in ' complete_pytest.tin.out`
 

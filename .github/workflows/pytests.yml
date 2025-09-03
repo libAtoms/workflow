@@ -47,7 +47,10 @@ jobs:
       - name: Install latest ASE from pypi
         run: |
           echo PIP_CONSTRAINT $PIP_CONSTRAINT
-          python3 -m pip install ase
+          # avoid broken extxyz writing (3.25, fixed in 3.26)
+          # avoid broken optimizer.converged() (3.26) https://gitlab.com/ase/ase/-/issues/1744
+          python3 -m pip install 'ase<3.25'
+          #
           echo -n "ASE VERSION "
           python3 -c "import ase; print(ase.__file__, ase.__version__)"
           python3 -c "import numpy; print('numpy version', numpy.__version__)"
