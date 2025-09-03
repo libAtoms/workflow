@@ -151,7 +151,7 @@ def test_NPT_Berendsen(cu_slab):
     assert np.allclose(atoms_traj[0].cell, atoms_traj[-1].cell * cell_f)
 
 
-@pytest.skipif(Langevin_BAOAB is None, reason="No Langevin_BAOAB available")
+@pytest.mark.skipif(Langevin_BAOAB is None, reason="No Langevin_BAOAB available")
 def test_NPT_Langevin_BAOAB(cu_slab):
     calc = EMT()
 
@@ -174,7 +174,7 @@ def test_NPT_Langevin_BAOAB(cu_slab):
     assert np.allclose(atoms_traj[0].cell, atoms_traj[-1].cell * cell_f)
 
 
-@pytest.skipif(Langevin_BAOAB is None, reason="No Langevin_BAOAB available")
+@pytest.mark.skipif(Langevin_BAOAB is None, reason="No Langevin_BAOAB available")
 def test_NPT_Langevin_BAOAB_hydro_F(cu_slab):
     calc = EMT()
 
