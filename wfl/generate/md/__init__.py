@@ -310,7 +310,11 @@ def _sample_autopara_wrappable_kwargs(atoms, calculator, steps, dt, **kwargs):
     calculator = construct_calculator_picklesafe(calculator)
 
     logger_interval = kwargs.pop("logger_interval", 0)
-    logger_kwargs = kwargs.pop("logger_kwargs", {})
+    logger_kwargs = kwargs.pop("logger_kwargs", None)
+    if logger_kwargs is None:
+        logger_kwargs = {}
+    else:
+        logger_kwargs = logger_kwargs.copy()
     logger_constructor = None
     logger_logfile = None
     if logger_interval > 0:
