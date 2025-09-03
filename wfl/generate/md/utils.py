@@ -52,7 +52,5 @@ def _get_pressure(pressure_use, compressibility_au_use, compressibility_fd_displ
             at.set_cell(c0, scale_atoms=True)
             d2E_dF2 = (Ep + Em - 2.0 * E0) / (compressibility_fd_displ ** 2)
             compressibility_au_use = at.get_volume() / d2E_dF2
-        else:
-            compressibility_au_use = compressibility_au
 
     return pressure_use, compressibility_au_use
