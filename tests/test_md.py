@@ -1,9 +1,11 @@
 from pytest import approx
 import pytest
 
-import numpy as np
 import os
 from pathlib import Path
+import json
+
+import numpy as np
 
 from ase import Atoms
 import ase.io
@@ -206,7 +208,7 @@ def test_NVT_Langevin_const_T_per_config(cu_slab):
     outputs = OutputSpec()
 
     for at_i, at in enumerate(inputs):
-        at.info["WFL_MD_TEMPERATURE"] = 500 + at_i * 100
+        at.info["WFL_MD_KWARGS"] = json.dumps({'temperature': 500 + at_i * 100})
 
     n_steps = 30
 
