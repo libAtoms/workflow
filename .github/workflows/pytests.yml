@@ -47,7 +47,8 @@ jobs:
       - name: Install latest ASE from pypi
         run: |
           echo PIP_CONSTRAINT $PIP_CONSTRAINT
-          # until extxyz writing is un-broken in pypi version https://gitlab.com/ase/ase/-/merge_requests/3795
+          # avoid broken extxyz writing (3.25, fixed in 3.26)
+          # avoid broken optimizer.converged() (3.26) https://gitlab.com/ase/ase/-/issues/1744
           python3 -m pip install 'ase<3.25'
           #
           echo -n "ASE VERSION "
