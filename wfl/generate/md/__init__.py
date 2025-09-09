@@ -178,7 +178,7 @@ def _sample_autopara_wrappable_single(at, at_i, calculator, steps, dt, logger_in
             stage_kwargs['hydrostatic'] = hydrostatic
         elif integrator == 'Berendsen':
             if temperature_tau is None:
-                raise ValueError('integrator Berendsen got pressure but no temperature')
+                raise ValueError('integrator Berendsen got pressure but no temperature_tau')
             if not hydrostatic:
                 raise ValueError('integrator Berendsen got hydrostatic False')
             stage_kwargs['pressure_au'] = pressure_use
