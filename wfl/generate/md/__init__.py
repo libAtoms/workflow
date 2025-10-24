@@ -336,7 +336,8 @@ def _sample_autopara_wrappable_kwargs(atoms, calculator, steps, dt, **kwargs):
             kwargs_at[k] = v
 
         # do operation with overridden values
-        traj = _sample_autopara_wrappable_single(at, at_i, calculator, steps, dt, logger_interval, logger_constructor, logger_logfile, logger_kwargs, **kwargs_at)
+        traj = _sample_autopara_wrappable_single(at, at_i, calculator, steps, dt,
+                logger_interval, logger_constructor, logger_logfile, logger_kwargs, **kwargs_at)
 
         all_trajs.append(traj)
 
