@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ "3.9" ]
+        python-version: [ "3.10" ]
       max-parallel: 5
     env:
-      coverage-on-version: "3.9"
+      coverage-on-version: "3.10"
       use-mpi: True
     defaults:
       run:
