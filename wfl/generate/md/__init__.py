@@ -306,7 +306,8 @@ def _sample_autopara_wrappable_single(at, at_i, calculator, steps, dt, logger_in
 
 
 def _sample_autopara_wrappable_kwargs(atoms, calculator, steps, dt, **kwargs):
-    assert kwargs.get("integrator", "Berendsen") in ["Berendsen", "Langevin", "LangevinBAOAB"]
+    if kwargs.get("integrator", "Berendsen") not in ["Berendsen", "Langevin", "LangevinBAOAB"]:
+        raise ValueError(f"Unknown integrator {kwargs['integrator']}, not Berendsen, Langevin, or LangevinBAOAB")
 
     calculator = construct_calculator_picklesafe(calculator)
 
