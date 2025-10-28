@@ -182,7 +182,9 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
         # set for first config, to be overwritten if it's also last config
         traj[0].info['optimize_config_type'] = 'optimize_initial'
 
-        if opt.converged():
+        # as of 3.26 converged() requires a gradient, but for PreconLBFGS it's not used
+        # See https://gitlab.com/ase/ase/-/issues/1744
+        if opt.converged(None):
             final_status = 'converged'
 
         traj[-1].info['optimize_config_type'] = f'optimize_last_{final_status}'

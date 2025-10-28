@@ -205,7 +205,7 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
         # unpickle to better reproduce the behavior of Pool.map() ?
         for items_inputs_group in items_inputs:
             result_group = _wrapped_autopara_wrappable(op, iterable_arg, inherited_per_item_info, args,
-                                                       kwargs, items_inputs_group)
+                                                       kwargs, None, items_inputs_group)
 
             if outputspec is not None:
                 for at, from_input_loc in result_group:
