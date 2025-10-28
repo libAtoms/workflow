@@ -9,11 +9,11 @@ def clean_dir(directory, keep_files, force=False):
     Parameters
     ----------
     directory : directory to be cleaned
-    keep_files: bool or list(filenames) or str
+    keep_files: bool or iterable(file_globs)
         What to keep in rundir when done:
-            - list(filenames) : ONLY these filenames if they exist
-            - True or "*" : everything - does nothing
-            - False or None : remove everything, or anything evaluating to False in if
+            - True : keep everything
+            - iterable : ONLY files matching these globs if they exist
+            - evaluates to False : nothing
     force : bool, default = False
         fail if directory does not exist
 
@@ -29,21 +29,19 @@ def clean_dir(directory, keep_files, force=False):
         else:
             return
 
-    # defaults
-    if keep_files is None:
-        keep_files = False
-    elif keep_files == "*":
-        keep_files = True
-    elif isinstance(keep_files, str):
-        keep_files = [keep_files]
+    if isinstance(keep_files, str):
+        # common error that will not be caught below
+        raise ValueError(f"keep_files must not be str '{keep_files}'")
 
     # operations
-    if isinstance(keep_files, bool) and keep_files:
+    if keep_files is True:
+        # bool True, keep all
         return
     elif not keep_files:
-        # lets None and anything else evaluating to False
+        # evaluates to False, keep none
         shutil.rmtree(directory)
-    elif isinstance(keep_files, (list, tuple, set)):
+    else:
+        # keep_files should be an iterable
         extended_keep_files = []
         for glob_index in keep_files:
             extended_keep_files.extend(glob(os.path.join(directory, glob_index)))
@@ -56,5 +54,3 @@ def clean_dir(directory, keep_files, force=False):
                     os.remove(abs_fn)
                 else:
                     shutil.rmtree(abs_fn)
-    else:
-        raise RuntimeError('Got unknown type or value for keep_rundir \'{}\''.format(keep_files))

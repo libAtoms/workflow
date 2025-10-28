@@ -29,7 +29,7 @@ echo "" >> complete_pytest.tin.out
 # buildcell
 export WFL_PYTEST_BUILDCELL=$HOME/src/work/AIRSS/airss-0.9.1/src/buildcell/src/buildcell
 # VASP
-module load dft/vasp
+module load dft/vasp/serial
 export ASE_VASP_COMMAND=vasp.serial
 export ASE_VASP_COMMAND_GAMMA=vasp.gamma.serial
 export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
