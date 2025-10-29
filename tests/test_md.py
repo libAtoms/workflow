@@ -20,7 +20,7 @@ from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate.md.abort import AbortOnCollision, AbortOnLowEnergy
 
 try:
-    from ase.md.LangevinBAOAB import LangevinBAOAB
+    from ase.md.langevinbaoab import LangevinBAOAB
 except ImportError:
     LangevinBAOAB = None
 
