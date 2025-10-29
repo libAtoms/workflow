@@ -2,7 +2,7 @@
 
 module purge
 # module load compiler/gnu python/system python_extras/quippy lapack/mkl
-module load compiler/gnu python python_extras/quippy lapack/mkl
+module load compiler/gnu python python_extras/structure python_extras/quippy lapack/mkl
 # for wfl dependencies
 module load python_extras/wif
 module load python_extras/torch/cpu
@@ -14,7 +14,7 @@ WFL_PYTEST_EXPYRE_INFO=$(
 cat << EOF | python3
 import json, os
 i = {"pre_cmds": ["module purge",
-                  "module load compiler/gnu lapack/mkl python python_extras/quippy python_extras/wif dft/vasp dft/pwscf",
+                  "module load compiler/gnu lapack/mkl python python_extras/structure python_extras/quippy python_extras/wif dft/vasp dft/pwscf",
                   "module list"]}
 ienv = json.loads(os.environ.get("WFL_PYTEST_EXPYRE_INFO", "{}"))
 i.update(ienv)

@@ -159,9 +159,11 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
 
         # preliminary value
         final_status = 'unconverged'
+        is_converged = False
 
         try:
-            opt.run(fmax=fmax, smax=smax, steps=steps)
+            for is_converged in opt.irun(fmax=fmax, smax=smax, steps=steps):
+                pass
         except Exception as exc:
             # label actual failed optimizations
             # when this happens, the atomic config somehow ends up with a 6-vector stress, which can't be
@@ -184,7 +186,8 @@ def _run_autopara_wrappable(atoms, calculator, fmax=1.0e-3, smax=None, steps=100
 
         # as of 3.26 converged() requires a gradient, but for PreconLBFGS it's not used
         # See https://gitlab.com/ase/ase/-/issues/1744
-        if opt.converged(None):
+        # use Optimizer.irun instead, since it returns converged status
+        if is_converged:
             final_status = 'converged'
 
         traj[-1].info['optimize_config_type'] = f'optimize_last_{final_status}'

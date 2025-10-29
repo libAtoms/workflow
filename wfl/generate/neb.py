@@ -89,9 +89,11 @@ def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
 
         # preliminary value
         final_status = 'unconverged'
+        is_converged = False
 
         try:
-            opt.run(fmax=fmax, steps=steps)
+            for is_converged in opt.irun(fmax=fmax, steps=steps):
+                pass
         except Exception as exc:
             # label actual failed optimizations
             # when this happens, the atomic config somehow ends up with a 6-vector stress, which can't be
@@ -109,7 +111,9 @@ def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
         for at in traj[0]:
             at.info['neb_config_type'] = 'neb_initial'
 
-        if opt.converged():
+        # from value returned by Optimizer.irun(), since Optimizer.converged requires
+        # a gradient as of ASE 3.26
+        if is_converged:
             final_status = 'converged'
 
         for intermed_images in traj[1:-1]:

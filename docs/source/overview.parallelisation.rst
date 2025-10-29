@@ -69,7 +69,7 @@ The number of threads is controlled by an integer, passed in to the
 function as an optional ``num_python_subprocesses`` argument, or stored
 in the env var ``WFL_NUM_PYTHON_SUBPROCESSES``.  The script should be
 started with a normal run of the python executable. Setting
-the ``WFL_TORCH_DEVICE_IS_SUBPROCESS_ID`` env var (to any value)
+the ``WFL_TORCH_N_GPUS`` env var to the number of GPUs
 causes ``wfl`` to call ``torch.cuda.set_device()`` for each subprocess
 ensuring that it gets a unique GPU from the other subprocesses.
 
