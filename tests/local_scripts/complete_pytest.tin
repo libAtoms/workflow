@@ -7,6 +7,13 @@ module load compiler/gnu python python_extras/structure python_extras/quippy lap
 module load python_extras/wif
 module load python_extras/torch/cpu
 
+if [ ! -z "$WFL_PYTEST_POST_MODULE_COMMANDS" ]; then
+    echo "Using WFL_PYTEST_POST_MODULE_COMMANDS '$WFL_PYTEST_POST_MODULE_COMMANDS'" 1>&2
+    eval $WFL_PYTEST_POST_MODULE_COMMANDS
+else
+    echo "Using no WFL_PYTEST_POST_MODULE_COMMANDS" 1>&2
+fi
+
 if [ -z "$WFL_PYTEST_EXPYRE_INFO" ]; then
     echo "To override partition used, set WFL_PYTEST_EXPYRE_INFO='{\"resources\" : {\"partitions\": \"DESIRED_PARTITION\"}}'" 1>&2
 fi
@@ -22,11 +29,13 @@ print(json.dumps(i))
 EOF
 )
 export WFL_PYTEST_EXPYRE_INFO
-echo Using WFL_PYTEST_EXPYRE_INFO \'$WFL_PYTEST_EXPYRE_INFO\' 1>&2
+echo "Using WFL_PYTEST_EXPYRE_INFO '$WFL_PYTEST_EXPYRE_INFO'" 1>&2
 
 if [ ! -z $WFL_PYTHONPATH_EXTRA ]; then
     echo "Adding WFL_PYTHONPATH_EXTRA '$WFL_PYTHONPATH_EXTRA'" 1>&2
     export PYTHONPATH=${WFL_PYTHONPATH_EXTRA}:${PYTHONPATH}
+else
+    echo "Adding no WFL_PYTHONPATH_EXTRA" 1>&2
 fi
 
 export JULIA_PROJECT=${PWD}/tests/assets/julia
@@ -50,6 +59,8 @@ export PYTEST_VASP_POTCAR_DIR=$VASP_PATH/pot/rev_54/PBE
 # QE
 module load dft/pwscf
 # no ORCA
+
+module list
 
 export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1

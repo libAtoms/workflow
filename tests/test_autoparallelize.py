@@ -66,7 +66,7 @@ def test_pool_speedup():
     assert dt_2 / dt_1 < 0.75
 
 
-@pytest.mark.skipif(torch is None or not torch.cuda.is_available(), reason="No torch CUDA devices available")
+@pytest.mark.skipif(torch is None or not torch.cuda.is_available() or os.environ.get("WFL_TORCH_N_GPUS") is None, reason="No torch CUDA devices available, or WFL_TORCH_N_GPUS isn't set")
 @pytest.mark.perf
 def test_pool_speedup_GPU(monkeypatch):
     np.random.seed(5)
@@ -81,19 +81,28 @@ def test_pool_speedup_GPU(monkeypatch):
 
     calc = (mace_mp, ["small-omat-0"], {"device": "cuda"})
 
+    req_n_gpus = os.environ["WFL_TORCH_N_GPUS"]
+    if len(req_n_gpus) == 0:
+        req_n_gpus = str(len(os.environ["CUDA_VISIBLE_DEVICES"].split(",")))
+
+    if "WFL_TORCH_N_GPUS" in os.environ:
+        monkeypatch.delenv("WFL_TORCH_N_GPUS")
+
     t0 = time.time()
     co = generic.calculate(ConfigSet(ats), OutputSpec(), calc, output_prefix="_auto_",
                            autopara_info=AutoparaInfo(num_python_subprocesses=1,
                                                       num_inputs_per_python_subprocess=30))
     dt_1 = time.time() - t0
 
+    monkeypatch.setenv("WFL_TORCH_N_GPUS", req_n_gpus)
+
     t0 = time.time()
-    monkeypatch.setenv("WFL_TORCH_N_GPUS", str(len(os.environ["CUDA_VISIBLE_DEVICES"].split(","))))
     co = generic.calculate(ConfigSet(ats), OutputSpec(), calc, output_prefix="_auto_",
                            autopara_info=AutoparaInfo(num_python_subprocesses=2,
                                                       num_inputs_per_python_subprocess=30))
-    monkeypatch.delenv("WFL_TORCH_N_GPUS")
     dt_2 = time.time() - t0
+
+    monkeypatch.delenv("WFL_TORCH_N_GPUS")
 
     print("time ratio", dt_2 / dt_1)
     assert dt_2 / dt_1 < 0.75

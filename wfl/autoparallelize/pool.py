@@ -17,12 +17,19 @@ import functools
 #     pass
 
 # https://docs.pytorch.org/docs/stable/notes/multiprocessing.html#poison-fork-in-multiprocessing
+# But, only use forkserver if needed because it has a lot of overhead
+try:
+    import torch
+except:
+    torch = None
 if os.environ.get("WFL_TORCH_N_GPUS") is not None:
+    if not torch:
+        raise RuntimeError(f"Got WFL_TORCH_N_GPUS '{WFL_TORCH_N_GPUS}' but torch module is not available")
     try:
-        import torch
         import multiprocessing
         multiprocessing.set_start_method('forkserver')
-    except (ImportError, RuntimeError) as exc:
+    except RuntimeError as exc:
+        # ignore complains about setting start method more than once
         pass
 from multiprocessing.pool import Pool
 # to help keep track of distinct GPU for each python subprocess
