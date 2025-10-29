@@ -10,8 +10,22 @@ module load python_extras/torch/cpu
 if [ -z "$WFL_PYTEST_EXPYRE_INFO" ]; then
     echo "To override partition used, set WFL_PYTEST_EXPYRE_INFO='{\"resources\" : {\"partitions\": \"DESIRED_PARTITION\"}}'" 1>&2
 fi
+WFL_PYTEST_EXPYRE_INFO=$(
+cat << EOF | python3
+import json, os
+i = {"pre_cmds": ["module purge",
+                  "module load compiler/gnu lapack/mkl python python_extras/quippy python_extras/wif dft/vasp dft/pwscf",
+                  "module list"]}
+ienv = json.loads(os.environ.get("WFL_PYTEST_EXPYRE_INFO", "{}"))
+i.update(ienv)
+print(json.dumps(i))
+EOF
+)
+export WFL_PYTEST_EXPYRE_INFO
+echo Using WFL_PYTEST_EXPYRE_INFO \'$WFL_PYTEST_EXPYRE_INFO\' 1>&2
 
 if [ ! -z $WFL_PYTHONPATH_EXTRA ]; then
+    echo "Adding WFL_PYTHONPATH_EXTRA '$WFL_PYTHONPATH_EXTRA'" 1>&2
     export PYTHONPATH=${WFL_PYTHONPATH_EXTRA}:${PYTHONPATH}
 fi
 

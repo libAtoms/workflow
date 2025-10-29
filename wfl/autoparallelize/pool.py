@@ -17,12 +17,13 @@ import functools
 #     pass
 
 # https://docs.pytorch.org/docs/stable/notes/multiprocessing.html#poison-fork-in-multiprocessing
-try:
-    import torch
-    import multiprocessing
-    multiprocessing.set_start_method('forkserver')
-except (ImportError, RuntimeError) as exc:
-    pass
+if os.environ.get("WFL_TORCH_N_GPUS") is not None:
+    try:
+        import torch
+        import multiprocessing
+        multiprocessing.set_start_method('forkserver')
+    except (ImportError, RuntimeError) as exc:
+        pass
 from multiprocessing.pool import Pool
 # to help keep track of distinct GPU for each python subprocess
 # https://stackoverflow.com/questions/53422761/distributing-jobs-evenly-across-multiple-gpus-with-multiprocessing-pool
@@ -167,10 +168,10 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
             pool = Pool(num_python_subprocesses, **initializer_args)
 
         with Manager() as manager:
-            if os.environ.get("WFL_TORCH_DEVICE_IS_SUBPROCESS_ID") is not None:
+            if os.environ.get("WFL_TORCH_N_GPUS") is not None:
                 gpu_id_queue = manager.Queue()
                 for subprocess_id in range(num_python_subprocesses):
-                    gpu_id_queue.put(subprocess_id)
+                    gpu_id_queue.put(subprocess_id % int(os.environ["WFL_TORCH_N_GPUS"]))
             else:
                 gpu_id_queue = None
             if wfl_mpipool:

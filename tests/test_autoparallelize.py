@@ -88,11 +88,11 @@ def test_pool_speedup_GPU(monkeypatch):
     dt_1 = time.time() - t0
 
     t0 = time.time()
-    monkeypatch.setenv("WFL_TORCH_DEVICE_IS_SUBPROCESS_ID", "1")
+    monkeypatch.setenv("WFL_TORCH_N_GPUS", str(len(os.environ["CUDA_VISIBLE_DEVICES"].split(","))))
     co = generic.calculate(ConfigSet(ats), OutputSpec(), calc, output_prefix="_auto_",
                            autopara_info=AutoparaInfo(num_python_subprocesses=2,
                                                       num_inputs_per_python_subprocess=30))
-    monkeypatch.delenv("WFL_TORCH_DEVICE_IS_SUBPROCESS_ID")
+    monkeypatch.delenv("WFL_TORCH_N_GPUS")
     dt_2 = time.time() - t0
 
     print("time ratio", dt_2 / dt_1)
