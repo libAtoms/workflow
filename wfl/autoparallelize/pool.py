@@ -24,7 +24,7 @@ except:
     torch = None
 if os.environ.get("WFL_TORCH_N_GPUS") is not None:
     if not torch:
-        raise RuntimeError(f"Got WFL_TORCH_N_GPUS '{WFL_TORCH_N_GPUS}' but torch module is not available")
+        raise RuntimeError(f"Got WFL_TORCH_N_GPUS '{os.environ['WFL_TORCH_N_GPUS']}' but torch module is not available")
     try:
         import multiprocessing
         multiprocessing.set_start_method('forkserver')
