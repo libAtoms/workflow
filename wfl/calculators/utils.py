@@ -19,7 +19,7 @@ def clean_rundir(rundir, keep_files, default_keep_files, calculation_succeeded):
     if isinstance(keep_files, str):
         if keep_files == 'default':
             keep_files = default_keep_files
-        elif keep_files == '*'
+        elif keep_files == '*':
             keep_files = [keep_files]
         else:
             raise ValueError(f"str keep_files can only be 'default' or '*', not '{keep_files}'")
