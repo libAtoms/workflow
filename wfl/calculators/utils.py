@@ -32,7 +32,6 @@ def clean_rundir(rundir, keep_files, default_keep_files, calculation_succeeded):
             keep_files = default_keep_files
         elif keep_files is not True:
             keep_files = set(default_keep_files) | set(keep_files)
-        else:
-            raise ValueError(f"Unknown type or value for keep_files '{keep_files}'")
+        # else True
 
     clean_dir(rundir, keep_files, force=False)
