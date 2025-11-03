@@ -25,7 +25,7 @@ class Castep(WFLFileIOCalculator, ASE_Castep):
         what kind of files to keep from the run
             - True : everything kept
             - None, False : nothing kept, unless calculation fails
-            - "default"   : only ones needed for NOMAD uploads ('\*.pwo')
+            - "default"   : only ones needed for NOMAD uploads ('\*.{castep,param,cell}')
             - list(str)   : list of file globs to save
     rundir_prefix: str / Path, default 'run\_CASTEP\_'
         Run directory name prefix

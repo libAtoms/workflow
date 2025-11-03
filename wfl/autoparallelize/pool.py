@@ -16,7 +16,25 @@ import functools
 # except ModuleNotFoundError:
 #     pass
 
+# https://docs.pytorch.org/docs/stable/notes/multiprocessing.html#poison-fork-in-multiprocessing
+# But, only use forkserver if needed because it has a lot of overhead
+try:
+    import torch
+except:
+    torch = None
+if os.environ.get("WFL_TORCH_N_GPUS") is not None:
+    if not torch:
+        raise RuntimeError(f"Got WFL_TORCH_N_GPUS '{os.environ['WFL_TORCH_N_GPUS']}' but torch module is not available")
+    try:
+        import multiprocessing
+        multiprocessing.set_start_method('forkserver')
+    except RuntimeError as exc:
+        # ignore complains about setting start method more than once
+        pass
 from multiprocessing.pool import Pool
+# to help keep track of distinct GPU for each python subprocess
+# https://stackoverflow.com/questions/53422761/distributing-jobs-evenly-across-multiple-gpus-with-multiprocessing-pool
+from multiprocessing import Queue, Manager
 
 from wfl.configset import ConfigSet
 from wfl.autoparallelize.mpipool_support import wfl_mpipool
@@ -24,7 +42,7 @@ from wfl.autoparallelize.mpipool_support import wfl_mpipool
 from .utils import grouper, items_inputs_generator, set_autopara_per_item_info
 
 
-def _wrapped_autopara_wrappable(op, iterable_arg, inherited_per_item_info, args, kwargs, item_inputs):
+def _wrapped_autopara_wrappable(op, iterable_arg, inherited_per_item_info, args, kwargs, gpu_id_queue, item_inputs):
     """Wrap an operation to be run in parallel by autoparallelize
 
     Parameters:
@@ -40,6 +58,8 @@ def _wrapped_autopara_wrappable(op, iterable_arg, inherited_per_item_info, args,
             list of positional args
         kwargs: dict
             dict of keyword args
+        gpu_id_queue: Queue
+            queue to ensure that each subprocess gets a unique GPU
         item_inputs: iterable(4-tuples)
             One or more 4-tuples. (item, item_i, label, item_rng). item is passed to function in iterable_arg,
             item_i is its number in the overall list, label is a quantity to be passed back with the
@@ -49,27 +69,39 @@ def _wrapped_autopara_wrappable(op, iterable_arg, inherited_per_item_info, args,
     -------
         list of 2-tuples containing, the output of each function call, together with the corresponding label (3rd) field of item_inputs
     """
-    for item_input in item_inputs:
-        assert len(item_input) == 4
-
-    # item_inputs is iterable of 4-tuples
-    item_list = [item_input[0] for item_input in item_inputs]
-    item_i_list = [item_input[1] for item_input in item_inputs]
-    label_list = [item_input[2] for item_input in item_inputs]
-    rng_list = [item_input[3] for item_input in item_inputs]
-
-    set_autopara_per_item_info(kwargs, op, inherited_per_item_info, rng_list, item_i_list)
-
-    if isinstance(iterable_arg, int):
-        u_args = args[0:iterable_arg] + (item_list,) + args[iterable_arg:]
+    if gpu_id_queue is not None:
+        gpu_id = gpu_id_queue.get()
     else:
-        u_args = args
-        if iterable_arg is not None:
-            kwargs[iterable_arg] = item_list
+        gpu_id = None
 
-    outputs = op(*u_args, **kwargs)
-    if outputs is None:
-        outputs = [None] * len(item_list)
+    try:
+        for item_input in item_inputs:
+            assert len(item_input) == 4
+
+        if gpu_id is not None:
+            torch.cuda.set_device(gpu_id)
+
+        # item_inputs is iterable of 4-tuples
+        item_list = [item_input[0] for item_input in item_inputs]
+        item_i_list = [item_input[1] for item_input in item_inputs]
+        label_list = [item_input[2] for item_input in item_inputs]
+        rng_list = [item_input[3] for item_input in item_inputs]
+
+        set_autopara_per_item_info(kwargs, op, inherited_per_item_info, rng_list, item_i_list)
+
+        if isinstance(iterable_arg, int):
+            u_args = args[0:iterable_arg] + (item_list,) + args[iterable_arg:]
+        else:
+            u_args = args
+            if iterable_arg is not None:
+                kwargs[iterable_arg] = item_list
+
+        outputs = op(*u_args, **kwargs)
+        if outputs is None:
+            outputs = [None] * len(item_list)
+    finally:
+        if gpu_id is not None:
+            gpu_id_queue.put(gpu_id)
     return zip(outputs, label_list)
 
 
@@ -132,7 +164,7 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
                           f'always uses all MPI processes {wfl_mpipool.size}')
             if initializer[0] is not None:
                 # generate a task for each mpi process that will call initializer with positional initargs
-                _ = wfl_mpipool.map(functools.partial(_wrapped_autopara_wrappable, initializer[0], None, None, initializer[1], {}),
+                _ = wfl_mpipool.map(functools.partial(_wrapped_autopara_wrappable, initializer[0], None, None, initializer[1], {}, None),
                                     grouper(1, ((None, None, None, None) for i in range(wfl_mpipool.size))))
             pool = wfl_mpipool
         else:
@@ -142,30 +174,37 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
                 initializer_args = {}
             pool = Pool(num_python_subprocesses, **initializer_args)
 
-        if wfl_mpipool:
-            map_f = pool.map
-        else:
-            map_f = pool.imap
-        results = map_f(functools.partial(_wrapped_autopara_wrappable, op, iterable_arg,
-                                          inherited_per_item_info, args, kwargs), items_inputs)
+        with Manager() as manager:
+            if os.environ.get("WFL_TORCH_N_GPUS") is not None:
+                gpu_id_queue = manager.Queue()
+                for subprocess_id in range(num_python_subprocesses):
+                    gpu_id_queue.put(subprocess_id % int(os.environ["WFL_TORCH_N_GPUS"]))
+            else:
+                gpu_id_queue = None
+            if wfl_mpipool:
+                map_f = pool.map
+            else:
+                map_f = pool.imap
+            results = map_f(functools.partial(_wrapped_autopara_wrappable, op, iterable_arg,
+                                              inherited_per_item_info, args, kwargs, gpu_id_queue), items_inputs)
 
-        if not wfl_mpipool:
-            # only close pool if it's from multiprocessing.pool
-            pool.close()
+            if not wfl_mpipool:
+                # only close pool if it's from multiprocessing.pool
+                pool.close()
 
-        # always loop over results to trigger lazy imap()
-        for result_group in results:
-            if outputspec is not None:
-                for at, from_input_loc in result_group:
-                    if skip_failed and at is None:
-                        continue
-                    did_no_work = False
-                    outputspec.store(at, from_input_loc)
+            # always loop over results to trigger lazy imap()
+            for result_group in results:
+                if outputspec is not None:
+                    for at, from_input_loc in result_group:
+                        if skip_failed and at is None:
+                            continue
+                        did_no_work = False
+                        outputspec.store(at, from_input_loc)
 
-        if not wfl_mpipool:
-            # call join pool (prevent pytest-cov deadlock as per https://pytest-cov.readthedocs.io/en/latest/subprocess-support.html)
-            # but only if it's from multiprocessing.pool
-            pool.join()
+            if not wfl_mpipool:
+                # call join pool (prevent pytest-cov deadlock as per https://pytest-cov.readthedocs.io/en/latest/subprocess-support.html)
+                # but only if it's from multiprocessing.pool
+                pool.join()
 
     else:
         # do directly: still not trivial because of num_inputs_per_python_subprocess
@@ -174,7 +213,7 @@ def do_in_pool(num_python_subprocesses=None, num_inputs_per_python_subprocess=1,
         # unpickle to better reproduce the behavior of Pool.map() ?
         for items_inputs_group in items_inputs:
             result_group = _wrapped_autopara_wrappable(op, iterable_arg, inherited_per_item_info, args,
-                                                       kwargs, items_inputs_group)
+                                                       kwargs, None, items_inputs_group)
 
             if outputspec is not None:
                 for at, from_input_loc in result_group:

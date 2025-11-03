@@ -69,7 +69,7 @@ def test_vasp_fail(tmp_path, expyre_systems, monkeypatch, remoteinfo_env):
 
 def do_vasp_fail(tmp_path, sys_name, monkeypatch, remoteinfo_env):
     ri = {'sys_name': sys_name, 'job_name': 'pytest_vasp_'+sys_name,
-          'env_vars' : ['ASE_VASP_COMMAND=NONE', 'ASE_VASP_COMMAND_GAMMA=NONE'],
+          'env_vars' : ['ASE_VASP_COMMAND=NO_VASP_FAIL', 'ASE_VASP_COMMAND_GAMMA=NO_VASP_FAIL'],
           'input_files' : ['POTCARs'],
           'resources': {'max_time': '5m', 'num_nodes': 1},
           'num_inputs_per_queued_job': 1, 'check_interval': 10}

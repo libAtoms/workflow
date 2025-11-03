@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from wfl.utils.file_utils import clean_dir
 
 def clean_rundir(rundir, keep_files, default_keep_files, calculation_succeeded):
@@ -7,19 +9,29 @@ def clean_rundir(rundir, keep_files, default_keep_files, calculation_succeeded):
     ----------
     rundir: str
         path to run dir
-    keep_files: 'default' / list(str) / '*' / bool / None
+    keep_files: 'default' / iterable(file_glob) / '*' / bool / None
         files to keep, None or False for nothing, '*' or True for all
     default_keep_files: list(str)
         files to keep if keep_files == 'default' or calculation_succeeded is False
+        and keep_files is not True
     calculation_succeeded: bool
     """
+    if isinstance(keep_files, str):
+        if keep_files == 'default':
+            keep_files = default_keep_files
+        elif keep_files == '*':
+            keep_files = [keep_files]
+        else:
+            raise ValueError(f"str keep_files can only be 'default' or '*', not '{keep_files}'")
+
+    # now keep_files should either be True, evaluate to False, or an iterable
+
+    # calculation failed, default optionally union with keep_files
     if not calculation_succeeded:
-        clean_dir(rundir, set(default_keep_files) | set(keep_files if keep_files else []), force=False)
-    elif keep_files == 'default':
-        clean_dir(rundir, default_keep_files, force=False)
-    elif not keep_files:
-        clean_dir(rundir, False, force=False)
-    else:
-        clean_dir(rundir, keep_files, force=False)
+        if not keep_files:
+            keep_files = default_keep_files
+        elif keep_files is not True:
+            keep_files = set(default_keep_files) | set(keep_files)
+        # else True
 
-
+    clean_dir(rundir, keep_files, force=False)

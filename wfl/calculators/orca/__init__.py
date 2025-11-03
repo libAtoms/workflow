@@ -34,7 +34,7 @@ class ORCA(WFLFileIOCalculator, ASE_ORCA):
         what kind of files to keep from the run
             - True : everything kept
             - None, False : nothing kept, unless calculation fails
-            - "default"   : only ones needed for NOMAD uploads ('\*.pwo')
+            - "default"   : only ones needed for NOMAD uploads ('\*.{inp,out,engrad,xyz,_traj.xyz}')
             - list(str)   : list of file globs to save
     rundir_prefix: str / Path, default 'ORCA\_'
         Run directory name prefix

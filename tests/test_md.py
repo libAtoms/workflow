@@ -20,9 +20,9 @@ from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate.md.abort import AbortOnCollision, AbortOnLowEnergy
 
 try:
-    from wif.Langevin_BAOAB import Langevin_BAOAB
+    from ase.md.langevinbaoab import LangevinBAOAB
 except ImportError:
-    Langevin_BAOAB = None
+    LangevinBAOAB = None
 
 def select_every_10_steps_for_tests_during(at):
     return at.info.get("MD_step", 1) % 10 == 0
@@ -153,14 +153,14 @@ def test_NPT_Berendsen(cu_slab):
     assert np.allclose(atoms_traj[0].cell, atoms_traj[-1].cell * cell_f)
 
 
-@pytest.mark.skipif(Langevin_BAOAB is None, reason="No Langevin_BAOAB available")
-def test_NPT_Langevin_BAOAB(cu_slab):
+@pytest.mark.skipif(LangevinBAOAB is None, reason="No LangevinBAOAB available")
+def test_NPT_LangevinBAOAB(cu_slab):
     calc = EMT()
 
     inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
-    atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Langevin_BAOAB", steps=300, dt=1.0,
+    atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="LangevinBAOAB", steps=300, dt=1.0,
                        temperature=500.0, temperature_tau=100/fs, pressure=0.0,
                        rng=np.random.default_rng(1))
 
@@ -176,14 +176,14 @@ def test_NPT_Langevin_BAOAB(cu_slab):
     assert np.allclose(atoms_traj[0].cell, atoms_traj[-1].cell * cell_f)
 
 
-@pytest.mark.skipif(Langevin_BAOAB is None, reason="No Langevin_BAOAB available")
-def test_NPT_Langevin_BAOAB_hydro_F(cu_slab):
+@pytest.mark.skipif(LangevinBAOAB is None, reason="No LangevinBAOAB available")
+def test_NPT_LangevinBAOAB_hydro_F(cu_slab):
     calc = EMT()
 
     inputs = ConfigSet(cu_slab)
     outputs = OutputSpec()
 
-    atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="Langevin_BAOAB", steps=300, dt=1.0,
+    atoms_traj = md.md(inputs, outputs, calculator=calc, integrator="LangevinBAOAB", steps=300, dt=1.0,
                        temperature=500.0, temperature_tau=100/fs, pressure=0.0, hydrostatic=False,
                        rng=np.random.default_rng(1))
 
