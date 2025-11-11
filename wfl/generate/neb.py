@@ -13,8 +13,8 @@ from .utils import save_config_type
 
 
 def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
-           traj_step_interval=1, traj_subselect=None, skip_failures=True,
-           results_prefix='last_op__neb_', verbose=False, logfile=None, update_config_type="append",
+           traj_step_interval=1, traj_subselect=None, skip_failures=True, attach_kwargs=None, attach_interval=None,
+           results_prefix='last_op__neb_', verbose=False, logfile=None, update_config_type="append", abort_check=None,
            **neb_kwargs):
     """runs a structure optimization. By default calculator properties will be stored
     in keys prefixed with "last_op__neb_", which may be overwritten by next operation.
@@ -37,6 +37,10 @@ def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
         Currently implemented: "last_converged", which takes the last config, if converged.
     skip_failures: bool, default True
         just skip optimizations that raise an exception
+    attach_kwargs : function, default None
+        function to be attached to optimizer
+    attach_interval : int, default None
+        interval on which function is executed during optimization 
     results_prefix: str, default "last_op__neb_"
         prefix to info/arrays keys where calculator properties will be stored
         Will overwrite any other properties that start with same "<str>__", so that by
@@ -46,6 +50,9 @@ def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
         optimisation logs are not printed unless this is True
     update_config_type: ["append" | "overwrite" | False], default "append"
         whether/how to add at.info['neb_config_type'] to at.info['config_type']
+    abort_check : default None, 
+        wfl.generate.md.abort_base.AbortBase - derived class that
+        checks the NEB snapshots and aborts the simulation on some condition.
     neb_kwargs
         keyword arguments for DyNEB and FIRE 
 
@@ -54,7 +61,9 @@ def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
         list(Atoms) trajectories
     """
     logfile = neb_kwargs.get("logfile", None)
-   
+    if attach_kwargs is not None:
+        attach_constructor = attach_kwargs.pop("attach_function", None) 
+
     if logfile is None and verbose:
         logfile = "-"
 
@@ -84,8 +93,15 @@ def _run_autopara_wrappable(list_of_images, calculator, fmax=5e-2, steps=1000,
                 cur_images.append(new_config)
 
             traj.append(cur_images)
-
+            
+            if abort_check is not None:
+                if abort_check.stop(opt):
+                    raise RuntimeError(f"NEB was stopped by the NEB checker function {abort_check.__class__.__name__}")
         opt.attach(process_step, interval=traj_step_interval)
+
+        if attach_kwargs is not None:
+            attach_kwargs["neb"] = neb
+            opt.attach(attach_constructor, interval=attach_interval, **attach_kwargs)
 
         # preliminary value
         final_status = 'unconverged'
