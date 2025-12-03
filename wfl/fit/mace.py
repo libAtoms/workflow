@@ -167,6 +167,7 @@ def fit(fitting_configs, mace_name, mace_fit_params, mace_fit_cmd=None, ref_prop
 
     if dry_run or verbose:
         print('fitting command:\n', mace_fit_cmd)
+        sys.stdout.flush()
         if dry_run:
             warnings.warn("Exiting mace.fit without fitting, because dry_run is True")
             return None
