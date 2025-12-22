@@ -143,7 +143,7 @@ def _sample_autopara_wrappable_single(at, at_i, calculator, steps, dt, logger_in
     item_i = _autopara_per_item_info[at_i].get("item_i")
 
     at.calc = calculator
-    temperature_use = _get_temperature(temperature, at, steps)
+    temperature_use = _get_temperature(temperature, temperature_tau, steps)
     pressure_use, compressibility_au_use = _get_pressure(pressure, compressibility_au, compressibility_fd_displ, at, rng)
 
     if temperature_use is not None:
