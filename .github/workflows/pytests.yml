@@ -19,7 +19,6 @@ jobs:
     env:
       coverage-on-version: "3.10"
       use-mpi: True
-      PIP_CONSTRAINT: pip_constraint.txt
     defaults:
       run:
         shell: bash -l {0}
@@ -45,7 +44,6 @@ jobs:
 
       - name: Install latest ASE from pypi
         run: |
-          echo PIP_CONSTRAINT $PIP_CONSTRAINT
           # avoid broken extxyz writing (3.25, fixed in 3.26)
           # avoid broken optimizer.converged() (3.26) https://gitlab.com/ase/ase/-/issues/1744
           python3 -m pip install 'ase<3.25'
@@ -81,9 +79,6 @@ jobs:
                 exit 1
             fi
             source $mklvars intel64
-
-            # pip constraint needs to be an absolute filename
-            export PIP_CONSTRAINT=$PWD/$PIP_CONSTRAINT
 
             git clone https://github.com/phonopy/phonopy
             cd phonopy
