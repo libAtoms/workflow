@@ -10,7 +10,7 @@ Examples often show examples of more than one thing. Below is a list of common o
 - EMT: 
     - [First example](first_example.md)
     - [Iterative GAP fitting ](examples.mlip_fitting.md)
-- XTB: 
+- GFN2-xTB: 
     - [Normal Modes of molecules](examples.normal_modes.md)
     - [Molecular Dynamics](examples.md.md)
     - [GAP fit workflow with many wfl use-case examples ](examples.daisy_chain_mlip_fitting.ipynb)

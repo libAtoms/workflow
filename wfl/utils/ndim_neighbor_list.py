@@ -133,7 +133,7 @@ def calc_list_cells(positions, ranges, Cartesian_distance=True):
 
     # First configs in pair.
     _first_at_neightuple_n = configs_in_bin_ba[:, config_pairs_pn[0]]
-    for i_offset in range(np.product(2 * neigh_search + 1)):
+    for i_offset in range(np.prod(2 * neigh_search + 1)):
         dD = []
         for i_dim in range(n_dims):
             dD.append(i_offset % (2 * neigh_search[i_dim] + 1))

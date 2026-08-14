@@ -4,7 +4,7 @@ The following script takes atomic structures from "configs.xyz", runs Berendsen 
 
 ```
 import os
-from xtb.ase.calculator import XTB
+from tblite.ase import TBLite
 from expyre.resources import Resources
 from wfl.autoparallelize import RemoteInfo
 from wfl.autoparallelize import AutoparaInfo
@@ -39,7 +39,7 @@ remote_info = RemoteInfo(
     pre_cmds = ["conda activate my-env"]
     ) 
 
-calc = (XTB, [], {'method':'GFN2-xTB'})
+calc = (TBLite, [], {'method':'GFN2-xTB'})
 
 ci = ConfigSet(input_fname)
 co = OutputSpec(out_fname)
@@ -49,7 +49,7 @@ co = OutputSpec(out_fname)
 # script would make it create and submit new jobs rather than monitor the ones already running.
 os.environ["WFL_DETERMINISTIC_HACK"] = "true"
 
-# xTB has some internal parallelisation that needs turning off by setting this env. variable. 
+# GFN2-xTB uses OpenMP internally, which clashes with the multiprocessing.pool parallelisation wfl uses, so turn it off.
 os.environ["OMP_NUM_THREADS"] = "1"
 
 ci = md.md(

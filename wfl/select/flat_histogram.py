@@ -13,7 +13,7 @@ def _select_by_bin(weights, bin_edges, quantities, n, rng, kT=-1.0, replace=Fals
         raise ValueError("Not defined for non-positive n")
 
     if kT is None or kT <= 0:
-        kT = np.Infinity
+        kT = np.inf
 
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
     bin_centers -= bin_centers[0]
