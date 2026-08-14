@@ -5,11 +5,11 @@ Workflow can numerically generate normal modes of a molecule with specified calc
 
 ## Generate
 
-The following script generates normal modes of methane and water with a [xTB](https://xtb-python.readthedocs.io/en/latest/index.html) calculator. The unit normal mode displacements are stored in `Atoms.arrays` and associated frequencies in `Atoms.info`. 
+The following script generates normal modes of methane and water with a [GFN2-xTB](https://tblite.readthedocs.io/) calculator. The unit normal mode displacements are stored in `Atoms.arrays` and associated frequencies in `Atoms.info`. 
 
 ```python
 from ase.build import molecule
-from xtb.ase.calculator import XTB
+from tblite.ase import TBLite
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate import normal_modes as nm 
 
@@ -17,7 +17,7 @@ mols = [molecule("CH4"), molecule("H2O")]
 configset = ConfigSet(mols)
 outputspec = OutputSpec("molecules.normal_modes.xyz")
 
-calc = (XTB, [], {'method':'GFN2-xTB'})
+calc = (TBLite, [], {'method':'GFN2-xTB'})
 prop_prefix = 'xtb2_'
 
 nm.generate_normal_modes_parallel_hessian(inputs=configset,
@@ -34,7 +34,7 @@ To generate normal modes via finite differences, each of N atoms are displaced b
 
 ```python
 from ase.build import molecule
-from xtb.ase.calculator import XTB
+from tblite.ase import TBLite
 from wfl.configset import ConfigSet, OutputSpec
 from wfl.generate import normal_modes as nm 
 from wfl.autoparallelize import AutoparaInfo
@@ -43,7 +43,7 @@ mols = [molecule("CH4"), molecule("H2O")]
 configset = ConfigSet(mols)
 outputspec = OutputSpec("molecules.normal_modes.xyz")
 
-calc = (XTB, [], {'method':'GFN2-xTB'})
+calc = (TBLite, [], {'method':'GFN2-xTB'})
 prop_prefix = 'xtb2_'
 
 nm.generate_normal_modes_parallel_atoms(inputs=configset,

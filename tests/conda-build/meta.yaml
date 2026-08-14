@@ -22,7 +22,7 @@ requirements:
 
   run:
     - python
-    - numpy=1.19
+    - numpy>=1.23
     - ase
     - scipy
     - click

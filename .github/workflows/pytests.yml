@@ -40,7 +40,6 @@ jobs:
 
       - name: Install dependencies from pip
         run: |
-          echo "numpy<2" >> $PIP_CONSTRAINT
           python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit==2024.3.3 flake8 pytest pytest-cov requests
           python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
@@ -103,14 +102,10 @@ jobs:
             python3 -m pip install quippy-ase
             python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
-      - name: Install xTB (before things that need pandas like MACE and wfl, since it will break pandas-numpy compatibility by downgrading numpy)
+      - name: Install tblite
         run: |
-          # force compatible numpy version
-          conda install 'numpy<2'
-          conda install -c conda-forge xtb-python
+          conda install -c conda-forge tblite-python
           python3 -m pip install typing-extensions
-          # install pandas now to encourage compatible numpy version after conda regressed it
-          python3 -m pip install pandas
           python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: MACE
