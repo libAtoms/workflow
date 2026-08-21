@@ -149,7 +149,7 @@ def _sample_autopara_wrappable_single(at, at_i, calculator, steps, dt, logger_in
     if temperature_use is not None:
         # set initial temperature
         assert rng is not None
-        MaxwellBoltzmannDistribution(at, temperature_K=temperature_use[0]['T_i'], force_temp=True, communicator=None, rng=rng)
+        MaxwellBoltzmannDistribution(at, temperature_K=temperature_use[0]['T_i'], force_temp=True, comm=None, rng=rng)
         Stationary(at, preserve_temperature=True)
 
     stage_kwargs = {'timestep': dt * fs}
