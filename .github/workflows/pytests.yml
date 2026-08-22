@@ -19,7 +19,6 @@ jobs:
     env:
       coverage-on-version: "3.10"
       use-mpi: True
-      PIP_CONSTRAINT: pip_constraint.txt
     defaults:
       run:
         shell: bash -l {0}
@@ -40,13 +39,11 @@ jobs:
 
       - name: Install dependencies from pip
         run: |
-          echo "numpy<2" >> $PIP_CONSTRAINT
           python3 -m pip install wheel setuptools numpy scipy click matplotlib pyyaml spglib rdkit==2024.3.3 flake8 pytest pytest-cov requests
           python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: Install latest ASE from pypi
         run: |
-          echo PIP_CONSTRAINT $PIP_CONSTRAINT
           # avoid broken extxyz writing (3.25, fixed in 3.26)
           # avoid broken optimizer.converged() (3.26) https://gitlab.com/ase/ase/-/issues/1744
           python3 -m pip install 'ase<3.25'
@@ -83,9 +80,6 @@ jobs:
             fi
             source $mklvars intel64
 
-            # pip constraint needs to be an absolute filename
-            export PIP_CONSTRAINT=$PWD/$PIP_CONSTRAINT
-
             git clone https://github.com/phonopy/phonopy
             cd phonopy
             echo python3 -m pip install -e . -vvv
@@ -103,14 +97,10 @@ jobs:
             python3 -m pip install quippy-ase
             python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
-      - name: Install xTB (before things that need pandas like MACE and wfl, since it will break pandas-numpy compatibility by downgrading numpy)
+      - name: Install tblite
         run: |
-          # force compatible numpy version
-          conda install 'numpy<2'
-          conda install -c conda-forge xtb-python
+          conda install -c conda-forge tblite-python
           python3 -m pip install typing-extensions
-          # install pandas now to encourage compatible numpy version after conda regressed it
-          python3 -m pip install pandas
           python3 -c "import numpy; print('numpy version', numpy.__version__)"
 
       - name: MACE
@@ -286,6 +276,8 @@ jobs:
           mkdir $HOME/pytest_plain
           # attempt to work around mkl/numpy issue
           export MKL_THREADING_LAYER=GNU
+          # preload a newer libgomp needed by tblite; backwards compatible with torch
+          export LD_PRELOAD=$CONDA_PREFIX/lib/libgomp.so.1${LD_PRELOAD:+:$LD_PRELOAD}
           #
           export EXPYRE_PYTEST_SYSTEMS=github
           export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell
@@ -301,6 +293,8 @@ jobs:
           mkdir $HOME/pytest_cov
           # attempt to work around mkl/numpy issue
           export MKL_THREADING_LAYER=GNU
+          # preload a newer libgomp needed by tblite; backwards compatible with torch
+          export LD_PRELOAD=$CONDA_PREFIX/lib/libgomp.so.1${LD_PRELOAD:+:$LD_PRELOAD}
           #
           export EXPYRE_PYTEST_SYSTEMS=github
           export WFL_PYTEST_BUILDCELL=$HOME/bin/buildcell

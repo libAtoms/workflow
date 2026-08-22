@@ -5,6 +5,7 @@ import numpy as np
 from ase.md.nptberendsen import NPTBerendsen
 from ase.md.nvtberendsen import NVTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution, Stationary
+from ase.parallel import DummyMPI
 from ase.md.verlet import VelocityVerlet
 from ase.md.langevin import Langevin
 from ase.md.logger import MDLogger
@@ -149,7 +150,7 @@ def _sample_autopara_wrappable_single(at, at_i, calculator, steps, dt, logger_in
     if temperature_use is not None:
         # set initial temperature
         assert rng is not None
-        MaxwellBoltzmannDistribution(at, temperature_K=temperature_use[0]['T_i'], force_temp=True, communicator=None, rng=rng)
+        MaxwellBoltzmannDistribution(at, temperature_K=temperature_use[0]['T_i'], force_temp=True, comm=DummyMPI(), rng=rng)
         Stationary(at, preserve_temperature=True)
 
     stage_kwargs = {'timestep': dt * fs}

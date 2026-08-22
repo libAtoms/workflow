@@ -65,7 +65,7 @@ def _largest_isotropic_supercell(at, max_n_atoms, vary_cell_vectors=None):
         min_cell_i = np.argmin(np.linalg.norm(t_cell[vary_cell_vectors], axis=1))
         min_cell_i = vary_cell_vectors[min_cell_i]
         n_dups[min_cell_i] += 1
-        if np.product(n_dups) * len(at) > max_n_atoms:
+        if np.prod(n_dups) * len(at) > max_n_atoms:
             n_dups[min_cell_i] -= 1
             break
     return n_dups
