@@ -50,6 +50,9 @@ def descriptors_from_length_scales(descriptors, Zs, length_scales, SOAP_hypers=N
     else:
         use_descriptors = descriptors
 
+    # cast away from np.int64 to plain ints; to work in GAP descriptor templates
+    Zs = [int(Z) for Z in Zs]
+
     repl_dict = {'BOND_LEN_MAX': max([length_scales[Z]['bond_len'][0] for Z in Zs])}
 
     dup = False
