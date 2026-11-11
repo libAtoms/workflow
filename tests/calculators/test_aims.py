@@ -103,6 +103,45 @@ def test_setup_calc_params(parameters_nonperiodic):
         assert key_i in calc.parameters
 
 
+@pytest.mark.skipif(Version(ase.__version__) < Version("3.23"), reason="Aims tests are only supported for ASE v3.23")
+def test_setup_calc_params_kspacing(parameters_nonperiodic):
+    from wfl.calculators.kpts import universal_kspacing_n_k
+
+    parameters = parameters_nonperiodic
+    parameters["kspacing"] = 0.3
+    parameters["profile"] = AimsProfile("_DUMMY_")
+
+    # PBC is TTT
+    atoms = bulk("Si", cubic=True)
+    calc = wfl.calculators.aims.Aims(**parameters)
+    calc.atoms = atoms.copy()
+    calc._setup_calc_params()
+    assert "kspacing" not in calc.parameters
+    assert calc.parameters["k_grid"] == tuple(universal_kspacing_n_k(atoms.cell, atoms.pbc, 0.3))
+    assert calc.parameters["k_grid"] == (4, 4, 4)
+
+    # PBC is TTF (slab)
+    atoms = Atoms("H", cell=[4, 6, 20], pbc=[True, True, False])
+    calc = wfl.calculators.aims.Aims(**parameters)
+    calc.atoms = atoms.copy()
+    calc._setup_calc_params()
+    assert calc.parameters["k_grid"] == (6, 4, 1)
+
+    # PBC is FFF
+    atoms = Atoms("H")
+    calc = wfl.calculators.aims.Aims(**parameters)
+    calc.atoms = atoms.copy()
+    calc._setup_calc_params()
+    assert "kspacing" not in calc.parameters
+    assert "k_grid" not in calc.parameters
+
+    # conflicting k-point specification
+    calc = wfl.calculators.aims.Aims(**parameters, k_grid=(2, 2, 2))
+    calc.atoms = bulk("Si")
+    with pytest.raises(ValueError):
+        calc._setup_calc_params()
+
+
 @aims_prerequisites
 def test_aims_calculation(tmp_path, parameters_nonperiodic):
 

@@ -13,6 +13,7 @@ except ImportError:
     AimsProfile = None
 
 from .wfl_fileio_calculator import WFLFileIOCalculator
+from .kpts import universal_kspacing_n_k
 
 # NOMAD compatible, see https://nomad-lab.eu/prod/rae/gui/uploads
 _default_keep_files = ["control.in", "geometry.in", "aims.out"]
@@ -31,6 +32,11 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
 
     Parameters
     ----------
+    kspacing: float, default None
+        If given, the ```k_grid``` is set for each structure from this spacing in reciprocal space
+        (in 1/Angstrom, including the factor of 2 pi, as for VASP's KSPACING), with a single k-point
+        along non-periodic directions.  Cannot be combined with ```k_grid```, ```k_grid_density```
+        or ```kpts```.
     keep_files: bool / None / "default" / list(str), default "default"
         What kind of files to keep from the run:
             - True :        Everything kept.
@@ -112,8 +118,15 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
         """
         Setup parameters for the calculation based on the atomistic systems periodicity.
 
-        Remove entries in ```self.parameters``` that don't fit to the atomistic systems periodicity.
+        Remove entries in ```self.parameters``` that don't fit to the atomistic systems periodicity,
+        and convert ```kspacing``` (if present) into a ```k_grid```.
         """
+        kspacing = self.parameters.pop("kspacing", None)
+        if kspacing is not None:
+            conflicting = [param_i for param_i in ["k_grid", "k_grid_density", "kpts"] if param_i in self.parameters]
+            if conflicting:
+                raise ValueError(f"'kspacing' cannot be combined with {conflicting}")
+
         if np.all(~self.atoms.pbc):  # PBC is FFF
             # e.g. k_grid or k_grid_density, k_offset, sc_accuracy_stress
             rm_parameters = [param_i for param_i in self.parameters if 'k_grid' in param_i
@@ -121,6 +134,6 @@ class Aims(WFLFileIOCalculator, ASE_Aims):
                              or param_i in ['relax_unit_cell', 'external_pressure']]
             for param_i in rm_parameters:
                 self.parameters.pop(param_i)
-
-
-
+        elif kspacing is not None:
+            n_k = universal_kspacing_n_k(cell=self.atoms.cell, pbc=self.atoms.pbc, kspacing=kspacing)
+            self.parameters["k_grid"] = tuple(int(n) for n in n_k)
